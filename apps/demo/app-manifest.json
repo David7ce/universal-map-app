@@ -14,5 +14,11 @@
   "dataLayers": ["layers/poi.layer.json", "layers/regions.layer.json"],
   "calendar": { "default": "today", "min": "2015-01-01", "max": "2030-12-31" },
   "strings": "strings.json",
-  "plugins": {}
+  "plugins": {
+    "participate": {
+      "channel": "email",
+      "target": "demo@example.org",
+      "messageTemplate": "I want to report something on the map (viewing date: {{date}})"
+    }
+  }
 }

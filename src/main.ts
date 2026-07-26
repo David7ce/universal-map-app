@@ -17,10 +17,16 @@ import { mountPanelRight } from './ui/panels/PanelRight';
 import { mountCalendarBar } from './ui/panels/CalendarBar';
 import type { GeoFeature } from './engine/time/temporal-types';
 import type { LoadedLayer } from './engine/taxonomy/compute-dimensions';
+import { registerParticipatePlugin } from '../plugins/participate';
+import { getPanelSlots, type PluginContext } from './engine/plugins/registry';
 
 async function bootstrap(): Promise<void> {
   const appManifestResponse = await fetch('/apps/demo/app-manifest.json');
   const appManifest = validateAppManifest(await appManifestResponse.json());
+
+  if (appManifest.plugins?.participate) {
+    registerParticipatePlugin(appManifest.plugins.participate);
+  }
 
   const strings = await loadStrings(appManifest.strings ? `/apps/demo/${appManifest.strings}` : undefined);
 
@@ -61,8 +67,26 @@ async function bootstrap(): Promise<void> {
   store.subscribe(renderMap);
 
   mountCalendarBar(document.querySelector('#calendar-bar')!, store, appManifest.calendar);
-  mountPanelRight(document.querySelector('#panel-right')!, store, loadedLayers);
+  mountPanelRight(document.querySelector('#panel-right-filters')!, store, loadedLayers);
   mountPanelLeft(document.querySelector('#panel-left')!, store, loadedLayers, strings);
+
+  // Plugin panel slots (e.g. `participate`) live in a persistent sibling of
+  // #panel-right-filters, not inside it: mountPanelRight replaces that
+  // container's entire innerHTML on every store update, which would wipe
+  // out any plugin-owned DOM appended directly inside it.
+  const pluginCtx: PluginContext = {
+    getSelectedDate: () => store.get().selectedDate,
+    getActiveFeatures: () => loadedLayers.flatMap((l) => l.features),
+    getSelectedFeature: () =>
+      loadedLayers.flatMap((l) => l.features).find((f) => String(f.id ?? '') === store.get().selectedFeatureId) ?? null,
+  };
+  const actionsContainer = document.querySelector<HTMLDivElement>('#panel-right-actions')!;
+  for (const slot of getPanelSlots()) {
+    const slotContainer = document.createElement('div');
+    slotContainer.dataset.pluginSlot = slot.id;
+    actionsContainer.appendChild(slotContainer);
+    slot.render(slotContainer, pluginCtx);
+  }
 }
 
 bootstrap().catch((error) => {
