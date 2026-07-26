@@ -7,6 +7,10 @@ export async function loadStrings(path: string | undefined): Promise<Record<stri
   return response.json();
 }
 
-export function t(key: string, strings: Record<string, string>): string {
-  return strings[key] ?? key;
+export function t(key: string, strings: Record<string, string>, params?: Record<string, string>): string {
+  const resolved = strings[key] ?? key;
+  if (!params) return resolved;
+  return resolved.replace(/\{(\w+)\}/g, (match, paramName: string) =>
+    Object.prototype.hasOwnProperty.call(params, paramName) ? params[paramName] : match
+  );
 }
