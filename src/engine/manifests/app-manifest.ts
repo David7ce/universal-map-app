@@ -1,0 +1,47 @@
+export interface BaseLayerConfig {
+  id: string;
+  title: string;
+  type: 'raster-tile';
+  url: string;
+  attribution: string;
+}
+
+export interface ParticipateConfig {
+  channel: 'email' | 'whatsapp' | 'telegram';
+  target: string;
+  messageTemplate: string;
+}
+
+export interface AppManifest {
+  id: string;
+  title: string;
+  map: { center: [number, number]; zoom: number };
+  baseLayers: BaseLayerConfig[];
+  dataLayers: string[];
+  calendar: { default: 'today' | string; min: string; max: string };
+  strings?: string;
+  plugins?: { participate?: ParticipateConfig };
+}
+
+export function validateAppManifest(json: unknown): AppManifest {
+  if (typeof json !== 'object' || json === null) {
+    throw new Error('App manifest must be a JSON object');
+  }
+  const obj = json as Record<string, unknown>;
+
+  if (typeof obj.id !== 'string' || obj.id.length === 0) {
+    throw new Error('App manifest missing required string field "id"');
+  }
+  if (!Array.isArray(obj.baseLayers) || obj.baseLayers.length === 0) {
+    throw new Error(`App manifest "${obj.id}" requires at least one entry in "baseLayers"`);
+  }
+  if (!Array.isArray(obj.dataLayers)) {
+    throw new Error(`App manifest "${obj.id}" missing required array field "dataLayers"`);
+  }
+  const calendar = obj.calendar as Record<string, unknown> | undefined;
+  if (!calendar || typeof calendar.min !== 'string' || typeof calendar.max !== 'string') {
+    throw new Error(`App manifest "${obj.id}" requires "calendar.min" and "calendar.max"`);
+  }
+
+  return json as AppManifest;
+}
