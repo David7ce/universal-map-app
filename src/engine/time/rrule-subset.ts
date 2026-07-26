@@ -39,6 +39,12 @@ export function parseRule(rule: string): ParsedRule {
   };
 }
 
+function startOfDayUtc(date: Date): Date {
+  const copy = new Date(date.getTime());
+  copy.setUTCHours(0, 0, 0, 0);
+  return copy;
+}
+
 function startOfWeekUtc(date: Date): Date {
   const copy = new Date(date.getTime());
   copy.setUTCDate(copy.getUTCDate() - copy.getUTCDay());
@@ -47,11 +53,11 @@ function startOfWeekUtc(date: Date): Date {
 }
 
 function matchesPattern(parsed: ParsedRule, date: Date, anchor: Date): boolean {
-  if (parsed.byDay && parsed.freq === 'WEEKLY') {
+  if (parsed.byDay) {
     if (!parsed.byDay.includes(DAY_CODES[date.getUTCDay()])) return false;
   }
   if (parsed.freq === 'DAILY') {
-    const daysSinceAnchor = Math.round((date.getTime() - anchor.getTime()) / MS_PER_DAY);
+    const daysSinceAnchor = Math.round((startOfDayUtc(date).getTime() - startOfDayUtc(anchor).getTime()) / MS_PER_DAY);
     return daysSinceAnchor % parsed.interval === 0;
   }
   const weeksSinceAnchor = Math.round(
@@ -75,7 +81,7 @@ export function matchesRule(parsed: ParsedRule, date: Date, anchor?: Date): bool
   if (parsed.count !== undefined && !anchor) {
     throw new Error('COUNT requires temporal.range.from as an anchor date');
   }
-  if (parsed.until && date.getTime() > parsed.until.getTime()) return false;
+  if (parsed.until && startOfDayUtc(date).getTime() > startOfDayUtc(parsed.until).getTime()) return false;
 
   const effectiveAnchor = anchor ?? EPOCH;
   if (date.getTime() < effectiveAnchor.getTime()) return false;

@@ -64,4 +64,27 @@ describe('matchesRule', () => {
     const rule = parseRule('FREQ=MONTHLY');
     expect(() => matchesRule(rule, parseIsoDateUtc('2026-03-01'))).toThrow(/not supported/);
   });
+
+  it('matches consecutive days for FREQ=DAILY with no anchor', () => {
+    const rule = parseRule('FREQ=DAILY');
+    expect(matchesRule(rule, parseIsoDateUtc('2026-03-15'))).toBe(true);
+    expect(matchesRule(rule, parseIsoDateUtc('2026-03-16'))).toBe(true);
+    expect(matchesRule(rule, parseIsoDateUtc('2026-03-17'))).toBe(true);
+  });
+
+  it('respects INTERVAL=2 for FREQ=DAILY relative to an anchor', () => {
+    const rule = parseRule('FREQ=DAILY;INTERVAL=2');
+    const anchor = parseIsoDateUtc('2026-03-01');
+    expect(matchesRule(rule, parseIsoDateUtc('2026-03-01'), anchor)).toBe(true);
+    expect(matchesRule(rule, parseIsoDateUtc('2026-03-02'), anchor)).toBe(false);
+    expect(matchesRule(rule, parseIsoDateUtc('2026-03-03'), anchor)).toBe(true);
+    expect(matchesRule(rule, parseIsoDateUtc('2026-03-05'), anchor)).toBe(true);
+  });
+
+  it('matches only specified BYDAY for FREQ=DAILY;BYDAY=MO', () => {
+    const rule = parseRule('FREQ=DAILY;BYDAY=MO');
+    expect(matchesRule(rule, parseIsoDateUtc('2026-03-02'))).toBe(true); // Monday
+    expect(matchesRule(rule, parseIsoDateUtc('2026-03-03'))).toBe(false); // Tuesday
+    expect(matchesRule(rule, parseIsoDateUtc('2026-03-09'))).toBe(true); // Monday
+  });
 });
