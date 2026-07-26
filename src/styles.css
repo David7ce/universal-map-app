@@ -1,0 +1,16 @@
+html, body, #app {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+#app {
+  display: grid;
+  grid-template-columns: 280px 1fr 280px;
+  grid-template-rows: 1fr auto;
+}
+
+#map { grid-column: 2; grid-row: 1; }
+#panel-left { grid-column: 1; grid-row: 1 / span 2; overflow-y: auto; border-right: 1px solid #ccc; }
+#panel-right { grid-column: 3; grid-row: 1 / span 2; overflow-y: auto; border-left: 1px solid #ccc; }
+#calendar-bar { grid-column: 2; grid-row: 2; border-top: 1px solid #ccc; padding: 0.5rem; }
