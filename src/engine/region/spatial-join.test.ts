@@ -2,8 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { findContainingRegions } from './spatial-join';
 import type { LoadedLayer } from '../taxonomy/compute-dimensions';
 import type { LayerManifest } from '../manifests/layer-manifest';
+import type { Temporal } from '../time/temporal-types';
 
-function square(id: string, temporal: unknown) {
+function square(id: string, temporal: Temporal | undefined) {
   return {
     type: 'Feature' as const,
     id,
