@@ -1,0 +1,11 @@
+{
+  "id": "poi",
+  "title": "Points of Interest",
+  "kind": "point",
+  "source": { "type": "geojson", "url": "/apps/demo/data/poi.geojson" },
+  "temporal": { "defaultVisibility": "time-filtered" },
+  "taxonomy": [{ "id": "categoria", "label": "Categoría", "field": "properties.categoria" }],
+  "regionRole": null,
+  "style": { "cluster": true, "icon": "marker" },
+  "panel": { "showInSearch": true, "showInInfo": true }
+}

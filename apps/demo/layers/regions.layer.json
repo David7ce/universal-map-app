@@ -1,0 +1,11 @@
+{
+  "id": "regions",
+  "title": "Regions",
+  "kind": "polygon",
+  "source": { "type": "geojson", "url": "/apps/demo/data/regions.geojson" },
+  "temporal": { "defaultVisibility": "time-filtered" },
+  "taxonomy": [{ "id": "region", "label": "Región", "field": "properties.nombre" }],
+  "regionRole": "boundary",
+  "style": {},
+  "panel": { "showInSearch": false, "showInInfo": true }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "region-old",
+      "properties": { "nombre": "Distrito Norte (pre-2023)", "temporal": { "range": { "to": "2022-12-31" } } },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-16.65, 28.27], [-16.60, 28.27], [-16.60, 28.31], [-16.65, 28.31], [-16.65, 28.27]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "region-new",
+      "properties": { "nombre": "Distrito Norte (post-2023)", "temporal": { "range": { "from": "2023-01-01" } } },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-16.65, 28.27], [-16.60, 28.27], [-16.60, 28.31], [-16.65, 28.31], [-16.65, 28.27]]]
+      }
+    }
+  ]
+}

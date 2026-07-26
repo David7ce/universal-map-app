@@ -1,0 +1,14 @@
+{
+  "search.placeholder": "Search...",
+  "search.untitledFeature": "Untitled",
+  "temporalStatus.alwaysActive": "Always active",
+  "temporalStatus.activeOn": "Active on {date}",
+  "temporalStatus.occurredOn": "Occurred on {date}",
+  "temporalStatus.activeToday": "Active today",
+  "temporalStatus.notActiveOnSelectedDate": "Not active on selected date",
+  "temporalStatus.recurs": "recurs: {rule}",
+  "temporalStatus.active": "Active",
+  "temporalStatus.notActive": "Not active",
+  "temporalStatus.since": "since {date}",
+  "temporalStatus.until": "until {date}"
+}
