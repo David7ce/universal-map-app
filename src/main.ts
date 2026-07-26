@@ -45,11 +45,15 @@ async function bootstrap(): Promise<void> {
   const renderedLayers = new Map<string, Layer>();
 
   function renderMap(): void {
-    const date = new Date(`${store.get().selectedDate}T00:00:00Z`);
+    const state = store.get();
+    const date = new Date(`${state.selectedDate}T00:00:00Z`);
     for (const layer of loadedLayers) {
       const existing = renderedLayers.get(layer.manifest.id);
       if (existing) map.removeLayer(existing);
-      renderedLayers.set(layer.manifest.id, renderDataLayer(map, layer.manifest, layer.features, date));
+      renderedLayers.set(
+        layer.manifest.id,
+        renderDataLayer(map, layer.manifest, layer.features, date, state.activeFilters)
+      );
     }
   }
 

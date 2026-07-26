@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { computeTaxonomyDimensions, type LoadedLayer } from './compute-dimensions';
+import { computeTaxonomyDimensions, featureMatchesFilters, type LoadedLayer } from './compute-dimensions';
 import { getTriState, toggleAll } from './tri-state';
 import type { LayerManifest } from '../manifests/layer-manifest';
+import type { GeoFeature } from '../time/temporal-types';
 
 function layer(): LoadedLayer {
   const manifest: LayerManifest = {
@@ -64,5 +65,69 @@ describe('toggleAll', () => {
   });
   it('clears the selection when everything is currently selected', () => {
     expect(toggleAll(['a', 'b'], new Set(['a', 'b']))).toEqual(new Set());
+  });
+});
+
+describe('featureMatchesFilters', () => {
+  const manifest: LayerManifest = {
+    id: 'poi',
+    title: 'POI',
+    kind: 'point',
+    source: { type: 'geojson', url: '/x' },
+    taxonomy: [
+      { id: 'categoria', label: 'Categoría', field: 'properties.categoria' },
+      { id: 'region', label: 'Región', field: 'properties.region' },
+    ],
+  };
+
+  function feature(properties: Record<string, unknown>): GeoFeature {
+    return {
+      type: 'Feature',
+      id: 'f1',
+      properties,
+      geometry: { type: 'Point', coordinates: [0, 0] },
+    };
+  }
+
+  it('matches everything when activeFilters is empty (no restriction)', () => {
+    expect(featureMatchesFilters(feature({ categoria: 'shop' }), manifest, {})).toBe(true);
+  });
+
+  it('matches everything when a dimension has an empty Set (no restriction)', () => {
+    const activeFilters = { categoria: new Set<string>() };
+    expect(featureMatchesFilters(feature({ categoria: 'shop' }), manifest, activeFilters)).toBe(true);
+  });
+
+  it('matches when the feature value is in the selected set', () => {
+    const activeFilters = { categoria: new Set(['shop', 'market']) };
+    expect(featureMatchesFilters(feature({ categoria: 'shop' }), manifest, activeFilters)).toBe(true);
+  });
+
+  it('rejects when the feature value is not in the selected set', () => {
+    const activeFilters = { categoria: new Set(['market']) };
+    expect(featureMatchesFilters(feature({ categoria: 'shop' }), manifest, activeFilters)).toBe(false);
+  });
+
+  it('requires every restricted dimension to match (AND across dimensions)', () => {
+    const activeFilters = {
+      categoria: new Set(['shop']),
+      region: new Set(['north']),
+    };
+    expect(featureMatchesFilters(feature({ categoria: 'shop', region: 'south' }), manifest, activeFilters)).toBe(
+      false
+    );
+    expect(featureMatchesFilters(feature({ categoria: 'shop', region: 'north' }), manifest, activeFilters)).toBe(
+      true
+    );
+  });
+
+  it('rejects a feature missing the field entirely when that dimension is restricted', () => {
+    const activeFilters = { categoria: new Set(['shop']) };
+    expect(featureMatchesFilters(feature({}), manifest, activeFilters)).toBe(false);
+  });
+
+  it('ignores activeFilters keys for dimensions the layer does not declare', () => {
+    const activeFilters = { unrelatedDimension: new Set(['x']) };
+    expect(featureMatchesFilters(feature({ categoria: 'shop' }), manifest, activeFilters)).toBe(true);
   });
 });
