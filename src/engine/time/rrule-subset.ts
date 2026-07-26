@@ -39,7 +39,7 @@ export function parseRule(rule: string): ParsedRule {
   };
 }
 
-function startOfDayUtc(date: Date): Date {
+export function startOfDayUtc(date: Date): Date {
   const copy = new Date(date.getTime());
   copy.setUTCHours(0, 0, 0, 0);
   return copy;

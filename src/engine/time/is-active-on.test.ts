@@ -60,4 +60,18 @@ describe('isActiveOn', () => {
     expect(isActiveOn(f, new Date('2026-03-14T00:00:00Z'))).toBe(true);
     expect(isActiveOn(f, new Date('2026-03-15T00:00:00Z'))).toBe(false);
   });
+
+  it('normalizes non-midnight instant date to day boundary', () => {
+    const f = feature({ instant: '2026-03-14' });
+    expect(isActiveOn(f, new Date('2026-03-14T13:45:00Z'))).toBe(true);
+    expect(isActiveOn(f, new Date('2026-03-14T23:59:59Z'))).toBe(true);
+    expect(isActiveOn(f, new Date('2026-03-15T00:00:01Z'))).toBe(false);
+  });
+
+  it('normalizes non-midnight range.to boundary to include the entire day', () => {
+    const f = feature({ range: { from: '2018-01-01', to: '2023-06-30' } });
+    expect(isActiveOn(f, new Date('2023-06-30T13:45:00Z'))).toBe(true);
+    expect(isActiveOn(f, new Date('2023-06-30T23:59:59Z'))).toBe(true);
+    expect(isActiveOn(f, new Date('2023-07-01T00:00:00Z'))).toBe(false);
+  });
 });
