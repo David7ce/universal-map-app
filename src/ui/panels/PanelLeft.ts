@@ -23,7 +23,7 @@ export function mountPanelLeft(
 
   function featureLabel(feature: (typeof allFeatures)[number]): string {
     const props = feature.properties;
-    return String(props.nombre ?? props.title ?? feature.id ?? 'Untitled');
+    return String(props.nombre ?? props.title ?? feature.id ?? t('search.untitledFeature', strings));
   }
 
   searchInput.addEventListener('input', () => {
@@ -41,7 +41,7 @@ export function mountPanelLeft(
   });
 
   store.subscribe((state) => {
-    if (!state.selectedFeatureId) {
+    if (state.selectedFeatureId === null) {
       infoEl.hidden = true;
       resultsEl.hidden = false;
       return;
