@@ -106,7 +106,10 @@ export function mountSearchOverlay(
     const isOpen = store.get().panels.left === 'open';
     overlay.hidden = !isOpen;
     toggleButton.setAttribute('aria-expanded', String(isOpen));
-    if (isOpen) runSearch();
+    // Always kept fresh: on mobile this only matters while `hidden` is
+    // false, but on desktop the panel is always visible (CSS overrides the
+    // `hidden` attribute at that breakpoint) regardless of `panels.left`.
+    runSearch();
   }
   render();
   store.subscribe(render);

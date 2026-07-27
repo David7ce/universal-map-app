@@ -21,6 +21,7 @@ import type { GeoFeature } from './engine/time/temporal-types';
 import type { LoadedLayer } from './engine/taxonomy/compute-dimensions';
 import { registerParticipatePlugin } from '../plugins/participate';
 import { getPanelSlots, type PluginContext } from './engine/plugins/registry';
+import { icons } from './ui/icons';
 
 async function bootstrap(): Promise<void> {
   const appManifestResponse = await fetch('/apps/demo/app-manifest.json');
@@ -99,7 +100,9 @@ async function bootstrap(): Promise<void> {
   const filtersTitle = document.querySelector<HTMLElement>('[data-role="filters-title"]')!;
 
   filtersTitle.textContent = t('filters.title', strings);
+  panelRightToggle.innerHTML = icons.filter;
   panelRightToggle.setAttribute('aria-label', t('filters.openLabel', strings));
+  panelRightClose.innerHTML = icons.close;
   panelRightClose.setAttribute('aria-label', t('filters.closeLabel', strings));
 
   function setRightPanelOpen(open: boolean): void {

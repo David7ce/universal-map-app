@@ -76,6 +76,11 @@ body {
   inset: 0;
   width: 100%;
   height: 100%;
+  /* Isolates Leaflet's internal panes/controls (which use their own z-index
+     scale up to 1000+) into their own stacking context, so they can never
+     paint above the page-level floating controls below regardless of how
+     high Leaflet's internal values go. */
+  z-index: 0;
 }
 
 /* ========================================
@@ -214,6 +219,10 @@ body {
     left: var(--control-btn-offset);
     width: min(22rem, calc(100vw - 2 * var(--control-btn-offset)));
   }
+  /* The toggle button that would normally reveal this panel is hidden at
+     this breakpoint (the search field is always docked, not modal) — undo
+     the `hidden` attribute's `display: none` so it stays visible. */
+  .map-search[hidden] { display: block; }
   .map-search__backdrop { display: none; }
   .map-search__panel { margin: 0; padding: 0; max-height: none; overflow: visible; gap: 0; background: transparent; box-shadow: none; }
   .search-field { background-color: var(--color-white); box-shadow: var(--shadow-md); }
