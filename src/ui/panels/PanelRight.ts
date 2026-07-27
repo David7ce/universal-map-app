@@ -1,6 +1,7 @@
 import type { Store, AppState } from '../../engine/state/store';
 import { computeTaxonomyDimensions, type LoadedLayer } from '../../engine/taxonomy/compute-dimensions';
 import { getTriState, toggleAll } from '../../engine/taxonomy/tri-state';
+import { escapeHtml } from '../escape-html';
 
 export function mountPanelRight(container: HTMLElement, store: Store<AppState>, layers: LoadedLayer[]): void {
   function render(): void {
@@ -17,17 +18,17 @@ export function mountPanelRight(container: HTMLElement, store: Store<AppState>, 
           .map(
             (v) => `
               <label>
-                <input type="checkbox" data-dimension="${dimension.id}" data-value="${v.value}" ${selected.has(v.value) ? 'checked' : ''} />
-                ${v.value} (${v.count})
+                <input type="checkbox" data-dimension="${escapeHtml(dimension.id)}" data-value="${escapeHtml(v.value)}" ${selected.has(v.value) ? 'checked' : ''} />
+                ${escapeHtml(v.value)} (${v.count})
               </label>`
           )
           .join('');
 
         return `
-          <section data-dimension-section="${dimension.id}">
+          <section data-dimension-section="${escapeHtml(dimension.id)}">
             <label>
-              <input type="checkbox" data-select-all="${dimension.id}" ${triState === 'all' ? 'checked' : ''} />
-              ${dimension.label}
+              <input type="checkbox" data-select-all="${escapeHtml(dimension.id)}" ${triState === 'all' ? 'checked' : ''} />
+              ${escapeHtml(dimension.label)}
             </label>
             <div>${options}</div>
           </section>`;

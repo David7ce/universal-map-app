@@ -5,7 +5,9 @@ import type { GeoFeature } from '../../engine/time/temporal-types';
 import type { LayerManifest } from '../../engine/manifests/layer-manifest';
 import { searchFeatures } from './search';
 import { describeTemporalStatus } from './temporal-status';
+import { findContainingRegions } from '../../engine/region/spatial-join';
 import { t } from '../strings';
+import { escapeHtml } from '../escape-html';
 
 export function mountPanelLeft(
   container: HTMLElement,
@@ -49,7 +51,10 @@ export function mountPanelLeft(
   function runSearch(): void {
     matches = searchFeatures(searchableFeatures(), searchInput.value, ['nombre', 'title']);
     resultsEl.innerHTML = matches
-      .map((feature, index) => `<button type="button" data-result-index="${index}">${featureLabel(feature)}</button>`)
+      .map(
+        (feature, index) =>
+          `<button type="button" data-result-index="${index}">${escapeHtml(featureLabel(feature))}</button>`
+      )
       .join('');
 
     resultsEl.querySelectorAll<HTMLButtonElement>('[data-result-index]').forEach((button) => {
@@ -78,6 +83,16 @@ export function mountPanelLeft(
     const date = new Date(`${state.selectedDate}T00:00:00Z`);
     infoEl.hidden = false;
     resultsEl.hidden = true;
-    infoEl.innerHTML = `<h3>${featureLabel(feature)}</h3><p>${describeTemporalStatus(feature, date, strings)}</p>`;
+
+    let regionLine = '';
+    if (feature.geometry.type === 'Point') {
+      const regions = findContainingRegions(feature.geometry.coordinates as [number, number], layers, date);
+      if (regions.length > 0) {
+        const regionNames = regions.map((region) => escapeHtml(featureLabel(region))).join(', ');
+        regionLine = `<p>${t('info.containingRegion', strings, { regions: regionNames })}</p>`;
+      }
+    }
+
+    infoEl.innerHTML = `<h3>${escapeHtml(featureLabel(feature))}</h3><p>${describeTemporalStatus(feature, date, strings)}</p>${regionLine}`;
   });
 }
