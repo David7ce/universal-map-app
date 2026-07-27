@@ -6,14 +6,35 @@
     <title>Universal Map</title>
   </head>
   <body>
-    <div id="app">
-      <aside id="panel-left"></aside>
-      <div id="map"></div>
-      <aside id="panel-right">
-        <div id="panel-right-filters"></div>
-        <div id="panel-right-actions"></div>
+    <div id="app" class="map-app">
+      <div id="map" class="map"></div>
+
+      <div id="search-overlay"></div>
+
+      <button type="button" id="panel-right-toggle" class="panel-toggle-btn" aria-controls="panel-right" aria-expanded="false"></button>
+      <div id="panel-overlay" class="panel-overlay"></div>
+
+      <aside id="panel-right" class="panel panel--right" aria-hidden="true">
+        <header class="panel__header">
+          <div class="panel__title" data-role="filters-title"></div>
+          <button type="button" id="panel-right-close" class="panel__toggle" aria-label=""></button>
+        </header>
+        <div class="panel__content">
+          <div id="panel-right-filters"></div>
+          <div class="panel__section-separator"></div>
+          <div id="panel-right-actions"></div>
+        </div>
       </aside>
-      <div id="calendar-bar"></div>
+
+      <div id="layer-control" class="layer-control-map"></div>
+
+      <div id="selection-card"></div>
+
+      <div id="calendar-bar" class="calendar-bar"></div>
+
+      <div class="map-footer-legend">
+        <div class="data-attribution" id="map-attribution"></div>
+      </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

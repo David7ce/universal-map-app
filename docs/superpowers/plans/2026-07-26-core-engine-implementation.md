@@ -17,7 +17,7 @@
 - No hardcoded taxonomy/region field names anywhere in `src/engine/` — all field mapping comes from layer manifests.
 - Plugins read `PluginContext` but never mutate `AppState` directly; only `src/engine/state/store.ts`'s `set()` mutates state.
 - All user-facing UI strings are looked up via `t(key, strings)` from a per-app `strings.json` — no hardcoded display text in `src/ui/`.
-- Dependencies stay minimal: `leaflet`, `leaflet.markercluster`, `@turf/boolean-point-in-polygon` at runtime; `typescript`, `vite`, `vitest`, `@types/leaflet`, `@types/geojson`, `@types/node` (needed for `vite.config.ts`'s build-time Node API usage, e.g. `node:fs`, `node:path`, `process`) at dev-time. Do not add other packages without updating this plan.
+- Dependencies stay minimal: `leaflet`, `leaflet.markercluster`, `leaflet.heat` (heatmap layer `kind`, added post-v1 per `ROADMAP.md`), `@turf/boolean-point-in-polygon` at runtime; `typescript`, `vite`, `vitest`, `@types/leaflet`, `@types/geojson`, `@types/leaflet.heat`, `@types/node` (needed for `vite.config.ts`'s build-time Node API usage, e.g. `node:fs`, `node:path`, `process`) at dev-time. Do not add other packages without updating this plan.
 - `fetchFeatures(source, bounds?, dateRange?)` keeps its 3-argument shape even though v1 loaders ignore `bounds`/`dateRange` — this is the documented seam for a future server-backed loader (spec Section 9).
 
 ---

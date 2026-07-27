@@ -9,6 +9,11 @@ export interface TaxonomyFieldDef {
   hierarchical?: boolean;
 }
 
+export interface InfoFieldDef {
+  field: string;
+  label: string;
+}
+
 export interface LayerManifest {
   id: string;
   title: string;
@@ -18,7 +23,7 @@ export interface LayerManifest {
   taxonomy?: TaxonomyFieldDef[];
   regionRole?: 'boundary' | null;
   style?: Record<string, unknown>;
-  panel?: { showInSearch?: boolean; showInInfo?: boolean };
+  panel?: { showInSearch?: boolean; showInInfo?: boolean; infoFields?: InfoFieldDef[] };
 }
 
 const VALID_KINDS: LayerKind[] = ['point', 'line', 'polygon', 'boundary', 'heatmap'];

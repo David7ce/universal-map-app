@@ -9,9 +9,16 @@
       "type": "raster-tile",
       "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
       "attribution": "© OpenStreetMap contributors"
+    },
+    {
+      "id": "satellite",
+      "title": "Satellite",
+      "type": "raster-tile",
+      "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      "attribution": "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community"
     }
   ],
-  "dataLayers": ["layers/poi.layer.json", "layers/regions.layer.json"],
+  "dataLayers": ["layers/poi.layer.json", "layers/regions.layer.json", "layers/heatmap.layer.json"],
   "calendar": { "default": "today", "min": "2015-01-01", "max": "2030-12-31" },
   "strings": "strings.json",
   "plugins": {

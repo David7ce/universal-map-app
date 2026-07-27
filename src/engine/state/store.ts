@@ -28,5 +28,11 @@ export interface AppState {
   activeFilters: Record<string, Set<string>>;
   selectedFeatureId: string | null;
   activeBaseLayerId: string;
-  panels: { left: 'closed' | 'search' | 'info'; right: 'open' | 'closed' };
+  // `left` is the search overlay (button + panel), independent of whether a
+  // feature is selected — selection is shown in a separate bottom sheet, not
+  // "inside" this panel. `right` is the filters panel.
+  panels: { left: 'closed' | 'open'; right: 'open' | 'closed' };
+  // Layer ids currently toggled off via the layer control's "map details"
+  // group (e.g. a heatmap overlay) — hidden from rendering until re-enabled.
+  hiddenLayerIds: Set<string>;
 }

@@ -7,5 +7,9 @@
   "taxonomy": [{ "id": "categoria", "label": "Categoría", "field": "properties.categoria" }],
   "regionRole": null,
   "style": { "cluster": true, "icon": "marker" },
-  "panel": { "showInSearch": true, "showInInfo": true }
+  "panel": {
+    "showInSearch": true,
+    "showInInfo": true,
+    "infoFields": [{ "field": "properties.categoria", "label": "Categoría" }]
+  }
 }

@@ -1,6 +1,6 @@
 # Universal Map-Time Engine
 
-A static, browser-only map (OpenStreetMap + Leaflet) with a Gregorian calendar as an equal first-class dimension. See `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the full design.
+A static, browser-only map (OpenStreetMap + Leaflet) with a Gregorian calendar as an equal first-class dimension. See `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the full design, and `docs/json-reference.md` for a field-by-field reference of `app-manifest.json`, `layer.json`, `strings.json`, and the GeoJSON+`temporal` data format.
 
 ## Run locally
 
@@ -23,6 +23,10 @@ Open the printed local URL. No backend, no paid services — `npm run build` pro
 
 No engine code under `src/engine/` needs to change to add a new app instance.
 
+## Isochrone (travel-time) layers
+
+There's no dedicated `kind` for isochrones — precompute the polygons with whatever routing tool fits your data (routing engines/APIs, GIS tools, etc.) and ship them as a normal `kind: "polygon"` layer, exactly like `apps/demo/layers/regions.layer.json`. Each isochrone gets `properties.temporal` if it should only apply on certain dates, and any `taxonomy` field (e.g. travel time bucket) like any other layer. This needs no engine code — the same reasoning that makes administrative regions "just temporal geometry" applies here. A layer that computes isochrones live (e.g. on click) would need an external routing service, which is out of scope for this static, no-backend engine.
+
 ## Known v1 deviations from the design spec
 
-The calendar bar (`src/ui/panels/CalendarBar.ts`) currently provides only single-date stepping — a previous/next day button plus a native date picker — not the range slider (bounded by `calendar.min`/`calendar.max`) and day/week/month/year granularity toggle described in the design spec's Section 6. This is a UI-completeness gap only: the underlying temporal data model (instant/range/recurrence per feature, `isActiveOn`) is fully implemented and unaffected, so adding the slider/toggle later is additive UI work, not an engine change.
+`CalendarBar.ts` now has a day/week/month/year granularity selector plus a range slider bounded by `calendar.min`/`calendar.max` (previously only a prev/next day stepper + native date picker), covering the design spec's Section 6 gap. Not yet done: the mobile-first visual redesign of the search box and filter list, and multi-calendar / multi-projection support — all tracked in `ROADMAP.md`.

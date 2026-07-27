@@ -1,0 +1,10 @@
+{
+  "id": "poi-heatmap",
+  "title": "POI Density",
+  "kind": "heatmap",
+  "source": { "type": "geojson", "url": "/apps/demo/data/poi.geojson" },
+  "temporal": { "defaultVisibility": "time-filtered" },
+  "regionRole": null,
+  "style": {},
+  "panel": { "showInSearch": false, "showInInfo": false }
+}

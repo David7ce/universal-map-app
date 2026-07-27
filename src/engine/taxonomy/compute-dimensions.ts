@@ -13,7 +13,7 @@ export interface LoadedLayer {
   features: GeoFeature[];
 }
 
-function readField(feature: GeoFeature, path: string): string[] {
+export function readField(feature: GeoFeature, path: string): string[] {
   const parts = path.split('.');
   let value: unknown = feature;
   for (const part of parts) {
