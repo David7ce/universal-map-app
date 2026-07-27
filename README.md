@@ -22,3 +22,7 @@ Open the printed local URL. No backend, no paid services — `npm run build` pro
 5. Point `src/main.ts`'s `fetch('/apps/demo/app-manifest.json')` call (and the two other `/apps/demo/` paths) at your new app id, or introduce a build-time/query-param switch — multi-app routing is intentionally out of scope for v1 (see the design spec's non-goals).
 
 No engine code under `src/engine/` needs to change to add a new app instance.
+
+## Known v1 deviations from the design spec
+
+The calendar bar (`src/ui/panels/CalendarBar.ts`) currently provides only single-date stepping — a previous/next day button plus a native date picker — not the range slider (bounded by `calendar.min`/`calendar.max`) and day/week/month/year granularity toggle described in the design spec's Section 6. This is a UI-completeness gap only: the underlying temporal data model (instant/range/recurrence per feature, `isActiveOn`) is fully implemented and unaffected, so adding the slider/toggle later is additive UI work, not an engine change.
