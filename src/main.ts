@@ -24,11 +24,11 @@ async function bootstrap(): Promise<void> {
   const appManifestResponse = await fetch('/apps/demo/app-manifest.json');
   const appManifest = validateAppManifest(await appManifestResponse.json());
 
-  if (appManifest.plugins?.participate) {
-    registerParticipatePlugin(appManifest.plugins.participate);
-  }
-
   const strings = await loadStrings(appManifest.strings ? `/apps/demo/${appManifest.strings}` : undefined);
+
+  if (appManifest.plugins?.participate) {
+    registerParticipatePlugin(appManifest.plugins.participate, strings);
+  }
 
   const loadedLayers: LoadedLayer[] = [];
   for (const layerPath of appManifest.dataLayers) {

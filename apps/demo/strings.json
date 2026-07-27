@@ -1,6 +1,7 @@
 {
   "search.placeholder": "Search...",
   "search.untitledFeature": "Untitled",
+  "participate.button": "Participate",
   "temporalStatus.alwaysActive": "Always active",
   "temporalStatus.activeOn": "Active on {date}",
   "temporalStatus.occurredOn": "Occurred on {date}",
