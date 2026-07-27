@@ -1,6 +1,6 @@
 # Universal Map-Time Engine
 
-A static, browser-only map (OpenStreetMap + Leaflet) with a Gregorian calendar as an equal first-class dimension. See `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the full design, and `docs/json-reference.md` for a field-by-field reference of `app-manifest.json`, `layer.json`, `strings.json`, and the GeoJSON+`temporal` data format.
+A static, browser-only map (OpenStreetMap + Leaflet) with a Gregorian calendar as an equal first-class dimension. See `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the full design, `docs/json-reference.md` for a field-by-field reference of `app-manifest.json`, `layer.json`, `strings.json`, and the GeoJSON+`temporal` data format, `CHANGELOG.md` for what's shipped beyond v1, and `ROADMAP.md` for what's next.
 
 ## Run locally
 
@@ -29,4 +29,4 @@ There's no dedicated `kind` for isochrones — precompute the polygons with what
 
 ## Known v1 deviations from the design spec
 
-`CalendarBar.ts` now has a day/week/month/year granularity selector plus a range slider bounded by `calendar.min`/`calendar.max` (previously only a prev/next day stepper + native date picker), covering the design spec's Section 6 gap. Not yet done: the mobile-first visual redesign of the search box and filter list, and multi-calendar / multi-projection support — all tracked in `ROADMAP.md`.
+`CalendarBar.ts` now has a day/week/month/year granularity selector plus a range slider bounded by `calendar.min`/`calendar.max` (previously only a prev/next day stepper + native date picker), covering the design spec's Section 6 gap. Not yet done: multi-calendar / multi-projection support — tracked in `ROADMAP.md`.
