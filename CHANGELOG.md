@@ -48,3 +48,7 @@ Documentado en `README.md` ("Isochrone (travel-time) layers"): polígonos isocr�
 ## Barra de calendario: granularidad + slider
 
 `CalendarBar.ts` tiene selector de granularidad (día/semana/mes/año, controla el paso de los botones ← →) y una barra deslizante (`<input type="range">`) acotada por `calendar.min`/`calendar.max`.
+
+## Calendario multi-sistema (display): gregoriano, juliano, islámico, hebreo
+
+`app-manifest.json` acepta un `calendar.system` opcional (`"gregorian"` por defecto, o `"julian" | "islamic" | "hebrew"`). El almacenamiento y todo el cómputo temporal (`isActiveOn`, RRULE, `calendar.min`/`max`/`default`) siguen siendo 100% gregoriano/ISO 8601 — la conversión ocurre solo en la capa de presentación (`src/engine/time/calendar-conversion.ts`), nunca hacia el store. `islamic`/`hebrew` usan `@js-temporal/polyfill` (dependencia nueva); `julian` no está en el registro de calendarios Unicode/ICU que usan Temporal/Intl, así que se implementó a mano (algoritmo de número de día juliano de Fliegel & Van Flandern, `src/engine/time/julian-calendar.ts`). El selector de fecha nativo (`<input type="date">`) sigue siendo siempre gregoriano — no hay widget de calendario propio (ver "Known v1 deviations" en `README.md`).

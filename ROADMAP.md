@@ -8,11 +8,7 @@ Trabajo futuro, nada de esto está implementado. Ver `CHANGELOG.md` para lo ya h
 
 ## Futuro (necesita diseño dedicado antes de tocar código)
 
-Las dos siguientes exigen una decisión de arquitectura real (qué librería de conversión de calendarios, o qué CRS/proyecciones concretas soportar) sin un segundo caso de uso real que la ejerza todavía — construir la abstracción ahora sería exactamente el tipo de "diseñar para un requisito hipotético" que este proyecto evita deliberadamente en el resto del código (ver Global Constraints del plan).
-
-### Multi-calendario
-
-Hoy todo `src/engine/time/` asume calendario gregoriano (parseo ISO 8601, `Date` de JS). Soportar otros sistemas (juliano, islámico, hebreo, etc.) es un cambio de arquitectura, no un ajuste de UI: requiere una capa de conversión de fechas entre el sistema de almacenamiento (gregoriano/ISO, para no romper `isActiveOn`/RRULE) y el sistema de visualización elegido por cada app, más el `strings.json` de cada app para nombres de meses/días si aplica.
+La siguiente exige una decisión de arquitectura real (qué CRS/proyecciones concretas soportar) sin un segundo caso de uso real que la ejerza todavía — construir la abstracción ahora sería exactamente el tipo de "diseñar para un requisito hipotético" que este proyecto evita deliberadamente en el resto del código (ver Global Constraints del plan).
 
 ### Multi-proyección
 
