@@ -64,6 +64,71 @@ export function calendarSystemLabel(dateIso: string, system: CalendarSystem): st
   return system === 'gregorian' ? '' : formatCalendarDate(dateIso, system);
 }
 
+function formatDateForInput(iso: string): string {
+  const date = new Date(`${iso}T00:00:00Z`);
+  return `${String(date.getUTCDate()).padStart(2, '0')}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${date.getUTCFullYear()}`;
+}
+
+export function parseDateInputValue(value: string): string | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+
+  const isoMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoMatch) {
+    const [, yearText, monthText, dayText] = isoMatch;
+    const year = Number(yearText);
+    const month = Number(monthText);
+    const day = Number(dayText);
+    const date = new Date(Date.UTC(year, month - 1, day));
+    if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
+      return null;
+    }
+    return date.toISOString().slice(0, 10);
+  }
+
+  const numericMatch = trimmed.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2,4})$/);
+  if (!numericMatch) return null;
+
+  const [, dayText, monthText, yearText] = numericMatch;
+  const day = Number(dayText);
+  const month = Number(monthText);
+  let year = Number(yearText);
+
+  if (yearText.length === 2) {
+    year = year < 70 ? 2000 + year : 1900 + year;
+  }
+
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
+    return null;
+  }
+  return date.toISOString().slice(0, 10);
+}
+
+function clampDateToRange(iso: string, min: string, max: string): string {
+  const startOffset = daysBetween(min, iso);
+  const endOffset = daysBetween(iso, max);
+  if (startOffset < 0) return min;
+  if (endOffset < 0) return max;
+  return iso;
+}
+
+export function stepDatePart(currentIso: string, part: 'day' | 'month' | 'year', direction: 1 | -1, min: string, max: string): string {
+  const date = new Date(`${currentIso}T00:00:00Z`);
+  switch (part) {
+    case 'day':
+      date.setUTCDate(date.getUTCDate() + direction);
+      break;
+    case 'month':
+      date.setUTCMonth(date.getUTCMonth() + direction);
+      break;
+    case 'year':
+      date.setUTCFullYear(date.getUTCFullYear() + direction);
+      break;
+  }
+  return clampDateToRange(date.toISOString().slice(0, 10), min, max);
+}
+
 export function mountCalendarBar(
   container: HTMLElement,
   store: Store<AppState>,
@@ -72,23 +137,36 @@ export function mountCalendarBar(
 ): void {
   const totalDays = Math.max(daysBetween(config.min, config.max), 1);
 
-  const visibleGranularities = getVisibleGranularityOptions(config.system ?? 'gregorian');
-
   container.innerHTML = `
-    <button type="button" data-action="prev">&larr;</button>
-    <input type="date" data-role="date-input" min="${config.min}" max="${config.max}" />
-    <span class="calendar-bar__system-label" data-role="system-label"></span>
-    <button type="button" data-action="next">&rarr;</button>
-    <select data-role="granularity">
-      ${visibleGranularities
-        .map((granularity) => `<option value="${granularity}">${t(`calendar.granularity.${granularity}`, strings)}</option>`)
-        .join('')}
-    </select>
+    <div class="calendar-bar__date-group">
+      <input type="text" data-role="date-input" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="${t('calendar.inputPlaceholder', strings)}" />
+      <span class="calendar-bar__system-label" data-role="system-label"></span>
+    </div>
+    <div class="calendar-bar__part-controls">
+      <span class="calendar-bar__part-label">Day</span>
+      <div class="calendar-bar__part-buttons">
+        <button type="button" data-action="day-up" aria-label="Increase day">▲</button>
+        <button type="button" data-action="day-down" aria-label="Decrease day">▼</button>
+      </div>
+    </div>
+    <div class="calendar-bar__part-controls">
+      <span class="calendar-bar__part-label">Month</span>
+      <div class="calendar-bar__part-buttons">
+        <button type="button" data-action="month-up" aria-label="Increase month">▲</button>
+        <button type="button" data-action="month-down" aria-label="Decrease month">▼</button>
+      </div>
+    </div>
+    <div class="calendar-bar__part-controls">
+      <span class="calendar-bar__part-label">Year</span>
+      <div class="calendar-bar__part-buttons">
+        <button type="button" data-action="year-up" aria-label="Increase year">▲</button>
+        <button type="button" data-action="year-down" aria-label="Decrease year">▼</button>
+      </div>
+    </div>
     <input type="range" data-role="date-slider" min="0" max="${totalDays}" step="1" />
   `;
 
   const dateInput = container.querySelector<HTMLInputElement>('[data-role="date-input"]')!;
-  const granularitySelect = container.querySelector<HTMLSelectElement>('[data-role="granularity"]')!;
   const dateSlider = container.querySelector<HTMLInputElement>('[data-role="date-slider"]')!;
   const systemLabel = container.querySelector<HTMLElement>('[data-role="system-label"]')!;
 
@@ -100,25 +178,54 @@ export function mountCalendarBar(
     systemLabel.textContent = calendarSystemLabel(dateIso, config.system ?? 'gregorian');
   }
 
-  dateInput.value = store.get().selectedDate;
+  function commitDateInput(): void {
+    const parsed = parseDateInputValue(dateInput.value);
+    if (!parsed) {
+      dateInput.value = formatDateForInput(store.get().selectedDate);
+      return;
+    }
+    store.set({ selectedDate: clampDateToRange(parsed, config.min, config.max) });
+  }
+
+  dateInput.value = formatDateForInput(store.get().selectedDate);
   dateSlider.value = sliderOffsetFor(store.get().selectedDate);
   renderSystemLabel(store.get().selectedDate);
 
-  function stepDate(direction: 1 | -1): void {
-    const system = config.system ?? 'gregorian';
-    const granularity = granularitySelect.value as Granularity;
-    store.set({ selectedDate: nextSelectedDate(store.get().selectedDate, granularity, direction, system) });
-  }
+  container.querySelector('[data-action="day-up"]')!.addEventListener('click', () => {
+    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'day', 1, config.min, config.max) });
+  });
+  container.querySelector('[data-action="day-down"]')!.addEventListener('click', () => {
+    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'day', -1, config.min, config.max) });
+  });
+  container.querySelector('[data-action="month-up"]')!.addEventListener('click', () => {
+    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'month', 1, config.min, config.max) });
+  });
+  container.querySelector('[data-action="month-down"]')!.addEventListener('click', () => {
+    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'month', -1, config.min, config.max) });
+  });
+  container.querySelector('[data-action="year-up"]')!.addEventListener('click', () => {
+    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'year', 1, config.min, config.max) });
+  });
+  container.querySelector('[data-action="year-down"]')!.addEventListener('click', () => {
+    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'year', -1, config.min, config.max) });
+  });
 
-  container.querySelector('[data-action="prev"]')!.addEventListener('click', () => stepDate(-1));
-  container.querySelector('[data-action="next"]')!.addEventListener('click', () => stepDate(1));
-  dateInput.addEventListener('change', () => store.set({ selectedDate: dateInput.value }));
+  dateInput.addEventListener('change', commitDateInput);
+  dateInput.addEventListener('blur', commitDateInput);
+  dateInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      commitDateInput();
+      dateInput.blur();
+    }
+  });
   dateSlider.addEventListener('input', () => {
     store.set({ selectedDate: addDays(config.min, Number(dateSlider.value)) });
   });
 
   store.subscribe((state) => {
-    if (dateInput.value !== state.selectedDate) dateInput.value = state.selectedDate;
+    const nextValue = formatDateForInput(state.selectedDate);
+    if (dateInput.value !== nextValue) dateInput.value = nextValue;
     const offset = sliderOffsetFor(state.selectedDate);
     if (dateSlider.value !== offset) dateSlider.value = offset;
     renderSystemLabel(state.selectedDate);

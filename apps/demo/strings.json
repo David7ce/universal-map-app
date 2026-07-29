@@ -11,6 +11,7 @@
   "layerControl.trigger": "Map layers",
   "layerControl.mapDetails": "Map details",
   "layerControl.baseLayers": "Base layers",
+  "calendar.inputPlaceholder": "DD-MM-YYYY",
   "calendar.granularity.day": "Day",
   "calendar.granularity.week": "Week",
   "calendar.granularity.month": "Month",

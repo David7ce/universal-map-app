@@ -5,7 +5,7 @@
   "baseLayers": [
     {
       "id": "osm",
-      "title": "OpenStreetMap",
+      "title": "Map",
       "type": "raster-tile",
       "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
       "attribution": "© OpenStreetMap contributors"

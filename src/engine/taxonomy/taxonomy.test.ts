@@ -10,7 +10,7 @@ function layer(): LoadedLayer {
     title: 'POI',
     kind: 'point',
     source: { type: 'geojson', url: '/x' },
-    taxonomy: [{ id: 'categoria', label: 'Categoría', field: 'properties.categoria' }],
+    taxonomy: [{ id: 'categoria', label: 'Category', field: 'properties.categoria' }],
   };
   return {
     manifest,
@@ -31,7 +31,7 @@ describe('computeTaxonomyDimensions', () => {
   it('counts values per dimension for features active on the given date', () => {
     const dims = computeTaxonomyDimensions([layer()], new Date('2026-01-01T00:00:00Z'));
     expect(dims).toEqual([
-      { id: 'categoria', label: 'Categoría', values: [{ value: 'shop', count: 2 }] },
+      { id: 'categoria', label: 'Category', values: [{ value: 'shop', count: 2 }] },
     ]);
   });
 
@@ -75,8 +75,8 @@ describe('featureMatchesFilters', () => {
     kind: 'point',
     source: { type: 'geojson', url: '/x' },
     taxonomy: [
-      { id: 'categoria', label: 'Categoría', field: 'properties.categoria' },
-      { id: 'region', label: 'Región', field: 'properties.region' },
+      { id: 'categoria', label: 'Category', field: 'properties.categoria' },
+      { id: 'region', label: 'Region', field: 'properties.region' },
     ],
   };
 

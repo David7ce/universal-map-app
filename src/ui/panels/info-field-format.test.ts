@@ -20,8 +20,8 @@ describe('formatInfoFieldHtml', () => {
   });
 
   it('renders text type as a labeled paragraph, joining multiple values', () => {
-    expect(formatInfoFieldHtml({ field: 'x', label: 'Categoría' }, ['a', 'b'])).toBe(
-      '<p><strong>Categoría:</strong> a, b</p>'
+    expect(formatInfoFieldHtml({ field: 'x', label: 'Category' }, ['a', 'b'])).toBe(
+      '<p><strong>Category:</strong> a, b</p>'
     );
   });
 

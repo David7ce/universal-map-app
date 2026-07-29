@@ -60,7 +60,7 @@ Two conventions are layered on top of plain GeoJSON, both **optional per feature
 
 ### 4.2 Taxonomy and region
 
-There is no reserved property name for category or region — real-world datasets use inconsistent field names ("categoria", "tipo", "sector", etc.). Instead, the **layer manifest** declares which property maps to which filter dimension (Section 5.1).
+There is no reserved property name for category or region — real-world datasets use inconsistent field names ("category", "tipo", "sector", etc.). Instead, the **layer manifest** declares which property maps to which filter dimension (Section 5.1).
 
 Region membership can be handled two ways, both supported:
 1. **Explicit**: the feature already carries a region-identifying property, declared as a taxonomy field like any other.
@@ -80,7 +80,7 @@ Describes how the engine should treat one data layer.
   "source": { "type": "geojson", "url": "data/comercios.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },
   "taxonomy": [
-    { "id": "categoria", "label": "Categoría", "field": "properties.categoria", "hierarchical": true }
+    { "id": "category", "label": "Category", "field": "properties.category", "hierarchical": true }
   ],
   "regionRole": null,
   "style": { "cluster": true, "icon": "shop" },

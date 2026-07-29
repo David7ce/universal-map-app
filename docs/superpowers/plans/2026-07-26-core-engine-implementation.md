@@ -1088,7 +1088,7 @@ function layer(): LoadedLayer {
     title: 'POI',
     kind: 'point',
     source: { type: 'geojson', url: '/x' },
-    taxonomy: [{ id: 'categoria', label: 'Categoría', field: 'properties.categoria' }],
+    taxonomy: [{ id: 'categoria', label: 'Category', field: 'properties.categoria' }],
   };
   return {
     manifest,
@@ -1109,7 +1109,7 @@ describe('computeTaxonomyDimensions', () => {
   it('counts values per dimension for features active on the given date', () => {
     const dims = computeTaxonomyDimensions([layer()], new Date('2026-01-01T00:00:00Z'));
     expect(dims).toEqual([
-      { id: 'categoria', label: 'Categoría', values: [{ value: 'shop', count: 2 }] },
+      { id: 'categoria', label: 'Category', values: [{ value: 'shop', count: 2 }] },
     ]);
   });
 
@@ -2227,7 +2227,7 @@ git commit -m "feat: add panel DOM wiring (search/info, filters, calendar bar)"
   "kind": "point",
   "source": { "type": "geojson", "url": "/apps/demo/data/poi.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },
-  "taxonomy": [{ "id": "categoria", "label": "Categoría", "field": "properties.categoria" }],
+  "taxonomy": [{ "id": "categoria", "label": "Category", "field": "properties.categoria" }],
   "regionRole": null,
   "style": { "cluster": true, "icon": "marker" },
   "panel": { "showInSearch": true, "showInInfo": true }
@@ -2243,7 +2243,7 @@ git commit -m "feat: add panel DOM wiring (search/info, filters, calendar bar)"
   "kind": "polygon",
   "source": { "type": "geojson", "url": "/apps/demo/data/regions.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },
-  "taxonomy": [{ "id": "region", "label": "Región", "field": "properties.nombre" }],
+  "taxonomy": [{ "id": "region", "label": "Region", "field": "properties.nombre" }],
   "regionRole": "boundary",
   "style": {},
   "panel": { "showInSearch": false, "showInInfo": true }
@@ -2361,10 +2361,10 @@ Run: `npm run dev`, open the local URL in a browser.
 
 Expected:
 - Map loads centered on Tenerife with OSM tiles, a cluster near the center (5 POI markers, clustered), and one region polygon outline.
-- Right panel shows two filter sections: "Categoría" (administracion, evento, comercio, mercado — counts reflect today's date) and "Región" (one region, matching whichever boundary is valid today).
+- Right panel shows two filter sections: "Category" (administracion, evento, comercio, mercado — counts reflect today's date) and "Region" (one region, matching whichever boundary is valid today).
 - Left panel search box: typing "ayuntamiento" shows one result; clicking it switches to the info view showing "Always active".
-- Calendar bar: moving the date to `2026-03-14` should make "Feria de Marzo" count appear in the Categoría "evento" section; moving before `2018-01-01` or after `2023-06-30` should make "Tienda Antigua" disappear from "comercio"; moving to any Sunday should keep "Mercadillo Dominical" counted, any other weekday should not.
-- Setting the date to `2022-06-01` then `2023-06-01` should flip which region name appears in "Región" — this is the concrete proof of the temporal region-boundary behavior.
+- Calendar bar: moving the date to `2026-03-14` should make "Feria de Marzo" count appear in the Category "evento" section; moving before `2018-01-01` or after `2023-06-30` should make "Tienda Antigua" disappear from "comercio"; moving to any Sunday should keep "Mercadillo Dominical" counted, any other weekday should not.
+- Setting the date to `2022-06-01` then `2023-06-01` should flip which region name appears in "Region" — this is the concrete proof of the temporal region-boundary behavior.
 - No console errors.
 
 - [ ] **Step 9: Commit**

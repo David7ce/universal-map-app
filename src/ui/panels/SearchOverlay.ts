@@ -23,10 +23,10 @@ export function mountSearchOverlay(
           <div class="search-field">
             <span class="search-submit">${icons.search}</span>
             <input type="search" data-role="search-input" placeholder="${t('search.placeholder', strings)}" />
-            <button type="button" class="search-clear" data-action="clear" aria-label="${t('search.clearLabel', strings)}">${icons.close}</button>
+            <button type="button" class="search-clear" data-action="clear" aria-label="${t('search.clearLabel', strings)}" hidden>${icons.close}</button>
           </div>
         </div>
-        <div class="search-results" data-role="results"></div>
+        <div class="search-results" data-role="results" hidden></div>
       </div>
     </section>
   `;
@@ -58,9 +58,22 @@ export function mountSearchOverlay(
 
   let matches: GeoFeature[] = [];
 
+  function syncClearButton(): void {
+    clearButton.hidden = searchInput.value.trim() === '';
+  }
+
   function runSearch(): void {
     const query = searchInput.value.trim();
-    matches = query ? searchFeatures(searchableFeatures(), query, ['nombre', 'title']) : searchableFeatures();
+    syncClearButton();
+    if (!query) {
+      matches = [];
+      resultsEl.innerHTML = '';
+      resultsEl.hidden = true;
+      return;
+    }
+
+    matches = searchFeatures(searchableFeatures(), query, ['nombre', 'title']);
+    resultsEl.hidden = false;
     resultsEl.innerHTML = matches.length
       ? matches
           .map(
@@ -74,6 +87,7 @@ export function mountSearchOverlay(
       button.addEventListener('click', () => {
         const feature = matches[Number(button.dataset.resultIndex)];
         searchInput.value = '';
+        syncClearButton();
         store.set({
           selectedFeatureId: String(feature.id ?? ''),
           panels: { ...store.get().panels, left: 'closed' },
