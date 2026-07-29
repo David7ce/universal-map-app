@@ -43,7 +43,7 @@ Three pure functions, all taking a Gregorian ISO date string and a `CalendarSyst
 
 - `toCalendarParts(isoDate, system): { year: number; month: number; day: number; monthName: string }` — the date's year/month/day and month name in the target system.
 - `addCalendarUnit(isoDate, system, unit: 'month' | 'year', delta: number): string` — adds `delta` units *in the target calendar system* (e.g. one Islamic month, which is not a fixed number of Gregorian days) and returns the result as a Gregorian ISO string.
-- `formatCalendarDate(isoDate, system, locale): string` — a human-readable label in the target system (e.g. `"15 Muharram 1447 AH"`). `locale` defaults to `navigator.language` — the project has no locale-switcher concept (Section 8 of the core design spec is explicit: strings-file seam only, no i18n runtime), so this reuses whatever the browser already reports rather than adding a new manifest field.
+- `formatCalendarDate(isoDate, system, locale): string` — a human-readable label in the target system (e.g. `"15 Muharram 1447 AH"`). `locale` defaults to the fixed string `'en'`. Reusing `navigator.language` was considered and rejected: it made month-name formatting silently depend on the machine's OS locale (verified during planning — Node's own `navigator.language` differs per machine/CI runner), which would make tests non-deterministic across environments. A fixed default is also the better fit for this project specifically: Section 8 of the core design spec already commits to no locale-switcher/i18n runtime, only the strings-file seam — so month names follow that same "one fixed default, no per-user state" rule rather than introducing a second, inconsistent locale mechanism.
 
 Implementation split by system:
 
