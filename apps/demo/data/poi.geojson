@@ -4,7 +4,12 @@
     {
       "type": "Feature",
       "id": "poi-1",
-      "properties": { "nombre": "Ayuntamiento", "categoria": "administracion" },
+      "properties": {
+        "nombre": "Ayuntamiento",
+        "categoria": "administracion",
+        "web": "https://example.org/ayuntamiento",
+        "foto": "https://picsum.photos/seed/ayuntamiento/320/180"
+      },
       "geometry": { "type": "Point", "coordinates": [-16.62, 28.29] }
     },
     {

@@ -4,8 +4,6 @@ Trabajo futuro, nada de esto está implementado. Ver `CHANGELOG.md` para lo ya h
 
 ## Pendiente (chico, sin bloqueo de diseño)
 
-- **`calendar.default` no se usa.** `main.ts` siempre siembra la fecha inicial con `new Date()`, ignora el valor del manifiesto.
-- **Info del lugar seleccionado:** candidatos para ampliar `SelectionCard.ts` más allá de `panel.infoFields` — coordenadas, enlace/imagen si el feature lo trae en `properties`.
 - **Isocrónico dinámico:** calcular la isócrona al momento (p.ej. al hacer click) requiere un servicio de rutas externo, lo cual choca con el non-goal "no backend, no paid services" del spec (Sección 11) salvo que se acepte explícitamente como excepción.
 
 ## Futuro (necesita diseño dedicado antes de tocar código)

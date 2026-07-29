@@ -587,6 +587,7 @@ body {
 .map-selection-card__content { overflow-y: auto; padding: 0.75rem 0.9rem; }
 .map-selection-card__content p { margin: 0.35rem 0; color: var(--color-text-light); }
 .map-selection-card__content p strong { color: var(--color-text); }
+.map-selection-card__image { max-width: 100%; border-radius: var(--radius-md); display: block; }
 
 @media (min-width: 48rem) {
   .map-selection-card {

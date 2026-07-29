@@ -8,6 +8,7 @@ import { findContainingRegions } from '../../engine/region/spatial-join';
 import { t } from '../strings';
 import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
+import { formatCoordinates, formatInfoFieldHtml } from './info-field-format';
 
 export function mountSelectionCard(
   container: HTMLElement,
@@ -56,28 +57,26 @@ export function mountSelectionCard(
     const date = new Date(`${state.selectedDate}T00:00:00Z`);
 
     let regionLine = '';
+    let coordinatesLine = '';
     if (feature.geometry.type === 'Point') {
-      const regions = findContainingRegions(feature.geometry.coordinates as [number, number], layers, date);
+      const coords = feature.geometry.coordinates as [number, number];
+      const regions = findContainingRegions(coords, layers, date);
       if (regions.length > 0) {
         const regionNames = regions.map((region) => escapeHtml(featureLabel(region))).join(', ');
         regionLine = `<p>${t('info.containingRegion', strings, { regions: regionNames })}</p>`;
       }
+      coordinatesLine = `<p>${t('info.coordinates', strings, formatCoordinates(coords))}</p>`;
     }
 
     // Extra properties an app author chose to surface via the layer
     // manifest's `panel.infoFields` — field names always come from the
     // manifest, never hardcoded here (same pattern as `taxonomy`).
     const infoFieldLines = (manifest.panel?.infoFields ?? [])
-      .map((def) => ({ def, values: readField(feature, def.field) }))
-      .filter(({ values }) => values.length > 0)
-      .map(
-        ({ def, values }) =>
-          `<p><strong>${escapeHtml(def.label)}:</strong> ${escapeHtml(values.join(', '))}</p>`
-      )
+      .map((def) => formatInfoFieldHtml(def, readField(feature, def.field)))
       .join('');
 
     titleEl.textContent = featureLabel(feature);
-    contentEl.innerHTML = `<p>${describeTemporalStatus(feature, date, strings)}</p>${regionLine}${infoFieldLines}`;
+    contentEl.innerHTML = `<p>${describeTemporalStatus(feature, date, strings)}</p>${regionLine}${coordinatesLine}${infoFieldLines}`;
     container.classList.add('is-open');
   }
   render();

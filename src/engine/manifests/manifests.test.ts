@@ -48,4 +48,14 @@ describe('validateAppManifest', () => {
   it('rejects a missing calendar.min', () => {
     expect(() => validateAppManifest({ ...valid, calendar: { max: '2030-12-31' } })).toThrow(/calendar/);
   });
+
+  it('accepts an ISO date calendar.default', () => {
+    const withDefault = { ...valid, calendar: { ...valid.calendar, default: '2020-06-15' } };
+    expect(validateAppManifest(withDefault)).toEqual(withDefault);
+  });
+
+  it('rejects an invalid calendar.default', () => {
+    const invalid = { ...valid, calendar: { ...valid.calendar, default: 'yesterday' } };
+    expect(() => validateAppManifest(invalid)).toThrow(/calendar\.default/);
+  });
 });

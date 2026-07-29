@@ -47,7 +47,10 @@ async function bootstrap(): Promise<void> {
   const detailLayers = loadedLayers.filter((l) => l.manifest.kind === 'heatmap');
 
   const store = createStore<AppState>({
-    selectedDate: new Date().toISOString().slice(0, 10),
+    selectedDate:
+      appManifest.calendar.default === 'today'
+        ? new Date().toISOString().slice(0, 10)
+        : appManifest.calendar.default,
     activeFilters: {},
     selectedFeatureId: null,
     activeBaseLayerId: appManifest.baseLayers[0].id,

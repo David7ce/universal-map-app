@@ -17,6 +17,7 @@
   "calendar.granularity.year": "Year",
   "participate.button": "Participate",
   "info.containingRegion": "Region: {regions}",
+  "info.coordinates": "Coordinates: {lat}, {lng}",
   "temporalStatus.alwaysActive": "Always active",
   "temporalStatus.activeOn": "Active on {date}",
   "temporalStatus.occurredOn": "Occurred on {date}",

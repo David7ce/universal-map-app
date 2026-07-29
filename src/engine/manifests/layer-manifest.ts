@@ -12,6 +12,7 @@ export interface TaxonomyFieldDef {
 export interface InfoFieldDef {
   field: string;
   label: string;
+  type?: 'text' | 'link' | 'image';
 }
 
 export interface LayerManifest {

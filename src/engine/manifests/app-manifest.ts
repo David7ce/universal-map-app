@@ -42,6 +42,9 @@ export function validateAppManifest(json: unknown): AppManifest {
   if (!calendar || typeof calendar.min !== 'string' || typeof calendar.max !== 'string') {
     throw new Error(`App manifest "${obj.id}" requires "calendar.min" and "calendar.max"`);
   }
+  if (calendar.default !== 'today' && !/^\d{4}-\d{2}-\d{2}$/.test(calendar.default as string)) {
+    throw new Error(`App manifest "${obj.id}" "calendar.default" must be "today" or an ISO date (YYYY-MM-DD)`);
+  }
 
   return json as AppManifest;
 }

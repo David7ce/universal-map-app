@@ -37,6 +37,14 @@ Caja vacía lista todos los lugares visibles (respetando `activeFilters`); al es
 
 Documentado en `README.md` ("Isochrone (travel-time) layers"): polígonos isocrónicos precalculados como una capa `kind: "polygon"` normal, igual que `regions` — no hace falta código nuevo de engine.
 
+## `calendar.default` conectado
+
+`main.ts` ya no ignora el manifiesto: `selectedDate` se siembra desde `appManifest.calendar.default` (`"today"` → fecha actual, o una fecha ISO literal). `validateAppManifest()` rechaza valores que no sean `"today"` ni `YYYY-MM-DD`.
+
+## Info ampliada del lugar seleccionado: coordenadas, enlace, imagen
+
+`SelectionCard.ts` ahora muestra automáticamente `lat, lng` (5 decimales) para cualquier feature con geometría `Point`, sin configuración. Además, `panel.infoFields` acepta un `type` opcional (`"text"` por defecto, `"link"`, `"image"`) — igual que el resto del engine, el nombre del campo sigue viniendo del manifiesto, nunca hardcodeado. Por seguridad, `"link"`/`"image"` solo renderizan como `<a>`/`<img>` si el valor es una URL `http(s):`/`mailto:` (`isAllowedUrl()` en `src/ui/panels/info-field-format.ts`); cualquier otro esquema (p.ej. `javascript:` inyectado vía datos del feature) cae a texto plano. Ejemplo en `apps/demo/layers/poi.layer.json` (`web/foto` en `poi.geojson`).
+
 ## Barra de calendario: granularidad + slider
 
 `CalendarBar.ts` tiene selector de granularidad (día/semana/mes/año, controla el paso de los botones ← →) y una barra deslizante (`<input type="range">`) acotada por `calendar.min`/`calendar.max`.

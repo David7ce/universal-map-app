@@ -10,6 +10,10 @@
   "panel": {
     "showInSearch": true,
     "showInInfo": true,
-    "infoFields": [{ "field": "properties.categoria", "label": "Categoría" }]
+    "infoFields": [
+      { "field": "properties.categoria", "label": "Categoría" },
+      { "field": "properties.web", "label": "Sitio web", "type": "link" },
+      { "field": "properties.foto", "label": "Foto", "type": "image" }
+    ]
   }
 }
