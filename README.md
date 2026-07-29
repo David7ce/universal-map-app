@@ -4,14 +4,14 @@ A static, browser-only map (OpenStreetMap + Leaflet) with a Gregorian calendar a
 
 ## Run locally
 
-    npm install
-    npm run dev
+    pnpm install
+    pnpm dev
 
-Open the printed local URL. No backend, no paid services — `npm run build` produces a static `dist/` you can host anywhere (or serve locally with `npm run preview` or any static file server).
+Open the printed local URL. No backend, no paid services — `pnpm build` produces a static `dist/` you can host anywhere (or serve locally with `pnpm preview` or any static file server).
 
 ## Run tests
 
-    npm test
+    pnpm test
 
 ## Add a new app instance
 
@@ -26,6 +26,12 @@ No engine code under `src/engine/` needs to change to add a new app instance.
 ## Isochrone (travel-time) layers
 
 There's no dedicated `kind` for isochrones — precompute the polygons with whatever routing tool fits your data (routing engines/APIs, GIS tools, etc.) and ship them as a normal `kind: "polygon"` layer, exactly like `apps/demo/layers/regions.layer.json`. Each isochrone gets `properties.temporal` if it should only apply on certain dates, and any `taxonomy` field (e.g. travel time bucket) like any other layer. This needs no engine code — the same reasoning that makes administrative regions "just temporal geometry" applies here. A layer that computes isochrones live (e.g. on click) would need an external routing service, which is out of scope for this static, no-backend engine.
+
+## Recently shipped beyond the original v1 scope
+
+- Multi-calendar display support for Gregorian, Julian, Islamic, and Hebrew calendars via `calendar.system` in the app manifest.
+- Multi-projection map display support for `EPSG:3857`, `EPSG:4326`, and custom CRS definitions via `map.crs`.
+- Calendar bar refinements with day/week/month/year granularity and a range slider, plus richer selection-card info rendering for links, images, and coordinates.
 
 ## Known v1 deviations from the design spec
 

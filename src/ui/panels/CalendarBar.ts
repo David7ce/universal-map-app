@@ -12,6 +12,11 @@ export interface CalendarConfig {
 
 export type Granularity = 'day' | 'week' | 'month' | 'year';
 
+export function getVisibleGranularityOptions(system: CalendarSystem): Granularity[] {
+  if (system === 'gregorian') return ['day', 'week', 'month'];
+  return ['day', 'week', 'month'];
+}
+
 function daysBetween(fromIso: string, toIso: string): number {
   const from = new Date(`${fromIso}T00:00:00Z`);
   const to = new Date(`${toIso}T00:00:00Z`);
@@ -67,16 +72,17 @@ export function mountCalendarBar(
 ): void {
   const totalDays = Math.max(daysBetween(config.min, config.max), 1);
 
+  const visibleGranularities = getVisibleGranularityOptions(config.system ?? 'gregorian');
+
   container.innerHTML = `
     <button type="button" data-action="prev">&larr;</button>
     <input type="date" data-role="date-input" min="${config.min}" max="${config.max}" />
     <span class="calendar-bar__system-label" data-role="system-label"></span>
     <button type="button" data-action="next">&rarr;</button>
     <select data-role="granularity">
-      <option value="day">${t('calendar.granularity.day', strings)}</option>
-      <option value="week">${t('calendar.granularity.week', strings)}</option>
-      <option value="month">${t('calendar.granularity.month', strings)}</option>
-      <option value="year">${t('calendar.granularity.year', strings)}</option>
+      ${visibleGranularities
+        .map((granularity) => `<option value="${granularity}">${t(`calendar.granularity.${granularity}`, strings)}</option>`)
+        .join('')}
     </select>
     <input type="range" data-role="date-slider" min="0" max="${totalDays}" step="1" />
   `;

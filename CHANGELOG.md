@@ -2,6 +2,12 @@
 
 Registro de lo ya implementado más allá del v1 original (ver `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` para el diseño base). Trabajo futuro vive en `ROADMAP.md`, no aquí.
 
+## Cambios recientes: multi-calendario y multi-proyección
+
+- Soporte de presentación para calendarios gregoriano, juliano, islámico y hebreo sin tocar el modelo temporal de almacenamiento.
+- Soporte configurable de CRS para el mapa: `EPSG:3857`, `EPSG:4326` y proyecciones personalizadas vía `map.crs` en el manifiesto.
+- Mejoras de UI para calendario, selección de capa base y visualización de información del lugar, alineadas con el rediseño mobile-first.
+
 ## Rediseño de interfaz (mobile-first, siguiendo referencia visual)
 
 Reconstruido siguiendo una referencia visual concreta (captura + código fuente de un sitio Astro existente, con sus CSS de tokens/layout/controles). Cambios de arquitectura de UI, no solo estilos:

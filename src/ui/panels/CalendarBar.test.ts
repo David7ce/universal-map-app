@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { calendarSystemLabel, nextSelectedDate } from './CalendarBar';
+import { calendarSystemLabel, getVisibleGranularityOptions, nextSelectedDate } from './CalendarBar';
 
 describe('nextSelectedDate', () => {
   it('steps by day the same way regardless of calendar system', () => {
@@ -18,6 +18,13 @@ describe('nextSelectedDate', () => {
 
   it('steps by a calendar-aware month when system is non-gregorian', () => {
     expect(nextSelectedDate('2026-07-29', 'month', 1, 'islamic')).toBe('2026-08-27');
+  });
+});
+
+describe('getVisibleGranularityOptions', () => {
+  it('offers a compact set of UI granularity choices', () => {
+    expect(getVisibleGranularityOptions('gregorian')).toEqual(['day', 'week', 'month']);
+    expect(getVisibleGranularityOptions('islamic')).toEqual(['day', 'week', 'month']);
   });
 });
 
