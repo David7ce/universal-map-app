@@ -88,4 +88,25 @@ describe('describeTemporalStatus', () => {
     expect(describeTemporalStatus(f, new Date('2026-03-14T00:00:00Z'), esStrings)).toBe('Activo el 2026-03-14');
     expect(describeTemporalStatus(f, new Date('2026-03-15T00:00:00Z'), esStrings)).toBe('Ocurrió el 2026-03-14');
   });
+
+  it('formats an instant date in a non-gregorian calendar system when provided', () => {
+    const f = feature({ instant: '2026-03-14' });
+    expect(describeTemporalStatus(f, new Date('2026-03-14T00:00:00Z'), enStrings, 'julian')).toBe(
+      'Active on March 1, 2026'
+    );
+  });
+
+  it('formats range bounds in a non-gregorian calendar system when provided', () => {
+    const f = feature({ range: { from: '2020-01-01', to: '2023-06-30' } });
+    expect(describeTemporalStatus(f, new Date('2021-01-01T00:00:00Z'), enStrings, 'julian')).toBe(
+      'Active (since December 19, 2019 until June 17, 2023)'
+    );
+  });
+
+  it('defaults to gregorian (raw ISO strings) when no system is given', () => {
+    const f = feature({ instant: '2026-03-14' });
+    expect(describeTemporalStatus(f, new Date('2026-03-14T00:00:00Z'), enStrings)).toBe(
+      'Active on 2026-03-14'
+    );
+  });
 });

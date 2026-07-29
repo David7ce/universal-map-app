@@ -3,6 +3,7 @@ import type { LoadedLayer } from '../../engine/taxonomy/compute-dimensions';
 import { readField } from '../../engine/taxonomy/compute-dimensions';
 import type { GeoFeature } from '../../engine/time/temporal-types';
 import type { LayerManifest } from '../../engine/manifests/layer-manifest';
+import type { CalendarSystem } from '../../engine/time/calendar-systems';
 import { describeTemporalStatus } from './temporal-status';
 import { findContainingRegions } from '../../engine/region/spatial-join';
 import { t } from '../strings';
@@ -14,7 +15,8 @@ export function mountSelectionCard(
   container: HTMLElement,
   store: Store<AppState>,
   layers: LoadedLayer[],
-  strings: Record<string, string>
+  strings: Record<string, string>,
+  calendarSystem: CalendarSystem = 'gregorian'
 ): void {
   const featureEntries: { feature: GeoFeature; manifest: LayerManifest }[] = layers.flatMap((layer) =>
     layer.features.map((feature) => ({ feature, manifest: layer.manifest }))
@@ -76,7 +78,7 @@ export function mountSelectionCard(
       .join('');
 
     titleEl.textContent = featureLabel(feature);
-    contentEl.innerHTML = `<p>${describeTemporalStatus(feature, date, strings)}</p>${regionLine}${coordinatesLine}${infoFieldLines}`;
+    contentEl.innerHTML = `<p>${describeTemporalStatus(feature, date, strings, calendarSystem)}</p>${regionLine}${coordinatesLine}${infoFieldLines}`;
     container.classList.add('is-open');
   }
   render();

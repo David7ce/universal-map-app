@@ -86,7 +86,13 @@ async function bootstrap(): Promise<void> {
   mountCalendarBar(document.querySelector('#calendar-bar')!, store, appManifest.calendar, strings);
   mountPanelRight(document.querySelector('#panel-right-filters')!, store, loadedLayers);
   mountSearchOverlay(document.querySelector('#search-overlay')!, store, loadedLayers, strings);
-  mountSelectionCard(document.querySelector('#selection-card')!, store, loadedLayers, strings);
+  mountSelectionCard(
+    document.querySelector('#selection-card')!,
+    store,
+    loadedLayers,
+    strings,
+    appManifest.calendar.system ?? 'gregorian'
+  );
   mountLayerControl(document.querySelector('#layer-control')!, store, strings, {
     map,
     baseLayerTiles: baseLayers,
