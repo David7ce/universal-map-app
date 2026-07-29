@@ -19,6 +19,11 @@ const TEMPORAL_CALENDAR_ID = { islamic: 'islamic', hebrew: 'hebrew' } as const s
   string
 >;
 
+// No production call site uses this today (both current UI needs — the
+// CalendarBar label and temporal-status text — only need a formatted
+// string, via formatCalendarDate). Kept as public API for a future
+// consumer that needs the individual year/month/day/monthName parts
+// rather than a pre-formatted string (e.g. a custom calendar-grid picker).
 export function toCalendarParts(isoDate: string, system: CalendarSystem, locale = 'en'): CalendarDateParts {
   if (system === 'gregorian') {
     const [year, month, day] = isoDate.split('-').map(Number);

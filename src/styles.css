@@ -654,6 +654,13 @@ body {
   color: var(--color-text-light);
   white-space: nowrap;
 }
+/* Empty for gregorian (the default) — collapse out of the flex layout so it
+   doesn't add a second `gap` on either side of a zero-content item, which
+   would otherwise widen the space between the date input and the next-step
+   button versus how this bar rendered before calendar.system existed. */
+.calendar-bar__system-label:empty {
+  display: none;
+}
 
 /* ========================================
    FOOTER ATTRIBUTION
