@@ -1,4 +1,5 @@
 import { CALENDAR_SYSTEMS, type CalendarSystem } from '../time/calendar-systems';
+import { isValidMapCrsConfig, type MapCrsConfig } from '../space/map-crs';
 
 export interface BaseLayerConfig {
   id: string;
@@ -17,7 +18,7 @@ export interface ParticipateConfig {
 export interface AppManifest {
   id: string;
   title: string;
-  map: { center: [number, number]; zoom: number };
+  map: { center: [number, number]; zoom: number; crs?: MapCrsConfig };
   baseLayers: BaseLayerConfig[];
   dataLayers: string[];
   calendar: { system?: CalendarSystem; default: 'today' | string; min: string; max: string };
@@ -49,6 +50,11 @@ export function validateAppManifest(json: unknown): AppManifest {
   }
   if (calendar.system !== undefined && !CALENDAR_SYSTEMS.includes(calendar.system as CalendarSystem)) {
     throw new Error(`App manifest "${obj.id}" has invalid "calendar.system": ${String(calendar.system)}`);
+  }
+
+  const map = obj.map as Record<string, unknown> | undefined;
+  if (map?.crs !== undefined && !isValidMapCrsConfig(map.crs)) {
+    throw new Error(`App manifest "${obj.id}" has invalid "map.crs": ${JSON.stringify(map.crs)}`);
   }
 
   return json as AppManifest;

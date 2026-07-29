@@ -68,4 +68,29 @@ describe('validateAppManifest', () => {
     const invalid = { ...valid, calendar: { ...valid.calendar, system: 'martian' } };
     expect(() => validateAppManifest(invalid)).toThrow(/calendar\.system/);
   });
+
+  it('accepts a valid map.crs named id', () => {
+    const withCrs = { ...valid, map: { ...valid.map, crs: 'EPSG:4326' } };
+    expect(validateAppManifest(withCrs)).toEqual(withCrs);
+  });
+
+  it('accepts a valid custom map.crs object', () => {
+    const withCrs = {
+      ...valid,
+      map: {
+        ...valid.map,
+        crs: {
+          proj4def: '+proj=utm +zone=28 +datum=WGS84 +units=m +no_defs',
+          resolutions: [8192, 4096, 2048],
+          origin: [0, 0],
+        },
+      },
+    };
+    expect(validateAppManifest(withCrs)).toEqual(withCrs);
+  });
+
+  it('rejects an invalid map.crs', () => {
+    const invalid = { ...valid, map: { ...valid.map, crs: 'EPSG:9999' } };
+    expect(() => validateAppManifest(invalid)).toThrow(/map\.crs/);
+  });
 });
