@@ -58,4 +58,14 @@ describe('validateAppManifest', () => {
     const invalid = { ...valid, calendar: { ...valid.calendar, default: 'yesterday' } };
     expect(() => validateAppManifest(invalid)).toThrow(/calendar\.default/);
   });
+
+  it('accepts a valid calendar.system', () => {
+    const withSystem = { ...valid, calendar: { ...valid.calendar, system: 'islamic' } };
+    expect(validateAppManifest(withSystem)).toEqual(withSystem);
+  });
+
+  it('rejects an invalid calendar.system', () => {
+    const invalid = { ...valid, calendar: { ...valid.calendar, system: 'martian' } };
+    expect(() => validateAppManifest(invalid)).toThrow(/calendar\.system/);
+  });
 });

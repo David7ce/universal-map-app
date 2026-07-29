@@ -1,3 +1,5 @@
+import { CALENDAR_SYSTEMS, type CalendarSystem } from '../time/calendar-systems';
+
 export interface BaseLayerConfig {
   id: string;
   title: string;
@@ -18,7 +20,7 @@ export interface AppManifest {
   map: { center: [number, number]; zoom: number };
   baseLayers: BaseLayerConfig[];
   dataLayers: string[];
-  calendar: { default: 'today' | string; min: string; max: string };
+  calendar: { system?: CalendarSystem; default: 'today' | string; min: string; max: string };
   strings?: string;
   plugins?: { participate?: ParticipateConfig };
 }
@@ -44,6 +46,9 @@ export function validateAppManifest(json: unknown): AppManifest {
   }
   if (calendar.default !== 'today' && !/^\d{4}-\d{2}-\d{2}$/.test(calendar.default as string)) {
     throw new Error(`App manifest "${obj.id}" "calendar.default" must be "today" or an ISO date (YYYY-MM-DD)`);
+  }
+  if (calendar.system !== undefined && !CALENDAR_SYSTEMS.includes(calendar.system as CalendarSystem)) {
+    throw new Error(`App manifest "${obj.id}" has invalid "calendar.system": ${String(calendar.system)}`);
   }
 
   return json as AppManifest;
