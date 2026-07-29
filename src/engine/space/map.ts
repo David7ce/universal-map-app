@@ -1,5 +1,7 @@
 import L from 'leaflet';
+import 'proj4leaflet';
 import type { AppManifest } from '../manifests/app-manifest';
+import type { MapCrsConfig } from './map-crs';
 
 export interface CreatedMap {
   map: L.Map;
@@ -8,8 +10,21 @@ export interface CreatedMap {
   baseLayers: Record<string, L.TileLayer>;
 }
 
+function resolveCrs(config: MapCrsConfig | undefined): L.CRS | undefined {
+  if (config === undefined || config === 'EPSG:3857') return undefined;
+  if (config === 'EPSG:4326') return L.CRS.EPSG4326;
+  return new L.Proj.CRS('custom', config.proj4def, {
+    resolutions: config.resolutions,
+    origin: config.origin,
+    ...(config.bounds ? { bounds: L.bounds(config.bounds[0], config.bounds[1]) } : {}),
+  });
+}
+
 export function createMap(container: HTMLElement, appManifest: AppManifest): CreatedMap {
-  const map = L.map(container, { zoomControl: false }).setView(appManifest.map.center, appManifest.map.zoom);
+  const crs = resolveCrs(appManifest.map.crs);
+  const map = L
+    .map(container, { zoomControl: false, ...(crs ? { crs } : {}) })
+    .setView(appManifest.map.center, appManifest.map.zoom);
 
   const baseLayers: Record<string, L.TileLayer> = {};
   appManifest.baseLayers.forEach((config, index) => {
