@@ -9,6 +9,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@js-temporal/polyfill": "^0.5.1",
     "@turf/boolean-point-in-polygon": "^7.1.0",
     "leaflet": "^1.9.4",
     "leaflet.heat": "^0.2.0",
