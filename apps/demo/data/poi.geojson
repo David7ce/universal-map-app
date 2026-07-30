@@ -5,25 +5,25 @@
       "type": "Feature",
       "id": "poi-1",
       "properties": {
-        "nombre": "Ayuntamiento",
-        "categoria": "administracion",
-        "web": "https://example.org/ayuntamiento",
-        "foto": "https://picsum.photos/seed/ayuntamiento/320/180"
+        "name": "Town Hall",
+        "category": "administration",
+        "website": "https://example.org/town-hall",
+        "photo": "https://picsum.photos/seed/townhall/320/180"
       },
       "geometry": { "type": "Point", "coordinates": [-16.62, 28.29] }
     },
     {
       "type": "Feature",
       "id": "poi-2",
-      "properties": { "nombre": "Feria de Marzo", "categoria": "evento", "temporal": { "instant": "2026-03-14" } },
+      "properties": { "name": "March Fair", "category": "event", "temporal": { "instant": "2026-03-14" } },
       "geometry": { "type": "Point", "coordinates": [-16.615, 28.285] }
     },
     {
       "type": "Feature",
       "id": "poi-3",
       "properties": {
-        "nombre": "Tienda Antigua",
-        "categoria": "comercio",
+        "name": "Old Shop",
+        "category": "commerce",
         "temporal": { "range": { "from": "2018-01-01", "to": "2023-06-30" } }
       },
       "geometry": { "type": "Point", "coordinates": [-16.625, 28.292] }
@@ -32,8 +32,8 @@
       "type": "Feature",
       "id": "poi-4",
       "properties": {
-        "nombre": "Mercadillo Dominical",
-        "categoria": "mercado",
+        "name": "Sunday Market",
+        "category": "market",
         "temporal": { "recurrence": { "rule": "FREQ=WEEKLY;BYDAY=SU" } }
       },
       "geometry": { "type": "Point", "coordinates": [-16.618, 28.288] }
@@ -42,8 +42,8 @@
       "type": "Feature",
       "id": "poi-5",
       "properties": {
-        "nombre": "Mercado Temporal",
-        "categoria": "mercado",
+        "name": "Temporary Market",
+        "category": "market",
         "temporal": {
           "range": { "from": "2024-01-01", "to": "2024-12-31" },
           "recurrence": { "rule": "FREQ=WEEKLY;BYDAY=SA" }

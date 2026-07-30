@@ -46,7 +46,7 @@ export function mountSearchOverlay(
 
   function featureLabel(feature: GeoFeature): string {
     const props = feature.properties;
-    return String(props.nombre ?? props.title ?? feature.id ?? t('search.untitledFeature', strings));
+    return String(props.name ?? props.title ?? feature.id ?? t('search.untitledFeature', strings));
   }
 
   function searchableFeatures(): GeoFeature[] {
@@ -72,7 +72,7 @@ export function mountSearchOverlay(
       return;
     }
 
-    matches = searchFeatures(searchableFeatures(), query, ['nombre', 'title']);
+    matches = searchFeatures(searchableFeatures(), query, ['name', 'title']);
     resultsEl.hidden = false;
     resultsEl.innerHTML = matches.length
       ? matches

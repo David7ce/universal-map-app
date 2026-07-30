@@ -6,5 +6,5 @@
   "temporal": { "defaultVisibility": "time-filtered" },
   "regionRole": null,
   "style": {},
-  "panel": { "showInSearch": false, "showInInfo": false }
+  "panel": { "showInSearch": false, "showInInfo": false, "showByDefault": false }
 }

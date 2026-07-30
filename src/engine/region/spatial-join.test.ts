@@ -8,7 +8,7 @@ function square(id: string, temporal: Temporal | undefined) {
   return {
     type: 'Feature' as const,
     id,
-    properties: { nombre: id, temporal },
+    properties: { name: id, temporal },
     geometry: {
       type: 'Polygon' as const,
       coordinates: [[[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]],

@@ -24,7 +24,16 @@ export interface LayerManifest {
   taxonomy?: TaxonomyFieldDef[];
   regionRole?: 'boundary' | null;
   style?: Record<string, unknown>;
-  panel?: { showInSearch?: boolean; showInInfo?: boolean; infoFields?: InfoFieldDef[] };
+  panel?: {
+    showInSearch?: boolean;
+    showInInfo?: boolean;
+    infoFields?: InfoFieldDef[];
+    // `false` makes the layer opt-in: hidden until toggled on via the layer
+    // control's "map details" group (same mechanism `heatmap` layers already
+    // use). Defaults to `true` (always rendered, subject to the usual
+    // temporal/filter checks).
+    showByDefault?: boolean;
+  };
 }
 
 const VALID_KINDS: LayerKind[] = ['point', 'line', 'polygon', 'boundary', 'heatmap'];

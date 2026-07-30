@@ -41,10 +41,10 @@ async function bootstrap(): Promise<void> {
     loadedLayers.push({ manifest, features });
   }
 
-  // "Detail" layers (currently: heatmap) are opt-in via the layer control's
-  // checkbox group, hidden by default — a heatmap glowing over the whole map
-  // on first load would obscure everything else.
-  const detailLayers = loadedLayers.filter((l) => l.manifest.kind === 'heatmap');
+  // "Detail" layers (any layer with `panel.showByDefault: false` — e.g. a
+  // heatmap, or a region/boundary layer) are opt-in via the layer control's
+  // checkbox group, hidden until the user turns them on.
+  const detailLayers = loadedLayers.filter((l) => l.manifest.panel?.showByDefault === false);
 
   const store = createStore<AppState>({
     selectedDate:
@@ -123,6 +123,13 @@ async function bootstrap(): Promise<void> {
 
   function renderRightPanelVisibility(): void {
     const isOpen = store.get().panels.right === 'open';
+    // Move focus out before hiding: aria-hidden on an ancestor of the
+    // focused element is invalid (and Chrome warns about it) — closing via
+    // the panel's own "Close filters" button would otherwise leave focus
+    // trapped inside a subtree marked hidden from assistive tech.
+    if (!isOpen && panelRight.contains(document.activeElement)) {
+      panelRightToggle.focus();
+    }
     panelRight.classList.toggle('is-open', isOpen);
     panelRight.setAttribute('aria-hidden', String(!isOpen));
     panelOverlay.classList.toggle('is-visible', isOpen);

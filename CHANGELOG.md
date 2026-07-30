@@ -1,64 +1,80 @@
 # Changelog
 
-Registro de lo ya implementado más allá del v1 original (ver `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` para el diseño base). Trabajo futuro vive en `ROADMAP.md`, no aquí.
+Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
-## Cambios recientes: multi-calendario y multi-proyección
+## Multi-calendar and multi-projection
 
-- Soporte de presentación para calendarios gregoriano, juliano, islámico y hebreo sin tocar el modelo temporal de almacenamiento.
-- Soporte configurable de CRS para el mapa: `EPSG:3857`, `EPSG:4326` y proyecciones personalizadas vía `map.crs` en el manifiesto.
-- Mejoras de UI para calendario, selección de capa base y visualización de información del lugar, alineadas con el rediseño mobile-first.
+- Display-layer support for Gregorian, Julian, Islamic, and Hebrew calendars without touching the underlying temporal storage model.
+- Configurable map CRS: `EPSG:3857`, `EPSG:4326`, and custom projections via `map.crs` in the manifest.
+- UI improvements to the calendar bar, base-layer selection, and place-info display, aligned with the mobile-first redesign.
 
-## Rediseño de interfaz (mobile-first, siguiendo referencia visual)
+## Interface redesign (mobile-first, following a visual reference)
 
-Reconstruido siguiendo una referencia visual concreta (captura + código fuente de un sitio Astro existente, con sus CSS de tokens/layout/controles). Cambios de arquitectura de UI, no solo estilos:
+Rebuilt following a concrete visual reference (a screenshot plus the source of an existing Astro site, including its token/layout/control CSS). Real UI architecture changes, not just styling:
 
-- **Mapa a pantalla completa**, todo lo demás flota encima (`position: fixed`/`absolute`), en vez del grid de 4 columnas anterior.
-- **Búsqueda** (`src/ui/panels/SearchOverlay.ts`, reemplaza al antiguo `PanelLeft.ts`): botón circular arriba-izquierda en móvil (abre un modal con fondo oscurecido); en desktop (`≥64rem`) el campo de búsqueda queda siempre visible, acoplado a esa esquina, sin botón.
-- **Selección de un lugar** (`src/ui/panels/SelectionCard.ts`): tarjeta flotante independiente (bottom-sheet en móvil, tarjeta anclada abajo-derecha en desktop), visible en cualquier momento sin depender de si la búsqueda está abierta.
-- **Filtros** (`PanelRight.ts`): cajón deslizante desde la derecha, botón circular de apertura arriba-derecha y fondo oscurecido; cada dimensión de filtro es una sección colapsable con flecha; el checkbox "seleccionar todo" usa `.indeterminate` de verdad para el estado "algunos seleccionados".
-- **Selector de capas** (`src/ui/panels/LayerControl.ts`, nuevo): reemplaza el control nativo de Leaflet — botón abajo-izquierda con el nombre de la capa base activa, popover con radios de capa base y checkboxes de "detalles del mapa" (capas `heatmap`).
-- **Zoom**: control real de Leaflet, reposicionado abajo-derecha y por encima de la barra de atribución.
-- **Iconos**: set mínimo de SVG propios (`src/ui/icons.ts`), sin CDN ni fuente de iconos externa.
-- Breakpoint mobile-first en `src/styles.css`.
+- **Full-screen map**, everything else floats on top (`position: fixed`/`absolute`) instead of the previous 4-column grid.
+- **Search** (`src/ui/panels/SearchOverlay.ts`, replaces the old `PanelLeft.ts`): a circular button top-left on mobile (opens a modal with a dimmed backdrop); on desktop (`≥64rem`) the search field stays always visible, docked to that corner, no button.
+- **Place selection** (`src/ui/panels/SelectionCard.ts`): an independent floating card (bottom sheet on mobile, a card anchored bottom-right on desktop), visible at any time regardless of whether search is open.
+- **Filters** (`PanelRight.ts`): a slide-out drawer from the right, a circular open button top-right with a dimmed backdrop; each filter dimension is now a collapsible section with a chevron; the "select all" checkbox uses real `.indeterminate` for the "some selected" state.
+- **Layer selector** (`src/ui/panels/LayerControl.ts`, new): replaces Leaflet's built-in layers control — a bottom-left button showing the active base layer's name, opening a popover with base-layer radios and "map details" checkboxes (opt-in layers, see below).
+- **Zoom**: still Leaflet's real control, repositioned bottom-right and above the attribution strip.
+- **Icons**: a minimal set of self-authored SVGs (`src/ui/icons.ts`), no CDN or external icon font.
+- Mobile-first breakpoint in `src/styles.css`.
 
-No se copió el logo/marca del sitio de referencia (es de otra organización) ni su vista de "Informe" (gráficas/CSV/PDF) — descartada como no-core al principio de este proyecto.
+The reference site's logo/branding (another organization's) was not copied, nor was its "Report" view (charts/CSV/PDF) — that was already ruled out as non-core at the start of this project.
 
-## Búsqueda con caja vacía = explorar todo
+## Search results respect active filters
 
-Caja vacía lista todos los lugares visibles (respetando `activeFilters`); al escribir se filtra por texto; al hacer click se cierra la búsqueda y aparece la tarjeta de selección. `searchFeatures()` (función pura) conserva su contrato original de "query vacía → `[]`" — la decisión de "mostrar todo" vive en `SearchOverlay.ts`, no en esa función. Al implementar `panel.showInSearch: false` (para excluir capas de la búsqueda) se corrigió de paso un bug latente: las regiones ya tenían ese flag en el demo original pero nunca se leía, así que llevaban apareciendo en los resultados.
+Typing in the search box filters by text among the currently filtered-in features (respecting `activeFilters`); clicking a result closes search and shows the selection card. An empty query shows nothing, matching `searchFeatures()`'s own pure-function contract ("empty query → `[]`"). Implementing `panel.showInSearch: false` (to exclude a layer from search) fixed a latent bug along the way: regions already had that flag in the original demo data, but it was never read, so they kept showing up in search results.
 
-## Info ampliada del lugar seleccionado
+## Expanded selected-place info
 
-`layer.json` acepta `panel.infoFields: [{ field, label }]` — cada app decide qué propiedades extra mostrar en la tarjeta de selección, sin hardcodear nombres de campo (reutiliza `readField()` de `compute-dimensions.ts`, ahora exportado). Ver `docs/json-reference.md`.
+`layer.json` accepts `panel.infoFields: [{ field, label }]` — each app decides which extra properties to show on the selection card, without hardcoding field names (reuses `readField()` from `compute-dimensions.ts`, now exported). See `docs/json-reference.md`.
 
-## Selector de capa base: calle / satélite
+## Base layer selector: street / satellite
 
-`apps/demo/app-manifest.json` declara dos `baseLayers` (OpenStreetMap + Esri World Imagery como satélite, tile gratuito). El selector cambia la capa realmente añadida/quitada del mapa vía `LayerControl.ts` y sincroniza `store.activeBaseLayerId` directamente.
+`apps/demo/app-manifest.json` declares two `baseLayers` (OpenStreetMap + Esri World Imagery as satellite, free tiles). The selector actually adds/removes the corresponding tile layer via `LayerControl.ts` and syncs `store.activeBaseLayerId` directly.
 
-## Mapa de calor
+## Heatmap layer
 
-`kind: "heatmap"` con renderer dedicado en `src/engine/space/data-layer-renderer.ts` vía `leaflet.heat` (dependencia nueva, documentada en el plan). Solo usa features `Point`; respeta `isActiveOn` y `activeFilters`. Se trata automáticamente como "detalle del mapa": checkbox opcional en `LayerControl.ts`, oculto por defecto (`AppState.hiddenLayerIds`). Ejemplo: `apps/demo/layers/heatmap.layer.json`.
+`kind: "heatmap"` has a dedicated renderer in `src/engine/space/data-layer-renderer.ts` via `leaflet.heat` (new dependency, documented in the plan). Only uses `Point` features; respects `isActiveOn` and `activeFilters`. Example: `apps/demo/layers/heatmap.layer.json`.
 
-## Isocrónico (patrón documentado, sin código de engine)
+## Isochrones (documented pattern, no engine code)
 
-Documentado en `README.md` ("Isochrone (travel-time) layers"): polígonos isocrónicos precalculados como una capa `kind: "polygon"` normal, igual que `regions` — no hace falta código nuevo de engine.
+Documented in `README.md` ("Isochrone (travel-time) layers"): precomputed isochrone polygons shipped as a normal `kind: "polygon"` layer, exactly like `regions` — no new engine code needed.
 
-## `calendar.default` conectado
+## `calendar.default` wired up
 
-`main.ts` ya no ignora el manifiesto: `selectedDate` se siembra desde `appManifest.calendar.default` (`"today"` → fecha actual, o una fecha ISO literal). `validateAppManifest()` rechaza valores que no sean `"today"` ni `YYYY-MM-DD`.
+`main.ts` no longer ignores the manifest: `selectedDate` is seeded from `appManifest.calendar.default` (`"today"` → current date, or a literal ISO date). `validateAppManifest()` rejects values that aren't `"today"` or `YYYY-MM-DD`.
 
-## Info ampliada del lugar seleccionado: coordenadas, enlace, imagen
+## Selected-place info: coordinates, link, image
 
-`SelectionCard.ts` ahora muestra automáticamente `lat, lng` (5 decimales) para cualquier feature con geometría `Point`, sin configuración. Además, `panel.infoFields` acepta un `type` opcional (`"text"` por defecto, `"link"`, `"image"`) — igual que el resto del engine, el nombre del campo sigue viniendo del manifiesto, nunca hardcodeado. Por seguridad, `"link"`/`"image"` solo renderizan como `<a>`/`<img>` si el valor es una URL `http(s):`/`mailto:` (`isAllowedUrl()` en `src/ui/panels/info-field-format.ts`); cualquier otro esquema (p.ej. `javascript:` inyectado vía datos del feature) cae a texto plano. Ejemplo en `apps/demo/layers/poi.layer.json` (`web/foto` en `poi.geojson`).
+`SelectionCard.ts` now automatically shows `lat, lng` (5 decimals) for any feature with `Point` geometry, no configuration needed. `panel.infoFields` also accepts an optional `type` (`"text"` by default, `"link"`, `"image"`) — as with the rest of the engine, the field name still comes from the manifest, never hardcoded. For safety, `"link"`/`"image"` only render as `<a>`/`<img>` when the value is an `http(s):`/`mailto:` URL (`isAllowedUrl()` in `src/ui/panels/info-field-format.ts`); any other scheme (e.g. a `javascript:` value injected via feature data) falls back to plain text. Example in `apps/demo/layers/poi.layer.json` (`website`/`photo` in `poi.geojson`).
 
-## Barra de calendario: granularidad + slider
+## Calendar bar: granularity + slider
 
-`CalendarBar.ts` tiene selector de granularidad (día/semana/mes/año, controla el paso de los botones ← →) y una barra deslizante (`<input type="range">`) acotada por `calendar.min`/`calendar.max`.
+`CalendarBar.ts` has a granularity selector (day/week/month/year, controls the step size of the ← → buttons) and a range slider (`<input type="range">`) bounded by `calendar.min`/`calendar.max`.
 
-## Calendario multi-sistema (display): gregoriano, juliano, islámico, hebreo
+## Multi-system calendar display: Gregorian, Julian, Islamic, Hebrew
 
-`app-manifest.json` acepta un `calendar.system` opcional (`"gregorian"` por defecto, o `"julian" | "islamic" | "hebrew"`). El almacenamiento y todo el cómputo temporal (`isActiveOn`, RRULE, `calendar.min`/`max`/`default`) siguen siendo 100% gregoriano/ISO 8601 — la conversión ocurre solo en la capa de presentación (`src/engine/time/calendar-conversion.ts`), nunca hacia el store. `islamic`/`hebrew` usan `@js-temporal/polyfill` (dependencia nueva); `julian` no está en el registro de calendarios Unicode/ICU que usan Temporal/Intl, así que se implementó a mano (algoritmo de número de día juliano de Fliegel & Van Flandern, `src/engine/time/julian-calendar.ts`). El selector de fecha nativo (`<input type="date">`) sigue siendo siempre gregoriano — no hay widget de calendario propio (ver "Known v1 deviations" en `README.md`).
+`app-manifest.json` accepts an optional `calendar.system` (`"gregorian"` by default, or `"julian" | "islamic" | "hebrew"`). Storage and all temporal computation (`isActiveOn`, RRULE, `calendar.min`/`max`/`default`) stay 100% Gregorian/ISO 8601 — conversion happens only in the display layer (`src/engine/time/calendar-conversion.ts`), never toward the store. `islamic`/`hebrew` use `@js-temporal/polyfill` (new dependency); `julian` isn't in the Unicode/ICU calendar registry that Temporal/Intl use, so it was implemented by hand (Fliegel & Van Flandern's Julian day number algorithm, `src/engine/time/julian-calendar.ts`). The native date picker (`<input type="date">`) is always Gregorian — there's no custom calendar widget (see "Known v1 deviations" in `README.md`).
 
-## Multi-proyección (display): EPSG:3857, EPSG:4326, proyecciones personalizadas
+## Multi-projection display: EPSG:3857, EPSG:4326, custom projections
 
-`app-manifest.json` acepta un `map.crs` opcional (`"EPSG:3857"` por defecto — Web Mercator, igual que hoy — o `"EPSG:4326"`, o un objeto personalizado `{ proj4def, resolutions, origin, bounds? }`). Los datos GeoJSON siguen siendo siempre WGS84 lon/lat; Leaflet reproyecta al momento de renderizar vía el CRS activo, así que ningún otro módulo del motor cambia (`data-layer-renderer.ts`, `spatial-join.ts`, clustering, mapa de calor — todos ya eran agnósticos a la proyección). `"EPSG:4326"` usa el CRS incorporado en Leaflet, sin dependencia nueva; cualquier otra proyección usa `proj4leaflet` (dependencia nueva, `L.Proj.CRS`). `baseLayers` sigue siendo obligatorio — el autor de la app es responsable de que los tiles elegidos realmente se sirvan en la proyección configurada. Ver `src/engine/space/map-crs.ts` y `src/engine/space/map.ts`.
+`app-manifest.json` accepts an optional `map.crs` (`"EPSG:3857"` by default — Web Mercator, same as before — or `"EPSG:4326"`, or a custom object `{ proj4def, resolutions, origin, bounds? }`). GeoJSON data stays WGS84 lon/lat always; Leaflet reprojects at render time via the active CRS, so no other engine module changes (`data-layer-renderer.ts`, `spatial-join.ts`, clustering, heatmap — all were already projection-agnostic). `"EPSG:4326"` uses Leaflet's built-in CRS, no new dependency; any other projection uses `proj4leaflet` (new dependency, `L.Proj.CRS`). `baseLayers` is still required — the app author is responsible for making sure the chosen tiles are actually served in the configured projection. See `src/engine/space/map-crs.ts` and `src/engine/space/map.ts`.
+
+## Real polygon styling (no more unstyled default outline)
+
+`line`/`polygon`/`boundary` layers get an actual fill + border (`resolvePolygonStyle()` in `src/engine/space/style.ts`) instead of Leaflet's raw default (a plain blue outline, no fill). Every field (`color`, `weight`, `fillColor`, `fillOpacity`) is overridable per layer via the manifest's `style`.
+
+## Any layer can be an opt-in "map detail"
+
+`panel.showByDefault: false` (new `layer.json` field) makes a layer hidden until the user turns it on via the layer control's "Map details" checkbox group — the same mechanism `heatmap` layers already used, now generalized to any layer (e.g. `regions`, so a boundary overlay doesn't clutter the map by default).
+
+## Demo content and docs in English
+
+`apps/demo/*` (place names, category values, region names, property keys like `name`/`category`/`website`/`photo`) and the project docs (`ROADMAP.md`, `CHANGELOG.md`, `docs/json-reference.md`) are now all in English.
+
+## Compact date-editor calendar bar
+
+`CalendarBar.ts` redesigned to a compact spinner-style editor (weekday label, month/day/year fields each with their own tiny up/down stepper, a pencil button that reveals a manual DD-MM-YYYY text field for typing a date directly) — this engine's temporal model is date-only, so there's no hour/minute/timezone field.

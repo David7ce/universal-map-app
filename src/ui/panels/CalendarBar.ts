@@ -2,6 +2,7 @@ import type { Store, AppState } from '../../engine/state/store';
 import type { CalendarSystem } from '../../engine/time/calendar-systems';
 import { addCalendarUnit, formatCalendarDate } from '../../engine/time/calendar-conversion';
 import { t } from '../strings';
+import { icons } from '../icons';
 
 export interface CalendarConfig {
   system?: CalendarSystem;
@@ -129,6 +130,24 @@ export function stepDatePart(currentIso: string, part: 'day' | 'month' | 'year',
   return clampDateToRange(date.toISOString().slice(0, 10), min, max);
 }
 
+const WEEKDAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+const MONTH_KEYS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+function weekdayLabel(iso: string, strings: Record<string, string>): string {
+  const date = new Date(`${iso}T00:00:00Z`);
+  return t(`calendar.weekday.${WEEKDAY_KEYS[date.getUTCDay()]}`, strings);
+}
+function monthLabel(iso: string, strings: Record<string, string>): string {
+  const date = new Date(`${iso}T00:00:00Z`);
+  return t(`calendar.month.${MONTH_KEYS[date.getUTCMonth()]}`, strings);
+}
+function dayNumber(iso: string): string {
+  return String(new Date(`${iso}T00:00:00Z`).getUTCDate()).padStart(2, '0');
+}
+function yearNumber(iso: string): string {
+  return String(new Date(`${iso}T00:00:00Z`).getUTCFullYear());
+}
+
 export function mountCalendarBar(
   container: HTMLElement,
   store: Store<AppState>,
@@ -137,38 +156,49 @@ export function mountCalendarBar(
 ): void {
   const totalDays = Math.max(daysBetween(config.min, config.max), 1);
 
+  // Compact, spinner-style date editor: weekday label, then month/day/year
+  // each with their own tiny up/down stepper, plus a pencil button that
+  // reveals a manual DD-MM-YYYY text field for typing a date directly. This
+  // engine's temporal model is date-only (no time-of-day), so there is no
+  // hour/minute/timezone field here — only the date fields are real.
   container.innerHTML = `
-    <div class="calendar-bar__date-group">
-      <input type="text" data-role="date-input" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="${t('calendar.inputPlaceholder', strings)}" />
-      <span class="calendar-bar__system-label" data-role="system-label"></span>
-    </div>
-    <div class="calendar-bar__part-controls">
-      <span class="calendar-bar__part-label">Day</span>
-      <div class="calendar-bar__part-buttons">
-        <button type="button" data-action="day-up" aria-label="Increase day">▲</button>
-        <button type="button" data-action="day-down" aria-label="Decrease day">▼</button>
-      </div>
-    </div>
-    <div class="calendar-bar__part-controls">
-      <span class="calendar-bar__part-label">Month</span>
-      <div class="calendar-bar__part-buttons">
+    <span class="calendar-bar__weekday" data-role="weekday"></span>
+    <div class="calendar-bar__field" data-field="month">
+      <span class="calendar-bar__field-value" data-role="month-value"></span>
+      <div class="calendar-bar__spin">
         <button type="button" data-action="month-up" aria-label="Increase month">▲</button>
         <button type="button" data-action="month-down" aria-label="Decrease month">▼</button>
       </div>
     </div>
-    <div class="calendar-bar__part-controls">
-      <span class="calendar-bar__part-label">Year</span>
-      <div class="calendar-bar__part-buttons">
+    <div class="calendar-bar__field" data-field="day">
+      <span class="calendar-bar__field-value" data-role="day-value"></span>
+      <div class="calendar-bar__spin">
+        <button type="button" data-action="day-up" aria-label="Increase day">▲</button>
+        <button type="button" data-action="day-down" aria-label="Decrease day">▼</button>
+      </div>
+    </div>
+    <span class="calendar-bar__sep">/</span>
+    <div class="calendar-bar__field" data-field="year">
+      <span class="calendar-bar__field-value" data-role="year-value"></span>
+      <div class="calendar-bar__spin">
         <button type="button" data-action="year-up" aria-label="Increase year">▲</button>
         <button type="button" data-action="year-down" aria-label="Decrease year">▼</button>
       </div>
     </div>
+    <span class="calendar-bar__system-label" data-role="system-label"></span>
+    <input type="text" class="calendar-bar__manual-input" data-role="date-input" hidden inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="${t('calendar.inputPlaceholder', strings)}" />
+    <button type="button" class="calendar-bar__edit" data-action="edit" aria-label="${t('calendar.editLabel', strings)}">${icons.edit}</button>
     <input type="range" data-role="date-slider" min="0" max="${totalDays}" step="1" />
   `;
 
+  const weekdayEl = container.querySelector<HTMLElement>('[data-role="weekday"]')!;
+  const monthValueEl = container.querySelector<HTMLElement>('[data-role="month-value"]')!;
+  const dayValueEl = container.querySelector<HTMLElement>('[data-role="day-value"]')!;
+  const yearValueEl = container.querySelector<HTMLElement>('[data-role="year-value"]')!;
   const dateInput = container.querySelector<HTMLInputElement>('[data-role="date-input"]')!;
   const dateSlider = container.querySelector<HTMLInputElement>('[data-role="date-slider"]')!;
   const systemLabel = container.querySelector<HTMLElement>('[data-role="system-label"]')!;
+  const editButton = container.querySelector<HTMLButtonElement>('[data-action="edit"]')!;
 
   function sliderOffsetFor(dateIso: string): string {
     return String(clamp(daysBetween(config.min, dateIso), 0, totalDays));
@@ -176,6 +206,13 @@ export function mountCalendarBar(
 
   function renderSystemLabel(dateIso: string): void {
     systemLabel.textContent = calendarSystemLabel(dateIso, config.system ?? 'gregorian');
+  }
+
+  function renderFields(dateIso: string): void {
+    weekdayEl.textContent = weekdayLabel(dateIso, strings);
+    monthValueEl.textContent = monthLabel(dateIso, strings);
+    dayValueEl.textContent = dayNumber(dateIso);
+    yearValueEl.textContent = yearNumber(dateIso);
   }
 
   function commitDateInput(): void {
@@ -190,6 +227,12 @@ export function mountCalendarBar(
   dateInput.value = formatDateForInput(store.get().selectedDate);
   dateSlider.value = sliderOffsetFor(store.get().selectedDate);
   renderSystemLabel(store.get().selectedDate);
+  renderFields(store.get().selectedDate);
+
+  editButton.addEventListener('click', () => {
+    dateInput.hidden = !dateInput.hidden;
+    if (!dateInput.hidden) dateInput.focus();
+  });
 
   container.querySelector('[data-action="day-up"]')!.addEventListener('click', () => {
     store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'day', 1, config.min, config.max) });
@@ -229,5 +272,6 @@ export function mountCalendarBar(
     const offset = sliderOffsetFor(state.selectedDate);
     if (dateSlider.value !== offset) dateSlider.value = offset;
     renderSystemLabel(state.selectedDate);
+    renderFields(state.selectedDate);
   });
 }

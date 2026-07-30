@@ -27,20 +27,20 @@ describe('formatInfoFieldHtml', () => {
 
   it('renders link type as an anchor using the label as link text', () => {
     expect(
-      formatInfoFieldHtml({ field: 'web', label: 'Sitio web', type: 'link' }, ['https://example.org'])
-    ).toBe('<p><a href="https://example.org" target="_blank" rel="noopener">Sitio web</a></p>');
+      formatInfoFieldHtml({ field: 'web', label: 'Website', type: 'link' }, ['https://example.org'])
+    ).toBe('<p><a href="https://example.org" target="_blank" rel="noopener">Website</a></p>');
   });
 
   it('falls back to text rendering for a link with an unsafe scheme', () => {
     expect(
-      formatInfoFieldHtml({ field: 'web', label: 'Sitio web', type: 'link' }, ['javascript:alert(1)'])
-    ).toBe('<p><strong>Sitio web:</strong> javascript:alert(1)</p>');
+      formatInfoFieldHtml({ field: 'web', label: 'Website', type: 'link' }, ['javascript:alert(1)'])
+    ).toBe('<p><strong>Website:</strong> javascript:alert(1)</p>');
   });
 
   it('renders image type as a label paragraph plus an img tag', () => {
     expect(
-      formatInfoFieldHtml({ field: 'foto', label: 'Foto', type: 'image' }, ['https://example.org/x.png'])
-    ).toBe('<p><strong>Foto</strong></p><img class="map-selection-card__image" src="https://example.org/x.png" alt="Foto">');
+      formatInfoFieldHtml({ field: 'foto', label: 'Photo', type: 'image' }, ['https://example.org/x.png'])
+    ).toBe('<p><strong>Photo</strong></p><img class="map-selection-card__image" src="https://example.org/x.png" alt="Photo">');
   });
 
   it('escapes HTML-significant characters in label and value', () => {

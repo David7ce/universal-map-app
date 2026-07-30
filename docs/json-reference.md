@@ -1,99 +1,142 @@
-# Referencia de los formatos JSON
+# JSON format reference
 
-Referencia de campo por campo de los tres tipos de JSON que usa el motor: el manifiesto de app, el manifiesto de capa, y los datos GeoJSON (con la extensión `temporal`). Todos viven bajo `apps/<app-id>/` — ver `apps/demo/` como instancia de referencia funcionando.
+Field-by-field reference for the three JSON shapes the engine uses: the app manifest, the layer manifest, and the GeoJSON data (with the `temporal` extension). All of these live under `apps/<app-id>/` — see `apps/demo/` as a working reference instance.
 
-Validados en runtime por `validateAppManifest` (`src/engine/manifests/app-manifest.ts`) y `validateLayerManifest` (`src/engine/manifests/layer-manifest.ts`) — la validación actual es mínima (comprueba los campos obligatorios de nivel superior, no valida en profundidad los campos opcionales ni sus formas internas; ver `ROADMAP.md`/ledger para ese hueco conocido).
+Validated at runtime by `validateAppManifest` (`src/engine/manifests/app-manifest.ts`) and `validateLayerManifest` (`src/engine/manifests/layer-manifest.ts`) — validation today is minimal (checks required top-level fields, doesn't deep-validate every optional field's inner shape).
+
+See `docs/api-reference.md` for the internal function/module API (not the JSON formats).
 
 ---
 
 ## `app-manifest.json`
 
-Un objeto por app instance, referenciado desde `src/main.ts` (hoy con la ruta `/apps/demo/app-manifest.json` hardcodeada — ver "Añadir una app nueva" en `README.md`).
+One object per app instance, referenced from `src/main.ts` (currently with the path `/apps/demo/app-manifest.json` hardcoded — see "Add a new app instance" in `README.md`).
 
-| Campo                           | Tipo                                               | Obligatorio                                     | Descripción                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-|---------------------------------|----------------------------------------------------|-------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                            | `string`                                           | sí                                              | Identificador de la app. No vacío.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `title`                         | `string`                                           | no (validación no lo exige, pero úsalo siempre) | Título mostrado de la app.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `map.center`                    | `[lat, lng]`                                       | no (no validado)                                | Centro inicial del mapa, en formato Leaflet `[lat, lng]` (**ojo:** orden distinto al de coordenadas GeoJSON, que es `[lng, lat]`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `map.zoom`                      | `number`                                           | no (no validado)                                | Nivel de zoom inicial.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| `map.crs`                       | `"EPSG:3857" \| "EPSG:4326" \| CustomCrsConfig`    | no                                              | Proyección del mapa (por defecto `"EPSG:3857"`, Web Mercator, la misma que usa Leaflet/OSM hoy). `"EPSG:4326"` usa el CRS plano/equirectangular incorporado en Leaflet, sin dependencia nueva. Cualquier otra proyección requiere un objeto `{ proj4def: string, resolutions: number[], origin: [number, number], bounds?: [[number,number],[number,number]] }`, resuelto vía `proj4leaflet` (`L.Proj.CRS`). Los datos GeoJSON siguen siendo siempre WGS84 lon/lat sin importar este campo — Leaflet reproyecta al momento de renderizar. `baseLayers` sigue siendo obligatorio: si se cambia de proyección, el autor de la app es responsable de que los tiles elegidos realmente se sirvan en esa proyección (el motor no lo valida). Ver `src/engine/space/map-crs.ts` y `src/engine/space/map.ts`. |
-| `baseLayers`                    | `BaseLayerConfig[]`                                | sí, mínimo 1 entrada                            | Capas base del mapa (ver tabla abajo). El primer elemento del array es el que se activa por defecto (`createMap()`, `src/engine/space/map.ts`). Si hay más de una entrada, Leaflet añade automáticamente un selector de capas (`L.control.layers`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| `dataLayers`                    | `string[]`                                         | sí (debe ser array; puede estar vacío)          | Rutas relativas a los `layer.json` de esta app, p.ej. `"layers/poi.layer.json"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `calendar.default`              | `"today" \| string`                                | sí (min/max obligatorios)                       | Fecha inicial: `"today"` siembra `store.selectedDate` con la fecha actual, cualquier otro valor debe ser una fecha ISO (`YYYY-MM-DD`) y se usa literalmente. Validado por `validateAppManifest()`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `calendar.min` / `calendar.max` | `string` (ISO `YYYY-MM-DD`)                        | sí                                              | Límites del selector de fecha en `CalendarBar.ts`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `calendar.system`               | `"gregorian" \| "julian" \| "islamic" \| "hebrew"` | no                                              | Calendario usado para *visualización* únicamente (por defecto `"gregorian"`). El almacenamiento y todo el cómputo temporal (`isActiveOn`, RRULE) siguen siendo gregoriano/ISO 8601 sin importar este campo — `calendar.min`/`calendar.max`/`calendar.default` se siguen escribiendo en ISO gregoriano incluso cuando `system` es otro. Afecta la aritmética y la etiqueta de `CalendarBar.ts`, y las fechas mostradas en `temporal-status.ts`. Ver `src/engine/time/calendar-conversion.ts`.                                                                                                                                                                                                                                                                                                           |
-| `strings`                       | `string`                                           | no                                              | Ruta relativa (dentro de la carpeta de la app) a su `strings.json`. Si se omite, `t()` cae siempre al fallback (mostrar la propia key).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `plugins.participate`           | `ParticipateConfig \| undefined`                   | no                                              | Ver tabla abajo. Si se omite, el botón "Participate" no aparece.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `id` | `string` | yes | App identifier. Non-empty. |
+| `title` | `string` | no (not enforced by validation, but always set it) | Displayed app title. |
+| `map.center` | `[lat, lng]` | no (not validated) | Initial map center, Leaflet order `[lat, lng]` (**note:** the opposite order from GeoJSON coordinates, which are `[lng, lat]`). |
+| `map.zoom` | `number` | no (not validated) | Initial zoom level. |
+| `map.crs` | `MapCrsConfig` | no | Map projection. See "`map.crs` — projections" below. Defaults to Web Mercator (`EPSG:3857`, Leaflet/OSM's default) when omitted. |
+| `baseLayers` | `BaseLayerConfig[]` | yes, at least 1 entry | Base map layers (see table below). The first array element is the one active by default. With more than one entry, the layer-control popover (`LayerControl.ts`) shows a radio per base layer. |
+| `dataLayers` | `string[]` | yes (must be an array; may be empty) | Relative paths to this app's `layer.json` files, e.g. `"layers/poi.layer.json"`. |
+| `calendar.system` | `"gregorian" \| "julian" \| "islamic" \| "hebrew"` | no | **Display only.** Which calendar the calendar bar shows dates in. Defaults to `"gregorian"`. Storage and all temporal computation (`isActiveOn`, RRULE matching, `calendar.min`/`max`/`default`) always stay Gregorian/ISO 8601 regardless of this setting — see "Calendar systems" below. |
+| `calendar.default` | `"today" \| string` | yes (`min`/`max` are required; `default` is validated if present) | Initial date. `"today"` seeds from the current date; otherwise must be an ISO date (`YYYY-MM-DD`) — `validateAppManifest` rejects anything else. |
+| `calendar.min` / `calendar.max` | `string` (ISO `YYYY-MM-DD`) | yes | Bounds for `CalendarBar.ts`'s date picker and range slider. |
+| `strings` | `string` | no | Relative path (inside the app's folder) to its `strings.json`. If omitted, `t()` always falls back to displaying the raw key. |
+| `plugins.participate` | `ParticipateConfig \| undefined` | no | See table below. If omitted, the "Participate" button doesn't appear. |
 
-### `BaseLayerConfig` (elemento de `baseLayers`)
+### `BaseLayerConfig` (element of `baseLayers`)
 
-| Campo         | Tipo            | Descripción                                                                                                                                                                                                 |
-|---------------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`          | `string`        | Identificador de la capa base. Hoy no se lee en ningún sitio salvo como valor inicial de `store.activeBaseLayerId` — ese estado no está sincronizado con el selector de Leaflet todavía (ver `ROADMAP.md`). |
-| `title`       | `string`        | Se usa como key interna del control de capas de Leaflet — dos capas con el mismo `title` colisionarían silenciosamente (limitación conocida, no validada).                                                  |
-| `type`        | `"raster-tile"` | Único valor soportado hoy.                                                                                                                                                                                  |
-| `url`         | `string`        | URL de tiles, con los placeholders `{z}/{x}/{y}` que espera Leaflet.                                                                                                                                        |
-| `attribution` | `string`        | Texto de atribución mostrado en la esquina del mapa.                                                                                                                                                        |
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Base layer identifier — used as the key for `store.activeBaseLayerId` and to look up the active tile layer in `LayerControl.ts`. |
+| `title` | `string` | Displayed next to its radio button in the layer control, and shown on the trigger button when active. |
+| `type` | `"raster-tile"` | Only value supported today. |
+| `url` | `string` | Tile URL, with the `{z}/{x}/{y}` placeholders Leaflet expects. |
+| `attribution` | `string` | Attribution text shown in the footer strip when this layer is active. |
+
+### `map.crs` — projections
+
+| Value | Description |
+|---|---|
+| `"EPSG:3857"` (default, or omitted) | Web Mercator — Leaflet's own default, no code path taken. |
+| `"EPSG:4326"` | Plate Carrée / plain lat-lng — uses Leaflet's built-in `L.CRS.EPSG4326`, no new dependency. |
+| `CustomCrsConfig` object | Any other projection, via `proj4leaflet` (`L.Proj.CRS`). Fields: `proj4def` (a [proj4](https://proj.org/) definition string), `resolutions` (number array, one per zoom level), `origin` (`[x, y]`), `bounds` (optional, `[[minX,minY],[maxX,maxY]]`). |
+
+GeoJSON data is always WGS84 lon/lat regardless of `map.crs` — Leaflet reprojects at render time. You are responsible for choosing `baseLayers` tiles that are actually served in the projection you configure; the engine doesn't check this for you. See `src/engine/space/map-crs.ts`.
 
 ### `ParticipateConfig` (`plugins.participate`)
 
-| Campo             | Tipo                                  | Descripción                                                                                                                                                                                   |
-|-------------------|---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `channel`         | `"email" \| "whatsapp" \| "telegram"` | Determina el esquema del link generado (`mailto:`, `https://wa.me/`, `https://t.me/`).                                                                                                        |
-| `target`          | `string`                              | Email, número de WhatsApp (sin `+`), o usuario/bot de Telegram, según `channel`.                                                                                                              |
-| `messageTemplate` | `string`                              | Texto del mensaje. El placeholder `{{date}}` se sustituye por la fecha seleccionada (formato `YYYY-MM-DD`). Solo la primera ocurrencia se sustituye (ver limitación en el ledger de Task 16). |
+| Field | Type | Description |
+|---|---|---|
+| `channel` | `"email" \| "whatsapp" \| "telegram"` | Determines the generated link's scheme (`mailto:`, `https://wa.me/`, `https://t.me/`). |
+| `target` | `string` | Email, WhatsApp number (no `+`), or Telegram user/bot, depending on `channel`. |
+| `messageTemplate` | `string` | Message text. The `{{date}}` placeholder is replaced with the selected date (`YYYY-MM-DD`). Only the first occurrence is substituted. |
 
 ---
 
 ## `layer.json`
 
-Un archivo por capa de datos, referenciado desde `app-manifest.json`'s `dataLayers`.
+One file per data layer, referenced from `app-manifest.json`'s `dataLayers`.
 
-| Campo                        | Tipo                                                        | Obligatorio | Descripción                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-|------------------------------|-------------------------------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                         | `string`                                                    | sí          | Identificador de la capa.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| `title`                      | `string`                                                    | sí          | Título de la capa.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| `kind`                       | `"point" \| "line" \| "polygon" \| "boundary" \| "heatmap"` | sí          | **Renderer dedicado hoy: `point`** (agrupa en clusters si `style.cluster` es `true`) y **`heatmap`** (capa de densidad vía `leaflet.heat`, solo usa las features con geometría `Point`; otras geometrías en una capa heatmap se ignoran). `line`, `polygon` y `boundary` se dibujan de forma genérica vía `L.geoJSON`, sin lógica especial por kind — funciona porque su geometría GeoJSON se pinta igual que cualquier otra. Ver `apps/demo/layers/heatmap.layer.json` como ejemplo. **Toda capa `kind: "heatmap"` se trata automáticamente como "detalle del mapa"**: aparece como checkbox opcional en el grupo "Map details" del control de capas (`LayerControl.ts`), oculta por defecto — `main.ts` inicializa `AppState.hiddenLayerIds` con el id de cada capa heatmap cargada. No hace falta ningún campo de manifiesto adicional para esto. |
-| `source`                     | `LayerSource`                                               | sí          | Ver tabla abajo.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `temporal.defaultVisibility` | `"always" \| "time-filtered"`                               | no          | **Declarado pero no leído por ningún código todavía** — el filtrado por `isActiveOn` se aplica siempre igual, independientemente de este valor.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `taxonomy`                   | `TaxonomyFieldDef[]`                                        | no          | Dimensiones de filtro que esta capa aporta al panel derecho. Ver tabla abajo.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| `regionRole`                 | `"boundary" \| null`                                        | no          | Si es `"boundary"`, esta capa participa en `findContainingRegions()` (`src/engine/region/spatial-join.ts`) — sus features actúan como límites administrativos con validez temporal, como cualquier otro feature.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `style`                      | `Record<string, unknown>`                                   | no          | Hoy solo se lee `style.cluster: boolean` y `style.icon: string` (`resolveMarkerStyle()`, `src/engine/space/style.ts`), y solo tienen efecto si `kind: "point"`. Cualquier otra clave se acepta pero se ignora.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `panel.showInSearch`         | `boolean`                                                   | no          | `false` excluye por completo las features de esa capa del panel izquierdo (ni aparecen en resultados de búsqueda ni son seleccionables) — ver `PanelLeft.ts`. Por defecto (ausente o `true`) sí se incluyen. Útil para capas puramente visuales como `regions` (límites) o una capa `heatmap`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `panel.showInInfo`           | `boolean`                                                   | no          | **Declarado pero no leído por ningún código todavía** — no tiene efecto observable hoy porque no existe ninguna vía de selección que no pase ya por `showInSearch` (p.ej. no hay "click en el mapa para seleccionar").                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `panel.infoFields`           | `{ field, label, type? }[]`                                 | no          | Propiedades extra que se muestran en la tarjeta de selección al elegir un feature de esta capa, además de name/estado temporal/región/coordenadas. `field` es una ruta con puntos dentro de `properties` (igual que `taxonomy[].field`); `label` es el texto mostrado junto al valor. `type` es opcional (`"text"` por defecto): `"link"` renderiza `label` como `<a href>` clicable, `"image"` renderiza un `<img>`; ambos solo si el valor es una URL `http(s):`/`mailto:` (si no, cae a texto plano — evita inyección vía `javascript:` en datos del feature). Ver `SelectionCard.ts` (usa `readField()`/`formatInfoFieldHtml()`) y `apps/demo/layers/poi.layer.json` como ejemplo.                                                                                                                                                             |
-| — coordenadas                | —                                                           | —           | No es un campo de manifiesto: para cualquier feature con geometría `Point`, la tarjeta de selección muestra automáticamente `lat, lng` (5 decimales), sin necesidad de configuración.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `id` | `string` | yes | Layer identifier. |
+| `title` | `string` | yes | Layer title. |
+| `kind` | `"point" \| "line" \| "polygon" \| "boundary" \| "heatmap"` | yes | See "Layer kinds" below. |
+| `source` | `LayerSource` | yes | See table below. |
+| `temporal.defaultVisibility` | `"always" \| "time-filtered"` | no | **Declared but not read by any code yet** — `isActiveOn` filtering always applies the same way regardless of this value. |
+| `taxonomy` | `TaxonomyFieldDef[]` | no | Filter dimensions this layer contributes to the right-hand filters panel. See table below. |
+| `regionRole` | `"boundary" \| null` | no | If `"boundary"`, this layer's features participate in `findContainingRegions()` (`src/engine/region/spatial-join.ts`) — they act as administrative boundaries with temporal validity, exactly like any other feature. |
+| `style` | `Record<string, unknown>` | no | See "Style fields" below — which keys are read depends on `kind`. |
+| `panel.showInSearch` | `boolean` | no | `false` excludes this layer's features entirely from the left panel (not searchable, not selectable). Defaults to `true`. Useful for purely visual layers like `regions` or a `heatmap` layer. |
+| `panel.showInInfo` | `boolean` | no | **Declared but not read by any code yet** — has no observable effect today because there's no selection path that doesn't already go through `showInSearch` (e.g. no "click on the map to select" interaction exists). |
+| `panel.infoFields` | `{ field, label, type? }[]` | no | Extra properties shown on the selection card when a feature from this layer is selected. See "`infoFields`" below. |
+| `panel.showByDefault` | `boolean` | no | `false` makes the layer opt-in: hidden until the user turns it on via the layer control's "Map details" checkbox group (the same mechanism `heatmap` layers use). Defaults to `true` (always rendered, subject to the usual temporal/filter checks). |
 
-### `LayerSource` (campo `source`)
+### Layer kinds
 
-| `type`              | Campos adicionales | Descripción                                                                                                                                                                                                                                                                                                                              |
-|---------------------|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `"geojson"`         | `url: string`      | Un único archivo GeoJSON, cargado entero con `fetch()`.                                                                                                                                                                                                                                                                                  |
-| `"geojson-sharded"` | `urls: string[]`   | Varios archivos GeoJSON, cargados y concatenados.                                                                                                                                                                                                                                                                                        |
-| `"api"`             | —                  | **Reservado, no implementado.** Seam documentado para un futuro loader contra un backend — `fetchFeatures(source, bounds?, dateRange?)` (`src/engine/data/loader-registry.ts`) ya acepta `bounds`/`dateRange` opcionales aunque los loaders actuales los ignoran, precisamente para no tener que cambiar esa firma cuando se implemente. |
+| `kind` | Rendering |
+|---|---|
+| `"point"` | `L.geoJSON`, clustered via `L.markerClusterGroup` if `style.cluster` is `true`. |
+| `"heatmap"` | Density layer via `leaflet.heat`. Only uses features with `Point` geometry; other geometry types on a heatmap layer are silently skipped. |
+| `"line"` / `"polygon"` / `"boundary"` | `L.geoJSON` with a real fill + border style (see "Style fields" below) — not Leaflet's raw, unstyled default. |
 
-### `TaxonomyFieldDef` (elemento de `taxonomy`)
+### `LayerSource` (the `source` field)
 
-| Campo          | Tipo      | Descripción                                                                                                                                                                                                                               |
-|----------------|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`           | `string`  | Identificador de la dimensión de filtro — es la key que se usa en `activeFilters` del store. Si dos capas declaran el mismo `id` con `label` distinto, gana la primera capa procesada (limitación conocida).                              |
-| `label`        | `string`  | Etiqueta mostrada en el panel derecho.                                                                                                                                                                                                    |
-| `field`        | `string`  | Ruta con puntos dentro de `properties` del feature (p.ej. `"properties.category"`). Así es como el motor evita hardcodear names de campo — ver `readField()`/`featureMatchesFilters()` en `src/engine/taxonomy/compute-dimensions.ts`. |
-| `hierarchical` | `boolean` | **Declarado pero no leído por ningún código todavía.**                                                                                                                                                                                    |
+| `type` | Extra fields | Description |
+|---|---|---|
+| `"geojson"` | `url: string` | A single GeoJSON file, fetched whole. |
+| `"geojson-sharded"` | `urls: string[]` | Several GeoJSON files, fetched and concatenated. |
+| `"api"` | — | **Reserved, not implemented.** Documented seam for a future backend-backed loader — `fetchFeatures(source, bounds?, dateRange?)` (`src/engine/data/loader-registry.ts`) already accepts optional `bounds`/`dateRange`, even though current loaders ignore them, so this signature won't need to change when it's implemented. |
+
+### `TaxonomyFieldDef` (element of `taxonomy`)
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `string` | Filter-dimension identifier — the key used in the store's `activeFilters`. If two layers declare the same `id` with a different `label`, the first one processed wins (a known limitation). |
+| `label` | `string` | Label shown in the right-hand filters panel. |
+| `field` | `string` | Dotted path inside the feature's `properties` (e.g. `"properties.category"`). This is how the engine avoids hardcoding field names — see `readField()`/`featureMatchesFilters()` in `src/engine/taxonomy/compute-dimensions.ts`. |
+| `hierarchical` | `boolean` | **Declared but not read by any code yet.** |
+
+### `infoFields` (element of `panel.infoFields`)
+
+| Field | Type | Description |
+|---|---|---|
+| `field` | `string` | Dotted path inside `properties`, same convention as `taxonomy[].field`. |
+| `label` | `string` | Label shown next to the value on the selection card. |
+| `type` | `"text" \| "link" \| "image"` | Defaults to `"text"` (a `<p><strong>Label:</strong> value</p>` line). `"link"` renders `<a href="value">Label</a>`; `"image"` renders the label plus an `<img>`. For safety, `"link"`/`"image"` only render as `<a>`/`<img>` when the value is an `http(s):`/`mailto:` URL (`isAllowedUrl()` in `src/ui/panels/info-field-format.ts`) — anything else (e.g. a `javascript:` value injected via feature data) falls back to plain text. |
+
+Selecting a `Point` feature also always shows its `lat, lng` (5 decimals), automatically, with no configuration needed.
+
+### Style fields
+
+Read from the layer's `style` object; which ones apply depends on `kind`.
+
+| `kind` | Field | Type | Default | Description |
+|---|---|---|---|---|
+| `"point"` | `cluster` | `boolean` | `false` | Group markers into clusters via `leaflet.markercluster`. |
+| `"point"` | `icon` | `string` | `"default"` | Marker icon name (`resolveMarkerStyle()` in `src/engine/space/style.ts` — currently only resolves the name, doesn't map it to an actual icon asset). |
+| `"line"` / `"polygon"` / `"boundary"` | `color` | `string` (CSS color) | `"#e08a3e"` | Border/stroke color. |
+| `"line"` / `"polygon"` / `"boundary"` | `weight` | `number` | `2` | Border/stroke width in pixels. |
+| `"line"` / `"polygon"` / `"boundary"` | `fillColor` | `string` (CSS color) | `"#e08a3e"` | Fill color (ignored for `"line"`, which has no fill). |
+| `"line"` / `"polygon"` / `"boundary"` | `fillOpacity` | `number` (0–1) | `0.18` | Fill opacity. |
 
 ---
 
-## Datos: GeoJSON + `properties.temporal`
+## Data: GeoJSON + `properties.temporal`
 
-Los datos son `FeatureCollection` GeoJSON estándar. La única extensión propia del motor es `properties.temporal`, opcional en cada `Feature`.
+Data is standard GeoJSON `FeatureCollection`. The engine's only extension is `properties.temporal`, optional on every `Feature`.
 
 ```json
 {
   "type": "Feature",
   "id": "poi-5",
   "properties": {
-    "name": "Mercado Temporal",
-    "category": "mercado",
+    "name": "Temporary Market",
+    "category": "market",
     "temporal": {
       "range": { "from": "2024-01-01", "to": "2024-12-31" },
       "recurrence": { "rule": "FREQ=WEEKLY;BYDAY=SA" }
@@ -103,54 +146,65 @@ Los datos son `FeatureCollection` GeoJSON estándar. La única extensión propia
 }
 ```
 
-- **Coordenadas en orden GeoJSON estándar:** `[lng, lat]` — al revés que `map.center` del app manifest, que usa el orden de Leaflet `[lat, lng]`. Fuente de bugs frecuente si se mezclan.
-- `properties` puede llevar cualquier campo propio de la app (`name`, `category`, etc. en el demo) — esos names nunca están hardcodeados en `src/engine/`, siempre vienen de `taxonomy[].field` en el `layer.json`.
-- `properties.temporal` es opcional. Si no está, el feature se considera activo siempre (`isActiveOn` devuelve `true`).
+- **Coordinates in standard GeoJSON order:** `[lng, lat]` — the opposite of `map.center` in the app manifest, which uses Leaflet's `[lat, lng]` order. A frequent source of bugs if the two get mixed up.
+- `properties` can carry any app-specific fields (`name`, `category`, etc. in the demo) — these names are never hardcoded in `src/engine/`, they always come from `taxonomy[].field` / `infoFields[].field` in the `layer.json`.
+- `properties.temporal` is optional. If absent, the feature is considered always active (`isActiveOn` returns `true`).
 
-### `temporal` (objeto)
+### `temporal` (object)
 
-Sus tres claves son cada una independientemente opcionales y combinables — no son mutuamente excluyentes:
+Its three keys are each independently optional and combinable — not mutually exclusive:
 
-| Campo                   | Tipo                                       | Semántica                                                                                                                                  |
-|-------------------------|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| `instant`               | `string` (`YYYY-MM-DD`)                    | El feature solo está activo ese día exacto.                                                                                                |
-| `range.from`            | `string` (`YYYY-MM-DD`), opcional          | Fecha de inicio de validez. Si se omite, no hay límite inferior.                                                                           |
-| `range.to`              | `string` (`YYYY-MM-DD`), opcional          | Fecha de fin de validez (inclusive). Si se omite, no hay límite superior.                                                                  |
-| `recurrence.rule`       | `string` (subconjunto de RRULE, RFC 5545)  | Ver tabla abajo.                                                                                                                           |
-| `recurrence.duration`   | `string`, opcional                         | **Declarado en el tipo (`TemporalRecurrence`, `src/engine/time/temporal-types.ts`) pero no leído por `isActiveOn`/`matchesRule` todavía.** |
-| `recurrence.exceptions` | `string[]` (fechas `YYYY-MM-DD`), opcional | Fechas concretas excluidas aunque la regla las incluiría.                                                                                  |
+| Field | Type | Semantics |
+|---|---|---|
+| `instant` | `string` (`YYYY-MM-DD`) | The feature is only active on that exact day. |
+| `range.from` | `string` (`YYYY-MM-DD`), optional | Start of validity. If omitted, no lower bound. |
+| `range.to` | `string` (`YYYY-MM-DD`), optional | End of validity (inclusive). If omitted, no upper bound. |
+| `recurrence.rule` | `string` (RRULE subset, RFC 5545) | See "`recurrence.rule`" below. |
+| `recurrence.duration` | `string`, optional | **Declared in the type (`TemporalRecurrence`, `src/engine/time/temporal-types.ts`) but not read by `isActiveOn`/`matchesRule` yet.** |
+| `recurrence.exceptions` | `string[]` (`YYYY-MM-DD` dates), optional | Specific dates excluded even though the rule would otherwise include them. |
 
-Si `range` y `recurrence` están ambas presentes (como en el ejemplo de arriba), `range` actúa como ventana de validez general y además como ancla para `INTERVAL`/`COUNT` de la recurrencia (`range.from` es el ancla; si `recurrence.rule` usa `COUNT` y no hay `range.from`, `isActiveOn` lanza un error en vez de dar una respuesta silenciosamente incorrecta).
+If both `range` and `recurrence` are present (as in the example above), `range` acts as the overall validity window and also as the anchor for the recurrence's `INTERVAL`/`COUNT` (`range.from` is the anchor; if `recurrence.rule` uses `COUNT` with no `range.from`, `isActiveOn` throws instead of silently giving a wrong answer).
 
-### `recurrence.rule` — subconjunto de RRULE soportado
+### `recurrence.rule` — supported RRULE subset
 
-Parser en `src/engine/time/rrule-subset.ts`. Solo estas claves, todas opcionales salvo `FREQ`:
+Parser in `src/engine/time/rrule-subset.ts`. Only these keys, all optional except `FREQ`:
 
-| Clave      | Valores soportados                                                                                                                                      |
-|------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `FREQ`     | `DAILY`, `WEEKLY` — funcionan. `MONTHLY`, `YEARLY` — el parser los acepta pero `matchesRule` lanza un error al intentar hacer match (no implementados). |
-| `BYDAY`    | Lista separada por comas de `MO,TU,WE,TH,FR,SA,SU`.                                                                                                     |
-| `INTERVAL` | Entero. Cada cuántas unidades de `FREQ` se repite, anclado en `range.from`.                                                                             |
-| `UNTIL`    | Fecha `YYYYMMDD` (formato RRULE, sin guiones) — fin de la recurrencia.                                                                                  |
-| `COUNT`    | Entero. Número de ocurrencias, anclado en `range.from` (obligatorio si se usa `COUNT`).                                                                 |
+| Key | Supported values |
+|---|---|
+| `FREQ` | `DAILY`, `WEEKLY` — work. `MONTHLY`, `YEARLY` — the parser accepts them but `matchesRule` throws when actually matching (not implemented). |
+| `BYDAY` | Comma-separated list of `MO,TU,WE,TH,FR,SA,SU`. |
+| `INTERVAL` | Integer. How many `FREQ` units apart occurrences repeat, anchored at `range.from`. |
+| `UNTIL` | Date in `YYYYMMDD` format (RRULE convention, no dashes) — end of the recurrence. |
+| `COUNT` | Integer. Number of occurrences, anchored at `range.from` (required if `COUNT` is used). |
 
-No soportado: `BYSETPOS`, `BYMONTHDAY`, ni el resto de RFC 5545.
+Not supported: `BYSETPOS`, `BYMONTHDAY`, or the rest of RFC 5545.
 
 ---
 
 ## `strings.json`
 
-Diccionario plano `{ "clave.con.puntos": "texto" }`, cargado por `loadStrings()` (`src/ui/strings.ts`) desde la ruta indicada en `app-manifest.json`'s `strings`. Consumido vía `t(key, strings, params?)`:
+Flat dictionary `{ "dotted.key": "text" }`, loaded by `loadStrings()` (`src/ui/strings.ts`) from the path given in `app-manifest.json`'s `strings`. Consumed via `t(key, strings, params?)`:
 
-- Si la key no existe en el diccionario, `t()` devuelve la propia key tal cual (fallback silencioso — útil en desarrollo, pero significa que una key mal escrita no avisa de nada).
-- `params` (opcional) interpola `{nameParam}` dentro del texto ya resuelto (o dentro de la key, si cayó al fallback) — ver `apps/demo/strings.json` para el listado completo de keys que usa hoy el motor (`search.*`, `participate.*`, `info.*`, `temporalStatus.*`).
+- If the key isn't in the dictionary, `t()` returns the key itself as-is (silent fallback — handy during development, but means a misspelled key gives no warning).
+- `params` (optional) interpolates `{paramName}` inside the resolved text (or inside the key, if it fell back) — see `apps/demo/strings.json` for the full list of keys the engine currently uses (`search.*`, `filters.*`, `layerControl.*`, `calendar.*`, `participate.*`, `info.*`, `temporalStatus.*`, `selection.*`).
 
 ---
 
-## Campos declarados pero no implementados todavía (resumen)
+## Calendar systems
 
-Para no repetir la app-manifest y buscar cada uno: estos campos existen en los tipos TypeScript y pasan la validación si están presentes, pero ningún código los lee actualmente. Están para uso futuro, no fallan si los pones, simplemente no hacen nada:
+`calendar.system` only changes how dates are *displayed* — it never changes how they're stored or computed. Internally, `AppState.selectedDate` and every temporal computation (`isActiveOn`, RRULE matching, `calendar.min`/`max`/`default`) are always plain Gregorian ISO 8601 strings (`YYYY-MM-DD`). Conversion happens only in `src/engine/time/calendar-conversion.ts`, which the UI calls to format a label; nothing ever converts a non-Gregorian date back into the store.
 
-- `app-manifest.json`: `calendar.default`, `baseLayers[].id` (como estado sincronizado — sí se usa como semilla inicial de `activeBaseLayerId`, pero ese estado no se conecta a nada más).
+- `"gregorian"` (default): no conversion, no extra label — the native `<input type="date">`-derived fields already show it.
+- `"islamic"` / `"hebrew"`: converted via `@js-temporal/polyfill`'s `Temporal.PlainDate.withCalendar(...)`.
+- `"julian"`: the Julian calendar isn't in the Unicode/ICU calendar registry `Temporal`/`Intl` support, so it's implemented by hand (Fliegel & Van Flandern's Julian day number algorithm) in `src/engine/time/julian-calendar.ts`.
+
+The native date picker inside `CalendarBar.ts`'s manual-entry field is always Gregorian regardless of `calendar.system` — there's no custom non-Gregorian calendar-grid widget (see "Known v1 deviations" in `README.md`).
+
+---
+
+## Fields declared but not implemented yet (summary)
+
+So you don't have to hunt for each one: these fields exist in the TypeScript types and pass validation if present, but no code reads them today. They're reserved for future use — setting them doesn't error, they just don't do anything yet:
+
 - `layer.json`: `temporal.defaultVisibility`, `taxonomy[].hierarchical`, `panel.showInInfo`.
-- Datos: `properties.temporal.recurrence.duration`.
+- Data: `properties.temporal.recurrence.duration`.

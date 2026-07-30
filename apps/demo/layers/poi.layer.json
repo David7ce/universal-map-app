@@ -4,16 +4,16 @@
   "kind": "point",
   "source": { "type": "geojson", "url": "/apps/demo/data/poi.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },
-  "taxonomy": [{ "id": "categoria", "label": "Category", "field": "properties.categoria" }],
+  "taxonomy": [{ "id": "category", "label": "Category", "field": "properties.category" }],
   "regionRole": null,
   "style": { "cluster": true, "icon": "marker" },
   "panel": {
     "showInSearch": true,
     "showInInfo": true,
     "infoFields": [
-      { "field": "properties.categoria", "label": "Category" },
-      { "field": "properties.web", "label": "Website", "type": "link" },
-      { "field": "properties.foto", "label": "Photo", "type": "image" }
+      { "field": "properties.category", "label": "Category" },
+      { "field": "properties.website", "label": "Website", "type": "link" },
+      { "field": "properties.photo", "label": "Photo", "type": "image" }
     ]
   }
 }

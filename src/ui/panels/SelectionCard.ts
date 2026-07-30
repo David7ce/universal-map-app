@@ -24,7 +24,7 @@ export function mountSelectionCard(
 
   function featureLabel(feature: GeoFeature): string {
     const props = feature.properties;
-    return String(props.nombre ?? props.title ?? feature.id ?? t('search.untitledFeature', strings));
+    return String(props.name ?? props.title ?? feature.id ?? t('search.untitledFeature', strings));
   }
 
   container.classList.add('map-selection-card');
