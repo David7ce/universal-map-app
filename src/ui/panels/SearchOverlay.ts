@@ -26,7 +26,7 @@ export function mountSearchOverlay(
             <button type="button" class="search-clear" data-action="clear" aria-label="${t('search.clearLabel', strings)}" hidden>${icons.close}</button>
           </div>
         </div>
-        <div class="search-results" data-role="results" hidden></div>
+        <div class="search-results" data-role="results" aria-live="polite" aria-atomic="false" hidden></div>
       </div>
     </section>
   `;
@@ -115,6 +115,25 @@ export function mountSearchOverlay(
     searchInput.focus();
   });
   searchInput.addEventListener('input', runSearch);
+
+  // Escape: if the overlay is open (mobile modal), close it and return focus
+  // to the toggle. If the search field has text (desktop always-visible mode),
+  // clear it. At desktop, `panels.left` stays 'closed' so only the else
+  // branch fires.
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    if (store.get().panels.left === 'open') {
+      event.preventDefault();
+      searchInput.value = '';
+      syncClearButton();
+      close();
+      toggleButton.focus();
+    } else if (document.activeElement === searchInput && searchInput.value) {
+      event.preventDefault();
+      searchInput.value = '';
+      runSearch();
+    }
+  });
 
   function render(): void {
     const isOpen = store.get().panels.left === 'open';

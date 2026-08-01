@@ -12,7 +12,8 @@ export function renderDataLayer(
   manifest: LayerManifest,
   features: GeoFeature[],
   date: Date,
-  activeFilters: Record<string, Set<string>> = {}
+  activeFilters: Record<string, Set<string>> = {},
+  onFeatureClick?: (feature: GeoFeature) => void
 ): L.Layer {
   const active = features.filter((f) => isActiveOn(f, date) && featureMatchesFilters(f, manifest, activeFilters));
 
@@ -29,14 +30,20 @@ export function renderDataLayer(
     return heatLayer;
   }
 
+  const onEachFeature = onFeatureClick
+    ? (geoFeature: GeoJSON.Feature, layer: L.Layer) => {
+        layer.on('click', () => onFeatureClick(geoFeature as GeoFeature));
+      }
+    : undefined;
+
   // `line`/`polygon`/`boundary` get a real style (fill + border) instead of
   // Leaflet's raw default (a plain blue outline, no fill) — every field is
   // overridable per layer via the manifest's `style`.
   const needsPolygonStyle = manifest.kind === 'line' || manifest.kind === 'polygon' || manifest.kind === 'boundary';
-  const geoJsonLayer = L.geoJSON(
-    active as GeoJSON.Feature[],
-    needsPolygonStyle ? { style: resolvePolygonStyle(manifest) } : {}
-  );
+  const geoJsonLayer = L.geoJSON(active as GeoJSON.Feature[], {
+    ...(needsPolygonStyle ? { style: resolvePolygonStyle(manifest) } : {}),
+    ...(onEachFeature ? { onEachFeature } : {}),
+  });
 
   if (manifest.kind === 'point' && resolveMarkerStyle(manifest).cluster) {
     const clusterGroup = L.markerClusterGroup();

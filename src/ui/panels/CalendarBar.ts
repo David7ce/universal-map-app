@@ -65,10 +65,6 @@ export function calendarSystemLabel(dateIso: string, system: CalendarSystem): st
   return system === 'gregorian' ? '' : formatCalendarDate(dateIso, system);
 }
 
-function formatDateForInput(iso: string): string {
-  const date = new Date(`${iso}T00:00:00Z`);
-  return `${String(date.getUTCDate()).padStart(2, '0')}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${date.getUTCFullYear()}`;
-}
 
 export function parseDateInputValue(value: string): string | null {
   const trimmed = value.trim();
@@ -130,13 +126,8 @@ export function stepDatePart(currentIso: string, part: 'day' | 'month' | 'year',
   return clampDateToRange(date.toISOString().slice(0, 10), min, max);
 }
 
-const WEEKDAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const MONTH_KEYS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 
-function weekdayLabel(iso: string, strings: Record<string, string>): string {
-  const date = new Date(`${iso}T00:00:00Z`);
-  return t(`calendar.weekday.${WEEKDAY_KEYS[date.getUTCDay()]}`, strings);
-}
 function monthLabel(iso: string, strings: Record<string, string>): string {
   const date = new Date(`${iso}T00:00:00Z`);
   return t(`calendar.month.${MONTH_KEYS[date.getUTCMonth()]}`, strings);
@@ -155,50 +146,61 @@ export function mountCalendarBar(
   strings: Record<string, string>
 ): void {
   const totalDays = Math.max(daysBetween(config.min, config.max), 1);
+  const yearMin = new Date(`${config.min}T00:00:00Z`).getUTCFullYear();
+  const yearMax = new Date(`${config.max}T00:00:00Z`).getUTCFullYear();
 
-  // Compact, spinner-style date editor: weekday label, then month/day/year
-  // each with their own tiny up/down stepper, plus a pencil button that
-  // reveals a manual DD-MM-YYYY text field for typing a date directly. This
-  // engine's temporal model is date-only (no time-of-day), so there is no
-  // hour/minute/timezone field here — only the date fields are real.
+  // The calendar bar has two layers:
+  // 1. A date button (always visible) showing the current date and toggling the controls.
+  // 2. A controls panel (hidden by default) that appears above the bar with the slider and edit fields.
   container.innerHTML = `
-    <span class="calendar-bar__weekday" data-role="weekday"></span>
-    <div class="calendar-bar__field" data-field="month">
-      <span class="calendar-bar__field-value" data-role="month-value"></span>
-      <div class="calendar-bar__spin">
-        <button type="button" data-action="month-up" aria-label="Increase month">▲</button>
-        <button type="button" data-action="month-down" aria-label="Decrease month">▼</button>
+    <button type="button" class="calendar-bar__date-btn" data-action="toggle-expand" aria-expanded="false" aria-label="${t('calendar.expandLabel', strings)}">
+      <span class="calendar-bar__date-text" data-role="date-display"></span>
+      <span class="calendar-bar__chevron">${icons.chevron}</span>
+    </button>
+    <div class="calendar-bar__controls">
+      <div class="calendar-bar__field" data-field="year">
+        <span class="calendar-bar__field-value" data-role="year-value"></span>
+        <input type="number" class="calendar-bar__field-input" data-role="year-input" min="${yearMin}" max="${yearMax}" step="1" />
+        <div class="calendar-bar__spin">
+          <button type="button" data-action="year-up" aria-label="Increase year">▲</button>
+          <button type="button" data-action="year-down" aria-label="Decrease year">▼</button>
+        </div>
       </div>
-    </div>
-    <div class="calendar-bar__field" data-field="day">
-      <span class="calendar-bar__field-value" data-role="day-value"></span>
-      <div class="calendar-bar__spin">
-        <button type="button" data-action="day-up" aria-label="Increase day">▲</button>
-        <button type="button" data-action="day-down" aria-label="Decrease day">▼</button>
+      <span class="calendar-bar__sep">/</span>
+      <div class="calendar-bar__field" data-field="month">
+        <span class="calendar-bar__field-value" data-role="month-value"></span>
+        <input type="number" class="calendar-bar__field-input" data-role="month-input" min="1" max="12" step="1" />
+        <div class="calendar-bar__spin">
+          <button type="button" data-action="month-up" aria-label="Increase month">▲</button>
+          <button type="button" data-action="month-down" aria-label="Decrease month">▼</button>
+        </div>
       </div>
-    </div>
-    <span class="calendar-bar__sep">/</span>
-    <div class="calendar-bar__field" data-field="year">
-      <span class="calendar-bar__field-value" data-role="year-value"></span>
-      <div class="calendar-bar__spin">
-        <button type="button" data-action="year-up" aria-label="Increase year">▲</button>
-        <button type="button" data-action="year-down" aria-label="Decrease year">▼</button>
+      <span class="calendar-bar__sep">/</span>
+      <div class="calendar-bar__field" data-field="day">
+        <span class="calendar-bar__field-value" data-role="day-value"></span>
+        <input type="number" class="calendar-bar__field-input" data-role="day-input" min="1" max="31" step="1" />
+        <div class="calendar-bar__spin">
+          <button type="button" data-action="day-up" aria-label="Increase day">▲</button>
+          <button type="button" data-action="day-down" aria-label="Decrease day">▼</button>
+        </div>
       </div>
+      <span class="calendar-bar__system-label" data-role="system-label"></span>
+      <button type="button" class="calendar-bar__edit" data-action="edit" aria-label="${t('calendar.editLabel', strings)}">${icons.edit}</button>
+      <input type="range" data-role="date-slider" min="0" max="${totalDays}" step="1" />
     </div>
-    <span class="calendar-bar__system-label" data-role="system-label"></span>
-    <input type="text" class="calendar-bar__manual-input" data-role="date-input" hidden inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="${t('calendar.inputPlaceholder', strings)}" />
-    <button type="button" class="calendar-bar__edit" data-action="edit" aria-label="${t('calendar.editLabel', strings)}">${icons.edit}</button>
-    <input type="range" data-role="date-slider" min="0" max="${totalDays}" step="1" />
   `;
 
-  const weekdayEl = container.querySelector<HTMLElement>('[data-role="weekday"]')!;
+  const dateDisplayEl = container.querySelector<HTMLElement>('[data-role="date-display"]')!;
   const monthValueEl = container.querySelector<HTMLElement>('[data-role="month-value"]')!;
   const dayValueEl = container.querySelector<HTMLElement>('[data-role="day-value"]')!;
   const yearValueEl = container.querySelector<HTMLElement>('[data-role="year-value"]')!;
-  const dateInput = container.querySelector<HTMLInputElement>('[data-role="date-input"]')!;
+  const yearInputEl = container.querySelector<HTMLInputElement>('[data-role="year-input"]')!;
+  const monthInputEl = container.querySelector<HTMLInputElement>('[data-role="month-input"]')!;
+  const dayInputEl = container.querySelector<HTMLInputElement>('[data-role="day-input"]')!;
   const dateSlider = container.querySelector<HTMLInputElement>('[data-role="date-slider"]')!;
   const systemLabel = container.querySelector<HTMLElement>('[data-role="system-label"]')!;
   const editButton = container.querySelector<HTMLButtonElement>('[data-action="edit"]')!;
+  const expandButton = container.querySelector<HTMLButtonElement>('[data-action="toggle-expand"]')!;
 
   function sliderOffsetFor(dateIso: string): string {
     return String(clamp(daysBetween(config.min, dateIso), 0, totalDays));
@@ -209,29 +211,82 @@ export function mountCalendarBar(
   }
 
   function renderFields(dateIso: string): void {
-    weekdayEl.textContent = weekdayLabel(dateIso, strings);
+    const d = new Date(`${dateIso}T00:00:00Z`);
+    // Update the always-visible date button text
+    dateDisplayEl.textContent = `${yearNumber(dateIso)} / ${monthLabel(dateIso, strings)} / ${dayNumber(dateIso)}`;
+    // Update individual field spans inside the expanded controls
     monthValueEl.textContent = monthLabel(dateIso, strings);
     dayValueEl.textContent = dayNumber(dateIso);
     yearValueEl.textContent = yearNumber(dateIso);
+    // Sync numeric inputs only when not focused (avoid disrupting active typing)
+    if (document.activeElement !== yearInputEl) yearInputEl.value = String(d.getUTCFullYear());
+    if (document.activeElement !== monthInputEl) monthInputEl.value = String(d.getUTCMonth() + 1);
+    if (document.activeElement !== dayInputEl) dayInputEl.value = String(d.getUTCDate());
   }
 
-  function commitDateInput(): void {
-    const parsed = parseDateInputValue(dateInput.value);
-    if (!parsed) {
-      dateInput.value = formatDateForInput(store.get().selectedDate);
+  // Apply a single date-part value from a numeric input to the store.
+  function applyFieldInput(part: 'year' | 'month' | 'day', input: HTMLInputElement): void {
+    const val = Number(input.value);
+    if (!val || isNaN(val)) {
+      // Reset to current store value on invalid input
+      renderFields(store.get().selectedDate);
       return;
     }
-    store.set({ selectedDate: clampDateToRange(parsed, config.min, config.max) });
+    const d = new Date(`${store.get().selectedDate}T00:00:00Z`);
+    let year = d.getUTCFullYear();
+    let month = d.getUTCMonth() + 1;
+    let day = d.getUTCDate();
+    if (part === 'year') year = val;
+    else if (part === 'month') month = val;
+    else day = val;
+    const iso = `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const parsed = parseDateInputValue(iso);
+    if (parsed) store.set({ selectedDate: clampDateToRange(parsed, config.min, config.max) });
+    else renderFields(store.get().selectedDate);
   }
 
-  dateInput.value = formatDateForInput(store.get().selectedDate);
   dateSlider.value = sliderOffsetFor(store.get().selectedDate);
   renderSystemLabel(store.get().selectedDate);
   renderFields(store.get().selectedDate);
 
+  // Toggle expand/collapse the controls panel
+  expandButton.addEventListener('click', () => {
+    const isExpanded = container.classList.toggle('is-expanded');
+    expandButton.setAttribute('aria-expanded', String(isExpanded));
+    // Exiting expanded mode also exits edit mode
+    if (!isExpanded && container.classList.contains('is-editing')) {
+      container.classList.remove('is-editing');
+      editButton.setAttribute('aria-pressed', 'false');
+    }
+  });
+
   editButton.addEventListener('click', () => {
-    dateInput.hidden = !dateInput.hidden;
-    if (!dateInput.hidden) dateInput.focus();
+    const isEditing = container.classList.toggle('is-editing');
+    editButton.setAttribute('aria-pressed', String(isEditing));
+    if (isEditing) {
+      yearInputEl.focus();
+      yearInputEl.select();
+    }
+  });
+
+  // Each numeric input commits its part on change and on Enter; Escape exits.
+  ([['year', yearInputEl], ['month', monthInputEl], ['day', dayInputEl]] as const).forEach(([part, input]) => {
+    input.addEventListener('change', () => applyFieldInput(part, input));
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        applyFieldInput(part, input);
+        container.classList.remove('is-editing');
+        editButton.setAttribute('aria-pressed', 'false');
+        editButton.focus();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        renderFields(store.get().selectedDate);
+        container.classList.remove('is-editing');
+        editButton.setAttribute('aria-pressed', 'false');
+        editButton.focus();
+      }
+    });
   });
 
   container.querySelector('[data-action="day-up"]')!.addEventListener('click', () => {
@@ -253,22 +308,11 @@ export function mountCalendarBar(
     store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'year', -1, config.min, config.max) });
   });
 
-  dateInput.addEventListener('change', commitDateInput);
-  dateInput.addEventListener('blur', commitDateInput);
-  dateInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      commitDateInput();
-      dateInput.blur();
-    }
-  });
   dateSlider.addEventListener('input', () => {
     store.set({ selectedDate: addDays(config.min, Number(dateSlider.value)) });
   });
 
   store.subscribe((state) => {
-    const nextValue = formatDateForInput(state.selectedDate);
-    if (dateInput.value !== nextValue) dateInput.value = nextValue;
     const offset = sliderOffsetFor(state.selectedDate);
     if (dateSlider.value !== offset) dateSlider.value = offset;
     renderSystemLabel(state.selectedDate);

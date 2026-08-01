@@ -7,6 +7,10 @@
   </head>
   <body>
     <div id="app" class="map-app">
+      <div id="loading-overlay" class="loading-overlay" role="status" aria-label="Loading">
+        <div class="loading-overlay__spinner"></div>
+      </div>
+
       <div id="map" class="map"></div>
 
       <div id="search-overlay"></div>
@@ -17,7 +21,7 @@
       <aside id="panel-right" class="panel panel--right" aria-hidden="true">
         <header class="panel__header">
           <div class="panel__title" data-role="filters-title"></div>
-          <button type="button" id="panel-right-close" class="panel__toggle" aria-label=""></button>
+          <button type="button" id="panel-right-close" class="panel__close-btn" aria-label="Close filters"></button>
         </header>
         <div class="panel__content">
           <div id="panel-right-filters"></div>
@@ -33,7 +37,8 @@
       <div id="calendar-bar" class="calendar-bar"></div>
 
       <div class="map-footer-legend">
-        <div class="data-attribution" id="map-attribution"></div>
+        <span id="map-scale" class="map-scale"></span>
+        <span class="data-attribution" id="map-attribution"></span>
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>

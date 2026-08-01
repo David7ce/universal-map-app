@@ -23,47 +23,52 @@ export function mountLayerControl(
   strings: Record<string, string>,
   deps: LayerControlDeps
 ): void {
+  const baseLayerCards = deps.baseLayerConfigs
+    .map(
+      (config) => `
+        <label class="layer-control-card">
+          <input type="radio" name="base-layer" data-base-layer="${escapeHtml(config.id)}" class="layer-control-card__input" />
+          <span class="layer-control-card__thumb" data-layer-id="${escapeHtml(config.id)}" aria-hidden="true"></span>
+          <span class="layer-control-card__label">${escapeHtml(config.title)}</span>
+        </label>`
+    )
+    .join('');
+
+  const detailCards = deps.detailLayers
+    .map(
+      (layer) => `
+        <label class="layer-control-card">
+          <input type="checkbox" data-detail-layer="${escapeHtml(layer.id)}" class="layer-control-card__input" />
+          <span class="layer-control-card__thumb" data-layer-id="${escapeHtml(layer.id)}" aria-hidden="true"></span>
+          <span class="layer-control-card__label">${escapeHtml(layer.title)}</span>
+        </label>`
+    )
+    .join('');
+
   const detailGroup = deps.detailLayers.length
-    ? `
-      <div class="layer-control-group">
-        <p class="layer-control-group__title">${t('layerControl.mapDetails', strings)}</p>
-        ${deps.detailLayers
-          .map(
-            (layer) => `
-              <label class="layer-control-option">
-                <input type="checkbox" data-detail-layer="${escapeHtml(layer.id)}" />
-                <span>${escapeHtml(layer.title)}</span>
-              </label>`
-          )
-          .join('')}
-      </div>`
+    ? `<div class="layer-control-group">
+         <p class="layer-control-group__title">${t('layerControl.mapDetails', strings)}</p>
+         <div class="layer-control-cards">${detailCards}</div>
+       </div>`
     : '';
 
   container.innerHTML = `
     <button type="button" class="layer-control-trigger" aria-expanded="false" aria-label="${t('layerControl.trigger', strings)}">
       ${icons.layers}
-      <span class="layer-control-trigger__label" data-role="current-base"></span>
+      <span class="layer-control-trigger__label">${t('layerControl.trigger', strings)}</span>
     </button>
     <section class="layer-control-popover" hidden>
       ${detailGroup}
+      ${detailGroup ? '<hr class="layer-control-separator" />' : ''}
       <div class="layer-control-group">
-        <p class="layer-control-group__title">${t('layerControl.baseLayers', strings)}</p>
-        ${deps.baseLayerConfigs
-          .map(
-            (config) => `
-              <label class="layer-control-option">
-                <input type="radio" name="base-layer" data-base-layer="${escapeHtml(config.id)}" />
-                <span>${escapeHtml(config.title)}</span>
-              </label>`
-          )
-          .join('')}
+        <p class="layer-control-group__title">${t('layerControl.mapType', strings)}</p>
+        <div class="layer-control-cards">${baseLayerCards}</div>
       </div>
     </section>
   `;
 
   const trigger = container.querySelector<HTMLButtonElement>('.layer-control-trigger')!;
   const popover = container.querySelector<HTMLElement>('.layer-control-popover')!;
-  const currentBaseLabel = container.querySelector<HTMLSpanElement>('[data-role="current-base"]')!;
 
   trigger.addEventListener('click', () => {
     const open = popover.hidden;
@@ -98,9 +103,6 @@ export function mountLayerControl(
 
   function render(): void {
     const state = store.get();
-
-    const activeConfig = deps.baseLayerConfigs.find((c) => c.id === state.activeBaseLayerId);
-    currentBaseLabel.textContent = activeConfig?.title ?? '';
 
     container.querySelectorAll<HTMLInputElement>('[data-base-layer]').forEach((radio) => {
       radio.checked = radio.dataset.baseLayer === state.activeBaseLayerId;

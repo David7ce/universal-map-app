@@ -42,12 +42,9 @@
   --control-btn-size: 48px;
   --controls-gap: 0.75rem;
   --panel-right-width: 320px;
-  --calendar-bar-height: 3.5rem;
-  --footer-legend-height: 1.75rem;
-  /* How far above the very bottom of the viewport the floating controls
-     (zoom, layer control) must clear — the calendar bar + attribution
-     strip both live below them. */
-  --bottom-clearance: calc(var(--calendar-bar-height) + var(--footer-legend-height) + var(--controls-gap));
+  --footer-bar-height: 1.5rem;   /* thin bottom strip: scale + attribution */
+  /* Clearance above the footer strip for floating controls (Layers, zoom, calendar pill) */
+  --bottom-clearance: calc(var(--footer-bar-height) + var(--controls-gap) + 1.25rem);
 }
 
 * { box-sizing: border-box; }
@@ -226,7 +223,6 @@ body {
 .search-results__empty { padding: 0.75rem; text-align: center; color: var(--color-text-light); font-size: var(--font-size-sm); margin: 0; }
 
 @media (min-width: 64rem) {
-  .control-btn--search { display: none; }
   .map-search {
     position: fixed;
     inset: auto;
@@ -234,10 +230,6 @@ body {
     left: var(--control-btn-offset);
     width: min(22rem, calc(100vw - 2 * var(--control-btn-offset)));
   }
-  /* The toggle button that would normally reveal this panel is hidden at
-     this breakpoint (the search field is always docked, not modal) — undo
-     the `hidden` attribute's `display: none` so it stays visible. */
-  .map-search[hidden] { display: block; }
   .map-search__backdrop { display: none; }
   .map-search__panel { margin: 0; padding: 0; max-height: none; overflow: visible; gap: 0; background: transparent; box-shadow: none; }
   .search-field { background-color: var(--color-white); box-shadow: var(--shadow-md); }
@@ -258,7 +250,9 @@ body {
   position: fixed;
   top: var(--control-btn-offset);
   right: var(--control-btn-offset);
-  z-index: calc(var(--z-fixed) + 1);
+  /* Must be above the modal overlay so the button stays clickable
+     when the filter panel (and its backdrop) are open. */
+  z-index: calc(var(--z-tooltip) + 10);
   width: var(--control-btn-size);
   height: var(--control-btn-size);
   padding: 0;
@@ -267,7 +261,8 @@ body {
   border-radius: 50%;
   box-shadow: var(--shadow-md);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  /* Animate right position in sync with the panel slide */
+  transition: right var(--transition-base), background-color var(--transition-fast), box-shadow var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -276,6 +271,12 @@ body {
 .panel-toggle-btn:hover { background-color: var(--color-bg-alt); box-shadow: var(--shadow-lg); }
 .panel-toggle-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 .panel-toggle-btn svg { width: 22px; height: 22px; }
+/* On desktop the toggle button tracks the panel's left edge */
+@media (min-width: 48rem) {
+  .map-app.panel-right-open .panel-toggle-btn {
+    right: calc(var(--panel-right-width) + var(--control-btn-offset));
+  }
+}
 
 .panel-overlay {
   display: none;
@@ -313,30 +314,43 @@ body {
 .panel__header {
   flex-shrink: 0;
   padding: 0.75rem 1rem;
+  /* Right padding leaves room for the toggle button floating above the header on desktop */
+  padding-right: calc(var(--control-btn-size) + var(--control-btn-offset) * 2);
   border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 0.75rem;
 }
+/* On mobile the toggle button is hidden when the panel is open, so we need
+   the close button inside the header instead — remove the extra right padding. */
+@media (max-width: 47.99rem) {
+  .panel__header { padding-right: 1rem; }
+}
 .panel__title { margin: 0; font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); flex: 1; }
-.panel__toggle {
-  width: 36px;
-  height: 36px;
+
+/* Close button: visible only on mobile, sits inside the panel header */
+.panel__close-btn {
+  display: none;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
   padding: 0;
-  background-color: transparent;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-text-light);
   cursor: pointer;
-  display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text);
-  transition: background-color var(--transition-fast);
 }
-.panel__toggle:hover { background-color: var(--color-bg-alt); }
-.panel__toggle:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
-.panel__toggle svg { width: 18px; height: 18px; }
+.panel__close-btn svg { width: 14px; height: 14px; }
+.panel__close-btn:hover { background: var(--color-bg-alt); }
+.panel__close-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+@media (max-width: 47.99rem) {
+  /* Show close button and hide the external toggle button when panel is open on mobile */
+  .panel__close-btn { display: flex; }
+  .map-app.panel-right-open .panel-toggle-btn { display: none; }
+}
 
 .panel__content {
   flex: 1;
@@ -507,25 +521,21 @@ body {
   position: absolute;
   left: 0;
   bottom: calc(100% + 0.6rem);
-  min-width: min(18rem, calc(100vw - 2rem));
-  padding: 0.85rem;
+  min-width: min(20rem, calc(100vw - 2rem));
+  padding: 1rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   background: var(--color-white);
   box-shadow: var(--shadow-lg);
   display: grid;
-  gap: 0.75rem;
+  gap: 0.85rem;
   z-index: var(--z-tooltip);
 }
 .layer-control-popover[hidden] { display: none; }
 
 .layer-control-group {
-  padding: 0.6rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-bg-alt);
   display: grid;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 .layer-control-group__title {
   margin: 0;
@@ -535,18 +545,68 @@ body {
   letter-spacing: 0.03em;
   color: var(--color-text-light);
 }
-.layer-control-option {
-  margin: 0;
+
+/* Icon cards row — each card is a label wrapping a hidden input */
+.layer-control-cards {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.layer-control-card {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  font-size: var(--font-size-sm);
+  gap: 0.35rem;
   cursor: pointer;
-  accent-color: var(--color-primary);
+}
+.layer-control-card__input { position: absolute; opacity: 0; pointer-events: none; }
+.layer-control-card__thumb {
+  width: 64px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  background: linear-gradient(135deg, var(--color-bg-alt), var(--color-border));
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+/* Thumbnail colours per well-known layer ID */
+.layer-control-card__thumb[data-layer-id='osm'] {
+  background: linear-gradient(145deg, #d4edda 0%, #b8d4c4 45%, #cce5cc 100%);
+}
+.layer-control-card__thumb[data-layer-id='satellite'] {
+  background: linear-gradient(145deg, #1a3c5e 0%, #2d5016 40%, #3a3a3a 100%);
+}
+.layer-control-card__thumb[data-layer-id='heatmap'] {
+  background: linear-gradient(145deg, #fff9c4 0%, #ffb74d 50%, #e53935 100%);
+}
+.layer-control-card__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  text-align: center;
+}
+/* Selected state — works for both radio and checkbox inputs */
+.layer-control-card:has(input:checked) .layer-control-card__thumb {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
+}
+.layer-control-card:has(input:checked) .layer-control-card__label {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+.layer-control-card:hover .layer-control-card__thumb {
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-md);
+}
+
+/* Horizontal divider between groups */
+.layer-control-separator {
+  margin: 0;
+  border: none;
+  border-top: 1px solid var(--color-border);
 }
 
 /* ========================================
-   SELECTION CARD (feature info bottom sheet)
+   SELECTION CARD (feature info — left side panel / bottom sheet on mobile)
    ======================================== */
 .map-selection-card {
   position: fixed;
@@ -555,15 +615,15 @@ body {
   left: 0;
   z-index: calc(var(--z-fixed) + 2);
   display: none;
-  padding: 0 0.5rem calc(0.5rem + env(safe-area-inset-bottom));
+  padding: 0;
   pointer-events: none;
 }
 .map-selection-card.is-open { display: block; }
 .map-selection-card__sheet {
   pointer-events: auto;
-  width: min(100%, 28rem);
-  margin: 0 auto;
-  max-height: min(50vh, 26rem);
+  width: 100%;
+  margin: 0;
+  max-height: min(60vh, 32rem);
   overflow: hidden;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   background: var(--color-white);
@@ -605,45 +665,86 @@ body {
 .map-selection-card__image { max-width: 100%; border-radius: var(--radius-md); display: block; }
 
 @media (min-width: 48rem) {
+  /* Left-side panel, Google Maps style */
   .map-selection-card {
-    left: auto;
-    right: var(--control-btn-offset);
+    top: calc(var(--control-btn-size) + var(--control-btn-offset) * 2);
     bottom: var(--bottom-clearance);
-    width: min(24rem, calc(100vw - 2 * var(--control-btn-offset)));
+    left: var(--control-btn-offset);
+    right: auto;
+    width: min(22rem, calc(50vw - var(--control-btn-offset)));
     padding: 0;
   }
-  .map-selection-card__sheet { width: 100%; margin: 0; border-radius: var(--radius-lg); border-bottom: 1px solid var(--color-border); }
+  .map-selection-card__sheet {
+    width: 100%;
+    margin: 0;
+    max-height: none;
+    height: 100%;
+    border-radius: var(--radius-lg);
+    border-bottom: 1px solid var(--color-border);
+  }
 }
 
 /* ========================================
-   CALENDAR BAR
+   CALENDAR BAR (collapsible date toggle)
    ======================================== */
 #calendar-bar {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  height: auto;
-  min-height: var(--calendar-bar-height);
+  height: var(--calendar-bar-height);
+  background: var(--color-white);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: stretch;
+  z-index: var(--z-fixed);
+}
+
+/* Always-visible date toggle button */
+.calendar-bar__date-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  color: var(--color-text);
+  transition: background-color var(--transition-fast);
+}
+.calendar-bar__date-btn:hover { background-color: var(--color-bg-alt); }
+.calendar-bar__date-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: -2px; }
+.calendar-bar__date-text {
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+/* Chevron rotates when controls are expanded */
+.calendar-bar__chevron { display: flex; transition: transform var(--transition-fast); }
+.calendar-bar__chevron svg { width: 16px; height: 16px; color: var(--color-text-light); }
+#calendar-bar.is-expanded .calendar-bar__chevron { transform: rotate(180deg); }
+
+/* Controls panel: hidden by default, slides above the bar when expanded */
+.calendar-bar__controls {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
   background: var(--color-white);
   border-top: 1px solid var(--color-border);
   padding: 0.5rem 1rem;
-  display: flex;
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
-  z-index: var(--z-fixed);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 1;
 }
-/* Compact spinner-style date editor: weekday label, then month/day/year
-   fields each with their own tiny up/down stepper, matching a classic
-   digital-clock-style date control. Stays in the existing full-width bottom
-   bar (unchanged position — the zoom control and footer attribution strip's
-   spacing is calculated against this bar's height/anchoring). */
-.calendar-bar__weekday {
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
-  min-width: 2.4rem;
-}
+#calendar-bar.is-expanded .calendar-bar__controls { display: flex; }
+
+/* Individual date fields */
 .calendar-bar__field {
   display: flex;
   align-items: center;
@@ -655,12 +756,13 @@ body {
   text-align: right;
   font-weight: var(--font-weight-semibold);
 }
+/* Spin arrows: hidden in view mode, shown in edit mode */
 .calendar-bar__spin {
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 0;
 }
-#calendar-bar button[data-action] {
+.calendar-bar__spin button {
   width: 1.1rem;
   height: 0.85rem;
   padding: 0;
@@ -672,9 +774,15 @@ body {
   line-height: 1;
   transition: color var(--transition-fast);
 }
-#calendar-bar button[data-action]:hover { color: var(--color-primary); }
-#calendar-bar button[data-action]:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; }
+.calendar-bar__spin button:hover { color: var(--color-primary); }
+.calendar-bar__spin button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; }
 .calendar-bar__sep { color: var(--color-text-light); }
+
+/* Edit mode: show inputs and spin arrows, hide text spans */
+#calendar-bar.is-editing .calendar-bar__field-value { display: none; }
+#calendar-bar.is-editing .calendar-bar__spin { display: flex; }
+#calendar-bar.is-editing .calendar-bar__field-input { display: inline-block; }
+
 .calendar-bar__edit {
   width: 1.9rem;
   height: 1.9rem;
@@ -692,15 +800,25 @@ body {
 .calendar-bar__edit svg { width: 16px; height: 16px; }
 .calendar-bar__edit:hover { background: color-mix(in srgb, var(--color-accent) 15%, transparent); color: var(--color-accent-dark); }
 .calendar-bar__edit:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
-#calendar-bar input[data-role='date-input'] {
-  flex: 0 0 auto;
-  min-width: 8.5rem;
-  padding: 0.35rem 0.6rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+
+/* Number inputs: hidden by default, revealed in edit mode */
+.calendar-bar__field-input {
+  display: none;
   font: inherit;
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  padding: 0.1rem 0.2rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  color: var(--color-text);
+  min-width: 0;
 }
-#calendar-bar input[data-role='date-input'][hidden] { display: none; }
+.calendar-bar__field-input[data-role='year-input'] { width: 4.2rem; }
+.calendar-bar__field-input[data-role='month-input'],
+.calendar-bar__field-input[data-role='day-input'] { width: 3rem; }
+
 #calendar-bar input[type='range'] {
   flex: 1 1 120px;
   min-width: 90px;
@@ -711,11 +829,7 @@ body {
   color: var(--color-text-light);
   white-space: nowrap;
 }
-/* Empty for gregorian (the default) — collapse out of the flex layout so it
-   doesn't add a second `gap` on either side of a zero-content item. */
-.calendar-bar__system-label:empty {
-  display: none;
-}
+.calendar-bar__system-label:empty { display: none; }
 
 /* ========================================
    FOOTER ATTRIBUTION
@@ -724,7 +838,8 @@ body {
   position: fixed;
   right: 0;
   bottom: var(--calendar-bar-height);
-  z-index: var(--z-fixed);
+  /* Stay above the panel backdrop (999) so attribution is always readable */
+  z-index: calc(var(--z-modal) + 1);
   background: rgba(255, 255, 255, 0.85);
   border-top: 1px solid var(--color-border);
   border-left: 1px solid var(--color-border);
@@ -761,9 +876,119 @@ body {
 .leaflet-control-zoom.leaflet-bar.leaflet-control a:hover { background-color: var(--color-bg-alt); }
 
 /* ========================================
+   FOOTER BAR: scale + attribution on one line
+   ======================================== */
+.map-footer-legend {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--footer-bar-height);
+  /* Stay above the panel backdrop (999) so attribution is always readable */
+  z-index: calc(var(--z-modal) + 1);
+  background: rgba(255, 255, 255, 0.92);
+  border-top: 1px solid var(--color-border);
+  padding: 0 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: var(--font-size-xs);
+}
+/* Scale value e.g. "3 km" */
+.map-scale {
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  font-weight: var(--font-weight-medium);
+}
+/* Bullet separator between scale and attribution */
+.map-scale:not(:empty)::after {
+  content: ' ·';
+  color: var(--color-border);
+  margin-left: 0.3rem;
+}
+.data-attribution {
+  color: var(--color-text-light);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.data-attribution a { color: inherit; }
+
+/* ========================================
    RESPONSIVE
    ======================================== */
 @media (max-width: 47.99rem) {
   .panel--right { max-width: 100%; }
   :root { --panel-right-width: 100vw; }
 }
+
+/* ========================================
+   LOADING OVERLAY
+   ======================================== */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-overlay__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   FILTER BADGE (active count on toggle btn)
+   ======================================== */
+.filter-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 18px;
+  text-align: center;
+  pointer-events: none;
+  border: 2px solid var(--color-white);
+}
+.filter-badge[hidden] { display: none; }
+
+/* ========================================
+   FILTER CLEAR-ALL BUTTON
+   ======================================== */
+.filter-clear-all {
+  display: flex;
+  justify-content: flex-end;
+}
+.filter-clear-all__btn {
+  padding: 0.2rem 0.65rem;
+  font: inherit;
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+  background: transparent;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+.filter-clear-all__btn:hover { background: var(--color-primary-light); }
+.filter-clear-all__btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }

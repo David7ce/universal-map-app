@@ -3,8 +3,14 @@ import { computeTaxonomyDimensions, type LoadedLayer } from '../../engine/taxono
 import { getTriState, toggleAll } from '../../engine/taxonomy/tri-state';
 import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
+import { t } from '../strings';
 
-export function mountPanelRight(container: HTMLElement, store: Store<AppState>, layers: LoadedLayer[]): void {
+export function mountPanelRight(
+  container: HTMLElement,
+  store: Store<AppState>,
+  layers: LoadedLayer[],
+  strings: Record<string, string>
+): void {
   // Which dimension sections are expanded — UI-only state, kept in this
   // closure (not AppState) since nothing outside this panel needs it, and it
   // must survive re-renders triggered by unrelated store changes.
@@ -14,9 +20,16 @@ export function mountPanelRight(container: HTMLElement, store: Store<AppState>, 
     const date = new Date(`${store.get().selectedDate}T00:00:00Z`);
     const dimensions = computeTaxonomyDimensions(layers, date);
     const activeFilters = store.get().activeFilters;
+    const hasActiveFilters = Object.values(activeFilters).some((s) => s.size > 0);
 
-    container.innerHTML = dimensions
-      .map((dimension) => {
+    const clearAllHtml = hasActiveFilters
+      ? `<div class="filter-clear-all"><button type="button" class="filter-clear-all__btn" data-action="clear-all">${t('filters.clearAll', strings)}</button></div>`
+      : '';
+
+    container.innerHTML =
+      clearAllHtml +
+      dimensions
+        .map((dimension) => {
         const selected = activeFilters[dimension.id] ?? new Set<string>();
         const allValues = dimension.values.map((v) => v.value);
         const triState = getTriState(allValues, selected);
@@ -51,6 +64,10 @@ export function mountPanelRight(container: HTMLElement, store: Store<AppState>, 
     // after each render for the 'some selected' tri-state to render.
     container.querySelectorAll<HTMLInputElement>('[data-select-all]').forEach((checkbox) => {
       checkbox.indeterminate = checkbox.dataset.tristate === 'some';
+    });
+
+    container.querySelector<HTMLButtonElement>('[data-action="clear-all"]')?.addEventListener('click', () => {
+      store.set({ activeFilters: {} });
     });
 
     container.querySelectorAll<HTMLButtonElement>('[data-toggle-section]').forEach((button) => {

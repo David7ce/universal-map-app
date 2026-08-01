@@ -73,9 +73,20 @@ async function bootstrap(): Promise<void> {
         renderedLayers.delete(layer.manifest.id);
         continue;
       }
+
+      // Layers that expose an info panel are clickable directly on the map.
+      const onFeatureClick =
+        layer.manifest.panel?.showInInfo !== false
+          ? (feature: GeoFeature) =>
+              store.set({
+                selectedFeatureId: String(feature.id ?? ''),
+                panels: { ...store.get().panels, left: 'closed' },
+              })
+          : undefined;
+
       renderedLayers.set(
         layer.manifest.id,
-        renderDataLayer(map, layer.manifest, layer.features, date, state.activeFilters)
+        renderDataLayer(map, layer.manifest, layer.features, date, state.activeFilters, onFeatureClick)
       );
     }
   }
@@ -84,7 +95,7 @@ async function bootstrap(): Promise<void> {
   store.subscribe(renderMap);
 
   mountCalendarBar(document.querySelector('#calendar-bar')!, store, appManifest.calendar, strings);
-  mountPanelRight(document.querySelector('#panel-right-filters')!, store, loadedLayers);
+  mountPanelRight(document.querySelector('#panel-right-filters')!, store, loadedLayers, strings);
   mountSearchOverlay(document.querySelector('#search-overlay')!, store, loadedLayers, strings);
   mountSelectionCard(
     document.querySelector('#selection-card')!,
@@ -102,31 +113,28 @@ async function bootstrap(): Promise<void> {
 
   // Right panel (filters) show/hide: a circular toggle button, a dimmed
   // backdrop, and the sliding drawer itself all react to `panels.right`.
+  const appEl = document.querySelector<HTMLElement>('#app')!;
   const panelRight = document.querySelector<HTMLElement>('#panel-right')!;
   const panelRightToggle = document.querySelector<HTMLButtonElement>('#panel-right-toggle')!;
-  const panelRightClose = document.querySelector<HTMLButtonElement>('#panel-right-close')!;
   const panelOverlay = document.querySelector<HTMLElement>('#panel-overlay')!;
-  const filtersTitle = document.querySelector<HTMLElement>('[data-role="filters-title"]')!;
+  const filtersTitle = document.querySelector<HTMLElement>('[data-role="filters-title"]')!
 
   filtersTitle.textContent = t('filters.title', strings);
   panelRightToggle.innerHTML = icons.filter;
-  panelRightToggle.setAttribute('aria-label', t('filters.openLabel', strings));
-  panelRightClose.innerHTML = icons.close;
-  panelRightClose.setAttribute('aria-label', t('filters.closeLabel', strings));
+
+  // Mobile close button inside panel header
+  const panelRightClose = document.querySelector<HTMLButtonElement>('#panel-right-close');
+  panelRightClose!.innerHTML = icons.close;
 
   function setRightPanelOpen(open: boolean): void {
     store.set({ panels: { ...store.get().panels, right: open ? 'open' : 'closed' } });
   }
   panelRightToggle.addEventListener('click', () => setRightPanelOpen(store.get().panels.right !== 'open'));
-  panelRightClose.addEventListener('click', () => setRightPanelOpen(false));
+  panelRightClose!.addEventListener('click', () => setRightPanelOpen(false));
   panelOverlay.addEventListener('click', () => setRightPanelOpen(false));
 
   function renderRightPanelVisibility(): void {
     const isOpen = store.get().panels.right === 'open';
-    // Move focus out before hiding: aria-hidden on an ancestor of the
-    // focused element is invalid (and Chrome warns about it) — closing via
-    // the panel's own "Close filters" button would otherwise leave focus
-    // trapped inside a subtree marked hidden from assistive tech.
     if (!isOpen && panelRight.contains(document.activeElement)) {
       panelRightToggle.focus();
     }
@@ -134,6 +142,8 @@ async function bootstrap(): Promise<void> {
     panelRight.setAttribute('aria-hidden', String(!isOpen));
     panelOverlay.classList.toggle('is-visible', isOpen);
     panelRightToggle.setAttribute('aria-expanded', String(isOpen));
+    panelRightToggle.setAttribute('aria-label', t(isOpen ? 'filters.closeLabel' : 'filters.openLabel', strings));
+    appEl.classList.toggle('panel-right-open', isOpen);
   }
   renderRightPanelVisibility();
   store.subscribe(renderRightPanelVisibility);
@@ -146,6 +156,46 @@ async function bootstrap(): Promise<void> {
   }
   renderAttribution();
   store.subscribe(renderAttribution);
+
+  // Scale display: updated on every map zoom / pan
+  const scaleEl = document.querySelector<HTMLElement>('#map-scale')!;
+  function updateScale(): void {
+    const center = map.getCenter();
+    const bounds = map.getBounds();
+    const mapW = map.getContainer().clientWidth || 1;
+    const metersPerDeg = (Math.PI / 180) * 6371000 * Math.cos((center.lat * Math.PI) / 180);
+    const metersPerPx = ((bounds.getEast() - bounds.getWest()) * metersPerDeg) / mapW;
+    const dist = metersPerPx * 80; // 80-pixel reference width
+    scaleEl.textContent = dist >= 1000 ? `${Math.round(dist / 1000)} km` : `${Math.round(dist)} m`;
+  }
+  updateScale();
+  map.on('zoomend moveend', updateScale);
+
+  // Active filter count badge — shown on the filter toggle button whenever
+  // at least one taxonomy value is selected. aria-hidden since the open panel
+  // itself communicates the selection state to assistive technology.
+  const filterBadge = document.createElement('span');
+  filterBadge.className = 'filter-badge';
+  filterBadge.setAttribute('aria-hidden', 'true');
+  filterBadge.hidden = true;
+  panelRightToggle.appendChild(filterBadge);
+
+  function renderFilterBadge(): void {
+    const total = Object.values(store.get().activeFilters).reduce((sum, s) => sum + s.size, 0);
+    filterBadge.textContent = String(total);
+    filterBadge.hidden = total === 0;
+  }
+  renderFilterBadge();
+  store.subscribe(renderFilterBadge);
+
+  // Escape key closes whichever panel is open.
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    if (store.get().panels.right === 'open') {
+      event.preventDefault();
+      setRightPanelOpen(false);
+    }
+  });
 
   // Plugin panel slots (e.g. `participate`) live in a persistent sibling of
   // #panel-right-filters, not inside it: mountPanelRight replaces that
@@ -164,9 +214,12 @@ async function bootstrap(): Promise<void> {
     actionsContainer.appendChild(slotContainer);
     slot.render(slotContainer, pluginCtx);
   }
+
+  document.getElementById('loading-overlay')?.remove();
 }
 
 bootstrap().catch((error) => {
+  document.getElementById('loading-overlay')?.remove();
   console.error('Failed to bootstrap app', error);
   document.body.innerHTML = `<pre style="color:red">${String(error)}</pre>`;
 });
