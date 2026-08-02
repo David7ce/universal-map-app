@@ -5,7 +5,7 @@ import type { GeoFeature } from '../time/temporal-types';
 import type { LayerManifest } from '../manifests/layer-manifest';
 import { isActiveOn } from '../time/is-active-on';
 import { featureMatchesFilters } from '../taxonomy/compute-dimensions';
-import { resolveMarkerStyle, resolvePolygonStyle } from './style';
+import { resolveCategoryIcon, resolveMarkerStyle, resolvePolygonStyle } from './style';
 
 export function renderDataLayer(
   map: L.Map,
@@ -40,9 +40,25 @@ export function renderDataLayer(
   // Leaflet's raw default (a plain blue outline, no fill) — every field is
   // overridable per layer via the manifest's `style`.
   const needsPolygonStyle = manifest.kind === 'line' || manifest.kind === 'polygon' || manifest.kind === 'boundary';
+
+  // Point features get an emoji marker keyed by their taxonomy category so
+  // different POI categories are visually distinguishable on the map.
+  const pointToLayer =
+    manifest.kind === 'point'
+      ? (feature: GeoJSON.Feature, latlng: L.LatLng) =>
+          L.marker(latlng, {
+            icon: L.divIcon({
+              html: resolveCategoryIcon((feature.properties as Record<string, unknown> | null)?.category),
+              className: 'category-marker-icon',
+              iconSize: [24, 24],
+            }),
+          })
+      : undefined;
+
   const geoJsonLayer = L.geoJSON(active as GeoJSON.Feature[], {
     ...(needsPolygonStyle ? { style: resolvePolygonStyle(manifest) } : {}),
     ...(onEachFeature ? { onEachFeature } : {}),
+    ...(pointToLayer ? { pointToLayer } : {}),
   });
 
   if (manifest.kind === 'point' && resolveMarkerStyle(manifest).cluster) {

@@ -13,6 +13,21 @@ export function resolveMarkerStyle(manifest: LayerManifest): MarkerStyle {
   };
 }
 
+// Emoji glyph shown on point markers, keyed by the feature's taxonomy
+// category value — gives each POI category a distinct symbol on the map.
+const CATEGORY_ICONS: Record<string, string> = {
+  park: '🌳',
+  restaurant: '🍴',
+  theatre: '🎭',
+};
+const DEFAULT_CATEGORY_ICON = '📍';
+
+export function resolveCategoryIcon(category: unknown): string {
+  return typeof category === 'string' && category in CATEGORY_ICONS
+    ? CATEGORY_ICONS[category]
+    : DEFAULT_CATEGORY_ICON;
+}
+
 export interface PolygonStyle {
   color: string;
   weight: number;

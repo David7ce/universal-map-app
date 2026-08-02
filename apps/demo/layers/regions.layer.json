@@ -4,7 +4,7 @@
   "kind": "polygon",
   "source": { "type": "geojson", "url": "/apps/demo/data/regions.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },
-  "taxonomy": [{ "id": "region", "label": "Region", "field": "properties.name" }],
+  "taxonomy": [{ "id": "region", "label": "Regions", "field": "properties.name" }],
   "regionRole": "boundary",
   "style": { "color": "#7a5cc4", "fillColor": "#7a5cc4", "fillOpacity": 0.16, "weight": 2 },
   "panel": { "showInSearch": false, "showInInfo": true, "showByDefault": false }

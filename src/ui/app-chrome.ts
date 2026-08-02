@@ -51,27 +51,6 @@ function mountRightPanel(store: Store<AppState>, strings: Record<string, string>
       setRightPanelOpen(false);
     }
   });
-
-  mountFilterBadge(store, panelRightToggle);
-}
-
-// Active filter count badge — shown on the filter toggle button whenever at
-// least one taxonomy value is selected. aria-hidden since the open panel
-// itself communicates the selection state to assistive technology.
-function mountFilterBadge(store: Store<AppState>, panelRightToggle: HTMLButtonElement): void {
-  const filterBadge = document.createElement('span');
-  filterBadge.className = 'filter-badge';
-  filterBadge.setAttribute('aria-hidden', 'true');
-  filterBadge.hidden = true;
-  panelRightToggle.appendChild(filterBadge);
-
-  function render(): void {
-    const total = Object.values(store.get().activeFilters).reduce((sum, s) => sum + s.size, 0);
-    filterBadge.textContent = String(total);
-    filterBadge.hidden = total === 0;
-  }
-  render();
-  store.subscribe(render);
 }
 
 // Current selected date, plain text — the full editor lives inline in the
@@ -157,8 +136,8 @@ function mountPluginSlots(store: Store<AppState>, loadedLayers: LoadedLayer[]): 
 }
 
 // Wires up all the "chrome" around the map and the mounted panels: the
-// filters drawer toggle/backdrop/Escape-key handling, the filter count
-// badge, footer attribution, the scale indicator, and plugin panel slots.
+// filters drawer toggle/backdrop/Escape-key handling, footer attribution,
+// the scale indicator, and plugin panel slots.
 export function mountAppChrome(
   store: Store<AppState>,
   strings: Record<string, string>,

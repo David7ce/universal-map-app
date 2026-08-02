@@ -559,6 +559,8 @@ body {
 .filter-options {
   display: none;
   flex-direction: column;
+  max-height: 240px;
+  overflow-y: auto;
   background-color: var(--color-white);
 }
 .filter-section.is-open .filter-options {
@@ -1305,52 +1307,11 @@ body {
   }
 }
 
-/* ========================================
-   FILTER BADGE (active count on toggle btn)
-   ======================================== */
-.filter-badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 4px;
-  border-radius: var(--radius-full);
-  background: var(--color-primary);
-  color: var(--color-white);
-  font-size: 0.65rem;
-  font-weight: var(--font-weight-bold);
-  line-height: 18px;
-  text-align: center;
-  pointer-events: none;
-  border: 2px solid var(--color-white);
-}
-.filter-badge[hidden] {
-  display: none;
-}
-
-/* ========================================
-   FILTER CLEAR-ALL BUTTON
-   ======================================== */
-.filter-clear-all {
+.category-marker-icon {
   display: flex;
-  justify-content: flex-end;
-}
-.filter-clear-all__btn {
-  padding: 0.2rem 0.65rem;
-  font: inherit;
-  font-size: var(--font-size-xs);
-  color: var(--color-primary);
-  background: transparent;
-  border: 1px solid var(--color-primary);
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-}
-.filter-clear-all__btn:hover {
-  background: var(--color-primary-light);
-}
-.filter-clear-all__btn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  text-align: center;
 }
