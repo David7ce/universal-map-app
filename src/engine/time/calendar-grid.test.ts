@@ -59,6 +59,16 @@ describe('buildWeekCells', () => {
     const cells = buildWeekCells('2026-07-29', 'gregorian', [layer], { category: new Set(['market']) });
     expect(cells.find((c) => c.iso === '2026-07-30')!.hasEvents).toBe(false);
   });
+
+  it('does not mark hasEvents for an always-active feature with no temporal property', () => {
+    const manifest: LayerManifest = { id: 'poi', title: 'POI', kind: 'point', source: { type: 'geojson', url: '/x' } };
+    const layer: LoadedLayer = {
+      manifest,
+      features: [{ type: 'Feature', id: '1', properties: {}, geometry: { type: 'Point', coordinates: [0, 0] } }],
+    };
+    const cells = buildWeekCells('2026-07-29', 'gregorian', [layer], {});
+    expect(cells.every((c) => c.hasEvents === false)).toBe(true);
+  });
 });
 
 describe('buildMonthCells', () => {

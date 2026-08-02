@@ -30,11 +30,20 @@ function weekdayOf(iso: string): number {
   return new Date(`${iso}T00:00:00Z`).getUTCDay();
 }
 
+// A feature with no `properties.temporal` is always active (isActiveOn
+// returns true for it on any date) — that means "always present", not "an
+// event on this day". Counting it toward the grid's event dot would light
+// up every single cell for any layer with untimed features (the common
+// case), making the dot convey nothing. Only features tied to a specific
+// date/range count as an "event" here.
 function hasActiveFeatureOn(layers: LoadedLayer[], activeFilters: Record<string, Set<string>>, iso: string): boolean {
   const date = new Date(`${iso}T00:00:00Z`);
   return layers.some((layer) =>
     layer.features.some(
-      (feature) => featureMatchesFilters(feature, layer.manifest, activeFilters) && isActiveOn(feature, date),
+      (feature) =>
+        feature.properties.temporal !== undefined &&
+        featureMatchesFilters(feature, layer.manifest, activeFilters) &&
+        isActiveOn(feature, date),
     ),
   );
 }

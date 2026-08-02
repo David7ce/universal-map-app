@@ -210,17 +210,22 @@ export function mountCalendarBar(
   function renderGrid(): void {
     if (granularity === 'day') {
       gridContainer.hidden = true;
+      gridContainer.className = 'calendar-bar__grid';
+      gridContainer.innerHTML = '';
       return;
     }
     gridContainer.hidden = false;
     const state = store.get();
+    const visibleLayers = layers.filter((layer) => !state.hiddenLayerIds.has(layer.manifest.id));
     renderCalendarGrid(gridContainer, {
       granularity,
       selectedIso: state.selectedDate,
       system: state.calendarSystem,
-      layers,
+      layers: visibleLayers,
       activeFilters: state.activeFilters,
       strings,
+      min: config.min,
+      max: maxIso,
       onSelectDay: (iso) => store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) }),
       onSelectMonth: (iso) => {
         granularity = 'month';
