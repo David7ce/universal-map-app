@@ -21,22 +21,22 @@ export function mountPanelRight(
     const activeFilters = store.get().activeFilters;
 
     container.innerHTML = dimensions
-        .map((dimension) => {
-          const selected = activeFilters[dimension.id] ?? new Set<string>();
-          const allValues = dimension.values.map((v) => v.value);
-          const triState = getTriState(allValues, selected);
-          const isOpen = openSections.has(dimension.id);
-          const options = dimension.values
-            .map(
-              (v) => `
+      .map((dimension) => {
+        const selected = activeFilters[dimension.id] ?? new Set<string>();
+        const allValues = dimension.values.map((v) => v.value);
+        const triState = getTriState(allValues, selected);
+        const isOpen = openSections.has(dimension.id);
+        const options = dimension.values
+          .map(
+            (v) => `
               <label>
                 <input type="checkbox" data-dimension="${escapeHtml(dimension.id)}" data-value="${escapeHtml(v.value)}" ${selected.has(v.value) ? 'checked' : ''} />
                 <span>${escapeHtml(v.value)}</span>
               </label>`,
-            )
-            .join('');
+          )
+          .join('');
 
-          return `
+        return `
           <section class="filter-section${isOpen ? ' is-open' : ''}" data-dimension-section="${escapeHtml(dimension.id)}">
             <div class="filter-section__header">
               <label class="filter-section__select-all">
@@ -49,8 +49,8 @@ export function mountPanelRight(
             </div>
             <div class="filter-options">${options}</div>
           </section>`;
-        })
-        .join('');
+      })
+      .join('');
 
     // `.indeterminate` has no HTML attribute — must be set imperatively
     // after each render for the 'some selected' tri-state to render.

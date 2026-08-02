@@ -23,9 +23,7 @@ const CATEGORY_ICONS: Record<string, string> = {
 const DEFAULT_CATEGORY_ICON = '📍';
 
 export function resolveCategoryIcon(category: unknown): string {
-  return typeof category === 'string' && category in CATEGORY_ICONS
-    ? CATEGORY_ICONS[category]
-    : DEFAULT_CATEGORY_ICON;
+  return typeof category === 'string' && category in CATEGORY_ICONS ? CATEGORY_ICONS[category] : DEFAULT_CATEGORY_ICON;
 }
 
 export interface PolygonStyle {

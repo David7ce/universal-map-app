@@ -7,4 +7,3 @@ Future work, none of this is implemented. See `CHANGELOG.md` for what's shipped 
 ## Improve API and JSON
 
 ## Improve architecture and simplify logic and names
-

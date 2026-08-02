@@ -53,9 +53,7 @@ export function mountSearchOverlay(
 
   // A layer opts out of search matching via `panel.showInSearch: false` (e.g.
   // a boundary or heatmap layer that exists to render, not to be searched).
-  const searchableEntries = featureEntries.filter(
-    (entry) => entry.manifest.panel?.showInSearch !== false,
-  );
+  const searchableEntries = featureEntries.filter((entry) => entry.manifest.panel?.showInSearch !== false);
 
   function featureLabel(feature: GeoFeature): string {
     const props = feature.properties;

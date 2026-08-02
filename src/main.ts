@@ -98,7 +98,14 @@ async function bootstrap(): Promise<void> {
               })
           : undefined;
 
-      mapAdapter.renderDataLayer(layer.manifest.id, layer.manifest, layer.features, date, state.activeFilters, onFeatureClick);
+      mapAdapter.renderDataLayer(
+        layer.manifest.id,
+        layer.manifest,
+        layer.features,
+        date,
+        state.activeFilters,
+        onFeatureClick,
+      );
     }
   }
 
