@@ -4,8 +4,8 @@ Future work, none of this is implemented. See `CHANGELOG.md` for what's shipped 
 
 ## In Filter Panel
 
-- Show each taxonomy value's match count next to its checkbox. `computeTaxonomyDimensions` (`src/engine/taxonomy/compute-dimensions.ts`) already counts occurrences per value for the active date; `PanelRight.ts` computes `dimensions` but never renders the count, only the label.
 - "Clear all filters" control that resets every dimension at once. Today `PanelRight.ts` only offers a per-dimension select-all/select-none checkbox (`toggleAll` in `src/engine/taxonomy/tri-state.ts`); there's no one-click reset across all open dimensions.
+- Make map projection actually selectable from the Settings control instead of read-only. `SettingsControl.ts` only shows `describeCrs(deps.appManifest.map.crs)` as static text; a real selector needs `MapAdapter` (`src/engine/space/map-adapter.ts`) to support re-initializing tiles/CRS at runtime, not just a state change — bigger than a UI tweak.
 
 ## Improve API and JSON
 
