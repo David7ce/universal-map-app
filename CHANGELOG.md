@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Granularity step control in the Time editor
+
+New row above the year/month/day fields in `CalendarBar.ts`: a day/week/month/year `<select>` plus prev/next buttons that step `selectedDate` by that unit (`nextSelectedDate`, `getVisibleGranularityOptions` — pure functions that already existed with test coverage but were never wired to a control until now). Year steps by whole years (`addCalendarUnit` for non-gregorian systems, native `setUTCFullYear` for gregorian) — no intercalary-day handling, matching the "12 months, no intercalary days" scope the original roadmap item called for.
+
 ## Taxonomy value counts in filter checkboxes
 
 `PanelRight.ts` now renders each taxonomy value's match count (`computeTaxonomyDimensions` already computed it, per `{ value, count }`) next to its checkbox label, right-aligned via `.filter-options__count`. Suppressed for boundary-region layers (`regionRole: 'boundary'`, e.g. `regions.layer.json`) via a new `TaxonomyDimension.showCounts` flag — one polygon per region name means the count is always 1, not useful information.

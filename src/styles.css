@@ -1013,6 +1013,37 @@ body {
   gap: 0.5rem;
   flex-wrap: wrap;
 }
+/* Granularity picker + prev/next step buttons */
+.calendar-bar__row--granularity select {
+  font: inherit;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  color: var(--color-text);
+  flex: 1;
+}
+.calendar-bar__step-btn {
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-accent);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: background-color var(--transition-fast);
+}
+.calendar-bar__step-btn:hover {
+  background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+  color: var(--color-accent-dark);
+}
+.calendar-bar__step-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
 /* Range slider always gets its own full-width row at the end, so it has
    real room to drag even in a narrow panel. */
 .calendar-bar__slider {

@@ -2,6 +2,7 @@ import type { Store, AppState } from '../../engine/state/store';
 import type { CalendarSystem } from '../../engine/time/calendar-systems';
 import { addCalendarUnit, formatCalendarDate } from '../../engine/time/calendar-conversion';
 import { t } from '../strings';
+import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
 
 export interface CalendarConfig {
@@ -13,9 +14,12 @@ export interface CalendarConfig {
 
 export type Granularity = 'day' | 'week' | 'month' | 'year';
 
-export function getVisibleGranularityOptions(system: CalendarSystem): Granularity[] {
-  if (system === 'gregorian') return ['day', 'week', 'month'];
-  return ['day', 'week', 'month'];
+// `system` isn't used to filter yet — every calendar system currently
+// offers the same four units. Kept as a parameter so a future system with
+// a genuinely different unit set (e.g. no 7-day week) can narrow this
+// without changing every call site.
+export function getVisibleGranularityOptions(_system: CalendarSystem): Granularity[] {
+  return ['day', 'week', 'month', 'year'];
 }
 
 function daysBetween(fromIso: string, toIso: string): number {
@@ -159,6 +163,14 @@ export function mountCalendarBar(
   const yearMin = new Date(`${config.min}T00:00:00Z`).getUTCFullYear();
   const yearMax = new Date(`${maxIso}T00:00:00Z`).getUTCFullYear();
 
+  // Options don't vary by calendar system today (see the comment on
+  // getVisibleGranularityOptions) — computed once at mount. If a future
+  // system ever trims this list, the <select> would need repopulating on
+  // system change too, not just here.
+  const granularityOptions = getVisibleGranularityOptions(store.get().calendarSystem)
+    .map((g) => `<option value="${g}">${escapeHtml(t(`calendar.granularity.${g}`, strings))}</option>`)
+    .join('');
+
   // Lives inline inside the filters panel — always visible, no toggle of
   // its own. Layout: the date fields row, then the range slider on its own
   // full-width row at the end. The calendar-system select lives in
@@ -166,6 +178,11 @@ export function mountCalendarBar(
   container.innerHTML = `
     <p class="settings-control-group__title">${t('layerControl.time', strings)}</p>
     <div class="calendar-bar__controls">
+      <div class="calendar-bar__row calendar-bar__row--granularity">
+        <button type="button" class="calendar-bar__step-btn" data-action="step-prev" aria-label="Step back">‹</button>
+        <select data-role="granularity">${granularityOptions}</select>
+        <button type="button" class="calendar-bar__step-btn" data-action="step-next" aria-label="Step forward">›</button>
+      </div>
       <div class="calendar-bar__row">
         <div class="calendar-bar__field" data-field="year">
           <span class="calendar-bar__field-value" data-role="year-value"></span>
@@ -209,6 +226,28 @@ export function mountCalendarBar(
   const dateSlider = container.querySelector<HTMLInputElement>('[data-role="date-slider"]')!;
   const systemLabel = container.querySelector<HTMLElement>('[data-role="system-label"]')!;
   const editButton = container.querySelector<HTMLButtonElement>('[data-action="edit"]')!;
+  const granularitySelect = container.querySelector<HTMLSelectElement>('[data-role="granularity"]')!;
+
+  // UI-only, doesn't need to survive a reload or be shared with other
+  // panels — kept in this closure the same way PanelRight.ts keeps its
+  // open-section state.
+  let granularity: Granularity = 'day';
+  granularitySelect.value = granularity;
+  granularitySelect.addEventListener('change', () => {
+    granularity = granularitySelect.value as Granularity;
+  });
+
+  function step(direction: 1 | -1): void {
+    const state = store.get();
+    const next = clampDateToRange(
+      nextSelectedDate(state.selectedDate, granularity, direction, state.calendarSystem),
+      config.min,
+      maxIso,
+    );
+    store.set({ selectedDate: next });
+  }
+  container.querySelector('[data-action="step-prev"]')!.addEventListener('click', () => step(-1));
+  container.querySelector('[data-action="step-next"]')!.addEventListener('click', () => step(1));
 
   function sliderOffsetFor(dateIso: string): string {
     return String(clamp(daysBetween(config.min, dateIso), 0, totalDays));

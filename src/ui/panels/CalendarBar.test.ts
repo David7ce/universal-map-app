@@ -34,9 +34,9 @@ describe('nextSelectedDate', () => {
 });
 
 describe('getVisibleGranularityOptions', () => {
-  it('offers a compact set of UI granularity choices', () => {
-    expect(getVisibleGranularityOptions('gregorian')).toEqual(['day', 'week', 'month']);
-    expect(getVisibleGranularityOptions('islamic')).toEqual(['day', 'week', 'month']);
+  it('offers day/week/month/year for every calendar system', () => {
+    expect(getVisibleGranularityOptions('gregorian')).toEqual(['day', 'week', 'month', 'year']);
+    expect(getVisibleGranularityOptions('islamic')).toEqual(['day', 'week', 'month', 'year']);
   });
 });
 
