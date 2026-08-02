@@ -19,7 +19,7 @@ Open the printed local URL. No backend, no paid services — `pnpm build` produc
 2. Add an `app-manifest.json` (see `apps/demo/app-manifest.json` for the shape).
 3. Add one `*.layer.json` per data layer under `apps/<your-app-id>/layers/`, and the matching GeoJSON under `apps/<your-app-id>/data/`.
 4. Optionally add `strings.json` for your own UI text, and a `plugins` block to activate `participate`.
-5. Point `src/main.ts`'s `fetch('/apps/demo/app-manifest.json')` call (and the two other `/apps/demo/` paths) at your new app id, or introduce a build-time/query-param switch — multi-app routing is intentionally out of scope for v1 (see the design spec's non-goals).
+5. Load it with `?app=<your-app-id>` in the URL (e.g. `http://localhost:5173/?app=my-app`), or leave the query param off to get `apps/demo/` by default. Full multi-app routing (an app switcher UI, per-app subdomains, etc.) is still intentionally out of scope for v1 (see the design spec's non-goals) — this is just a static id lookup, resolved once at page load.
 
 No engine code under `src/engine/` needs to change to add a new app instance.
 

@@ -2,6 +2,14 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## `?app=` query-param app switcher
+
+`src/main.ts` no longer hardcodes `apps/demo/`: `resolveAppId()` reads `?app=<id>` from the URL (restricted to `[a-zA-Z0-9_-]+`, falling back to `"demo"`), so any `apps/<id>/` instance can be loaded by URL without touching engine code. Still a single-app-per-page-load static lookup, not a router — see `README.md` ("Add a new app instance").
+
+## Map scale indicator
+
+The footer legend (`#map-scale` in `index.html`) shows an approximate ground distance ("X m" / "X km") for an 80px reference width at the map's current center and zoom, recomputed on every `zoomend`/`moveend` (`updateScale()` in `src/main.ts`).
+
 ## Multi-calendar and multi-projection
 
 - Display-layer support for Gregorian, Julian, Islamic, and Hebrew calendars without touching the underlying temporal storage model.

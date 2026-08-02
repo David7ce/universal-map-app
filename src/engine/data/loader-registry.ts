@@ -7,8 +7,10 @@ import { loadGeojsonSharded } from './loaders/geojson-sharded-loader';
 // for a future server-backed "api" source type (design spec Section 9).
 export async function fetchFeatures(
   source: LayerSource,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   bounds?: BBox,
-  dateRange?: DateRange
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  dateRange?: DateRange,
 ): Promise<GeoFeature[]> {
   switch (source.type) {
     case 'geojson':
