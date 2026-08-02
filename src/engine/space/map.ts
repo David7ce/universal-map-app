@@ -32,6 +32,12 @@ export async function createMap(container: HTMLElement, appManifest: AppManifest
   const isGeographicCrs = crs === undefined || crs === L.CRS.EPSG4326;
   const map = L.map(container, {
     zoomControl: false,
+    // The footer legend (app-chrome.ts's mountAttribution) already shows
+    // the active base layer's attribution — Leaflet's own attribution
+    // control would just duplicate it, and it shares the bottom-right
+    // corner with the zoom control, pushing it visually out of alignment
+    // with the layers button.
+    attributionControl: false,
     worldCopyJump: false,
     ...(isGeographicCrs ? { maxBounds: L.latLngBounds([-90, -180], [90, 180]), maxBoundsViscosity: 1.0 } : {}),
     ...(crs ? { crs } : {}),
