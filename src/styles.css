@@ -41,7 +41,9 @@
   --control-btn-offset: 15px;
   --control-btn-size: 48px;
   --controls-gap: 0.75rem;
-  --panel-right-width: 320px;
+  /* Mobile-first: full width by default, narrowed to a fixed-width drawer
+     at min-width:48rem (see RESPONSIVE section at the bottom of this file). */
+  --panel-right-width: 100vw;
   --panel-left-width: min(22rem, calc(50vw - var(--control-btn-offset)));
   --footer-bar-height: 1.5rem; /* thin bottom strip: scale + attribution */
   /* Clearance above the footer strip for floating controls (Layers, zoom, calendar pill) */
@@ -136,6 +138,12 @@ body {
   left: var(--control-btn-offset);
   z-index: var(--z-fixed);
 }
+/* The overlay's own header already has a clear/close control once it's
+   open — keep this a plain closed icon rather than a redundant floating
+   button sitting on top of the panel it opens. */
+.control-btn--search[aria-expanded='true'] {
+  display: none;
+}
 
 /* ========================================
    SEARCH OVERLAY
@@ -143,7 +151,9 @@ body {
 .map-search {
   position: fixed;
   inset: 0;
-  z-index: var(--z-modal);
+  /* Explicitly below the filters panel/backdrop (999-1110) — search is
+     never meant to outrank it, not left to an accidental z-index tie. */
+  z-index: calc(var(--z-modal-backdrop) - 1);
 }
 .map-search[hidden] {
   display: none;
@@ -349,40 +359,40 @@ body {
   width: 22px;
   height: 22px;
 }
-/* On desktop the toggle button, zoom control, and scale/attribution legend
-   all track the panel's left edge so the open panel never covers them. */
+/* Mobile-first default: the panel covers the full screen, so these just
+   hide rather than sliding — same treatment the toggle button already
+   gets below. Enhanced at min-width:48rem, where the panel is a fixed-width
+   drawer instead: they track its left edge so it never covers them. */
+.map-app.panel-right-open .leaflet-control-zoom.leaflet-bar.leaflet-control,
+.map-app.panel-right-open .map-footer-legend {
+  display: none;
+}
 @media (min-width: 48rem) {
   .map-app.panel-right-open .panel-toggle-btn {
     right: calc(var(--panel-right-width) + var(--control-btn-offset));
   }
   .map-app.panel-right-open .leaflet-control-zoom.leaflet-bar.leaflet-control {
+    display: revert;
     margin-right: calc(var(--panel-right-width) + var(--control-btn-offset)) !important;
   }
   .map-app.panel-right-open .map-footer-legend {
+    display: revert;
     right: var(--panel-right-width);
-  }
-}
-/* On mobile the panel covers the full screen, so these just hide instead
-   of sliding — same treatment the toggle button already gets below. */
-@media (max-width: 47.99rem) {
-  .map-app.panel-right-open .leaflet-control-zoom.leaflet-bar.leaflet-control,
-  .map-app.panel-right-open .map-footer-legend {
-    display: none;
   }
 }
 
 /* Same pattern, mirrored for the left (search/info) panel: the Layers
    button shares its bottom-left corner with the docked info sidebar, so it
    has to get out of the way the same way the zoom control does for the
-   right panel. */
+   right panel. Mobile-first default: hidden; enhanced at 48rem to shift
+   right by the docked panel's width instead. */
+.map-app.panel-left-open .bottom-left-controls {
+  display: none;
+}
 @media (min-width: 48rem) {
   .map-app.panel-left-open .bottom-left-controls {
+    display: revert;
     left: calc(var(--panel-left-width) + var(--control-btn-offset));
-  }
-}
-@media (max-width: 47.99rem) {
-  .map-app.panel-left-open .bottom-left-controls {
-    display: none;
   }
 }
 
@@ -408,7 +418,10 @@ body {
   right: 0;
   width: 100%;
   min-width: 280px;
-  max-width: var(--panel-right-width);
+  /* `min()` caps it at the viewport width regardless of --panel-right-width
+     (100vw on mobile, a fixed px value at 48rem+) — avoids relying on a
+     separate mobile-only override for the same result. */
+  max-width: min(var(--panel-right-width), 100%);
   height: 100vh;
   height: 100dvh;
   background-color: var(--color-white);
@@ -431,18 +444,18 @@ body {
 .panel__header {
   flex-shrink: 0;
   padding: 0.75rem 1rem;
-  /* Right padding leaves room for the toggle button floating above the header on desktop */
-  padding-right: calc(var(--control-btn-size) + var(--control-btn-offset) * 2);
   border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
-/* On mobile the toggle button is hidden when the panel is open, so we need
-   the close button inside the header instead — remove the extra right padding. */
-@media (max-width: 47.99rem) {
+/* On mobile the toggle button is hidden when the panel is open (the close
+   button inside the header takes over — see below), so no extra padding is
+   needed there. At 48rem+ the toggle button floats above the header instead,
+   so the header needs room to clear it. */
+@media (min-width: 48rem) {
   .panel__header {
-    padding-right: 1rem;
+    padding-right: calc(var(--control-btn-size) + var(--control-btn-offset) * 2);
   }
 }
 .panel__title {
@@ -452,9 +465,11 @@ body {
   flex: 1;
 }
 
-/* Close button: visible only on mobile, sits inside the panel header */
+/* Close button: sits inside the panel header, mobile default — desktop uses
+   the external floating toggle button instead (it stays visible, just
+   shifted, when the panel opens — see the `panel-toggle-btn` rules above). */
 .panel__close-btn {
-  display: none;
+  display: flex;
   flex-shrink: 0;
   width: 32px;
   height: 32px;
@@ -478,13 +493,15 @@ body {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
-@media (max-width: 47.99rem) {
-  /* Show close button and hide the external toggle button when panel is open on mobile */
+.map-app.panel-right-open .panel-toggle-btn {
+  display: none;
+}
+@media (min-width: 48rem) {
   .panel__close-btn {
-    display: flex;
+    display: none;
   }
   .map-app.panel-right-open .panel-toggle-btn {
-    display: none;
+    display: revert;
   }
 }
 
@@ -1304,12 +1321,9 @@ body {
 /* ========================================
    RESPONSIVE
    ======================================== */
-@media (max-width: 47.99rem) {
-  .panel--right {
-    max-width: 100%;
-  }
+@media (min-width: 48rem) {
   :root {
-    --panel-right-width: 100vw;
+    --panel-right-width: 320px;
   }
 }
 

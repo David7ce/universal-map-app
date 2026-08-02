@@ -215,8 +215,10 @@ export function mountSearchOverlay(
 
     // Mirrors the filters panel's `panel-right-open` effect on the zoom
     // control: shifts (desktop) / hides (mobile) the bottom-left Layers
-    // button so it doesn't sit under this panel when it has content.
-    appEl.classList.toggle('panel-left-open', isOpen || selected !== undefined);
+    // button — but only once there's an actual selection to show. An empty
+    // search (open, no query, nothing selected) has no docked content for
+    // Layers to clear, so it's left alone in that state.
+    appEl.classList.toggle('panel-left-open', selected !== undefined);
   }
   render();
   store.subscribe(render);
