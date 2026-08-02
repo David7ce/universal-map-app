@@ -1,6 +1,6 @@
 import L from 'leaflet';
-import type { AppManifest } from '../manifests/app-manifest';
-import type { MapCrsConfig } from './map-crs';
+import type { AppManifest } from '../../manifests/app-manifest';
+import type { MapCrsConfig } from '../map-crs';
 
 export interface CreatedMap {
   map: L.Map;

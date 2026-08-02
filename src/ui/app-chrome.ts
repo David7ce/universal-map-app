@@ -1,4 +1,4 @@
-import type { Map as LeafletMap } from 'leaflet';
+import type { MapAdapter } from '../engine/space/map-adapter';
 import type { AppManifest } from '../engine/manifests/app-manifest';
 import type { AppState, Store } from '../engine/state/store';
 import type { LoadedLayer } from '../engine/taxonomy/compute-dimensions';
@@ -93,17 +93,13 @@ function niceScaleDistance(maxMeters: number): number {
 // Scale display: a ruler-style bar (line + side borders, like a printed map
 // legend) sized to a "nice" round ground distance, plus its label — both
 // recomputed on every zoom/pan since meters-per-pixel changes with them.
-function mountScaleIndicator(map: LeafletMap): void {
+function mountScaleIndicator(mapAdapter: MapAdapter): void {
   const lineEl = document.querySelector<HTMLElement>('[data-role="scale-line"]')!;
   const textEl = document.querySelector<HTMLElement>('[data-role="scale-text"]')!;
   const MAX_WIDTH_PX = 90;
 
   function render(): void {
-    const center = map.getCenter();
-    const bounds = map.getBounds();
-    const mapW = map.getContainer().clientWidth || 1;
-    const metersPerDeg = (Math.PI / 180) * 6371000 * Math.cos((center.lat * Math.PI) / 180);
-    const metersPerPx = ((bounds.getEast() - bounds.getWest()) * metersPerDeg) / mapW;
+    const metersPerPx = mapAdapter.getMetersPerPixel();
     const maxMeters = metersPerPx * MAX_WIDTH_PX;
     const niceMeters = niceScaleDistance(maxMeters);
     const widthPx = niceMeters / metersPerPx;
@@ -112,7 +108,7 @@ function mountScaleIndicator(map: LeafletMap): void {
     textEl.textContent = niceMeters >= 1000 ? `${niceMeters / 1000} km` : `${niceMeters} m`;
   }
   render();
-  map.on('zoomend moveend', render);
+  mapAdapter.onViewChange(render);
 }
 
 // Plugin panel slots (e.g. `participate`) live in a persistent sibling of
@@ -142,12 +138,12 @@ export function mountAppChrome(
   store: Store<AppState>,
   strings: Record<string, string>,
   appManifest: AppManifest,
-  map: LeafletMap,
+  mapAdapter: MapAdapter,
   loadedLayers: LoadedLayer[],
 ): void {
   mountRightPanel(store, strings);
   mountDateText(store);
   mountAttribution(store, appManifest);
-  mountScaleIndicator(map);
+  mountScaleIndicator(mapAdapter);
   mountPluginSlots(store, loadedLayers);
 }

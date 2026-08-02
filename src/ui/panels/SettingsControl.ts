@@ -1,12 +1,12 @@
 import type { Store, AppState } from '../../engine/state/store';
 import type { AppManifest } from '../../engine/manifests/app-manifest';
-import type { CoordinateGrid } from '../../engine/space/coordinate-grid-layer';
+import type { MapGrid } from '../../engine/space/map-adapter';
 import { t } from '../strings';
 import { icons } from '../icons';
 
 export interface SettingsControlDeps {
   appManifest: AppManifest;
-  grid: CoordinateGrid;
+  grid: MapGrid;
 }
 
 function describeCrs(config: AppManifest['map']['crs']): string {

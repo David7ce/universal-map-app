@@ -1,6 +1,6 @@
-import type L from 'leaflet';
 import type { Store, AppState } from '../../engine/state/store';
 import type { BaseLayerConfig } from '../../engine/manifests/app-manifest';
+import type { MapAdapter } from '../../engine/space/map-adapter';
 import { t } from '../strings';
 import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
@@ -11,8 +11,7 @@ export interface DetailLayerOption {
 }
 
 export interface LayerControlDeps {
-  map: L.Map;
-  baseLayerTiles: Record<string, L.TileLayer>;
+  mapAdapter: MapAdapter;
   baseLayerConfigs: BaseLayerConfig[];
   detailLayers: DetailLayerOption[];
 }
@@ -101,8 +100,6 @@ export function mountLayerControl(
     });
   });
 
-  let activeTileLayer: L.TileLayer | undefined;
-
   function render(): void {
     const state = store.get();
 
@@ -113,12 +110,7 @@ export function mountLayerControl(
       checkbox.checked = !state.hiddenLayerIds.has(checkbox.dataset.detailLayer!);
     });
 
-    const nextTile = deps.baseLayerTiles[state.activeBaseLayerId];
-    if (nextTile && nextTile !== activeTileLayer) {
-      if (activeTileLayer) deps.map.removeLayer(activeTileLayer);
-      nextTile.addTo(deps.map);
-      activeTileLayer = nextTile;
-    }
+    deps.mapAdapter.setActiveBaseLayer(state.activeBaseLayerId);
   }
 
   render();

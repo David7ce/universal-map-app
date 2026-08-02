@@ -1,16 +1,13 @@
 import L from 'leaflet';
-import { buildGridLines, gridStepForZoom } from './coordinate-grid';
-
-export interface CoordinateGrid {
-  setVisible(visible: boolean): void;
-}
+import { buildGridLines, gridStepForZoom } from '../coordinate-grid';
+import type { MapGrid } from '../map-adapter';
 
 // A lightweight lat/lng graticule overlay — no dedicated Leaflet plugin
 // dependency, just polylines redrawn on move/zoom while visible. Split out
 // of coordinate-grid.ts (which stays runtime-Leaflet-free and unit-tested)
 // because importing 'leaflet' at runtime requires a `window` global that
 // isn't available under vitest's node test environment.
-export function mountCoordinateGrid(map: L.Map): CoordinateGrid {
+export function mountCoordinateGrid(map: L.Map): MapGrid {
   const group = L.layerGroup();
   let visible = false;
 

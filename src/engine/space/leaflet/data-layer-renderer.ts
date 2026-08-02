@@ -1,11 +1,11 @@
 import L from 'leaflet';
 import 'leaflet.markercluster';
 import 'leaflet.heat';
-import type { GeoFeature } from '../time/temporal-types';
-import type { LayerManifest } from '../manifests/layer-manifest';
-import { isActiveOn } from '../time/is-active-on';
-import { featureMatchesFilters } from '../taxonomy/compute-dimensions';
-import { resolveCategoryIcon, resolveMarkerStyle, resolvePolygonStyle } from './style';
+import type { GeoFeature } from '../../time/temporal-types';
+import type { LayerManifest } from '../../manifests/layer-manifest';
+import { isActiveOn } from '../../time/is-active-on';
+import { featureMatchesFilters } from '../../taxonomy/compute-dimensions';
+import { resolveCategoryIcon, resolveMarkerStyle, resolvePolygonStyle } from '../style';
 
 export function renderDataLayer(
   map: L.Map,

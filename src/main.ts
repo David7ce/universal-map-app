@@ -1,17 +1,11 @@
 import './styles.css';
-import 'leaflet/dist/leaflet.css';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-import type { Layer } from 'leaflet';
 
 import { validateAppManifest } from './engine/manifests/app-manifest';
 import { validateLayerManifest, type LayerManifest } from './engine/manifests/layer-manifest';
 import { fetchFeatures } from './engine/data/loader-registry';
 import { createStore } from './engine/state/store';
 import type { AppState } from './engine/state/store';
-import { createMap } from './engine/space/map';
-import { renderDataLayer } from './engine/space/data-layer-renderer';
-import { mountCoordinateGrid } from './engine/space/coordinate-grid-layer';
+import { createLeafletMapAdapter } from './engine/space/leaflet/leaflet-map-adapter';
 import { loadStrings } from './ui/strings';
 import { mountSearchOverlay } from './ui/panels/SearchOverlay';
 import { mountPanelRight } from './ui/panels/PanelRight';
@@ -81,19 +75,14 @@ async function bootstrap(): Promise<void> {
   });
 
   const mapContainer = document.querySelector<HTMLDivElement>('#map')!;
-  const { map, baseLayers } = await createMap(mapContainer, appManifest);
-  const grid = mountCoordinateGrid(map);
-  const renderedLayers = new Map<string, Layer>();
+  const mapAdapter = await createLeafletMapAdapter(mapContainer, appManifest);
 
   function renderMap(): void {
     const state = store.get();
     const date = new Date(`${state.selectedDate}T00:00:00Z`);
     for (const layer of loadedLayers) {
-      const existing = renderedLayers.get(layer.manifest.id);
-      if (existing) map.removeLayer(existing);
-
       if (state.hiddenLayerIds.has(layer.manifest.id)) {
-        renderedLayers.delete(layer.manifest.id);
+        mapAdapter.removeDataLayer(layer.manifest.id);
         continue;
       }
 
@@ -109,10 +98,7 @@ async function bootstrap(): Promise<void> {
               })
           : undefined;
 
-      renderedLayers.set(
-        layer.manifest.id,
-        renderDataLayer(map, layer.manifest, layer.features, date, state.activeFilters, onFeatureClick),
-      );
+      mapAdapter.renderDataLayer(layer.manifest.id, layer.manifest, layer.features, date, state.activeFilters, onFeatureClick);
     }
   }
 
@@ -123,17 +109,19 @@ async function bootstrap(): Promise<void> {
   mountPanelRight(document.querySelector('#panel-right-filters')!, store, loadedLayers, strings);
   mountSearchOverlay(document.querySelector('#search-overlay')!, store, loadedLayers, strings);
   mountLayerControl(document.querySelector('#layer-control')!, store, strings, {
-    map,
-    baseLayerTiles: baseLayers,
+    mapAdapter,
     baseLayerConfigs: appManifest.baseLayers,
     detailLayers: detailLayers.map((l) => ({ id: l.manifest.id, title: l.manifest.title })),
   });
   // Time editor and map-settings button both live inline inside the
   // filters panel now, not as standalone floating controls.
   mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings);
-  mountSettingsControl(document.querySelector('#panel-right-map-settings')!, store, strings, { appManifest, grid });
+  mountSettingsControl(document.querySelector('#panel-right-map-settings')!, store, strings, {
+    appManifest,
+    grid: mapAdapter.grid,
+  });
 
-  mountAppChrome(store, strings, appManifest, map, loadedLayers);
+  mountAppChrome(store, strings, appManifest, mapAdapter, loadedLayers);
 
   document.getElementById('loading-overlay')?.remove();
 }
