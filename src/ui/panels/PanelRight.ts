@@ -1,8 +1,14 @@
 import type { Store, AppState } from '../../engine/state/store';
 import { computeTaxonomyDimensions, type LoadedLayer } from '../../engine/taxonomy/compute-dimensions';
 import { getTriState, toggleAll } from '../../engine/taxonomy/tri-state';
+import { resolveCategoryIcon } from '../../engine/space/style';
 import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
+
+// Only the POI category taxonomy has a matching marker icon (see
+// `resolveCategoryIcon`) — other dimensions (e.g. Regions) have no such
+// symbol, so the icon prefix is scoped to this one dimension id.
+const CATEGORY_DIMENSION_ID = 'category';
 
 export function mountPanelRight(
   container: HTMLElement,
@@ -27,13 +33,14 @@ export function mountPanelRight(
         const triState = getTriState(allValues, selected);
         const isOpen = openSections.has(dimension.id);
         const options = dimension.values
-          .map(
-            (v) => `
+          .map((v) => {
+            const icon = dimension.id === CATEGORY_DIMENSION_ID ? `${resolveCategoryIcon(v.value)} ` : '';
+            return `
               <label>
                 <input type="checkbox" data-dimension="${escapeHtml(dimension.id)}" data-value="${escapeHtml(v.value)}" ${selected.has(v.value) ? 'checked' : ''} />
-                <span>${escapeHtml(v.value)}</span>
-              </label>`,
-          )
+                <span>${icon}${escapeHtml(v.value)}</span>
+              </label>`;
+          })
           .join('');
 
         return `
