@@ -2,19 +2,10 @@
 
 Future work, none of this is implemented. See `CHANGELOG.md` for what's shipped and `README.md` for known v1 deviations.
 
-- add global config for adapt this general universal map to any interface map like:
-
-```
-quiero hacer de alguna forma que reuse todo el codigo y pasar una config en un JSON o similar donde diga:
-calendar: gregorian
-projection: mercator
-icons:
-database file JSON
-
-y que eso ya monte la app en cuestión
-```
-
-- add calendar with day, week (7 days), month (x days), year (12 month no days)
+- Generic calendar granularity: day / week (7 days) / month (variable length) / year (12 months, no intercalary
+  days) as first-class units the calendar bar can step through, independent of the calendar _system_
+  (gregorian/julian/islamic/hebrew) already supported. Scope needs discussion before implementing — e.g. does this
+  replace the day-granularity date slider or sit alongside it, and does every calendar system need all four units?
 
 ## In Filter Panel
 

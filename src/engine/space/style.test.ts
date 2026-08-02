@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveMarkerStyle, resolvePolygonStyle } from './style';
+import { resolveMarkerStyle, resolvePolygonStyle, resolveTaxonomyIcon } from './style';
 import type { LayerManifest } from '../manifests/layer-manifest';
 
 function manifest(style?: Record<string, unknown>): LayerManifest {
@@ -42,5 +42,25 @@ describe('resolvePolygonStyle', () => {
       fillColor: '#e08a3e',
       fillOpacity: 0.18,
     });
+  });
+});
+
+describe('resolveTaxonomyIcon', () => {
+  const icons = { park: '🌳', restaurant: '🍴' };
+
+  it('returns undefined when the dimension has no icons configured', () => {
+    expect(resolveTaxonomyIcon(undefined, undefined, 'park')).toBeUndefined();
+  });
+
+  it('returns the matching icon for a known value', () => {
+    expect(resolveTaxonomyIcon(icons, undefined, 'park')).toBe('🌳');
+  });
+
+  it('falls back to defaultIcon for an unknown value', () => {
+    expect(resolveTaxonomyIcon(icons, '📍', 'theatre')).toBe('📍');
+  });
+
+  it('falls back to a built-in default when no defaultIcon is set either', () => {
+    expect(resolveTaxonomyIcon(icons, undefined, 'theatre')).toBe('📍');
   });
 });

@@ -4,8 +4,8 @@ import 'leaflet.heat';
 import type { GeoFeature } from '../../time/temporal-types';
 import type { LayerManifest } from '../../manifests/layer-manifest';
 import { isActiveOn } from '../../time/is-active-on';
-import { featureMatchesFilters } from '../../taxonomy/compute-dimensions';
-import { resolveCategoryIcon, resolveMarkerStyle, resolvePolygonStyle } from '../style';
+import { featureMatchesFilters, readField } from '../../taxonomy/compute-dimensions';
+import { resolveMarkerStyle, resolvePolygonStyle, resolveTaxonomyIcon } from '../style';
 
 export function renderDataLayer(
   map: L.Map,
@@ -41,18 +41,19 @@ export function renderDataLayer(
   // overridable per layer via the manifest's `style`.
   const needsPolygonStyle = manifest.kind === 'line' || manifest.kind === 'polygon' || manifest.kind === 'boundary';
 
-  // Point features get an emoji marker keyed by their taxonomy category so
-  // different POI categories are visually distinguishable on the map.
+  // Point features get an emoji marker keyed by whichever taxonomy
+  // dimension declares `icons` (see layer-manifest.ts) — a layer with no
+  // such dimension falls back to Leaflet's plain default marker.
+  const iconDimension = manifest.taxonomy?.find((dim) => dim.icons);
   const pointToLayer =
-    manifest.kind === 'point'
-      ? (feature: GeoJSON.Feature, latlng: L.LatLng) =>
-          L.marker(latlng, {
-            icon: L.divIcon({
-              html: resolveCategoryIcon((feature.properties as Record<string, unknown> | null)?.category),
-              className: 'category-marker-icon',
-              iconSize: [24, 24],
-            }),
-          })
+    manifest.kind === 'point' && iconDimension
+      ? (feature: GeoJSON.Feature, latlng: L.LatLng) => {
+          const value = readField(feature as GeoFeature, iconDimension.field)[0];
+          const icon = resolveTaxonomyIcon(iconDimension.icons, iconDimension.defaultIcon, value);
+          return L.marker(latlng, {
+            icon: L.divIcon({ html: icon ?? '', className: 'category-marker-icon', iconSize: [24, 24] }),
+          });
+        }
       : undefined;
 
   const geoJsonLayer = L.geoJSON(active as GeoJSON.Feature[], {

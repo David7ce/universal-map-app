@@ -4,7 +4,15 @@
   "kind": "point",
   "source": { "type": "geojson", "url": "apps/demo/data/poi.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },
-  "taxonomy": [{ "id": "category", "label": "Categories", "field": "properties.category" }],
+  "taxonomy": [
+    {
+      "id": "category",
+      "label": "Categories",
+      "field": "properties.category",
+      "icons": { "park": "🌳", "restaurant": "🍴", "theatre": "🎭" },
+      "defaultIcon": "📍"
+    }
+  ],
   "regionRole": null,
   "style": { "cluster": true, "icon": "marker" },
   "panel": {

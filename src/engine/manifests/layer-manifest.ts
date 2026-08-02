@@ -7,6 +7,12 @@ export interface TaxonomyFieldDef {
   label: string;
   field: string;
   hierarchical?: boolean;
+  // Optional emoji/glyph per value — when present, both the filter list and
+  // (for `point` layers) the map marker show it. `defaultIcon` covers values
+  // with no entry in `icons`; a dimension with no `icons` at all gets no
+  // icon anywhere, same as today.
+  icons?: Record<string, string>;
+  defaultIcon?: string;
 }
 
 export interface InfoFieldDef {

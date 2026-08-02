@@ -6,6 +6,8 @@ export interface TaxonomyDimension {
   id: string;
   label: string;
   values: { value: string; count: number }[];
+  icons?: Record<string, string>;
+  defaultIcon?: string;
 }
 
 export interface LoadedLayer {
@@ -57,7 +59,13 @@ export function computeTaxonomyDimensions(layers: LoadedLayer[], date: Date): Ta
 
   for (const layer of layers) {
     for (const dim of layer.manifest.taxonomy ?? []) {
-      const bucket = dimensions.get(dim.id) ?? { id: dim.id, label: dim.label, values: [] };
+      const bucket = dimensions.get(dim.id) ?? {
+        id: dim.id,
+        label: dim.label,
+        values: [],
+        icons: dim.icons,
+        defaultIcon: dim.defaultIcon,
+      };
       const counts = new Map(bucket.values.map((v) => [v.value, v.count]));
 
       for (const feature of layer.features) {

@@ -13,17 +13,22 @@ export function resolveMarkerStyle(manifest: LayerManifest): MarkerStyle {
   };
 }
 
-// Emoji glyph shown on point markers, keyed by the feature's taxonomy
-// category value — gives each POI category a distinct symbol on the map.
-const CATEGORY_ICONS: Record<string, string> = {
-  park: '🌳',
-  restaurant: '🍴',
-  theatre: '🎭',
-};
-const DEFAULT_CATEGORY_ICON = '📍';
+// Fallback when a taxonomy dimension declares `icons` but a specific value
+// has no entry and the manifest gives no `defaultIcon` of its own.
+const FALLBACK_ICON = '📍';
 
-export function resolveCategoryIcon(category: unknown): string {
-  return typeof category === 'string' && category in CATEGORY_ICONS ? CATEGORY_ICONS[category] : DEFAULT_CATEGORY_ICON;
+// Emoji/glyph for a taxonomy value, driven entirely by the layer manifest's
+// `taxonomy[].icons`/`defaultIcon` (see layer-manifest.ts) — a dimension
+// with no `icons` configured gets no icon anywhere (filter list or map
+// marker), so this is `undefined` rather than always returning a fallback.
+export function resolveTaxonomyIcon(
+  icons: Record<string, string> | undefined,
+  defaultIcon: string | undefined,
+  value: unknown,
+): string | undefined {
+  if (!icons) return undefined;
+  if (typeof value === 'string' && Object.prototype.hasOwnProperty.call(icons, value)) return icons[value];
+  return defaultIcon ?? FALLBACK_ICON;
 }
 
 export interface PolygonStyle {
