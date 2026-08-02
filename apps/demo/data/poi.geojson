@@ -50,6 +50,29 @@
         }
       },
       "geometry": { "type": "Point", "coordinates": [-16.63, 28.28] }
+    },
+    {
+      "type": "Feature",
+      "id": "poi-fasnia-volcan",
+      "properties": {
+        "name": "Volcán de Fasnia",
+        "category": "desastres",
+        "epoca": "Siglo XVIII (1705)",
+        "descripcion": "Cono volcánico nacido el 5 de enero de 1705 durante la erupción triple que sacudió Tenerife entre 1704 y 1705. La fractura eruptiva expulsó coladas que descendieron 7 km por el Barranco del Volcán. Catalogado por el IGME como Lugar de Interés Geológico (IC4044).",
+        "temporal": { "range": { "from": "1705-01-05" } }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.4419, 28.2836] }
+    },
+    {
+      "type": "Feature",
+      "id": "poi-fasnia-barranco-herques",
+      "properties": {
+        "name": "Barranco de Herques",
+        "category": "otros_planos",
+        "epoca": "Época guanche / documentado en 1772",
+        "descripcion": "Barranco que marca el límite entre Fasnia y Güímar, célebre por albergar, según las crónicas de José de Viera y Clavijo (1772), una necrópolis guanche con más de mil momias nunca vuelta a localizar con certeza."
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.4108, 28.2661] }
     }
   ]
 }

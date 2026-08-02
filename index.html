@@ -37,18 +37,26 @@
         <div class="panel__content">
           <div id="panel-right-filters"></div>
           <div class="panel__section-separator"></div>
+          <div id="panel-right-time" class="calendar-bar"></div>
+          <div class="panel__section-separator"></div>
+          <div id="panel-right-map-settings" class="settings-control"></div>
+          <div class="panel__section-separator"></div>
           <div id="panel-right-actions"></div>
         </div>
       </aside>
 
-      <div id="layer-control" class="layer-control-map"></div>
+      <div class="bottom-left-controls">
+        <div id="layer-control" class="layer-control-map"></div>
+      </div>
 
       <div id="selection-card"></div>
 
-      <div id="calendar-bar" class="calendar-bar"></div>
-
       <div class="map-footer-legend">
-        <span id="map-scale" class="map-scale"></span>
+        <span class="map-date-text" id="map-date-text"></span>
+        <div id="map-scale" class="map-scale">
+          <span class="map-scale__line" data-role="scale-line"></span>
+          <span class="map-scale__text" data-role="scale-text"></span>
+        </div>
         <span class="data-attribution" id="map-attribution"></span>
       </div>
     </div>

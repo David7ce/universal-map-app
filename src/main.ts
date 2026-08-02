@@ -11,12 +11,14 @@ import { createStore } from './engine/state/store';
 import type { AppState } from './engine/state/store';
 import { createMap } from './engine/space/map';
 import { renderDataLayer } from './engine/space/data-layer-renderer';
+import { mountCoordinateGrid } from './engine/space/coordinate-grid-layer';
 import { loadStrings } from './ui/strings';
 import { mountSearchOverlay } from './ui/panels/SearchOverlay';
 import { mountSelectionCard } from './ui/panels/SelectionCard';
 import { mountPanelRight } from './ui/panels/PanelRight';
 import { mountLayerControl } from './ui/panels/LayerControl';
 import { mountCalendarBar } from './ui/panels/CalendarBar';
+import { mountSettingsControl } from './ui/panels/SettingsControl';
 import { mountAppChrome } from './ui/app-chrome';
 import { ensureCalendarSystemLoaded } from './engine/time/calendar-conversion';
 import type { GeoFeature } from './engine/time/temporal-types';
@@ -75,10 +77,13 @@ async function bootstrap(): Promise<void> {
     activeBaseLayerId: appManifest.baseLayers[0].id,
     panels: { left: 'closed', right: 'closed' },
     hiddenLayerIds: new Set(detailLayers.map((l) => l.manifest.id)),
+    calendarSystem: appManifest.calendar.system ?? 'gregorian',
+    showGrid: false,
   });
 
   const mapContainer = document.querySelector<HTMLDivElement>('#map')!;
   const { map, baseLayers } = await createMap(mapContainer, appManifest);
+  const grid = mountCoordinateGrid(map);
   const renderedLayers = new Map<string, Layer>();
 
   function renderMap(): void {
@@ -114,22 +119,19 @@ async function bootstrap(): Promise<void> {
   store.subscribe(renderMap);
 
   await calendarSystemLoaded;
-  mountCalendarBar(document.querySelector('#calendar-bar')!, store, appManifest.calendar, strings);
   mountPanelRight(document.querySelector('#panel-right-filters')!, store, loadedLayers, strings);
   mountSearchOverlay(document.querySelector('#search-overlay')!, store, loadedLayers, strings);
-  mountSelectionCard(
-    document.querySelector('#selection-card')!,
-    store,
-    loadedLayers,
-    strings,
-    appManifest.calendar.system ?? 'gregorian',
-  );
+  mountSelectionCard(document.querySelector('#selection-card')!, store, loadedLayers, strings);
   mountLayerControl(document.querySelector('#layer-control')!, store, strings, {
     map,
     baseLayerTiles: baseLayers,
     baseLayerConfigs: appManifest.baseLayers,
     detailLayers: detailLayers.map((l) => ({ id: l.manifest.id, title: l.manifest.title })),
   });
+  // Time editor and map-settings button both live inline inside the
+  // filters panel now, not as standalone floating controls.
+  mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings);
+  mountSettingsControl(document.querySelector('#panel-right-map-settings')!, store, strings, { appManifest, grid });
 
   mountAppChrome(store, strings, appManifest, map, loadedLayers);
 

@@ -58,6 +58,10 @@ export function mountLayerControl(
       <span class="layer-control-trigger__label">${t('layerControl.trigger', strings)}</span>
     </button>
     <section class="layer-control-popover" hidden>
+      <header class="layer-control-popover__header">
+        <p class="layer-control-group__title">${t('layerControl.trigger', strings)}</p>
+        <button type="button" class="layer-control-popover__close" aria-label="${t('layerControl.closeLabel', strings)}">${icons.close}</button>
+      </header>
       ${detailGroup}
       ${detailGroup ? '<hr class="layer-control-separator" />' : ''}
       <div class="layer-control-group">
@@ -69,18 +73,16 @@ export function mountLayerControl(
 
   const trigger = container.querySelector<HTMLButtonElement>('.layer-control-trigger')!;
   const popover = container.querySelector<HTMLElement>('.layer-control-popover')!;
+  const closeButton = container.querySelector<HTMLButtonElement>('.layer-control-popover__close')!;
 
-  trigger.addEventListener('click', () => {
-    const open = popover.hidden;
+  // Stays open until explicitly closed (trigger toggle or the close button)
+  // — no click-outside auto-close, so it behaves like the filters panel.
+  function setOpen(open: boolean): void {
     popover.hidden = !open;
     trigger.setAttribute('aria-expanded', String(open));
-  });
-  document.addEventListener('click', (event) => {
-    if (!container.contains(event.target as Node)) {
-      popover.hidden = true;
-      trigger.setAttribute('aria-expanded', 'false');
-    }
-  });
+  }
+  trigger.addEventListener('click', () => setOpen(popover.hidden));
+  closeButton.addEventListener('click', () => setOpen(false));
 
   container.querySelectorAll<HTMLInputElement>('[data-base-layer]').forEach((radio) => {
     radio.addEventListener('change', () => {

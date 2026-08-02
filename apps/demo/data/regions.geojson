@@ -18,6 +18,33 @@
         "type": "Polygon",
         "coordinates": [[[-16.65, 28.27], [-16.55, 28.27], [-16.55, 28.31], [-16.65, 28.31], [-16.65, 28.27]]]
       }
+    },
+    {
+      "type": "Feature",
+      "id": "region-fasnia",
+      "properties": { "name": "Fasnia" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-16.47, 28.24], [-16.39, 28.24], [-16.39, 28.32], [-16.47, 28.32], [-16.47, 28.24]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "region-guimar",
+      "properties": { "name": "Güímar" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-16.44, 28.3], [-16.35, 28.3], [-16.35, 28.38], [-16.44, 28.38], [-16.44, 28.3]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "region-arico",
+      "properties": { "name": "Arico" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-16.53, 28.15], [-16.42, 28.15], [-16.42, 28.25], [-16.53, 28.25], [-16.53, 28.15]]]
+      }
     }
   ]
 }

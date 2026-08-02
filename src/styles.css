@@ -267,6 +267,14 @@ body {
 }
 
 @media (min-width: 64rem) {
+  /* Desktop: the search field is always visible, docked top-left — no
+     circular toggle button, and no `hidden` state to fight with. */
+  .control-btn--search {
+    display: none;
+  }
+  .map-search[hidden] {
+    display: block;
+  }
   .map-search {
     position: fixed;
     inset: auto;
@@ -340,10 +348,25 @@ body {
   width: 22px;
   height: 22px;
 }
-/* On desktop the toggle button tracks the panel's left edge */
+/* On desktop the toggle button, zoom control, and scale/attribution legend
+   all track the panel's left edge so the open panel never covers them. */
 @media (min-width: 48rem) {
   .map-app.panel-right-open .panel-toggle-btn {
     right: calc(var(--panel-right-width) + var(--control-btn-offset));
+  }
+  .map-app.panel-right-open .leaflet-control-zoom.leaflet-bar.leaflet-control {
+    margin-right: calc(var(--panel-right-width) + var(--control-btn-offset)) !important;
+  }
+  .map-app.panel-right-open .map-footer-legend {
+    right: var(--panel-right-width);
+  }
+}
+/* On mobile the panel covers the full screen, so these just hide instead
+   of sliding — same treatment the toggle button already gets below. */
+@media (max-width: 47.99rem) {
+  .map-app.panel-right-open .leaflet-control-zoom.leaflet-bar.leaflet-control,
+  .map-app.panel-right-open .map-footer-legend {
+    display: none;
   }
 }
 
@@ -351,7 +374,9 @@ body {
   display: none;
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  /* No dimming: opening the filters drawer must not darken the rest of the
+     UI. Kept invisible-but-clickable so click-outside still closes it. */
+  background-color: transparent;
   z-index: var(--z-modal-backdrop);
 }
 .panel-overlay.is-visible {
@@ -630,13 +655,23 @@ body {
 }
 
 /* ========================================
-   LAYER CONTROL (base layers + map details)
+   BOTTOM-LEFT CONTROLS (layers button + time/calendar button)
    ======================================== */
-.layer-control-map {
+.bottom-left-controls {
   position: fixed;
   bottom: var(--bottom-clearance);
   left: var(--control-btn-offset);
   z-index: var(--z-fixed);
+  display: flex;
+  align-items: flex-end;
+  gap: var(--controls-gap);
+}
+
+/* ========================================
+   LAYER CONTROL (base layers + map details)
+   ======================================== */
+.layer-control-map {
+  position: relative;
 }
 .layer-control-trigger {
   min-height: 3rem;
@@ -675,6 +710,8 @@ body {
   left: 0;
   bottom: calc(100% + 0.6rem);
   min-width: min(20rem, calc(100vw - 2rem));
+  max-height: min(28rem, calc(100vh - 8rem));
+  overflow-y: auto;
   padding: 1rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
@@ -686,6 +723,39 @@ body {
 }
 .layer-control-popover[hidden] {
   display: none;
+}
+.layer-control-popover__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.layer-control-popover__header .layer-control-group__title {
+  flex: 1;
+}
+.layer-control-popover__close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-text-light);
+  cursor: pointer;
+}
+.layer-control-popover__close svg {
+  width: 14px;
+  height: 14px;
+}
+.layer-control-popover__close:hover {
+  background: var(--color-bg-alt);
+}
+.layer-control-popover__close:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .layer-control-group {
@@ -868,79 +938,114 @@ body {
 }
 
 /* ========================================
-   CALENDAR BAR (collapsible date toggle)
+   CALENDAR BAR (date editor, lives inline inside the filters panel)
    ======================================== */
-#calendar-bar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: var(--calendar-bar-height);
-  background: var(--color-white);
-  border-top: 1px solid var(--color-border);
-  display: flex;
-  align-items: stretch;
-  z-index: var(--z-fixed);
-}
-
-/* Always-visible date toggle button */
-.calendar-bar__date-btn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.calendar-bar {
+  display: grid;
   gap: 0.5rem;
-  padding: 0.4rem 1rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font: inherit;
-  color: var(--color-text);
-  transition: background-color var(--transition-fast);
-}
-.calendar-bar__date-btn:hover {
-  background-color: var(--color-bg-alt);
-}
-.calendar-bar__date-btn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: -2px;
-}
-.calendar-bar__date-text {
-  font-weight: var(--font-weight-semibold);
-  font-variant-numeric: tabular-nums;
-}
-/* Chevron rotates when controls are expanded */
-.calendar-bar__chevron {
-  display: flex;
-  transition: transform var(--transition-fast);
-}
-.calendar-bar__chevron svg {
-  width: 16px;
-  height: 16px;
-  color: var(--color-text-light);
-}
-#calendar-bar.is-expanded .calendar-bar__chevron {
-  transform: rotate(180deg);
 }
 
-/* Controls panel: hidden by default, slides above the bar when expanded */
 .calendar-bar__controls {
-  display: none;
-  position: absolute;
-  bottom: 100%;
-  left: 0;
-  right: 0;
-  background: var(--color-white);
-  border-top: 1px solid var(--color-border);
-  padding: 0.5rem 1rem;
+  display: grid;
+  gap: 0.4rem;
+}
+/* Date fields + edit button */
+.calendar-bar__row {
+  display: flex;
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
-  z-index: 1;
 }
-#calendar-bar.is-expanded .calendar-bar__controls {
+/* Range slider always gets its own full-width row at the end, so it has
+   real room to drag even in a narrow panel. */
+.calendar-bar__slider {
+  width: 100%;
+}
+
+/* ========================================
+   SETTINGS (map projection info + coordinate grid) — a single button living
+   inline inside the filters panel, see #panel-right-map-settings in index.html
+   ======================================== */
+.settings-control {
+  position: relative;
+  display: inline-block;
+}
+.settings-control-trigger {
   display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.85rem;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  transition: all var(--transition-fast);
+}
+.settings-control-trigger:hover {
+  background-color: var(--color-bg-alt);
+}
+.settings-control-trigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+.settings-control-trigger svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.settings-control-popover {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 0.5rem);
+  min-width: 15rem;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  box-shadow: var(--shadow-lg);
+  display: grid;
+  gap: 0.6rem;
+  z-index: var(--z-tooltip);
+}
+.settings-control-popover[hidden] {
+  display: none;
+}
+.settings-control-group {
+  display: grid;
+  gap: 0.5rem;
+}
+.settings-control-group__title {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-light);
+}
+.settings-control-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  cursor: pointer;
+}
+.settings-control-row--info {
+  cursor: default;
+  color: var(--color-text-light);
+}
+.settings-control-row select {
+  font: inherit;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  color: var(--color-text);
 }
 
 /* Individual date fields */
@@ -985,13 +1090,13 @@ body {
 }
 
 /* Edit mode: show inputs and spin arrows, hide text spans */
-#calendar-bar.is-editing .calendar-bar__field-value {
+.calendar-bar.is-editing .calendar-bar__field-value {
   display: none;
 }
-#calendar-bar.is-editing .calendar-bar__spin {
+.calendar-bar.is-editing .calendar-bar__spin {
   display: flex;
 }
-#calendar-bar.is-editing .calendar-bar__field-input {
+.calendar-bar.is-editing .calendar-bar__field-input {
   display: inline-block;
 }
 
@@ -1044,9 +1149,7 @@ body {
   width: 3rem;
 }
 
-#calendar-bar input[type='range'] {
-  flex: 1 1 120px;
-  min-width: 90px;
+.calendar-bar input[type='range'] {
   accent-color: var(--color-primary);
 }
 .calendar-bar__system-label {
@@ -1056,28 +1159,6 @@ body {
 }
 .calendar-bar__system-label:empty {
   display: none;
-}
-
-/* ========================================
-   FOOTER ATTRIBUTION
-   ======================================== */
-.map-footer-legend {
-  position: fixed;
-  right: 0;
-  bottom: var(--calendar-bar-height);
-  /* Stay above the panel backdrop (999) so attribution is always readable */
-  z-index: calc(var(--z-modal) + 1);
-  background: rgba(255, 255, 255, 0.85);
-  border-top: 1px solid var(--color-border);
-  border-left: 1px solid var(--color-border);
-  padding: 0.2rem 0.6rem;
-  font-size: var(--font-size-xs);
-}
-.data-attribution {
-  color: var(--color-text-light);
-}
-.data-attribution a {
-  color: inherit;
 }
 
 /* ========================================
@@ -1091,6 +1172,8 @@ body {
   background: var(--color-white);
   margin-bottom: var(--bottom-clearance) !important;
   margin-right: var(--control-btn-offset) !important;
+  /* Animate alongside the panel-open shift below */
+  transition: margin-right var(--transition-base);
 }
 .leaflet-control-zoom.leaflet-bar.leaflet-control a {
   background-color: var(--color-white);
@@ -1111,40 +1194,69 @@ body {
 }
 
 /* ========================================
-   FOOTER BAR: scale + attribution on one line
+   FOOTER LEGEND: scale + attribution, one line, right-anchored
    ======================================== */
 .map-footer-legend {
   position: fixed;
-  left: 0;
   right: 0;
   bottom: 0;
   height: var(--footer-bar-height);
+  max-width: min(70vw, 26rem);
   /* Stay above the panel backdrop (999) so attribution is always readable */
   z-index: calc(var(--z-modal) + 1);
   background: rgba(255, 255, 255, 0.92);
   border-top: 1px solid var(--color-border);
-  padding: 0 0.75rem;
+  border-left: 1px solid var(--color-border);
+  border-top-left-radius: var(--radius-sm);
+  padding: 0 0.6rem;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.4rem;
   font-size: var(--font-size-xs);
+  /* Animate alongside the panel-open shift */
+  transition: right var(--transition-base);
 }
-/* Scale value e.g. "3 km" */
+/* Current selected date, plain text */
+.map-date-text {
+  flex-shrink: 0;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.map-date-text:not(:empty)::after {
+  content: ' ·';
+  color: var(--color-border);
+}
+/* Scale: a ruler-style bar (side + bottom borders, no top border) sized to
+   a "nice" ground distance, plus its label e.g. "3 km" */
 .map-scale {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.map-scale__line {
+  height: 6px;
+  border-left: 1px solid var(--color-text);
+  border-right: 1px solid var(--color-text);
+  border-bottom: 1px solid var(--color-text);
+}
+.map-scale__text {
   color: var(--color-text);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   font-weight: var(--font-weight-medium);
 }
-/* Bullet separator between scale and attribution */
-.map-scale:not(:empty)::after {
-  content: ' ·';
+/* Bullet separator between scale and attribution, only when there's an
+   attribution string to separate from */
+.data-attribution:not(:empty)::before {
+  content: '· ';
   color: var(--color-border);
-  margin-left: 0.3rem;
 }
 .data-attribution {
   color: var(--color-text-light);
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

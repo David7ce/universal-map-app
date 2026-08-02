@@ -1,3 +1,5 @@
+import type { CalendarSystem } from '../time/calendar-systems';
+
 export type Listener<T> = (state: T) => void;
 
 export interface Store<T> {
@@ -35,4 +37,9 @@ export interface AppState {
   // Layer ids currently toggled off via the layer control's "map details"
   // group (e.g. a heatmap overlay) — hidden from rendering until re-enabled.
   hiddenLayerIds: Set<string>;
+  // Display-only calendar system (Settings popover) — independent of the
+  // manifest's storage model, which always stays Gregorian/ISO 8601.
+  calendarSystem: CalendarSystem;
+  // Whether the lat/lng coordinate grid overlay is shown on the map.
+  showGrid: boolean;
 }

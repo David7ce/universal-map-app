@@ -25,14 +25,21 @@ async function resolveCrs(config: MapCrsConfig | undefined): Promise<L.CRS | und
 
 export async function createMap(container: HTMLElement, appManifest: AppManifest): Promise<CreatedMap> {
   const crs = await resolveCrs(appManifest.map.crs);
-  const map = L.map(container, { zoomControl: false, ...(crs ? { crs } : {}) }).setView(
-    appManifest.map.center,
-    appManifest.map.zoom,
-  );
+  // Show a single world, not an infinitely repeating one: `noWrap` on every
+  // tile layer stops horizontal tile repetition, and `maxBounds` (only for
+  // the two built-in geographic CRSs — a custom CRS's units aren't known
+  // here) stops panning past the edges of that single world.
+  const isGeographicCrs = crs === undefined || crs === L.CRS.EPSG4326;
+  const map = L.map(container, {
+    zoomControl: false,
+    worldCopyJump: false,
+    ...(isGeographicCrs ? { maxBounds: L.latLngBounds([-90, -180], [90, 180]), maxBoundsViscosity: 1.0 } : {}),
+    ...(crs ? { crs } : {}),
+  }).setView(appManifest.map.center, appManifest.map.zoom);
 
   const baseLayers: Record<string, L.TileLayer> = {};
   appManifest.baseLayers.forEach((config, index) => {
-    const layer = L.tileLayer(config.url, { attribution: config.attribution });
+    const layer = L.tileLayer(config.url, { attribution: config.attribution, noWrap: true });
     baseLayers[config.id] = layer;
     if (index === 0) layer.addTo(map);
   });

@@ -1,7 +1,8 @@
 import type { Store, AppState } from '../../engine/state/store';
-import type { CalendarSystem } from '../../engine/time/calendar-systems';
-import { addCalendarUnit, formatCalendarDate } from '../../engine/time/calendar-conversion';
+import { CALENDAR_SYSTEMS, type CalendarSystem } from '../../engine/time/calendar-systems';
+import { addCalendarUnit, ensureCalendarSystemLoaded, formatCalendarDate } from '../../engine/time/calendar-conversion';
 import { t } from '../strings';
+import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
 
 export interface CalendarConfig {
@@ -154,48 +155,54 @@ export function mountCalendarBar(
   const yearMin = new Date(`${config.min}T00:00:00Z`).getUTCFullYear();
   const yearMax = new Date(`${config.max}T00:00:00Z`).getUTCFullYear();
 
-  // The calendar bar has two layers:
-  // 1. A date button (always visible) showing the current date and toggling the controls.
-  // 2. A controls panel (hidden by default) that appears above the bar with the slider and edit fields.
+  const systemOptions = CALENDAR_SYSTEMS.map(
+    (system) => `<option value="${system}">${escapeHtml(t(`calendar.system.${system}`, strings))}</option>`,
+  ).join('');
+
+  // Lives inline inside the filters panel — always visible, no toggle of
+  // its own. Layout: system select, then the date fields row, then the
+  // range slider on its own full-width row at the end.
   container.innerHTML = `
-    <button type="button" class="calendar-bar__date-btn" data-action="toggle-expand" aria-expanded="false" aria-label="${t('calendar.expandLabel', strings)}">
-      <span class="calendar-bar__date-text" data-role="date-display"></span>
-      <span class="calendar-bar__chevron">${icons.chevron}</span>
-    </button>
+    <p class="settings-control-group__title">${t('layerControl.time', strings)}</p>
+    <label class="settings-control-row">
+      <span>${t('settings.calendarSystemLabel', strings)}</span>
+      <select data-role="calendar-system">${systemOptions}</select>
+    </label>
     <div class="calendar-bar__controls">
-      <div class="calendar-bar__field" data-field="year">
-        <span class="calendar-bar__field-value" data-role="year-value"></span>
-        <input type="number" class="calendar-bar__field-input" data-role="year-input" min="${yearMin}" max="${yearMax}" step="1" />
-        <div class="calendar-bar__spin">
-          <button type="button" data-action="year-up" aria-label="Increase year">▲</button>
-          <button type="button" data-action="year-down" aria-label="Decrease year">▼</button>
+      <div class="calendar-bar__row">
+        <div class="calendar-bar__field" data-field="year">
+          <span class="calendar-bar__field-value" data-role="year-value"></span>
+          <input type="number" class="calendar-bar__field-input" data-role="year-input" min="${yearMin}" max="${yearMax}" step="1" />
+          <div class="calendar-bar__spin">
+            <button type="button" data-action="year-up" aria-label="Increase year">▲</button>
+            <button type="button" data-action="year-down" aria-label="Decrease year">▼</button>
+          </div>
         </div>
-      </div>
-      <span class="calendar-bar__sep">/</span>
-      <div class="calendar-bar__field" data-field="month">
-        <span class="calendar-bar__field-value" data-role="month-value"></span>
-        <input type="number" class="calendar-bar__field-input" data-role="month-input" min="1" max="12" step="1" />
-        <div class="calendar-bar__spin">
-          <button type="button" data-action="month-up" aria-label="Increase month">▲</button>
-          <button type="button" data-action="month-down" aria-label="Decrease month">▼</button>
+        <span class="calendar-bar__sep">/</span>
+        <div class="calendar-bar__field" data-field="month">
+          <span class="calendar-bar__field-value" data-role="month-value"></span>
+          <input type="number" class="calendar-bar__field-input" data-role="month-input" min="1" max="12" step="1" />
+          <div class="calendar-bar__spin">
+            <button type="button" data-action="month-up" aria-label="Increase month">▲</button>
+            <button type="button" data-action="month-down" aria-label="Decrease month">▼</button>
+          </div>
         </div>
-      </div>
-      <span class="calendar-bar__sep">/</span>
-      <div class="calendar-bar__field" data-field="day">
-        <span class="calendar-bar__field-value" data-role="day-value"></span>
-        <input type="number" class="calendar-bar__field-input" data-role="day-input" min="1" max="31" step="1" />
-        <div class="calendar-bar__spin">
-          <button type="button" data-action="day-up" aria-label="Increase day">▲</button>
-          <button type="button" data-action="day-down" aria-label="Decrease day">▼</button>
+        <span class="calendar-bar__sep">/</span>
+        <div class="calendar-bar__field" data-field="day">
+          <span class="calendar-bar__field-value" data-role="day-value"></span>
+          <input type="number" class="calendar-bar__field-input" data-role="day-input" min="1" max="31" step="1" />
+          <div class="calendar-bar__spin">
+            <button type="button" data-action="day-up" aria-label="Increase day">▲</button>
+            <button type="button" data-action="day-down" aria-label="Decrease day">▼</button>
+          </div>
         </div>
+        <button type="button" class="calendar-bar__edit" data-action="edit" aria-label="${t('calendar.editLabel', strings)}">${icons.edit}</button>
       </div>
       <span class="calendar-bar__system-label" data-role="system-label"></span>
-      <button type="button" class="calendar-bar__edit" data-action="edit" aria-label="${t('calendar.editLabel', strings)}">${icons.edit}</button>
-      <input type="range" data-role="date-slider" min="0" max="${totalDays}" step="1" />
+      <input type="range" class="calendar-bar__slider" data-role="date-slider" min="0" max="${totalDays}" step="1" />
     </div>
   `;
 
-  const dateDisplayEl = container.querySelector<HTMLElement>('[data-role="date-display"]')!;
   const monthValueEl = container.querySelector<HTMLElement>('[data-role="month-value"]')!;
   const dayValueEl = container.querySelector<HTMLElement>('[data-role="day-value"]')!;
   const yearValueEl = container.querySelector<HTMLElement>('[data-role="year-value"]')!;
@@ -205,21 +212,18 @@ export function mountCalendarBar(
   const dateSlider = container.querySelector<HTMLInputElement>('[data-role="date-slider"]')!;
   const systemLabel = container.querySelector<HTMLElement>('[data-role="system-label"]')!;
   const editButton = container.querySelector<HTMLButtonElement>('[data-action="edit"]')!;
-  const expandButton = container.querySelector<HTMLButtonElement>('[data-action="toggle-expand"]')!;
+  const systemSelect = container.querySelector<HTMLSelectElement>('[data-role="calendar-system"]')!;
 
   function sliderOffsetFor(dateIso: string): string {
     return String(clamp(daysBetween(config.min, dateIso), 0, totalDays));
   }
 
   function renderSystemLabel(dateIso: string): void {
-    systemLabel.textContent = calendarSystemLabel(dateIso, config.system ?? 'gregorian');
+    systemLabel.textContent = calendarSystemLabel(dateIso, store.get().calendarSystem);
   }
 
   function renderFields(dateIso: string): void {
     const d = new Date(`${dateIso}T00:00:00Z`);
-    // Update the always-visible date button text
-    dateDisplayEl.textContent = `${yearNumber(dateIso)} / ${monthLabel(dateIso, strings)} / ${dayNumber(dateIso)}`;
-    // Update individual field spans inside the expanded controls
     monthValueEl.textContent = monthLabel(dateIso, strings);
     dayValueEl.textContent = dayNumber(dateIso);
     yearValueEl.textContent = yearNumber(dateIso);
@@ -251,19 +255,9 @@ export function mountCalendarBar(
   }
 
   dateSlider.value = sliderOffsetFor(store.get().selectedDate);
+  systemSelect.value = store.get().calendarSystem;
   renderSystemLabel(store.get().selectedDate);
   renderFields(store.get().selectedDate);
-
-  // Toggle expand/collapse the controls panel
-  expandButton.addEventListener('click', () => {
-    const isExpanded = container.classList.toggle('is-expanded');
-    expandButton.setAttribute('aria-expanded', String(isExpanded));
-    // Exiting expanded mode also exits edit mode
-    if (!isExpanded && container.classList.contains('is-editing')) {
-      container.classList.remove('is-editing');
-      editButton.setAttribute('aria-pressed', 'false');
-    }
-  });
 
   editButton.addEventListener('click', () => {
     const isEditing = container.classList.toggle('is-editing');
@@ -272,6 +266,13 @@ export function mountCalendarBar(
       yearInputEl.focus();
       yearInputEl.select();
     }
+  });
+
+  systemSelect.addEventListener('change', () => {
+    const system = systemSelect.value as CalendarSystem;
+    ensureCalendarSystemLoaded(system)
+      .then(() => store.set({ calendarSystem: system }))
+      .catch((error: unknown) => console.error('Failed to load calendar system', system, error));
   });
 
   // Each numeric input commits its part on change and on Enter; Escape exits.
@@ -326,6 +327,7 @@ export function mountCalendarBar(
   store.subscribe((state) => {
     const offset = sliderOffsetFor(state.selectedDate);
     if (dateSlider.value !== offset) dateSlider.value = offset;
+    if (document.activeElement !== systemSelect) systemSelect.value = state.calendarSystem;
     renderSystemLabel(state.selectedDate);
     renderFields(state.selectedDate);
   });

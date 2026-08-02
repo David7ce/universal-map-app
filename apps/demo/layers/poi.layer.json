@@ -12,6 +12,8 @@
     "showInInfo": true,
     "infoFields": [
       { "field": "properties.category", "label": "Category" },
+      { "field": "properties.epoca", "label": "Era" },
+      { "field": "properties.descripcion", "label": "Description" },
       { "field": "properties.website", "label": "Website", "type": "link" },
       { "field": "properties.photo", "label": "Photo", "type": "image" }
     ]

@@ -3,6 +3,7 @@ import type { AppManifest } from '../engine/manifests/app-manifest';
 import type { AppState, Store } from '../engine/state/store';
 import type { LoadedLayer } from '../engine/taxonomy/compute-dimensions';
 import { getPanelSlots, type PluginContext } from '../engine/plugins/registry';
+import { formatCalendarDate } from '../engine/time/calendar-conversion';
 import { icons } from './icons';
 import { t } from './strings';
 
@@ -73,6 +74,18 @@ function mountFilterBadge(store: Store<AppState>, panelRightToggle: HTMLButtonEl
   store.subscribe(render);
 }
 
+// Current selected date, plain text — the full editor lives inline in the
+// filters panel now, so this is the only always-visible date indicator.
+function mountDateText(store: Store<AppState>): void {
+  const dateTextEl = document.querySelector<HTMLElement>('#map-date-text')!;
+  function render(): void {
+    const state = store.get();
+    dateTextEl.textContent = formatCalendarDate(state.selectedDate, state.calendarSystem);
+  }
+  render();
+  store.subscribe(render);
+}
+
 // Footer attribution reflects whichever base layer is currently active.
 function mountAttribution(store: Store<AppState>, appManifest: AppManifest): void {
   const attributionEl = document.querySelector<HTMLElement>('#map-attribution')!;
@@ -84,18 +97,40 @@ function mountAttribution(store: Store<AppState>, appManifest: AppManifest): voi
   store.subscribe(render);
 }
 
-// Scale display: an approximate ground distance for an 80px reference
-// width at the map's current center/zoom, updated on every zoom/pan.
+// "Nice" round distances (same table Leaflet's own L.Control.Scale uses) so
+// the bar's width always lines up with a label like "3 km", not "3.2 km".
+const NICE_SCALE_DISTANCES = [
+  1, 2, 3, 5, 10, 20, 30, 50, 100, 200, 300, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000, 50000, 100000, 200000,
+  300000, 500000, 1000000, 2000000, 3000000, 5000000,
+];
+
+function niceScaleDistance(maxMeters: number): number {
+  for (let i = NICE_SCALE_DISTANCES.length - 1; i >= 0; i--) {
+    if (NICE_SCALE_DISTANCES[i] <= maxMeters) return NICE_SCALE_DISTANCES[i];
+  }
+  return NICE_SCALE_DISTANCES[0];
+}
+
+// Scale display: a ruler-style bar (line + side borders, like a printed map
+// legend) sized to a "nice" round ground distance, plus its label — both
+// recomputed on every zoom/pan since meters-per-pixel changes with them.
 function mountScaleIndicator(map: LeafletMap): void {
-  const scaleEl = document.querySelector<HTMLElement>('#map-scale')!;
+  const lineEl = document.querySelector<HTMLElement>('[data-role="scale-line"]')!;
+  const textEl = document.querySelector<HTMLElement>('[data-role="scale-text"]')!;
+  const MAX_WIDTH_PX = 90;
+
   function render(): void {
     const center = map.getCenter();
     const bounds = map.getBounds();
     const mapW = map.getContainer().clientWidth || 1;
     const metersPerDeg = (Math.PI / 180) * 6371000 * Math.cos((center.lat * Math.PI) / 180);
     const metersPerPx = ((bounds.getEast() - bounds.getWest()) * metersPerDeg) / mapW;
-    const dist = metersPerPx * 80; // 80-pixel reference width
-    scaleEl.textContent = dist >= 1000 ? `${Math.round(dist / 1000)} km` : `${Math.round(dist)} m`;
+    const maxMeters = metersPerPx * MAX_WIDTH_PX;
+    const niceMeters = niceScaleDistance(maxMeters);
+    const widthPx = niceMeters / metersPerPx;
+
+    lineEl.style.width = `${Math.round(widthPx)}px`;
+    textEl.textContent = niceMeters >= 1000 ? `${niceMeters / 1000} km` : `${niceMeters} m`;
   }
   render();
   map.on('zoomend moveend', render);
@@ -132,6 +167,7 @@ export function mountAppChrome(
   loadedLayers: LoadedLayer[],
 ): void {
   mountRightPanel(store, strings);
+  mountDateText(store);
   mountAttribution(store, appManifest);
   mountScaleIndicator(map);
   mountPluginSlots(store, loadedLayers);

@@ -2,6 +2,43 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Time editor, calendar system, and map settings moved into the filters panel
+
+The filters panel (`#panel-right`) now also hosts, below the Category/Region filters:
+
+- **Time** (`src/ui/panels/CalendarBar.ts`, mounted at `#panel-right-time`): a live calendar-system select (gregorian/julian/islamic/hebrew, independent of the manifest's default — `AppState.calendarSystem` is the single source of truth read by `CalendarBar.ts` and `SelectionCard.ts`; switching to islamic/hebrew lazy-loads `@js-temporal/polyfill` on demand via `ensureCalendarSystemLoaded()`), the year/month/day date editor, and a range slider on its own full-width row so it always has real drag room, even in the panel's narrow column.
+- **Settings** (`src/ui/panels/SettingsControl.ts`, mounted at `#panel-right-map-settings`): a small button that opens a popover with the active map projection (read-only, `map.crs`) and a "show coordinate grid" checkbox that draws a lat/lng graticule (`src/engine/space/coordinate-grid.ts` for the pure line-generation math, `coordinate-grid-layer.ts` for the Leaflet layer — split so the math stays unit-testable without a `window` global).
+
+No more full-width calendar bar or separate floating buttons for either — `#calendar-bar`/`#settings-control` are gone from `.bottom-left-controls`, which now holds only the Layers button. The footer legend gained a plain-text current-date reading (`#map-date-text`) as the one always-visible date indicator now that the full editor lives inside the (closed-by-default) filters panel.
+
+## Layers popover: Map details + Map type only, stays open with an explicit close button
+
+`LayerControl.ts`'s popover no longer auto-closes on click-outside (it behaves like the filters panel: toggle to open, an explicit header close button to dismiss). Now that Time and Settings moved into the filters panel, it only holds Map details and Map type.
+
+## Ruler-style scale bar; footer legend fixed and moved to the bottom-right
+
+Removed a dead, duplicate `.map-footer-legend` CSS rule block (leftover from an earlier layout, referencing an undefined `--calendar-bar-height` variable) that was overlapping and partially obscuring the calendar bar. The live rule is now anchored bottom-right instead of spanning the full width. The scale indicator (`mountScaleIndicator` in `src/ui/app-chrome.ts`) now renders as an actual ruler — a bar with side + bottom borders (no top border), sized to a "nice" round ground distance (1/2/3/5 × 10ⁿ, same table Leaflet's own scale control uses) instead of a plain number — plus a plain-text current-date reading (`#map-date-text`), the scale, and the attribution, all on one line.
+
+## Single-world map — no more infinitely repeating tiles
+
+`createMap()` (`src/engine/space/map.ts`) now sets `noWrap: true` on every tile layer and, for the two built-in geographic CRSs (default EPSG:3857 and EPSG:4326 — skipped for a custom CRS, whose units aren't known here), `maxBounds`/`maxBoundsViscosity` so panning stops at the edges of a single world instead of looping into repeated copies.
+
+## Zoom control and footer legend shift with the filters panel, same as the toggle button
+
+`.leaflet-control-zoom` and `.map-footer-legend` previously stayed pinned to the screen edge and ended up covered by the filters panel when it opened. On desktop they now slide left in sync with the panel (same `panel-right-open` pattern the filter toggle button already used); on mobile, where the panel covers the full screen, they simply hide instead.
+
+## Search field/button visibility bug fixed on desktop
+
+The desktop breakpoint (`≥64rem`) was missing the CSS that hides the circular mobile search-toggle button and forces the always-visible search field to override its `hidden` state — `SearchOverlay.ts`'s code already assumed this override existed. Both the button and the field could end up showing (or the field staying hidden) depending on `panels.left`. Fixed by adding the missing rules to that breakpoint.
+
+## Filters panel no longer dims the map
+
+Opening the right-side filters drawer used to darken the rest of the UI via a `rgba(0,0,0,0.5)` backdrop. `.panel-overlay` now stays fully transparent (still clickable, so click-outside still closes the panel) — opening filters no longer visually competes with the map underneath.
+
+## Demo data: Tenerife (Fasnia) content
+
+Added two real points of interest for Fasnia, Tenerife — Volcán de Fasnia (1705 eruption, IGME geological site IC4044) and Barranco de Herques (the lost Guanche necropolis Viera y Clavijo described in 1772) — under new `desastres`/`otros_planos` categories, plus `epoca`/`descripcion` `infoFields` on the `poi` layer to show them. Added three approximate municipality boundary polygons (Fasnia, Güímar, Arico) to `regions.geojson` so the new POIs resolve a containing region via the existing spatial join.
+
 ## Lazy-loaded Temporal polyfill and proj4leaflet
 
 `@js-temporal/polyfill` (islamic/hebrew calendar display) and `proj4leaflet` (custom `map.crs` projections) are now dynamically `import()`ed only when an app manifest actually requests them, instead of shipping in every build. `ensureCalendarSystemLoaded()` (`src/engine/time/calendar-conversion.ts`) is awaited once at bootstrap, before the first calendar render; `createMap()` (`src/engine/space/map.ts`) awaits the proj4leaflet import only inside the custom-CRS branch. For the demo app (gregorian, default EPSG:3857) this drops the main bundle from ~157KB to ~67KB gzipped, with the rest split into on-demand chunks.
