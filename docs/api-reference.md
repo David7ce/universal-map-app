@@ -28,11 +28,13 @@ The RRULE-subset parser and matcher `isActiveOn` delegates to for `recurrence.ru
 
 Small date-normalization helpers, exported because `is-active-on.ts` needs the exact same UTC-midnight normalization `rrule-subset.ts` uses internally — this is the fix for a bug class (raw-millisecond `Date` comparison instead of day-boundary-normalized) that showed up twice during this project's build.
 
-### Calendar systems (display only — see `docs/json-reference.md`'s "Calendar systems" section for the storage/display split)
+### Calendar systems (see `docs/json-reference.md`'s "Calendar systems" section for the storage/display split — storage stays Gregorian ISO regardless of `calendar.system`)
 
 - `formatCalendarDate(isoDate, system, locale?): string` — `src/engine/time/calendar-conversion.ts`. Formats an ISO Gregorian date as a human string in the target `CalendarSystem`.
 - `addCalendarUnit(isoDate, system, unit, delta): string` — same file. Steps a date by a calendar-aware month/year (day/week stepping is calendar-agnostic and handled directly by `CalendarBar.ts`'s own `nextSelectedDate`/`stepDatePart`).
-- `toCalendarParts(isoDate, system, locale?): CalendarDateParts` — same file. Decomposed `{ year, month, day, monthName }`, for a future consumer that needs the parts rather than a pre-formatted string (no current call site).
+- `toCalendarParts(isoDate, system, locale?): CalendarDateParts` — same file. Decomposed `{ year, month, day, monthName }` in the target system; used by `CalendarBar.ts` to render its year/month/day fields in a non-gregorian system.
+- `calendarPartsToIso(parts, system): string` — same file. The reverse of `toCalendarParts`: year/month/day already expressed in the target system back to Gregorian ISO. Throws (`RangeError`) on an impossible combination (e.g. day 30 in a 29-day Hebrew month) rather than silently clamping to a nearby real date.
+- `daysInCalendarMonth(year, month, system): number` / `monthsInCalendarYear(year, system): number` — same file. Bounds for a calendar-aware date field: islamic/hebrew months run 29-30 days depending on the year, and a Hebrew leap year has 13 months.
 - `CalendarSystem` type and `CALENDAR_SYSTEMS` array — `src/engine/time/calendar-systems.ts`. `'gregorian' | 'julian' | 'islamic' | 'hebrew'`.
 
 ---

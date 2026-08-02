@@ -1,12 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { ensureCalendarSystemLoaded } from '../../engine/time/calendar-conversion';
-import {
-  calendarSystemLabel,
-  getVisibleGranularityOptions,
-  nextSelectedDate,
-  parseDateInputValue,
-  stepDatePart,
-} from './CalendarBar';
+import { calendarSystemLabel, getVisibleGranularityOptions, nextSelectedDate, stepDatePart } from './CalendarBar';
 
 beforeAll(async () => {
   await ensureCalendarSystemLoaded('islamic');
@@ -37,22 +31,6 @@ describe('getVisibleGranularityOptions', () => {
   it('offers day/week/month/year for every calendar system', () => {
     expect(getVisibleGranularityOptions('gregorian')).toEqual(['day', 'week', 'month', 'year']);
     expect(getVisibleGranularityOptions('islamic')).toEqual(['day', 'week', 'month', 'year']);
-  });
-});
-
-describe('parseDateInputValue', () => {
-  it('parses dd-mm-yyyy values into iso dates', () => {
-    expect(parseDateInputValue('29-07-2026')).toBe('2026-07-29');
-    expect(parseDateInputValue('2026-07-29')).toBe('2026-07-29');
-  });
-
-  it('accepts two-digit years and normalizes them', () => {
-    expect(parseDateInputValue('29-07-26')).toBe('2026-07-29');
-  });
-
-  it('rejects invalid dates', () => {
-    expect(parseDateInputValue('31-02-2026')).toBeNull();
-    expect(parseDateInputValue('not-a-date')).toBeNull();
   });
 });
 

@@ -69,7 +69,7 @@ function isJulianLeapYear(year: number): boolean {
   return year % 4 === 0;
 }
 
-function daysInJulianMonth(year: number, month: number): number {
+export function daysInJulianMonth(year: number, month: number): number {
   return month === 2 && isJulianLeapYear(year) ? 29 : JULIAN_MONTH_LENGTHS[month - 1];
 }
 

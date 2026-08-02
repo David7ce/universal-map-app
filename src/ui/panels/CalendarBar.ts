@@ -1,6 +1,13 @@
 import type { Store, AppState } from '../../engine/state/store';
 import type { CalendarSystem } from '../../engine/time/calendar-systems';
-import { addCalendarUnit, formatCalendarDate } from '../../engine/time/calendar-conversion';
+import {
+  addCalendarUnit,
+  calendarPartsToIso,
+  daysInCalendarMonth,
+  formatCalendarDate,
+  monthsInCalendarYear,
+  toCalendarParts,
+} from '../../engine/time/calendar-conversion';
 import { t } from '../strings';
 import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
@@ -69,42 +76,6 @@ export function calendarSystemLabel(dateIso: string, system: CalendarSystem): st
   return system === 'gregorian' ? '' : formatCalendarDate(dateIso, system);
 }
 
-export function parseDateInputValue(value: string): string | null {
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-
-  const isoMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (isoMatch) {
-    const [, yearText, monthText, dayText] = isoMatch;
-    const year = Number(yearText);
-    const month = Number(monthText);
-    const day = Number(dayText);
-    const date = new Date(Date.UTC(year, month - 1, day));
-    if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
-      return null;
-    }
-    return date.toISOString().slice(0, 10);
-  }
-
-  const numericMatch = trimmed.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2,4})$/);
-  if (!numericMatch) return null;
-
-  const [, dayText, monthText, yearText] = numericMatch;
-  const day = Number(dayText);
-  const month = Number(monthText);
-  let year = Number(yearText);
-
-  if (yearText.length === 2) {
-    year = year < 70 ? 2000 + year : 1900 + year;
-  }
-
-  const date = new Date(Date.UTC(year, month - 1, day));
-  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
-    return null;
-  }
-  return date.toISOString().slice(0, 10);
-}
-
 function clampDateToRange(iso: string, min: string, max: string): string {
   const startOffset = daysBetween(min, iso);
   const endOffset = daysBetween(iso, max);
@@ -137,15 +108,14 @@ export function stepDatePart(
 
 const MONTH_KEYS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 
+// Only used for gregorian, whose month names come from the app's own
+// translatable strings.json (`calendar.month.*`) rather than Temporal/Intl
+// locale data — keeps existing translations working for the common case.
+// Non-gregorian systems use `toCalendarParts()`'s own `monthName` instead
+// (see `renderFields`), the same source `calendarSystemLabel` already uses.
 function monthLabel(iso: string, strings: Record<string, string>): string {
   const date = new Date(`${iso}T00:00:00Z`);
   return t(`calendar.month.${MONTH_KEYS[date.getUTCMonth()]}`, strings);
-}
-function dayNumber(iso: string): string {
-  return String(new Date(`${iso}T00:00:00Z`).getUTCDate()).padStart(2, '0');
-}
-function yearNumber(iso: string): string {
-  return String(new Date(`${iso}T00:00:00Z`).getUTCFullYear());
 }
 
 export function mountCalendarBar(
@@ -160,6 +130,10 @@ export function mountCalendarBar(
   const maxIso = config.max > todayIso ? todayIso : config.max;
 
   const totalDays = Math.max(daysBetween(config.min, maxIso), 1);
+  // Gregorian year bounds only — a soft UI hint (real enforcement is
+  // clampDateToRange, after system-aware conversion), so it's approximate
+  // rather than wrong for a non-gregorian system whose year numbering
+  // differs (e.g. Hijri ~578 less than Gregorian).
   const yearMin = new Date(`${config.min}T00:00:00Z`).getUTCFullYear();
   const yearMax = new Date(`${maxIso}T00:00:00Z`).getUTCFullYear();
 
@@ -257,15 +231,27 @@ export function mountCalendarBar(
     systemLabel.textContent = calendarSystemLabel(dateIso, store.get().calendarSystem);
   }
 
+  // Fields edit in the *display* calendar system, not always gregorian —
+  // e.g. with an islamic calendarSystem, typing "15" into the day field and
+  // "2" into the month field means Hijri Safar 15, not Gregorian Feb 15.
+  // calendarPartsToIso() converts back to the Gregorian ISO the store holds.
   function renderFields(dateIso: string): void {
-    const d = new Date(`${dateIso}T00:00:00Z`);
-    monthValueEl.textContent = monthLabel(dateIso, strings);
-    dayValueEl.textContent = dayNumber(dateIso);
-    yearValueEl.textContent = yearNumber(dateIso);
+    const system = store.get().calendarSystem;
+    const parts = toCalendarParts(dateIso, system);
+    monthValueEl.textContent = system === 'gregorian' ? monthLabel(dateIso, strings) : parts.monthName;
+    dayValueEl.textContent = String(parts.day).padStart(2, '0');
+    yearValueEl.textContent = String(parts.year);
+
+    // Islamic/hebrew months run 29-30 days depending on the year, and a
+    // hebrew year has 12 or 13 months in a leap year — bound the spinner/
+    // input to what's actually valid for this system, year, and month.
+    monthInputEl.max = String(monthsInCalendarYear(parts.year, system));
+    dayInputEl.max = String(daysInCalendarMonth(parts.year, parts.month, system));
+
     // Sync numeric inputs only when not focused (avoid disrupting active typing)
-    if (document.activeElement !== yearInputEl) yearInputEl.value = String(d.getUTCFullYear());
-    if (document.activeElement !== monthInputEl) monthInputEl.value = String(d.getUTCMonth() + 1);
-    if (document.activeElement !== dayInputEl) dayInputEl.value = String(d.getUTCDate());
+    if (document.activeElement !== yearInputEl) yearInputEl.value = String(parts.year);
+    if (document.activeElement !== monthInputEl) monthInputEl.value = String(parts.month);
+    if (document.activeElement !== dayInputEl) dayInputEl.value = String(parts.day);
   }
 
   // Apply a single date-part value from a numeric input to the store.
@@ -276,17 +262,21 @@ export function mountCalendarBar(
       renderFields(store.get().selectedDate);
       return;
     }
-    const d = new Date(`${store.get().selectedDate}T00:00:00Z`);
-    let year = d.getUTCFullYear();
-    let month = d.getUTCMonth() + 1;
-    let day = d.getUTCDate();
-    if (part === 'year') year = val;
-    else if (part === 'month') month = val;
-    else day = val;
-    const iso = `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    const parsed = parseDateInputValue(iso);
-    if (parsed) store.set({ selectedDate: clampDateToRange(parsed, config.min, maxIso) });
-    else renderFields(store.get().selectedDate);
+    const system = store.get().calendarSystem;
+    const current = toCalendarParts(store.get().selectedDate, system);
+    const nextParts = {
+      year: part === 'year' ? val : current.year,
+      month: part === 'month' ? val : current.month,
+      day: part === 'day' ? val : current.day,
+    };
+    try {
+      const iso = calendarPartsToIso(nextParts, system);
+      store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
+    } catch {
+      // Not a real date in this system (e.g. day 30 in a 29-day month) — same
+      // fallback as an unparseable gregorian entry.
+      renderFields(store.get().selectedDate);
+    }
   }
 
   dateSlider.value = sliderOffsetFor(store.get().selectedDate);
@@ -328,24 +318,31 @@ export function mountCalendarBar(
     });
   });
 
+  // A day is a day regardless of calendar system — Gregorian arithmetic on
+  // the underlying ISO date is correct display-system-agnostically.
   container.querySelector('[data-action="day-up"]')!.addEventListener('click', () => {
     store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'day', 1, config.min, maxIso) });
   });
   container.querySelector('[data-action="day-down"]')!.addEventListener('click', () => {
     store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'day', -1, config.min, maxIso) });
   });
-  container.querySelector('[data-action="month-up"]')!.addEventListener('click', () => {
-    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'month', 1, config.min, maxIso) });
-  });
-  container.querySelector('[data-action="month-down"]')!.addEventListener('click', () => {
-    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'month', -1, config.min, maxIso) });
-  });
-  container.querySelector('[data-action="year-up"]')!.addEventListener('click', () => {
-    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'year', 1, config.min, maxIso) });
-  });
-  container.querySelector('[data-action="year-down"]')!.addEventListener('click', () => {
-    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'year', -1, config.min, maxIso) });
-  });
+
+  // Month/year are calendar-system-shaped (a Hijri month isn't a Gregorian
+  // month), so these go through addCalendarUnit — the same conversion the
+  // granularity stepper above already uses — instead of stepDatePart.
+  function stepUnit(unit: 'month' | 'year', direction: 1 | -1): void {
+    const state = store.get();
+    const iso = clampDateToRange(
+      addCalendarUnit(state.selectedDate, state.calendarSystem, unit, direction),
+      config.min,
+      maxIso,
+    );
+    store.set({ selectedDate: iso });
+  }
+  container.querySelector('[data-action="month-up"]')!.addEventListener('click', () => stepUnit('month', 1));
+  container.querySelector('[data-action="month-down"]')!.addEventListener('click', () => stepUnit('month', -1));
+  container.querySelector('[data-action="year-up"]')!.addEventListener('click', () => stepUnit('year', 1));
+  container.querySelector('[data-action="year-down"]')!.addEventListener('click', () => stepUnit('year', -1));
 
   dateSlider.addEventListener('input', () => {
     store.set({ selectedDate: addDays(config.min, Number(dateSlider.value)) });

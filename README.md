@@ -37,6 +37,6 @@ There's no dedicated `kind` for isochrones — precompute the polygons with what
 
 `CalendarBar.ts` now has a day/week/month/year granularity selector plus a range slider bounded by `calendar.min`/`calendar.max` (previously only a prev/next day stepper + native date picker), covering the design spec's Section 6 gap.
 
-`calendar.system` (`docs/json-reference.md`) renders dates in Julian/Islamic/Hebrew calendars throughout the UI (calendar bar stepping and label, temporal-status text), but the native `<input type="date">` picker popup itself always stays Gregorian — browsers don't expose a way to force it into a different calendar system from JS. A fully calendar-aware picker would need a custom-built widget, out of scope for now.
+`calendar.system` (`docs/json-reference.md`) renders dates in Julian/Islamic/Hebrew calendars throughout the UI (calendar bar stepping and label, temporal-status text), and `CalendarBar.ts`'s year/month/day fields edit directly in that system too, not just Gregorian.
 
 `map.crs` (`docs/json-reference.md`) supports Leaflet's built-in `EPSG:3857`/`EPSG:4326`/`Simple` (flat pixel-space, e.g. indoor floor plans or game/fictional maps) plus fully custom projections via `proj4leaflet`.

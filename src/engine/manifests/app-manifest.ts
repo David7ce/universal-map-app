@@ -66,7 +66,9 @@ export function validateAppManifest(json: unknown): AppManifest {
   if (participate !== undefined) {
     const validChannels = ['email', 'whatsapp', 'telegram'];
     if (!validChannels.includes(participate.channel as string)) {
-      throw new Error(`App manifest "${obj.id}" has invalid "plugins.participate.channel": ${String(participate.channel)}`);
+      throw new Error(
+        `App manifest "${obj.id}" has invalid "plugins.participate.channel": ${String(participate.channel)}`,
+      );
     }
     if (typeof participate.target !== 'string' || participate.target.length === 0) {
       throw new Error(`App manifest "${obj.id}" "plugins.participate.target" must be a non-empty string`);

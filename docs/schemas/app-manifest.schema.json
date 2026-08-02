@@ -9,7 +9,10 @@
   "properties": {
     "$schema": { "type": "string" },
     "id": { "type": "string", "minLength": 1, "description": "App identifier." },
-    "title": { "type": "string", "description": "Displayed app title. Not enforced by runtime validation, but always set it." },
+    "title": {
+      "type": "string",
+      "description": "Displayed app title. Not enforced by runtime validation, but always set it."
+    },
     "map": {
       "type": "object",
       "additionalProperties": false,

@@ -115,7 +115,14 @@ export async function createLeafletMapAdapter(container: HTMLElement, appManifes
       for (const [id, params] of renderedLayerParams) {
         dataLayers.set(
           id,
-          renderLeafletDataLayer(map, params.manifest, params.features, params.date, params.activeFilters, params.onFeatureClick),
+          renderLeafletDataLayer(
+            map,
+            params.manifest,
+            params.features,
+            params.date,
+            params.activeFilters,
+            params.onFeatureClick,
+          ),
         );
       }
     },

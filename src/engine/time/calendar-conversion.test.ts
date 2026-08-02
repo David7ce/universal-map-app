@@ -1,8 +1,11 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import {
   addCalendarUnit,
+  calendarPartsToIso,
+  daysInCalendarMonth,
   ensureCalendarSystemLoaded,
   formatCalendarDate,
+  monthsInCalendarYear,
   toCalendarParts,
 } from './calendar-conversion';
 
@@ -46,6 +49,67 @@ describe('toCalendarParts', () => {
       day: 15,
       monthName: 'Av',
     });
+  });
+});
+
+describe('calendarPartsToIso', () => {
+  it('round-trips gregorian parts back to the same ISO date', () => {
+    expect(calendarPartsToIso({ year: 2026, month: 7, day: 29 }, 'gregorian')).toBe('2026-07-29');
+  });
+
+  it('rejects an impossible gregorian date', () => {
+    expect(() => calendarPartsToIso({ year: 2026, month: 2, day: 30 }, 'gregorian')).toThrow(RangeError);
+  });
+
+  it('round-trips julian parts back to the equivalent Gregorian ISO date', () => {
+    // 2026-07-29 Gregorian = 2026-07-16 Julian (see julian-calendar.test.ts).
+    expect(calendarPartsToIso({ year: 2026, month: 7, day: 16 }, 'julian')).toBe('2026-07-29');
+  });
+
+  it('round-trips islamic parts back to the equivalent Gregorian ISO date', () => {
+    // toCalendarParts('2026-07-29', 'islamic') = { year: 1448, month: 2, day: 15 }.
+    expect(calendarPartsToIso({ year: 1448, month: 2, day: 15 }, 'islamic')).toBe('2026-07-29');
+  });
+
+  it('round-trips hebrew parts back to the equivalent Gregorian ISO date', () => {
+    // toCalendarParts('2026-07-29', 'hebrew') = { year: 5786, month: 11, day: 15 }.
+    expect(calendarPartsToIso({ year: 5786, month: 11, day: 15 }, 'hebrew')).toBe('2026-07-29');
+  });
+
+  it('rejects a hebrew day past the end of its month', () => {
+    const lastDay = daysInCalendarMonth(5786, 11, 'hebrew');
+    expect(() => calendarPartsToIso({ year: 5786, month: 11, day: lastDay + 1 }, 'hebrew')).toThrow();
+  });
+});
+
+describe('daysInCalendarMonth', () => {
+  it('returns 29 for a non-leap gregorian February', () => {
+    expect(daysInCalendarMonth(2026, 2, 'gregorian')).toBe(28);
+  });
+
+  it('returns 29 for a leap gregorian February', () => {
+    expect(daysInCalendarMonth(2024, 2, 'gregorian')).toBe(29);
+  });
+
+  it('returns 28 for a non-leap julian February', () => {
+    expect(daysInCalendarMonth(2021, 2, 'julian')).toBe(28);
+  });
+
+  it('returns a real day count for an islamic month (29 or 30)', () => {
+    const days = daysInCalendarMonth(1448, 2, 'islamic');
+    expect([29, 30]).toContain(days);
+  });
+});
+
+describe('monthsInCalendarYear', () => {
+  it('is always 12 for gregorian, julian, and islamic', () => {
+    expect(monthsInCalendarYear(2026, 'gregorian')).toBe(12);
+    expect(monthsInCalendarYear(2026, 'julian')).toBe(12);
+    expect(monthsInCalendarYear(1448, 'islamic')).toBe(12);
+  });
+
+  it('is 12 or 13 for hebrew, depending on leap years', () => {
+    expect([12, 13]).toContain(monthsInCalendarYear(5786, 'hebrew'));
   });
 });
 

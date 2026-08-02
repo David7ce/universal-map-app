@@ -75,7 +75,9 @@ export function validateLayerManifest(json: unknown): LayerManifest {
 
   const temporal = obj.temporal as Record<string, unknown> | undefined;
   if (temporal !== undefined && !['always', 'time-filtered'].includes(temporal.defaultVisibility as string)) {
-    throw new Error(`Layer manifest "${obj.id}" has invalid "temporal.defaultVisibility": ${String(temporal.defaultVisibility)}`);
+    throw new Error(
+      `Layer manifest "${obj.id}" has invalid "temporal.defaultVisibility": ${String(temporal.defaultVisibility)}`,
+    );
   }
 
   if (obj.taxonomy !== undefined) {
@@ -110,13 +112,19 @@ export function validateLayerManifest(json: unknown): LayerManifest {
       panel.infoFields.forEach((entry: unknown, index: number) => {
         const def = entry as Record<string, unknown>;
         if (typeof def.field !== 'string' || def.field.length === 0) {
-          throw new Error(`Layer manifest "${obj.id}" panel.infoFields[${index}] missing required string field "field"`);
+          throw new Error(
+            `Layer manifest "${obj.id}" panel.infoFields[${index}] missing required string field "field"`,
+          );
         }
         if (typeof def.label !== 'string' || def.label.length === 0) {
-          throw new Error(`Layer manifest "${obj.id}" panel.infoFields[${index}] missing required string field "label"`);
+          throw new Error(
+            `Layer manifest "${obj.id}" panel.infoFields[${index}] missing required string field "label"`,
+          );
         }
         if (def.type !== undefined && !VALID_INFO_FIELD_TYPES.includes(def.type as string)) {
-          throw new Error(`Layer manifest "${obj.id}" panel.infoFields[${index}] has invalid "type": ${String(def.type)}`);
+          throw new Error(
+            `Layer manifest "${obj.id}" panel.infoFields[${index}] has invalid "type": ${String(def.type)}`,
+          );
         }
       });
     }

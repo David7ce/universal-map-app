@@ -2,10 +2,14 @@ import type { Temporal as TemporalNamespace } from '@js-temporal/polyfill';
 import type { CalendarSystem } from './calendar-systems';
 import {
   addJulianUnit,
+  daysInJulianMonth,
   gregorianIsoToJulianParts,
   julianPartsToGregorianIso,
   monthNameFromNumbers,
+  type DateParts,
 } from './julian-calendar';
+
+export type { DateParts };
 
 export interface CalendarDateParts {
   year: number;
@@ -61,6 +65,68 @@ export function toCalendarParts(isoDate: string, system: CalendarSystem, locale 
     day: plainDate.day,
     monthName: plainDate.toLocaleString(`${locale}-u-ca-${TEMPORAL_CALENDAR_ID[system]}`, { month: 'long' }),
   };
+}
+
+// The reverse of toCalendarParts: given year/month/day already expressed in
+// the target system (e.g. a Hijri year/month/day typed into a calendar-aware
+// date field), returns the equivalent Gregorian ISO date for storage.
+// Throws (RangeError) on a combination that isn't a real date in that
+// system — e.g. day 30 in a 29-day Hebrew month — so callers can fall back
+// to re-rendering the last-known-good value the same way they already do
+// for an unparseable Gregorian entry.
+export function calendarPartsToIso(parts: DateParts, system: CalendarSystem): string {
+  if (system === 'gregorian') {
+    const date = new Date(Date.UTC(parts.year, parts.month - 1, parts.day));
+    if (
+      date.getUTCFullYear() !== parts.year ||
+      date.getUTCMonth() !== parts.month - 1 ||
+      date.getUTCDate() !== parts.day
+    ) {
+      throw new RangeError(`Invalid gregorian date: ${JSON.stringify(parts)}`);
+    }
+    return date.toISOString().slice(0, 10);
+  }
+  if (system === 'julian') {
+    if (
+      parts.month < 1 ||
+      parts.month > 12 ||
+      parts.day < 1 ||
+      parts.day > daysInJulianMonth(parts.year, parts.month)
+    ) {
+      throw new RangeError(`Invalid julian date: ${JSON.stringify(parts)}`);
+    }
+    return julianPartsToGregorianIso(parts);
+  }
+  // Temporal defaults to overflow: 'constrain' (silently clamps an
+  // out-of-range day/month instead of rejecting it) — 'reject' is needed so
+  // an impossible date (e.g. day 30 in a 29-day month) throws, matching the
+  // gregorian/julian branches above instead of silently snapping to a
+  // different date than what was typed.
+  return getTemporal()
+    .PlainDate.from(
+      { year: parts.year, month: parts.month, day: parts.day, calendar: TEMPORAL_CALENDAR_ID[system] },
+      { overflow: 'reject' },
+    )
+    .withCalendar('iso8601')
+    .toString();
+}
+
+// Day count for a given year/month in the target system — islamic/hebrew
+// months vary between 29-30 days depending on the year, unlike Gregorian's
+// fixed lengths. Used to bound the day field's spinner/input when editing
+// in a non-gregorian system.
+export function daysInCalendarMonth(year: number, month: number, system: CalendarSystem): number {
+  if (system === 'gregorian') return new Date(Date.UTC(year, month, 0)).getUTCDate();
+  if (system === 'julian') return daysInJulianMonth(year, month);
+  return getTemporal().PlainDate.from({ year, month, day: 1, calendar: TEMPORAL_CALENDAR_ID[system] }).daysInMonth;
+}
+
+// Month count for a given year in the target system — the Hebrew calendar
+// inserts a 13th month (Adar I) in leap years; every other system supported
+// here always has 12.
+export function monthsInCalendarYear(year: number, system: CalendarSystem): number {
+  if (system !== 'hebrew') return 12;
+  return getTemporal().PlainDate.from({ year, month: 1, day: 1, calendar: 'hebrew' }).monthsInYear;
 }
 
 export function addCalendarUnit(

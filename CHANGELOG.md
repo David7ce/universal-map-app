@@ -2,6 +2,17 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Calendar-aware date editing (islamic/hebrew/julian, not just gregorian)
+
+The year/month/day fields in `CalendarBar.ts` now edit in the _display_ calendar system, not always Gregorian — with `calendarSystem` set to islamic, typing into the fields means Hijri year/month/day, not Gregorian. Two new conversion functions in `calendar-conversion.ts` make this possible:
+
+- `calendarPartsToIso(parts, system)` — the reverse of the existing `toCalendarParts()`: given year/month/day already expressed in the target system, returns the equivalent Gregorian ISO date for storage. Throws on an impossible combination (e.g. day 30 in a 29-day Hebrew month) via Temporal's `overflow: 'reject'` (its default, `'constrain'`, would have silently snapped to a different date than what was typed).
+- `daysInCalendarMonth(year, month, system)` / `monthsInCalendarYear(year, system)` — bound the day/month fields to what's actually valid: islamic/hebrew months run 29-30 days depending on the year, and a Hebrew leap year has 13 months (Adar I), not 12.
+
+The month/year spin buttons now step via `addCalendarUnit` (system-aware) instead of raw Gregorian arithmetic; the day spinner still steps the underlying ISO date directly since a day is a day regardless of display system. `julian-calendar.ts` exports `daysInJulianMonth` (previously private) for this. Removed `parseDateInputValue` (flexible dd-mm-yyyy/2-digit-year text parsing) — dead code once the numeric year/month/day fields it served became system-aware instead of accepting a single free-text string.
+
+Not verified in a real browser this session (Playwright's MCP browser tool is pinned to a system Chrome install that isn't present and needs admin rights to add) — covered by type-check, an expanded test suite (round-trips for all four systems, leap-month/leap-year edge cases), and a production build instead.
+
 ## Runtime map projection switching, plus `L.CRS.Simple` support
 
 `map.crs` now accepts `"Simple"` (Leaflet's flat pixel-space CRS, for indoor floor plans or game/fictional maps) alongside `EPSG:3857`/`EPSG:4326`/custom (`src/engine/space/map-crs.ts`, `src/engine/space/leaflet/map.ts`).
@@ -37,7 +48,7 @@ At desktop width, `.bottom-left-controls` shifting right to clear the docked sea
 The filters panel (`#panel-right`) now also hosts, below the Category/Region filters:
 
 - **Time** (`src/ui/panels/CalendarBar.ts`, mounted at `#panel-right-time`): the year/month/day date editor and a range slider on its own full-width row so it always has real drag room, even in the panel's narrow column. `AppState.calendarSystem` is the single source of truth read by `CalendarBar.ts` and `SelectionCard.ts`.
-- **Settings** (`src/ui/panels/SettingsControl.ts`, mounted at `#panel-right-map-settings`): a small button that opens a popover with a live calendar-system select (gregorian/julian/islamic/hebrew, independent of the manifest's default; switching to islamic/hebrew lazy-loads `@js-temporal/polyfill` on demand via `ensureCalendarSystemLoaded()`), the active map projection (read-only, `map.crs`), and a "show coordinate grid" checkbox that draws a lat/lng graticule (`src/engine/space/coordinate-grid.ts` for the pure line-generation math, `coordinate-grid-layer.ts` for the Leaflet layer — split so the math stays unit-testable without a `window` global). The calendar-system select originally lived inline in the Time section; moved into Settings since it's map/app-level config, not a per-lookup date field.
+- **Settings** (`src/ui/panels/SettingsControl.ts`, mounted at `#panel-right-map-settings`): a small button that opens a popover with a live calendar-system select (gregorian/julian/islamic/hebrew, independent of the manifest's default; switching to islamic/hebrew lazy-loads `@js-temporal/polyfill` on demand via `ensureCalendarSystemLoaded()`), the map projection (originally read-only display, later made selectable — see "Runtime map projection switching" below), and a "show coordinate grid" checkbox that draws a lat/lng graticule (`src/engine/space/coordinate-grid.ts` for the pure line-generation math, `coordinate-grid-layer.ts` for the Leaflet layer — split so the math stays unit-testable without a `window` global). The calendar-system select originally lived inline in the Time section; moved into Settings since it's map/app-level config, not a per-lookup date field.
 
 No more full-width calendar bar or separate floating buttons for either — `#calendar-bar`/`#settings-control` are gone from `.bottom-left-controls`, which now holds only the Layers button. The footer legend gained a plain-text current-date reading (`#map-date-text`) as the one always-visible date indicator now that the full editor lives inside the (closed-by-default) filters panel.
 
