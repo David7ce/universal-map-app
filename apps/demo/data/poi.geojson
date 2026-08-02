@@ -5,74 +5,136 @@
       "type": "Feature",
       "id": "poi-1",
       "properties": {
-        "name": "Town Hall",
-        "category": "administration",
-        "website": "https://example.org/town-hall",
-        "photo": "https://picsum.photos/seed/townhall/320/180"
+        "name": "Los Silos Park",
+        "category": "park"
       },
-      "geometry": { "type": "Point", "coordinates": [-16.62, 28.29] }
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.815,
+          28.367
+        ]
+      }
     },
     {
       "type": "Feature",
       "id": "poi-2",
-      "properties": { "name": "March Fair", "category": "event", "temporal": { "instant": "2026-03-14" } },
-      "geometry": { "type": "Point", "coordinates": [-16.615, 28.285] }
+      "properties": {
+        "name": "Tegueste Park",
+        "category": "park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.312,
+          28.518
+        ]
+      }
     },
     {
       "type": "Feature",
       "id": "poi-3",
       "properties": {
-        "name": "Old Shop",
-        "category": "commerce",
-        "temporal": { "range": { "from": "2018-01-01", "to": "2023-06-30" } }
+        "name": "Vilaflor Park",
+        "category": "park"
       },
-      "geometry": { "type": "Point", "coordinates": [-16.625, 28.292] }
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.637,
+          28.152
+        ]
+      }
     },
     {
       "type": "Feature",
       "id": "poi-4",
       "properties": {
-        "name": "Sunday Market",
-        "category": "market",
-        "temporal": { "recurrence": { "rule": "FREQ=WEEKLY;BYDAY=SU" } }
+        "name": "Adeje Restaurant",
+        "category": "restaurant"
       },
-      "geometry": { "type": "Point", "coordinates": [-16.618, 28.288] }
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.723,
+          28.121
+        ]
+      }
     },
     {
       "type": "Feature",
       "id": "poi-5",
       "properties": {
-        "name": "Temporary Market",
-        "category": "market",
-        "temporal": {
-          "range": { "from": "2024-01-01", "to": "2024-12-31" },
-          "recurrence": { "rule": "FREQ=WEEKLY;BYDAY=SA" }
-        }
+        "name": "Candelaria Restaurant",
+        "category": "restaurant"
       },
-      "geometry": { "type": "Point", "coordinates": [-16.63, 28.28] }
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.363,
+          28.357
+        ]
+      }
     },
     {
       "type": "Feature",
-      "id": "poi-fasnia-volcan",
+      "id": "poi-6",
       "properties": {
-        "name": "Volcán de Fasnia",
-        "category": "desastres",
-        "epoca": "Siglo XVIII (1705)",
-        "descripcion": "Cono volcánico nacido el 5 de enero de 1705 durante la erupción triple que sacudió Tenerife entre 1704 y 1705. La fractura eruptiva expulsó coladas que descendieron 7 km por el Barranco del Volcán. Catalogado por el IGME como Lugar de Interés Geológico (IC4044).",
-        "temporal": { "range": { "from": "1705-01-05" } }
+        "name": "Realejos Restaurant",
+        "category": "restaurant"
       },
-      "geometry": { "type": "Point", "coordinates": [-16.4419, 28.2836] }
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.585,
+          28.386
+        ]
+      }
     },
     {
       "type": "Feature",
-      "id": "poi-fasnia-barranco-herques",
+      "id": "poi-7",
       "properties": {
-        "name": "Barranco de Herques",
-        "category": "otros_planos",
-        "epoca": "Época guanche / documentado en 1772",
-        "descripcion": "Barranco que marca el límite entre Fasnia y Güímar, célebre por albergar, según las crónicas de José de Viera y Clavijo (1772), una necrópolis guanche con más de mil momias nunca vuelta a localizar con certeza."
+        "name": "La Laguna Theatre",
+        "category": "theatre"
       },
-      "geometry": { "type": "Point", "coordinates": [-16.4108, 28.2661] }
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.313,
+          28.487
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi-8",
+      "properties": {
+        "name": "Santa Cruz Theatre",
+        "category": "theatre"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.253,
+          28.465
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi-9",
+      "properties": {
+        "name": "Orotava Theatre",
+        "category": "theatre"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.52,
+          28.392
+        ]
+      }
     }
   ]
 }
