@@ -630,9 +630,8 @@ body {
    PANEL ACTIONS (participate button)
    ======================================== */
 #panel-right-actions button {
-  width: 100%;
   min-height: 3rem;
-  padding: 0.7rem 1rem;
+  padding: 0.7rem 1.5rem;
   border: 1px solid var(--color-primary);
   border-radius: var(--radius-md);
   background: var(--color-primary);
@@ -968,7 +967,8 @@ body {
    ======================================== */
 .settings-control {
   position: relative;
-  display: inline-block;
+  display: flex;
+  justify-content: flex-end;
 }
 .settings-control-trigger {
   display: flex;
@@ -999,7 +999,7 @@ body {
 }
 .settings-control-popover {
   position: absolute;
-  left: 0;
+  right: 0;
   top: calc(100% + 0.5rem);
   min-width: 15rem;
   padding: 1rem;

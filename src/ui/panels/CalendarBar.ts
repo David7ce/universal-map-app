@@ -151,9 +151,14 @@ export function mountCalendarBar(
   config: CalendarConfig,
   strings: Record<string, string>,
 ): void {
-  const totalDays = Math.max(daysBetween(config.min, config.max), 1);
+  // The calendar never shows the future — cap the manifest's configured
+  // max at today, whatever today actually is (not a fixed future date).
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const maxIso = config.max > todayIso ? todayIso : config.max;
+
+  const totalDays = Math.max(daysBetween(config.min, maxIso), 1);
   const yearMin = new Date(`${config.min}T00:00:00Z`).getUTCFullYear();
-  const yearMax = new Date(`${config.max}T00:00:00Z`).getUTCFullYear();
+  const yearMax = new Date(`${maxIso}T00:00:00Z`).getUTCFullYear();
 
   const systemOptions = CALENDAR_SYSTEMS.map(
     (system) => `<option value="${system}">${escapeHtml(t(`calendar.system.${system}`, strings))}</option>`,
@@ -250,7 +255,7 @@ export function mountCalendarBar(
     else day = val;
     const iso = `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     const parsed = parseDateInputValue(iso);
-    if (parsed) store.set({ selectedDate: clampDateToRange(parsed, config.min, config.max) });
+    if (parsed) store.set({ selectedDate: clampDateToRange(parsed, config.min, maxIso) });
     else renderFields(store.get().selectedDate);
   }
 
@@ -302,22 +307,22 @@ export function mountCalendarBar(
   });
 
   container.querySelector('[data-action="day-up"]')!.addEventListener('click', () => {
-    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'day', 1, config.min, config.max) });
+    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'day', 1, config.min, maxIso) });
   });
   container.querySelector('[data-action="day-down"]')!.addEventListener('click', () => {
-    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'day', -1, config.min, config.max) });
+    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'day', -1, config.min, maxIso) });
   });
   container.querySelector('[data-action="month-up"]')!.addEventListener('click', () => {
-    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'month', 1, config.min, config.max) });
+    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'month', 1, config.min, maxIso) });
   });
   container.querySelector('[data-action="month-down"]')!.addEventListener('click', () => {
-    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'month', -1, config.min, config.max) });
+    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'month', -1, config.min, maxIso) });
   });
   container.querySelector('[data-action="year-up"]')!.addEventListener('click', () => {
-    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'year', 1, config.min, config.max) });
+    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'year', 1, config.min, maxIso) });
   });
   container.querySelector('[data-action="year-down"]')!.addEventListener('click', () => {
-    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'year', -1, config.min, config.max) });
+    store.set({ selectedDate: stepDatePart(store.get().selectedDate, 'year', -1, config.min, maxIso) });
   });
 
   dateSlider.addEventListener('input', () => {
