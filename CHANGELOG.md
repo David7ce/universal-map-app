@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## JSON Schema files for app-manifest.json and layer.json
+
+`docs/schemas/app-manifest.schema.json` and `docs/schemas/layer.schema.json` (draft-07) mirror the field-by-field shapes in `docs/json-reference.md` and the runtime checks in `validateAppManifest`/`validateLayerManifest`. Add `"$schema": "../../docs/schemas/app-manifest.schema.json"` (adjust the relative path) to a manifest file to get editor autocomplete/inline validation — wired into `apps/demo/app-manifest.json` and all three `apps/demo/layers/*.layer.json` as a working example. Verified against the demo manifests with `ajv-cli` (not a project dependency, just used to sanity-check the schema files while writing them).
+
 ## Deep validation for optional manifest fields
 
 `validateAppManifest`/`validateLayerManifest` (`src/engine/manifests/`) now check the shape of optional nested fields, not just required top-level ones: `plugins.participate` (channel/target/messageTemplate), `strings` (must be a string path), and, per layer, `regionRole`, `temporal.defaultVisibility`, each `taxonomy` entry (id/label/field), and `panel` (boolean flags, `infoFields` entries). A malformed config now throws a specific error naming the bad field instead of failing silently or surfacing a confusing runtime error later.

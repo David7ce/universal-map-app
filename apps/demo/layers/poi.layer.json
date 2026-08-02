@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../docs/schemas/layer.schema.json",
   "id": "poi",
   "title": "Points of Interest",
   "kind": "point",

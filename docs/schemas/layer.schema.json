@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://universal-map-app/schemas/layer.schema.json",
+  "title": "Universal Map layer.json",
+  "description": "See docs/json-reference.md for the full field-by-field reference. Mirrors the runtime checks in src/engine/manifests/layer-manifest.ts (validateLayerManifest) - keep both in sync when either changes.",
+  "type": "object",
+  "required": ["id", "title", "kind", "source"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": { "type": "string", "minLength": 1, "description": "Layer identifier." },
+    "title": { "type": "string", "minLength": 1, "description": "Layer title." },
+    "kind": {
+      "enum": ["point", "line", "polygon", "boundary", "heatmap"],
+      "description": "\"point\": L.geoJSON, clustered if style.cluster. \"heatmap\": leaflet.heat, Point geometry only. \"line\"/\"polygon\"/\"boundary\": L.geoJSON with fill+border style."
+    },
+    "source": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "url"],
+          "additionalProperties": false,
+          "properties": { "type": { "const": "geojson" }, "url": { "type": "string", "minLength": 1 } }
+        },
+        {
+          "type": "object",
+          "required": ["type", "urls"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "geojson-sharded" },
+            "urls": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          }
+        }
+      ],
+      "description": "\"geojson\": a single GeoJSON file, fetched whole. \"geojson-sharded\": several GeoJSON files, fetched and concatenated. (\"api\" is a reserved, not-yet-implemented source type - not accepted by runtime validation yet.)"
+    },
+    "temporal": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "defaultVisibility": {
+          "enum": ["always", "time-filtered"],
+          "description": "Declared but not read by any code yet - isActiveOn filtering always applies the same way regardless of this value."
+        }
+      }
+    },
+    "taxonomy": {
+      "type": "array",
+      "description": "Filter dimensions this layer contributes to the right-hand filters panel.",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "field"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Filter-dimension identifier, the key used in activeFilters. If two layers declare the same id with a different label, the first one processed wins."
+          },
+          "label": { "type": "string", "minLength": 1, "description": "Label shown in the right-hand filters panel." },
+          "field": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Dotted path inside the feature's properties, e.g. \"properties.category\"."
+          },
+          "hierarchical": { "type": "boolean", "description": "Declared but not read by any code yet." },
+          "icons": {
+            "type": "object",
+            "additionalProperties": { "type": "string" },
+            "description": "Optional emoji/glyph per taxonomy value."
+          },
+          "defaultIcon": { "type": "string", "description": "Icon for values with no entry in icons." }
+        }
+      }
+    },
+    "regionRole": {
+      "enum": ["boundary", null],
+      "description": "If \"boundary\", this layer's features participate in findContainingRegions() as administrative boundaries with temporal validity."
+    },
+    "style": {
+      "type": "object",
+      "description": "Which keys are read depends on kind. point: cluster (boolean), icon (string). line/polygon/boundary: color, weight, fillColor, fillOpacity (CSS color / number)."
+    },
+    "panel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "showInSearch": {
+          "type": "boolean",
+          "description": "false excludes this layer's features entirely from the left panel. Defaults to true."
+        },
+        "showInInfo": {
+          "type": "boolean",
+          "description": "Declared but not read by any code yet."
+        },
+        "infoFields": {
+          "type": "array",
+          "description": "Extra properties shown on the selection card when a feature from this layer is selected.",
+          "items": {
+            "type": "object",
+            "required": ["field", "label"],
+            "additionalProperties": false,
+            "properties": {
+              "field": { "type": "string", "minLength": 1, "description": "Dotted path inside properties." },
+              "label": { "type": "string", "minLength": 1 },
+              "type": {
+                "enum": ["text", "link", "image"],
+                "description": "Defaults to \"text\". \"link\"/\"image\" only render as <a>/<img> when the value is an http(s):/mailto: URL."
+              }
+            }
+          }
+        },
+        "showByDefault": {
+          "type": "boolean",
+          "description": "false makes the layer opt-in, hidden until toggled on via the layer control's \"Map details\" group. Defaults to true."
+        }
+      }
+    }
+  }
+}
