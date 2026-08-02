@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Visual calendar grid in the Time editor
+
+`CalendarBar.ts` now renders a clickable calendar grid instead of plain "Month / Day / Year" text, when not in numeric-edit mode: a week row, a full month grid, or a year-of-months grid, depending on the granularity stepper's current setting (`'day'` still shows plain text — a single day has nothing to grid). New pure engine module `src/engine/time/calendar-grid.ts` (`buildWeekCells`/`buildMonthCells`/`buildYearCells`) computes cells adapted to `calendar.system` (real day-of-week from the underlying Gregorian date, system-aware month/day counts via last session's `daysInCalendarMonth`/`monthsInCalendarYear`), and marks cells with an active feature (respecting `activeFilters`, same as every other filtered view) via an event dot. Clicking a day cell selects it; clicking a month cell in year view selects day 1 of that month and drills into month view. Selecting a week/month/year cell still resolves to one `selectedDate` — no range-based map filtering (see `docs/superpowers/specs/2026-08-02-calendar-grid-view-design.md` Section 2 for why that's out of scope).
+
 ## Calendar-aware date editing (islamic/hebrew/julian, not just gregorian)
 
 The year/month/day fields in `CalendarBar.ts` now edit in the _display_ calendar system, not always Gregorian — with `calendarSystem` set to islamic, typing into the fields means Hijri year/month/day, not Gregorian. Two new conversion functions in `calendar-conversion.ts` make this possible:
