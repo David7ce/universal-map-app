@@ -38,6 +38,12 @@ function copyAppsDirPlugin(): Plugin {
 }
 
 export default defineConfig({
+  // Relative, not an absolute '/...' path: this app is deployed as a GitHub
+  // Pages project site (served from '/<repo>/', not the domain root), and a
+  // relative base keeps the built asset references correct there without
+  // hardcoding the repo name — same build also works served from a domain
+  // root or any other subpath.
+  base: './',
   plugins: [copyAppsDirPlugin()],
   test: {
     environment: 'node',

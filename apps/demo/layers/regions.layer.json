@@ -2,7 +2,7 @@
   "id": "regions",
   "title": "Regions",
   "kind": "polygon",
-  "source": { "type": "geojson", "url": "/apps/demo/data/regions.geojson" },
+  "source": { "type": "geojson", "url": "apps/demo/data/regions.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },
   "taxonomy": [{ "id": "region", "label": "Regions", "field": "properties.name" }],
   "regionRole": "boundary",

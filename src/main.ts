@@ -36,14 +36,14 @@ function resolveAppId(): string {
 
 async function bootstrap(): Promise<void> {
   const appId = resolveAppId();
-  const appManifest = validateAppManifest(await fetchJson(`/apps/${appId}/app-manifest.json`));
+  const appManifest = validateAppManifest(await fetchJson(`apps/${appId}/app-manifest.json`));
 
   // Only islamic/hebrew calendars pull in @js-temporal/polyfill (a sizable
   // dependency); kick the load off now so it runs in parallel with the
   // fetches below, and await it right before the first consumer needs it.
   const calendarSystemLoaded = ensureCalendarSystemLoaded(appManifest.calendar.system ?? 'gregorian');
 
-  const strings = await loadStrings(appManifest.strings ? `/apps/${appId}/${appManifest.strings}` : undefined);
+  const strings = await loadStrings(appManifest.strings ? `apps/${appId}/${appManifest.strings}` : undefined);
 
   if (appManifest.plugins?.participate) {
     registerParticipatePlugin(appManifest.plugins.participate, strings);
@@ -51,7 +51,7 @@ async function bootstrap(): Promise<void> {
 
   const loadedLayers: LoadedLayer[] = await Promise.all(
     appManifest.dataLayers.map(async (layerPath): Promise<LoadedLayer> => {
-      const manifest: LayerManifest = validateLayerManifest(await fetchJson(`/apps/${appId}/${layerPath}`));
+      const manifest: LayerManifest = validateLayerManifest(await fetchJson(`apps/${appId}/${layerPath}`));
       const features: GeoFeature[] = await fetchFeatures(manifest.source);
       return { manifest, features };
     }),

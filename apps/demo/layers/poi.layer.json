@@ -2,7 +2,7 @@
   "id": "poi",
   "title": "Points of Interest",
   "kind": "point",
-  "source": { "type": "geojson", "url": "/apps/demo/data/poi.geojson" },
+  "source": { "type": "geojson", "url": "apps/demo/data/poi.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },
   "taxonomy": [{ "id": "category", "label": "Categories", "field": "properties.category" }],
   "regionRole": null,
