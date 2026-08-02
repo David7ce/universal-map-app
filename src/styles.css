@@ -944,7 +944,10 @@ body {
   .map-search.is-info {
     position: fixed;
     inset: auto;
-    top: calc(var(--control-btn-size) + var(--control-btn-offset) * 2);
+    /* Same top as the plain search bar (not below it) — this panel IS the
+       search bar's own container now that they're merged, not a separate
+       element stacked underneath it. */
+    top: var(--control-btn-offset);
     bottom: var(--bottom-clearance);
     left: var(--control-btn-offset);
     right: auto;
@@ -955,6 +958,11 @@ body {
     margin: 0;
     max-height: none;
     height: 100%;
+    overflow: hidden;
+    /* The plain (non-info) 64rem dropdown rule below makes this transparent
+       with no shadow, since that mode's `.search-field` supplies its own —
+       info mode needs its own opaque panel back since it has no such fill. */
+    background-color: var(--color-white);
     border-radius: var(--radius-lg);
     border-bottom: 1px solid var(--color-border);
     box-shadow: var(--shadow-lg);
