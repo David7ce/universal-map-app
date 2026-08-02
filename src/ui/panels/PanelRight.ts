@@ -35,6 +35,7 @@ export function mountPanelRight(
               <label>
                 <input type="checkbox" data-dimension="${escapeHtml(dimension.id)}" data-value="${escapeHtml(v.value)}" ${selected.has(v.value) ? 'checked' : ''} />
                 <span>${icon}${escapeHtml(v.value)}</span>
+                <span class="filter-options__count">${v.count}</span>
               </label>`;
           })
           .join('');

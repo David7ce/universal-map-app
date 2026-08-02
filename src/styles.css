@@ -623,6 +623,11 @@ body {
 .filter-options label + label {
   border-top: 1px solid var(--color-border);
 }
+.filter-options__count {
+  margin-left: auto;
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+}
 /* Per-item checkbox is visually replaced by the row's own checked/hover
    background plus the bottom accent line above — kept in the DOM (clipped,
    not display:none) so it stays focusable and reachable by assistive tech.
