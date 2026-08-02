@@ -39,7 +39,7 @@ describe('formatInfoFieldHtml', () => {
 
   it('renders image type as a label paragraph plus an img tag', () => {
     expect(formatInfoFieldHtml({ field: 'foto', label: 'Photo', type: 'image' }, ['https://example.org/x.png'])).toBe(
-      '<p><strong>Photo</strong></p><img class="map-selection-card__image" src="https://example.org/x.png" alt="Photo">',
+      '<p><strong>Photo</strong></p><img class="search-info__image" src="https://example.org/x.png" alt="Photo">',
     );
   });
 

@@ -42,6 +42,7 @@
   --control-btn-size: 48px;
   --controls-gap: 0.75rem;
   --panel-right-width: 320px;
+  --panel-left-width: min(22rem, calc(50vw - var(--control-btn-offset)));
   --footer-bar-height: 1.5rem; /* thin bottom strip: scale + attribution */
   /* Clearance above the footer strip for floating controls (Layers, zoom, calendar pill) */
   --bottom-clearance: calc(var(--footer-bar-height) + var(--controls-gap) + 1.25rem);
@@ -370,6 +371,21 @@ body {
   }
 }
 
+/* Same pattern, mirrored for the left (search/info) panel: the Layers
+   button shares its bottom-left corner with the docked info sidebar, so it
+   has to get out of the way the same way the zoom control does for the
+   right panel. */
+@media (min-width: 48rem) {
+  .map-app.panel-left-open .bottom-left-controls {
+    left: calc(var(--panel-left-width) + var(--control-btn-offset));
+  }
+}
+@media (max-width: 47.99rem) {
+  .map-app.panel-left-open .bottom-left-controls {
+    display: none;
+  }
+}
+
 .panel-overlay {
   display: none;
   position: fixed;
@@ -495,6 +511,9 @@ body {
   border-radius: var(--radius-md);
   overflow: hidden;
 }
+.filter-section + .filter-section {
+  margin-top: 0.75rem;
+}
 .filter-section.is-open {
   background-color: var(--color-bg-alt);
 }
@@ -579,8 +598,30 @@ body {
 .filter-options label:hover {
   background-color: var(--color-primary-light);
 }
+.filter-options label:has(input:checked) {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
 .filter-options label + label {
   border-top: 1px solid var(--color-border);
+}
+/* Per-item checkbox is visually replaced by the row's own checked/hover
+   background — kept in the DOM (clipped, not display:none) so it stays
+   focusable and reachable by assistive tech. */
+.filter-options input[type='checkbox'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.filter-options label:has(input:focus-visible) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
 }
 
 .filter-section input[type='checkbox'] {
@@ -838,103 +879,83 @@ body {
 }
 
 /* ========================================
-   SELECTION CARD (feature info — left side panel / bottom sheet on mobile)
+   SEARCH INFO (selected feature detail — replaces search-results inside the
+   same panel when a feature is selected via search or map click)
    ======================================== */
-.map-selection-card {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: calc(var(--z-fixed) + 2);
-  display: none;
-  padding: 0;
-  pointer-events: none;
-}
-.map-selection-card.is-open {
-  display: block;
-}
-.map-selection-card__sheet {
-  pointer-events: auto;
-  width: 100%;
-  margin: 0;
-  max-height: min(60vh, 32rem);
-  overflow: hidden;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  background: var(--color-white);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--color-border);
-  border-bottom: 0;
-  display: flex;
-  flex-direction: column;
-}
-.map-selection-card__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.75rem 0.9rem;
-  border-bottom: 1px solid var(--color-border);
-  flex-shrink: 0;
-}
-.map-selection-card__title {
-  margin: 0;
-  font-size: var(--font-size-lg);
-}
-.map-selection-card__close {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: 1px solid var(--color-border);
-  border-radius: 50%;
-  background: var(--color-white);
-  color: var(--color-text-light);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.map-selection-card__close svg {
-  width: 14px;
-  height: 14px;
-}
-.map-selection-card__close:hover {
-  background: var(--color-bg-alt);
-}
-.map-selection-card__content {
+.search-info {
   overflow-y: auto;
+  min-height: 0;
   padding: 0.75rem 0.9rem;
 }
-.map-selection-card__content p {
+.search-info[hidden] {
+  display: none;
+}
+.search-info p {
   margin: 0.35rem 0;
   color: var(--color-text-light);
 }
-.map-selection-card__content p strong {
+.search-info p strong {
   color: var(--color-text);
 }
-.map-selection-card__image {
+.search-info__image {
   max-width: 100%;
   border-radius: var(--radius-md);
   display: block;
 }
 
+/* Mobile: info mode drops the centered/dimmed modal look for a bottom sheet
+   (no backdrop, so the map stays interactive underneath) — same treatment
+   the standalone selection card used to get. */
+.map-search.is-info {
+  inset: auto;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: calc(var(--z-fixed) + 2);
+  pointer-events: none;
+}
+.map-search.is-info .map-search__backdrop {
+  display: none;
+}
+.map-search.is-info .map-search__panel {
+  pointer-events: auto;
+  width: 100%;
+  margin: 0;
+  max-height: min(60vh, 32rem);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-bottom: 0;
+  gap: 0;
+}
+
 @media (min-width: 48rem) {
-  /* Left-side panel, Google Maps style */
-  .map-selection-card {
+  /* Desktop info mode: left-side docked panel, Google Maps style — the
+     plain (no `.is-info`) search dropdown keeps its own 64rem behavior
+     below; this only takes over once a feature is selected. Shown
+     regardless of `[hidden]` (e.g. after Escape closed the mobile-style
+     drawer) since a selection is still active. */
+  .map-search.is-info[hidden] {
+    display: block;
+  }
+  .map-search.is-info {
+    position: fixed;
+    inset: auto;
     top: calc(var(--control-btn-size) + var(--control-btn-offset) * 2);
     bottom: var(--bottom-clearance);
     left: var(--control-btn-offset);
     right: auto;
-    width: min(22rem, calc(50vw - var(--control-btn-offset)));
-    padding: 0;
+    width: var(--panel-left-width);
   }
-  .map-selection-card__sheet {
+  .map-search.is-info .map-search__panel {
     width: 100%;
     margin: 0;
     max-height: none;
     height: 100%;
     border-radius: var(--radius-lg);
     border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-lg);
+  }
+  .map-search.is-info .search-field {
+    box-shadow: none;
   }
 }
 

@@ -24,7 +24,7 @@ export function formatInfoFieldHtml(def: InfoFieldDef, values: string[]): string
     return `<p><a href="${escapeHtml(values[0])}" target="_blank" rel="noopener">${label}</a></p>`;
   }
   if (def.type === 'image' && isAllowedUrl(values[0])) {
-    return `<p><strong>${label}</strong></p><img class="map-selection-card__image" src="${escapeHtml(values[0])}" alt="${label}">`;
+    return `<p><strong>${label}</strong></p><img class="search-info__image" src="${escapeHtml(values[0])}" alt="${label}">`;
   }
   return `<p><strong>${label}:</strong> ${escapeHtml(values.join(', '))}</p>`;
 }

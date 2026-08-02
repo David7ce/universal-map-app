@@ -14,7 +14,6 @@ import { renderDataLayer } from './engine/space/data-layer-renderer';
 import { mountCoordinateGrid } from './engine/space/coordinate-grid-layer';
 import { loadStrings } from './ui/strings';
 import { mountSearchOverlay } from './ui/panels/SearchOverlay';
-import { mountSelectionCard } from './ui/panels/SelectionCard';
 import { mountPanelRight } from './ui/panels/PanelRight';
 import { mountLayerControl } from './ui/panels/LayerControl';
 import { mountCalendarBar } from './ui/panels/CalendarBar';
@@ -99,12 +98,14 @@ async function bootstrap(): Promise<void> {
       }
 
       // Layers that expose an info panel are clickable directly on the map.
+      // `left: 'open'` so the merged search/info panel surfaces the
+      // selection on mobile, where it's otherwise hidden.
       const onFeatureClick =
         layer.manifest.panel?.showInInfo !== false
           ? (feature: GeoFeature) =>
               store.set({
                 selectedFeatureId: String(feature.id ?? ''),
-                panels: { ...store.get().panels, left: 'closed' },
+                panels: { ...store.get().panels, left: 'open' },
               })
           : undefined;
 
@@ -121,7 +122,6 @@ async function bootstrap(): Promise<void> {
   await calendarSystemLoaded;
   mountPanelRight(document.querySelector('#panel-right-filters')!, store, loadedLayers, strings);
   mountSearchOverlay(document.querySelector('#search-overlay')!, store, loadedLayers, strings);
-  mountSelectionCard(document.querySelector('#selection-card')!, store, loadedLayers, strings);
   mountLayerControl(document.querySelector('#layer-control')!, store, strings, {
     map,
     baseLayerTiles: baseLayers,
