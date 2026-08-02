@@ -57,5 +57,24 @@ export function validateAppManifest(json: unknown): AppManifest {
     throw new Error(`App manifest "${obj.id}" has invalid "map.crs": ${JSON.stringify(map.crs)}`);
   }
 
+  if (obj.strings !== undefined && typeof obj.strings !== 'string') {
+    throw new Error(`App manifest "${obj.id}" "strings" must be a string path when present`);
+  }
+
+  const plugins = obj.plugins as Record<string, unknown> | undefined;
+  const participate = plugins?.participate as Record<string, unknown> | undefined;
+  if (participate !== undefined) {
+    const validChannels = ['email', 'whatsapp', 'telegram'];
+    if (!validChannels.includes(participate.channel as string)) {
+      throw new Error(`App manifest "${obj.id}" has invalid "plugins.participate.channel": ${String(participate.channel)}`);
+    }
+    if (typeof participate.target !== 'string' || participate.target.length === 0) {
+      throw new Error(`App manifest "${obj.id}" "plugins.participate.target" must be a non-empty string`);
+    }
+    if (typeof participate.messageTemplate !== 'string' || participate.messageTemplate.length === 0) {
+      throw new Error(`App manifest "${obj.id}" "plugins.participate.messageTemplate" must be a non-empty string`);
+    }
+  }
+
   return json as AppManifest;
 }

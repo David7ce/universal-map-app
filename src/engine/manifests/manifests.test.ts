@@ -25,6 +25,42 @@ describe('validateLayerManifest', () => {
   it('rejects an unknown source type', () => {
     expect(() => validateLayerManifest({ ...valid, source: { type: 'ftp' } })).toThrow(/source.type/);
   });
+
+  it('accepts a null or "boundary" regionRole, rejects anything else', () => {
+    expect(validateLayerManifest({ ...valid, regionRole: null })).toEqual({ ...valid, regionRole: null });
+    expect(validateLayerManifest({ ...valid, regionRole: 'boundary' })).toEqual({ ...valid, regionRole: 'boundary' });
+    expect(() => validateLayerManifest({ ...valid, regionRole: 'nonsense' })).toThrow(/regionRole/);
+  });
+
+  it('rejects an invalid temporal.defaultVisibility', () => {
+    expect(() => validateLayerManifest({ ...valid, temporal: { defaultVisibility: 'sometimes' } })).toThrow(
+      /defaultVisibility/,
+    );
+  });
+
+  it('rejects a malformed taxonomy entry', () => {
+    expect(() => validateLayerManifest({ ...valid, taxonomy: [{ id: 'x' }] })).toThrow(/taxonomy\[0\]/);
+  });
+
+  it('accepts a well-formed taxonomy entry', () => {
+    const withTaxonomy = { ...valid, taxonomy: [{ id: 'category', label: 'Category', field: 'properties.category' }] };
+    expect(validateLayerManifest(withTaxonomy)).toEqual(withTaxonomy);
+  });
+
+  it('rejects a non-boolean panel flag', () => {
+    expect(() => validateLayerManifest({ ...valid, panel: { showInSearch: 'yes' } })).toThrow(/panel.showInSearch/);
+  });
+
+  it('rejects a malformed panel.infoFields entry', () => {
+    expect(() => validateLayerManifest({ ...valid, panel: { infoFields: [{ field: 'x', type: 'video' }] } })).toThrow(
+      /infoFields\[0\]/,
+    );
+  });
+
+  it('accepts well-formed panel.infoFields', () => {
+    const withPanel = { ...valid, panel: { infoFields: [{ field: 'properties.category', label: 'Category' }] } };
+    expect(validateLayerManifest(withPanel)).toEqual(withPanel);
+  });
 });
 
 describe('validateAppManifest', () => {
@@ -92,5 +128,30 @@ describe('validateAppManifest', () => {
   it('rejects an invalid map.crs', () => {
     const invalid = { ...valid, map: { ...valid.map, crs: 'EPSG:9999' } };
     expect(() => validateAppManifest(invalid)).toThrow(/map\.crs/);
+  });
+
+  it('rejects a non-string "strings" path', () => {
+    expect(() => validateAppManifest({ ...valid, strings: 42 })).toThrow(/strings/);
+  });
+
+  it('accepts a valid plugins.participate config', () => {
+    const withParticipate = {
+      ...valid,
+      plugins: { participate: { channel: 'email', target: 'a@b.com', messageTemplate: 'Hi {{date}}' } },
+    };
+    expect(validateAppManifest(withParticipate)).toEqual(withParticipate);
+  });
+
+  it('rejects an invalid plugins.participate.channel', () => {
+    const invalid = {
+      ...valid,
+      plugins: { participate: { channel: 'carrier-pigeon', target: 'a@b.com', messageTemplate: 'Hi' } },
+    };
+    expect(() => validateAppManifest(invalid)).toThrow(/plugins\.participate\.channel/);
+  });
+
+  it('rejects a missing plugins.participate.target', () => {
+    const invalid = { ...valid, plugins: { participate: { channel: 'email', messageTemplate: 'Hi' } } };
+    expect(() => validateAppManifest(invalid)).toThrow(/plugins\.participate\.target/);
   });
 });

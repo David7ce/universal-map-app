@@ -2,6 +2,14 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Deep validation for optional manifest fields
+
+`validateAppManifest`/`validateLayerManifest` (`src/engine/manifests/`) now check the shape of optional nested fields, not just required top-level ones: `plugins.participate` (channel/target/messageTemplate), `strings` (must be a string path), and, per layer, `regionRole`, `temporal.defaultVisibility`, each `taxonomy` entry (id/label/field), and `panel` (boolean flags, `infoFields` entries). A malformed config now throws a specific error naming the bad field instead of failing silently or surfacing a confusing runtime error later.
+
+## "Clear all filters" control
+
+`PanelRight.ts` shows a `filter-panel__clear-all` button above the taxonomy sections whenever any dimension has an active selection; clicking resets `activeFilters` to `{}` in one step instead of unchecking each dimension's select-all individually.
+
 ## Granularity step control in the Time editor
 
 New row above the year/month/day fields in `CalendarBar.ts`: a day/week/month/year `<select>` plus prev/next buttons that step `selectedDate` by that unit (`nextSelectedDate`, `getVisibleGranularityOptions` — pure functions that already existed with test coverage but were never wired to a control until now). Year steps by whole years (`addCalendarUnit` for non-gregorian systems, native `setUTCFullYear` for gregorian) — no intercalary-day handling, matching the "12 months, no intercalary days" scope the original roadmap item called for.

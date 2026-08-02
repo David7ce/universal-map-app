@@ -44,6 +44,7 @@ export interface LayerManifest {
 
 const VALID_KINDS: LayerKind[] = ['point', 'line', 'polygon', 'boundary', 'heatmap'];
 const VALID_SOURCE_TYPES = ['geojson', 'geojson-sharded'];
+const VALID_INFO_FIELD_TYPES = ['text', 'link', 'image'];
 
 export function validateLayerManifest(json: unknown): LayerManifest {
   if (typeof json !== 'object' || json === null) {
@@ -66,6 +67,59 @@ export function validateLayerManifest(json: unknown): LayerManifest {
   const source = obj.source as Record<string, unknown>;
   if (!VALID_SOURCE_TYPES.includes(source.type as string)) {
     throw new Error(`Layer manifest "${obj.id}" has unknown source.type: ${String(source.type)}`);
+  }
+
+  if (obj.regionRole !== undefined && obj.regionRole !== null && obj.regionRole !== 'boundary') {
+    throw new Error(`Layer manifest "${obj.id}" has invalid "regionRole": ${String(obj.regionRole)}`);
+  }
+
+  const temporal = obj.temporal as Record<string, unknown> | undefined;
+  if (temporal !== undefined && !['always', 'time-filtered'].includes(temporal.defaultVisibility as string)) {
+    throw new Error(`Layer manifest "${obj.id}" has invalid "temporal.defaultVisibility": ${String(temporal.defaultVisibility)}`);
+  }
+
+  if (obj.taxonomy !== undefined) {
+    if (!Array.isArray(obj.taxonomy)) {
+      throw new Error(`Layer manifest "${obj.id}" "taxonomy" must be an array`);
+    }
+    obj.taxonomy.forEach((entry: unknown, index: number) => {
+      const field = entry as Record<string, unknown>;
+      if (typeof field.id !== 'string' || field.id.length === 0) {
+        throw new Error(`Layer manifest "${obj.id}" taxonomy[${index}] missing required string field "id"`);
+      }
+      if (typeof field.label !== 'string' || field.label.length === 0) {
+        throw new Error(`Layer manifest "${obj.id}" taxonomy[${index}] missing required string field "label"`);
+      }
+      if (typeof field.field !== 'string' || field.field.length === 0) {
+        throw new Error(`Layer manifest "${obj.id}" taxonomy[${index}] missing required string field "field"`);
+      }
+    });
+  }
+
+  const panel = obj.panel as Record<string, unknown> | undefined;
+  if (panel !== undefined) {
+    for (const key of ['showInSearch', 'showInInfo', 'showByDefault'] as const) {
+      if (panel[key] !== undefined && typeof panel[key] !== 'boolean') {
+        throw new Error(`Layer manifest "${obj.id}" "panel.${key}" must be a boolean when present`);
+      }
+    }
+    if (panel.infoFields !== undefined) {
+      if (!Array.isArray(panel.infoFields)) {
+        throw new Error(`Layer manifest "${obj.id}" "panel.infoFields" must be an array`);
+      }
+      panel.infoFields.forEach((entry: unknown, index: number) => {
+        const def = entry as Record<string, unknown>;
+        if (typeof def.field !== 'string' || def.field.length === 0) {
+          throw new Error(`Layer manifest "${obj.id}" panel.infoFields[${index}] missing required string field "field"`);
+        }
+        if (typeof def.label !== 'string' || def.label.length === 0) {
+          throw new Error(`Layer manifest "${obj.id}" panel.infoFields[${index}] missing required string field "label"`);
+        }
+        if (def.type !== undefined && !VALID_INFO_FIELD_TYPES.includes(def.type as string)) {
+          throw new Error(`Layer manifest "${obj.id}" panel.infoFields[${index}] has invalid "type": ${String(def.type)}`);
+        }
+      });
+    }
   }
 
   return json as LayerManifest;

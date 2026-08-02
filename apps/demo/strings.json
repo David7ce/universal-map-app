@@ -8,6 +8,7 @@
   "filters.title": "Filters",
   "filters.openLabel": "Open filters",
   "filters.closeLabel": "Close filters",
+  "filters.clearAll": "Clear all filters",
   "layerControl.trigger": "Layers",
   "layerControl.mapType": "Map type",
   "layerControl.mapDetails": "Map details",

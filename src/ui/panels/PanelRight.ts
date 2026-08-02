@@ -4,12 +4,13 @@ import { getTriState, toggleAll } from '../../engine/taxonomy/tri-state';
 import { resolveTaxonomyIcon } from '../../engine/space/style';
 import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
+import { t } from '../strings';
 
 export function mountPanelRight(
   container: HTMLElement,
   store: Store<AppState>,
   layers: LoadedLayer[],
-  _strings: Record<string, string>,
+  strings: Record<string, string>,
 ): void {
   // Which dimension sections are expanded — UI-only state, kept in this
   // closure (not AppState) since nothing outside this panel needs it, and it
@@ -20,28 +21,35 @@ export function mountPanelRight(
     const date = new Date(`${store.get().selectedDate}T00:00:00Z`);
     const dimensions = computeTaxonomyDimensions(layers, date);
     const activeFilters = store.get().activeFilters;
+    const hasActiveFilters = Object.values(activeFilters).some((selected) => selected.size > 0);
 
-    container.innerHTML = dimensions
-      .map((dimension) => {
-        const selected = activeFilters[dimension.id] ?? new Set<string>();
-        const allValues = dimension.values.map((v) => v.value);
-        const triState = getTriState(allValues, selected);
-        const isOpen = openSections.has(dimension.id);
-        const options = dimension.values
-          .map((v) => {
-            const resolvedIcon = resolveTaxonomyIcon(dimension.icons, dimension.defaultIcon, v.value);
-            const icon = resolvedIcon ? `${resolvedIcon} ` : '';
-            const count = dimension.showCounts ? `<span class="filter-options__count">${v.count}</span>` : '';
-            return `
+    const clearAllButton = hasActiveFilters
+      ? `<button type="button" class="filter-panel__clear-all" data-action="clear-all">${escapeHtml(t('filters.clearAll', strings))}</button>`
+      : '';
+
+    container.innerHTML =
+      clearAllButton +
+      dimensions
+        .map((dimension) => {
+          const selected = activeFilters[dimension.id] ?? new Set<string>();
+          const allValues = dimension.values.map((v) => v.value);
+          const triState = getTriState(allValues, selected);
+          const isOpen = openSections.has(dimension.id);
+          const options = dimension.values
+            .map((v) => {
+              const resolvedIcon = resolveTaxonomyIcon(dimension.icons, dimension.defaultIcon, v.value);
+              const icon = resolvedIcon ? `${resolvedIcon} ` : '';
+              const count = dimension.showCounts ? `<span class="filter-options__count">${v.count}</span>` : '';
+              return `
               <label>
                 <input type="checkbox" data-dimension="${escapeHtml(dimension.id)}" data-value="${escapeHtml(v.value)}" ${selected.has(v.value) ? 'checked' : ''} />
                 <span>${icon}${escapeHtml(v.value)}</span>
                 ${count}
               </label>`;
-          })
-          .join('');
+            })
+            .join('');
 
-        return `
+          return `
           <section class="filter-section${isOpen ? ' is-open' : ''}" data-dimension-section="${escapeHtml(dimension.id)}">
             <div class="filter-section__header">
               <label class="filter-section__select-all">
@@ -54,8 +62,12 @@ export function mountPanelRight(
             </div>
             <div class="filter-options">${options}</div>
           </section>`;
-      })
-      .join('');
+        })
+        .join('');
+
+    container.querySelector<HTMLButtonElement>('[data-action="clear-all"]')?.addEventListener('click', () => {
+      store.set({ activeFilters: {} });
+    });
 
     // `.indeterminate` has no HTML attribute — must be set imperatively
     // after each render for the 'some selected' tri-state to render.
