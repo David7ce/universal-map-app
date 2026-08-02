@@ -1144,10 +1144,6 @@ body {
   color: var(--color-text);
   cursor: pointer;
 }
-.settings-control-row--info {
-  cursor: default;
-  color: var(--color-text-light);
-}
 .settings-control-row select {
   font: inherit;
   padding: 0.3rem 0.5rem;

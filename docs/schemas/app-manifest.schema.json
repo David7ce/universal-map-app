@@ -89,7 +89,7 @@
   "definitions": {
     "mapCrs": {
       "oneOf": [
-        { "enum": ["EPSG:3857", "EPSG:4326"] },
+        { "enum": ["EPSG:3857", "EPSG:4326", "Simple"] },
         {
           "type": "object",
           "required": ["proj4def", "resolutions", "origin"],

@@ -125,7 +125,7 @@ async function bootstrap(): Promise<void> {
   mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings);
   mountSettingsControl(document.querySelector('#panel-right-map-settings')!, store, strings, {
     appManifest,
-    grid: mapAdapter.grid,
+    mapAdapter,
   });
 
   mountAppChrome(store, strings, appManifest, mapAdapter, loadedLayers);

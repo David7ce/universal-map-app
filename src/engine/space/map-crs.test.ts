@@ -5,6 +5,7 @@ describe('isValidMapCrsConfig', () => {
   it('accepts the known named CRS ids', () => {
     expect(isValidMapCrsConfig('EPSG:3857')).toBe(true);
     expect(isValidMapCrsConfig('EPSG:4326')).toBe(true);
+    expect(isValidMapCrsConfig('Simple')).toBe(true);
   });
 
   it('rejects an unknown named CRS id', () => {

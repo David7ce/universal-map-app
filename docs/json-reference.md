@@ -2,7 +2,7 @@
 
 Field-by-field reference for the three JSON shapes the engine uses: the app manifest, the layer manifest, and the GeoJSON data (with the `temporal` extension). All of these live under `apps/<app-id>/` — see `apps/demo/` as a working reference instance.
 
-Validated at runtime by `validateAppManifest` (`src/engine/manifests/app-manifest.ts`) and `validateLayerManifest` (`src/engine/manifests/layer-manifest.ts`) — validation today is minimal (checks required top-level fields, doesn't deep-validate every optional field's inner shape).
+Validated at runtime by `validateAppManifest` (`src/engine/manifests/app-manifest.ts`) and `validateLayerManifest` (`src/engine/manifests/layer-manifest.ts`), which check both required top-level fields and the shape of most optional nested ones (`map.crs`, `plugins.participate`, `regionRole`, `temporal.defaultVisibility`, `taxonomy` entries, `panel`/`infoFields`). `docs/schemas/*.schema.json` has the same shapes as JSON Schema, for editor autocomplete while authoring.
 
 See `docs/api-reference.md` for the internal function/module API (not the JSON formats).
 
@@ -43,6 +43,7 @@ One object per app instance, referenced from `src/main.ts` (currently with the p
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `"EPSG:3857"` (default, or omitted) | Web Mercator — Leaflet's own default, no code path taken.                                                                                                                                                                                              |
 | `"EPSG:4326"`                       | Plate Carrée / plain lat-lng — uses Leaflet's built-in `L.CRS.EPSG4326`, no new dependency.                                                                                                                                                            |
+| `"Simple"`                           | Flat pixel-space, no geographic meaning — uses Leaflet's built-in `L.CRS.Simple`. For indoor floor plans or game/fictional maps; GeoJSON coordinates are then just `[x, y]` in whatever unit your data uses, not lon/lat. `baseLayers` tiles served in a real geographic projection won't make sense here — that's on the app author, same as any other CRS choice.                                                                                                                                                            |
 | `CustomCrsConfig` object            | Any other projection, via `proj4leaflet` (`L.Proj.CRS`). Fields: `proj4def` (a [proj4](https://proj.org/) definition string), `resolutions` (number array, one per zoom level), `origin` (`[x, y]`), `bounds` (optional, `[[minX,minY],[maxX,maxY]]`). |
 
 GeoJSON data is always WGS84 lon/lat regardless of `map.crs` — Leaflet reprojects at render time. You are responsible for choosing `baseLayers` tiles that are actually served in the projection you configure; the engine doesn't check this for you. See `src/engine/space/map-crs.ts`.

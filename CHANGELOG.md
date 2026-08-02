@@ -2,6 +2,12 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Runtime map projection switching, plus `L.CRS.Simple` support
+
+`map.crs` now accepts `"Simple"` (Leaflet's flat pixel-space CRS, for indoor floor plans or game/fictional maps) alongside `EPSG:3857`/`EPSG:4326`/custom (`src/engine/space/map-crs.ts`, `src/engine/space/leaflet/map.ts`).
+
+The Settings popover's read-only projection text is now a real `<select>` (`SettingsControl.ts`) that switches the live map. Leaflet has no supported way to change `map.options.crs` after construction, so `MapAdapter.setCrs()` (new method, `src/engine/space/map-adapter.ts`) tears down and recreates the underlying `L.Map` instance (`leaflet-map-adapter.ts`), replaying the active base layer, every previously rendered data layer, the coordinate grid, and view-change subscriptions (scale bar) onto the new instance — callers don't have to re-render anything themselves. The view resets to the manifest's original center/zoom on switch, since a coordinate from one CRS has no meaningful equivalent in an unrelated one. A custom proj4 config from the manifest is offered as a fixed, non-editable "Custom" option (no UI here to author a new proj4 string).
+
 ## JSON Schema files for app-manifest.json and layer.json
 
 `docs/schemas/app-manifest.schema.json` and `docs/schemas/layer.schema.json` (draft-07) mirror the field-by-field shapes in `docs/json-reference.md` and the runtime checks in `validateAppManifest`/`validateLayerManifest`. Add `"$schema": "../../docs/schemas/app-manifest.schema.json"` (adjust the relative path) to a manifest file to get editor autocomplete/inline validation — wired into `apps/demo/app-manifest.json` and all three `apps/demo/layers/*.layer.json` as a working example. Verified against the demo manifests with `ajv-cli` (not a project dependency, just used to sanity-check the schema files while writing them).

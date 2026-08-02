@@ -1,6 +1,7 @@
 import type { Store, AppState } from '../../engine/state/store';
 import type { AppManifest } from '../../engine/manifests/app-manifest';
-import type { MapGrid } from '../../engine/space/map-adapter';
+import type { MapAdapter } from '../../engine/space/map-adapter';
+import type { MapCrsConfig } from '../../engine/space/map-crs';
 import { CALENDAR_SYSTEMS, type CalendarSystem } from '../../engine/time/calendar-systems';
 import { ensureCalendarSystemLoaded } from '../../engine/time/calendar-conversion';
 import { t } from '../strings';
@@ -9,19 +10,26 @@ import { icons } from '../icons';
 
 export interface SettingsControlDeps {
   appManifest: AppManifest;
-  grid: MapGrid;
+  mapAdapter: MapAdapter;
 }
 
-function describeCrs(config: AppManifest['map']['crs']): string {
+// The <select>'s fixed option set: the three built-in Leaflet CRSes, plus
+// "custom" standing in for whatever proj4 config the manifest declares (no
+// UI here to author a new proj4 string — picking "custom" just re-applies
+// the manifest's original config).
+type CrsOptionId = 'EPSG:3857' | 'EPSG:4326' | 'Simple' | 'custom';
+
+function crsOptionId(config: MapCrsConfig | undefined): CrsOptionId {
   if (config === undefined) return 'EPSG:3857';
-  if (typeof config === 'string') return config;
-  return 'Custom';
+  if (config === 'EPSG:3857' || config === 'EPSG:4326' || config === 'Simple') return config;
+  return 'custom';
 }
 
-// A single button (grouping the map's projection info + coordinate-grid
-// toggle) that lives inline inside the filters panel, opening a small
-// popover — unlike LayerControl's popover this one auto-closes on
-// click-outside, since it's a lightweight, infrequently-used control.
+// A single button (grouping the calendar-system select, map projection
+// selector, and coordinate-grid toggle) that lives inline inside the
+// filters panel, opening a small popover — unlike LayerControl's popover
+// this one auto-closes on click-outside, since it's a lightweight,
+// infrequently-used control.
 export function mountSettingsControl(
   container: HTMLElement,
   store: Store<AppState>,
@@ -31,6 +39,15 @@ export function mountSettingsControl(
   const systemOptions = CALENDAR_SYSTEMS.map(
     (system) => `<option value="${system}">${escapeHtml(t(`calendar.system.${system}`, strings))}</option>`,
   ).join('');
+
+  // The manifest's own CRS is always offered, even if it's a custom proj4
+  // config with no other way to reselect it once you've switched away.
+  const manifestCrsIsCustom = crsOptionId(deps.appManifest.map.crs) === 'custom';
+  const crsOptions =
+    `<option value="EPSG:3857">${escapeHtml(t('settings.crs.epsg3857', strings))}</option>` +
+    `<option value="EPSG:4326">${escapeHtml(t('settings.crs.epsg4326', strings))}</option>` +
+    `<option value="Simple">${escapeHtml(t('settings.crs.simple', strings))}</option>` +
+    (manifestCrsIsCustom ? `<option value="custom">${escapeHtml(t('settings.crs.custom', strings))}</option>` : '');
 
   container.innerHTML = `
     <button type="button" class="settings-control-trigger" aria-expanded="false" aria-label="${t('settings.trigger', strings)}">
@@ -44,10 +61,10 @@ export function mountSettingsControl(
         <select data-role="calendar-system">${systemOptions}</select>
       </label>
       <p class="settings-control-group__title">${t('settings.mapSection', strings)}</p>
-      <p class="settings-control-row settings-control-row--info">
+      <label class="settings-control-row">
         <span>${t('settings.projectionLabel', strings)}</span>
-        <span data-role="projection-value"></span>
-      </p>
+        <select data-role="projection">${crsOptions}</select>
+      </label>
       <label class="settings-control-row">
         <span>${t('settings.gridLabel', strings)}</span>
         <input type="checkbox" data-role="grid-toggle" />
@@ -55,12 +72,11 @@ export function mountSettingsControl(
     </section>
   `;
 
-  container.querySelector('[data-role="projection-value"]')!.textContent = describeCrs(deps.appManifest.map.crs);
-
   const trigger = container.querySelector<HTMLButtonElement>('.settings-control-trigger')!;
   const popover = container.querySelector<HTMLElement>('.settings-control-popover')!;
   const gridToggle = container.querySelector<HTMLInputElement>('[data-role="grid-toggle"]')!;
   const systemSelect = container.querySelector<HTMLSelectElement>('[data-role="calendar-system"]')!;
+  const projectionSelect = container.querySelector<HTMLSelectElement>('[data-role="projection"]')!;
 
   systemSelect.value = store.get().calendarSystem;
   systemSelect.addEventListener('change', () => {
@@ -68,6 +84,19 @@ export function mountSettingsControl(
     ensureCalendarSystemLoaded(system)
       .then(() => store.set({ calendarSystem: system }))
       .catch((error: unknown) => console.error('Failed to load calendar system', system, error));
+  });
+
+  projectionSelect.value = crsOptionId(deps.appManifest.map.crs);
+  projectionSelect.addEventListener('change', () => {
+    const optionId = projectionSelect.value as CrsOptionId;
+    const crs: MapCrsConfig | undefined = optionId === 'custom' ? deps.appManifest.map.crs : optionId;
+    projectionSelect.disabled = true;
+    deps.mapAdapter
+      .setCrs(crs)
+      .catch((error: unknown) => console.error('Failed to switch map projection', crs, error))
+      .finally(() => {
+        projectionSelect.disabled = false;
+      });
   });
 
   trigger.addEventListener('click', () => {
@@ -89,7 +118,7 @@ export function mountSettingsControl(
   function render(): void {
     const state = store.get();
     gridToggle.checked = state.showGrid;
-    deps.grid.setVisible(state.showGrid);
+    deps.mapAdapter.grid.setVisible(state.showGrid);
     if (document.activeElement !== systemSelect) systemSelect.value = state.calendarSystem;
   }
   render();

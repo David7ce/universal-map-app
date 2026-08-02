@@ -5,9 +5,9 @@ export interface CustomCrsConfig {
   bounds?: [[number, number], [number, number]];
 }
 
-export type MapCrsConfig = 'EPSG:3857' | 'EPSG:4326' | CustomCrsConfig;
+export type MapCrsConfig = 'EPSG:3857' | 'EPSG:4326' | 'Simple' | CustomCrsConfig;
 
-export const KNOWN_CRS_IDS = ['EPSG:3857', 'EPSG:4326'] as const;
+export const KNOWN_CRS_IDS = ['EPSG:3857', 'EPSG:4326', 'Simple'] as const;
 
 function isNumberPair(value: unknown): value is [number, number] {
   return Array.isArray(value) && value.length === 2 && typeof value[0] === 'number' && typeof value[1] === 'number';

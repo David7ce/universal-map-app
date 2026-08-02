@@ -15,6 +15,10 @@ export interface CreatedMap {
 async function resolveCrs(config: MapCrsConfig | undefined): Promise<L.CRS | undefined> {
   if (config === undefined || config === 'EPSG:3857') return undefined;
   if (config === 'EPSG:4326') return L.CRS.EPSG4326;
+  // Flat pixel-space (indoor floor plans, game/fictional maps) — no
+  // geographic meaning, so GeoJSON coordinates are just [x, y] in whatever
+  // unit the app author's data uses, not lon/lat.
+  if (config === 'Simple') return L.CRS.Simple;
   await import('proj4leaflet');
   return new L.Proj.CRS('custom', config.proj4def, {
     resolutions: config.resolutions,

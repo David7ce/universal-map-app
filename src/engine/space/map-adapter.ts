@@ -1,5 +1,6 @@
 import type { LayerManifest } from '../manifests/layer-manifest';
 import type { GeoFeature } from '../time/temporal-types';
+import type { MapCrsConfig } from './map-crs';
 
 export interface MapGrid {
   setVisible(visible: boolean): void;
@@ -30,4 +31,11 @@ export interface MapAdapter {
   // view, and a subscription for when that changes (pan/zoom).
   getMetersPerPixel(): number;
   onViewChange(handler: () => void): () => void;
+
+  // Leaflet has no supported way to change `map.options.crs` after
+  // construction — switching projection at runtime means tearing down and
+  // recreating the underlying map instance. Implementations replay the
+  // active base layer and every previously rendered data layer onto the
+  // new instance, so callers don't have to re-render anything themselves.
+  setCrs(crs: MapCrsConfig | undefined): Promise<void>;
 }

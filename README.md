@@ -39,4 +39,4 @@ There's no dedicated `kind` for isochrones — precompute the polygons with what
 
 `calendar.system` (`docs/json-reference.md`) renders dates in Julian/Islamic/Hebrew calendars throughout the UI (calendar bar stepping and label, temporal-status text), but the native `<input type="date">` picker popup itself always stays Gregorian — browsers don't expose a way to force it into a different calendar system from JS. A fully calendar-aware picker would need a custom-built widget, out of scope for now.
 
-`map.crs` (`docs/json-reference.md`) supports Leaflet's built-in `EPSG:3857`/`EPSG:4326` plus fully custom projections via `proj4leaflet`. It does not cover non-geographic "flat plane" pixel-space maps (indoor floor plans, game/fictional maps — Leaflet's `L.CRS.Simple`) — this iteration targets real-world geographic projections beyond Web Mercator specifically. `CRS.Simple` support remains a possible smaller future item.
+`map.crs` (`docs/json-reference.md`) supports Leaflet's built-in `EPSG:3857`/`EPSG:4326`/`Simple` (flat pixel-space, e.g. indoor floor plans or game/fictional maps) plus fully custom projections via `proj4leaflet`.
