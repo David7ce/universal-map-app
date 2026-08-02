@@ -1267,6 +1267,74 @@ body {
 }
 
 /* ========================================
+   CALENDAR GRID (week/month/year views inside the Time editor)
+   ======================================== */
+.calendar-bar__grid {
+  margin-top: 0.5rem;
+}
+.calendar-bar.is-editing .calendar-bar__grid {
+  display: none;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.15rem;
+}
+.calendar-grid--year {
+  grid-template-columns: repeat(4, 1fr);
+}
+.calendar-grid__weekday {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+  text-align: center;
+  padding: 0.15rem 0;
+}
+.calendar-grid__cell {
+  position: relative;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+.calendar-grid--year .calendar-grid__cell {
+  padding: 0.5rem 0.25rem;
+}
+.calendar-grid__cell:hover:not(:disabled) {
+  background: var(--color-primary-light);
+}
+.calendar-grid__cell:disabled {
+  cursor: default;
+}
+.calendar-grid__cell--muted {
+  color: var(--color-text-light);
+  opacity: 0.4;
+}
+.calendar-grid__cell--selected {
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-weight: var(--font-weight-semibold);
+}
+.calendar-grid__cell--has-events::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+.calendar-grid__cell--selected.calendar-grid__cell--has-events::after {
+  background: var(--color-white);
+}
+
+/* ========================================
    LEAFLET ZOOM CONTROL
    ======================================== */
 .leaflet-control-zoom.leaflet-bar.leaflet-control {
