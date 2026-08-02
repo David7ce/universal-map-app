@@ -46,7 +46,7 @@ export function addCalendarUnit(
   isoDate: string,
   system: CalendarSystem,
   unit: 'month' | 'year',
-  delta: number
+  delta: number,
 ): string {
   if (system === 'gregorian') {
     const date = new Date(`${isoDate}T00:00:00Z`);
@@ -67,7 +67,7 @@ export function formatCalendarDate(isoDate: string, system: CalendarSystem, loca
   if (system === 'gregorian') {
     const [year, month, day] = isoDate.split('-').map(Number);
     return new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(
-      Date.UTC(year, month - 1, day)
+      Date.UTC(year, month - 1, day),
     );
   }
   if (system === 'julian') {

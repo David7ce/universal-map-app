@@ -63,6 +63,7 @@ Two conventions are layered on top of plain GeoJSON, both **optional per feature
 There is no reserved property name for category or region — real-world datasets use inconsistent field names ("category", "tipo", "sector", etc.). Instead, the **layer manifest** declares which property maps to which filter dimension (Section 5.1).
 
 Region membership can be handled two ways, both supported:
+
 1. **Explicit**: the feature already carries a region-identifying property, declared as a taxonomy field like any other.
 2. **Spatial**: computed at render/filter time by joining against whichever layer(s) are marked `regionRole: "boundary"` in the active app, via `engine/region`, respecting that boundary layer's own temporal validity.
 
@@ -79,9 +80,7 @@ Describes how the engine should treat one data layer.
   "kind": "point",
   "source": { "type": "geojson", "url": "data/comercios.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },
-  "taxonomy": [
-    { "id": "category", "label": "Category", "field": "properties.category", "hierarchical": true }
-  ],
+  "taxonomy": [{ "id": "category", "label": "Category", "field": "properties.category", "hierarchical": true }],
   "regionRole": null,
   "style": { "cluster": true, "icon": "shop" },
   "panel": { "showInSearch": true, "showInInfo": true }
@@ -102,7 +101,13 @@ Describes one deployed app instance — what a third party writes to build an ap
   "title": "Demo Map",
   "map": { "center": [28.29, -16.62], "zoom": 10 },
   "baseLayers": [
-    { "id": "osm", "title": "Callejero", "type": "raster-tile", "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png", "attribution": "© OpenStreetMap contributors" }
+    {
+      "id": "osm",
+      "title": "Callejero",
+      "type": "raster-tile",
+      "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+      "attribution": "© OpenStreetMap contributors"
+    }
   ],
   "dataLayers": ["layers/comercios.layer.json", "layers/municipios.layer.json"],
   "calendar": { "default": "today", "min": "2015-01-01", "max": "2030-12-31" },
@@ -115,7 +120,7 @@ Adding a new app = new folder, new app manifest, own layer manifests and data �
 
 ## 6. UI / panel layout
 
-- **Left panel** — one slot, two modes: *search* (query box + result list) and *info* (selected feature's detail, including its temporal status — e.g. "active since 2020", "recurs every Sunday", "not active on the selected date"). Selecting a feature switches the slot to info mode instead of a small Leaflet popup, giving room for temporal detail.
+- **Left panel** — one slot, two modes: _search_ (query box + result list) and _info_ (selected feature's detail, including its temporal status — e.g. "active since 2020", "recurs every Sunday", "not active on the selected date"). Selecting a feature switches the slot to info mode instead of a small Leaflet popup, giving room for temporal detail.
 - **Right panel** — dynamic list of taxonomy filter sections, one per dimension declared across the active app's layers (categories, regions, or anything else a layer manifest defines), each using the tri-state select-all/partial/none pattern.
 - **Calendar bar** — horizontal strip, full width, docked at the bottom of the map stage: current date display, previous/next day stepper, range slider bounded by the app manifest's `calendar.min`/`calendar.max`, and a granularity toggle (day/week/month/year). No auto-play/animate-through-time in v1.
 - **Map stage** — center, everything else docks around it.

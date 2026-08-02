@@ -6,7 +6,7 @@ import { isActiveOn } from '../time/is-active-on';
 export function findContainingRegions(
   point: [number, number],
   boundaryLayers: LoadedLayer[],
-  date: Date
+  date: Date,
 ): GeoFeature[] {
   const matches: GeoFeature[] = [];
 

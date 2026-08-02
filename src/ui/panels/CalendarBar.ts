@@ -38,7 +38,7 @@ export function nextSelectedDate(
   currentIso: string,
   granularity: Granularity,
   direction: 1 | -1,
-  system: CalendarSystem
+  system: CalendarSystem,
 ): string {
   if (system !== 'gregorian' && (granularity === 'month' || granularity === 'year')) {
     return addCalendarUnit(currentIso, system, granularity, direction);
@@ -64,7 +64,6 @@ export function nextSelectedDate(
 export function calendarSystemLabel(dateIso: string, system: CalendarSystem): string {
   return system === 'gregorian' ? '' : formatCalendarDate(dateIso, system);
 }
-
 
 export function parseDateInputValue(value: string): string | null {
   const trimmed = value.trim();
@@ -110,7 +109,13 @@ function clampDateToRange(iso: string, min: string, max: string): string {
   return iso;
 }
 
-export function stepDatePart(currentIso: string, part: 'day' | 'month' | 'year', direction: 1 | -1, min: string, max: string): string {
+export function stepDatePart(
+  currentIso: string,
+  part: 'day' | 'month' | 'year',
+  direction: 1 | -1,
+  min: string,
+  max: string,
+): string {
   const date = new Date(`${currentIso}T00:00:00Z`);
   switch (part) {
     case 'day':
@@ -143,7 +148,7 @@ export function mountCalendarBar(
   container: HTMLElement,
   store: Store<AppState>,
   config: CalendarConfig,
-  strings: Record<string, string>
+  strings: Record<string, string>,
 ): void {
   const totalDays = Math.max(daysBetween(config.min, config.max), 1);
   const yearMin = new Date(`${config.min}T00:00:00Z`).getUTCFullYear();
@@ -270,7 +275,13 @@ export function mountCalendarBar(
   });
 
   // Each numeric input commits its part on change and on Enter; Escape exits.
-  ([['year', yearInputEl], ['month', monthInputEl], ['day', dayInputEl]] as const).forEach(([part, input]) => {
+  (
+    [
+      ['year', yearInputEl],
+      ['month', monthInputEl],
+      ['day', dayInputEl],
+    ] as const
+  ).forEach(([part, input]) => {
     input.addEventListener('change', () => applyFieldInput(part, input));
     input.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {

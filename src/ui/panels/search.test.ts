@@ -3,8 +3,18 @@ import { searchFeatures } from './search';
 import type { GeoFeature } from '../../engine/time/temporal-types';
 
 const features: GeoFeature[] = [
-  { type: 'Feature', id: '1', properties: { name: 'Central Bakery' }, geometry: { type: 'Point', coordinates: [0, 0] } },
-  { type: 'Feature', id: '2', properties: { name: 'North Hardware Store' }, geometry: { type: 'Point', coordinates: [0, 0] } },
+  {
+    type: 'Feature',
+    id: '1',
+    properties: { name: 'Central Bakery' },
+    geometry: { type: 'Point', coordinates: [0, 0] },
+  },
+  {
+    type: 'Feature',
+    id: '2',
+    properties: { name: 'North Hardware Store' },
+    geometry: { type: 'Point', coordinates: [0, 0] },
+  },
 ];
 
 describe('searchFeatures', () => {

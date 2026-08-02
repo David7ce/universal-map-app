@@ -24,10 +24,12 @@
 ### Task 1: `map-crs.ts` — types and pure validation
 
 **Files:**
+
 - Create: `src/engine/space/map-crs.ts`
 - Test: `src/engine/space/map-crs.test.ts`
 
 **Interfaces:**
+
 - Produces: `export interface CustomCrsConfig { proj4def: string; resolutions: number[]; origin: [number, number]; bounds?: [[number, number], [number, number]] }`, `export type MapCrsConfig = 'EPSG:3857' | 'EPSG:4326' | CustomCrsConfig;`, `export const KNOWN_CRS_IDS = ['EPSG:3857', 'EPSG:4326'] as const;`, `export function isValidMapCrsConfig(value: unknown): value is MapCrsConfig` — Task 2 imports `isValidMapCrsConfig`/`MapCrsConfig`; Task 3 imports `MapCrsConfig`.
 
 - [ ] **Step 1: Write the failing tests**
@@ -53,7 +55,7 @@ describe('isValidMapCrsConfig', () => {
         proj4def: '+proj=utm +zone=28 +datum=WGS84 +units=m +no_defs',
         resolutions: [8192, 4096, 2048],
         origin: [0, 0],
-      })
+      }),
     ).toBe(true);
   });
 
@@ -63,8 +65,11 @@ describe('isValidMapCrsConfig', () => {
         proj4def: '+proj=utm +zone=28 +datum=WGS84 +units=m +no_defs',
         resolutions: [8192, 4096, 2048],
         origin: [0, 0],
-        bounds: [[0, 0], [1000000, 1000000]],
-      })
+        bounds: [
+          [0, 0],
+          [1000000, 1000000],
+        ],
+      }),
     ).toBe(true);
   });
 
@@ -90,8 +95,11 @@ describe('isValidMapCrsConfig', () => {
         proj4def: '+proj=longlat',
         resolutions: [8192],
         origin: [0, 0],
-        bounds: [[0, 0], [1, 'x']],
-      })
+        bounds: [
+          [0, 0],
+          [1, 'x'],
+        ],
+      }),
     ).toBe(false);
   });
 
@@ -135,7 +143,11 @@ export function isValidMapCrsConfig(value: unknown): value is MapCrsConfig {
 
   const obj = value as Record<string, unknown>;
   if (typeof obj.proj4def !== 'string' || obj.proj4def.length === 0) return false;
-  if (!Array.isArray(obj.resolutions) || obj.resolutions.length === 0 || !obj.resolutions.every((r) => typeof r === 'number')) {
+  if (
+    !Array.isArray(obj.resolutions) ||
+    obj.resolutions.length === 0 ||
+    !obj.resolutions.every((r) => typeof r === 'number')
+  ) {
     return false;
   }
   if (!isNumberPair(obj.origin)) return false;
@@ -167,10 +179,12 @@ git commit -m "feat: add map.crs type and validation (EPSG:3857/EPSG:4326/custom
 ### Task 2: Wire `map.crs` into the app manifest
 
 **Files:**
+
 - Modify: `src/engine/manifests/app-manifest.ts`
 - Test: `src/engine/manifests/manifests.test.ts`
 
 **Interfaces:**
+
 - Consumes: `isValidMapCrsConfig`, `type MapCrsConfig` from `../space/map-crs` (Task 1).
 - Produces: `AppManifest['map']` gains `crs?: MapCrsConfig`; `validateAppManifest()` rejects an invalid `map.crs` the same way it already rejects an invalid `calendar.system` — Task 3 relies on `AppManifest['map']['crs']` being typed and pre-validated by the time `createMap()` reads it.
 
@@ -179,30 +193,30 @@ git commit -m "feat: add map.crs type and validation (EPSG:3857/EPSG:4326/custom
 Add to `src/engine/manifests/manifests.test.ts`, inside the existing `describe('validateAppManifest', ...)` block (after the last existing test, `'rejects an invalid calendar.system'`):
 
 ```ts
-  it('accepts a valid map.crs named id', () => {
-    const withCrs = { ...valid, map: { ...valid.map, crs: 'EPSG:4326' } };
-    expect(validateAppManifest(withCrs)).toEqual(withCrs);
-  });
+it('accepts a valid map.crs named id', () => {
+  const withCrs = { ...valid, map: { ...valid.map, crs: 'EPSG:4326' } };
+  expect(validateAppManifest(withCrs)).toEqual(withCrs);
+});
 
-  it('accepts a valid custom map.crs object', () => {
-    const withCrs = {
-      ...valid,
-      map: {
-        ...valid.map,
-        crs: {
-          proj4def: '+proj=utm +zone=28 +datum=WGS84 +units=m +no_defs',
-          resolutions: [8192, 4096, 2048],
-          origin: [0, 0],
-        },
+it('accepts a valid custom map.crs object', () => {
+  const withCrs = {
+    ...valid,
+    map: {
+      ...valid.map,
+      crs: {
+        proj4def: '+proj=utm +zone=28 +datum=WGS84 +units=m +no_defs',
+        resolutions: [8192, 4096, 2048],
+        origin: [0, 0],
       },
-    };
-    expect(validateAppManifest(withCrs)).toEqual(withCrs);
-  });
+    },
+  };
+  expect(validateAppManifest(withCrs)).toEqual(withCrs);
+});
 
-  it('rejects an invalid map.crs', () => {
-    const invalid = { ...valid, map: { ...valid.map, crs: 'EPSG:9999' } };
-    expect(() => validateAppManifest(invalid)).toThrow(/map\.crs/);
-  });
+it('rejects an invalid map.crs', () => {
+  const invalid = { ...valid, map: { ...valid.map, crs: 'EPSG:9999' } };
+  expect(() => validateAppManifest(invalid)).toThrow(/map\.crs/);
+});
 ```
 
 - [ ] **Step 2: Run the tests and confirm the third one fails**
@@ -221,7 +235,10 @@ import { isValidMapCrsConfig, type MapCrsConfig } from '../space/map-crs';
 Change:
 
 ```ts
-  map: { center: [number, number]; zoom: number };
+map: {
+  center: [number, number];
+  zoom: number;
+}
 ```
 
 to:
@@ -233,10 +250,10 @@ to:
 Then add this validation block right after the existing `calendar.system` check (after the block that throws for an invalid `calendar.system`, before `return json as AppManifest;`):
 
 ```ts
-  const map = obj.map as Record<string, unknown> | undefined;
-  if (map?.crs !== undefined && !isValidMapCrsConfig(map.crs)) {
-    throw new Error(`App manifest "${obj.id}" has invalid "map.crs": ${JSON.stringify(map.crs)}`);
-  }
+const map = obj.map as Record<string, unknown> | undefined;
+if (map?.crs !== undefined && !isValidMapCrsConfig(map.crs)) {
+  throw new Error(`App manifest "${obj.id}" has invalid "map.crs": ${JSON.stringify(map.crs)}`);
+}
 ```
 
 - [ ] **Step 4: Run the tests and confirm they pass**
@@ -259,10 +276,12 @@ git commit -m "feat: validate map.crs on the app manifest"
 ### Task 3: Resolve the CRS in `createMap()`
 
 **Files:**
+
 - Modify: `package.json`, `package-lock.json` (new dependencies)
 - Modify: `src/engine/space/map.ts`
 
 **Interfaces:**
+
 - Consumes: `type MapCrsConfig` from `./map-crs` (Task 1); `AppManifest['map']['crs']` (Task 2, already validated by the time this code runs).
 - Produces: `createMap()`'s existing signature and `CreatedMap` return type are unchanged — this task only changes `createMap()`'s internal behavior (which `L.CRS` the map is constructed with), not its public interface, so no other file needs to change.
 
@@ -308,16 +327,17 @@ function resolveCrs(config: MapCrsConfig | undefined): L.CRS | undefined {
 Change the first line of `createMap`:
 
 ```ts
-  const map = L.map(container, { zoomControl: false }).setView(appManifest.map.center, appManifest.map.zoom);
+const map = L.map(container, { zoomControl: false }).setView(appManifest.map.center, appManifest.map.zoom);
 ```
 
 to:
 
 ```ts
-  const crs = resolveCrs(appManifest.map.crs);
-  const map = L
-    .map(container, { zoomControl: false, ...(crs ? { crs } : {}) })
-    .setView(appManifest.map.center, appManifest.map.zoom);
+const crs = resolveCrs(appManifest.map.crs);
+const map = L.map(container, { zoomControl: false, ...(crs ? { crs } : {}) }).setView(
+  appManifest.map.center,
+  appManifest.map.zoom,
+);
 ```
 
 `resolveCrs` returning `undefined` for the default/omitted case means the `crs` key is never added to the options object passed to `L.map()` (the spread of `{}` adds nothing) — this is what keeps the default path byte-identical to today's behavior.
@@ -339,6 +359,7 @@ npm run dev
 ```
 
 Open the printed local URL and confirm:
+
 - The page does not throw a JS error and the map container renders (open the browser console — no uncaught exceptions).
 - POI markers (e.g. "Ayuntamiento") still appear on the map and are clickable, opening the selection card as usual — this confirms the map's vector-rendering pipeline is correctly using the new CRS end-to-end, not just accepting the option without effect.
 - The base tiles will look wrong or fail to load (broken-image icons / 404s in the Network tab) — **this is expected, not a bug.** `apps/demo`'s `baseLayers` (OpenStreetMap, Esri) serve standard Web Mercator (EPSG:3857) tiles; requesting them through an EPSG:4326 tile-grid math (different zoom/resolution scheme) will not produce geographically correct imagery. Per the design spec (Section 4) and this plan's Global Constraints, the engine does not validate tile/CRS compatibility — mismatched tiles are the app author's responsibility to fix by supplying a provider that actually serves that projection. The goal of this check is confirming the CRS wiring itself works (no crash, vector layers align and are interactive), not that arbitrary pre-existing tile URLs happen to look correct under a different projection.
@@ -357,6 +378,7 @@ git commit -m "feat: resolve map.crs into a Leaflet CRS in createMap()"
 ### Task 4: Docs and roadmap close-out
 
 **Files:**
+
 - Modify: `docs/json-reference.md`
 - Modify: `README.md`
 - Modify: `CHANGELOG.md`

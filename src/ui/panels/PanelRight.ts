@@ -9,7 +9,7 @@ export function mountPanelRight(
   container: HTMLElement,
   store: Store<AppState>,
   layers: LoadedLayer[],
-  strings: Record<string, string>
+  strings: Record<string, string>,
 ): void {
   // Which dimension sections are expanded — UI-only state, kept in this
   // closure (not AppState) since nothing outside this panel needs it, and it
@@ -30,21 +30,21 @@ export function mountPanelRight(
       clearAllHtml +
       dimensions
         .map((dimension) => {
-        const selected = activeFilters[dimension.id] ?? new Set<string>();
-        const allValues = dimension.values.map((v) => v.value);
-        const triState = getTriState(allValues, selected);
-        const isOpen = openSections.has(dimension.id);
-        const options = dimension.values
-          .map(
-            (v) => `
+          const selected = activeFilters[dimension.id] ?? new Set<string>();
+          const allValues = dimension.values.map((v) => v.value);
+          const triState = getTriState(allValues, selected);
+          const isOpen = openSections.has(dimension.id);
+          const options = dimension.values
+            .map(
+              (v) => `
               <label>
                 <input type="checkbox" data-dimension="${escapeHtml(dimension.id)}" data-value="${escapeHtml(v.value)}" ${selected.has(v.value) ? 'checked' : ''} />
                 <span>${escapeHtml(v.value)} (${v.count})</span>
-              </label>`
-          )
-          .join('');
+              </label>`,
+            )
+            .join('');
 
-        return `
+          return `
           <section class="filter-section${isOpen ? ' is-open' : ''}" data-dimension-section="${escapeHtml(dimension.id)}">
             <div class="filter-section__header">
               <label class="filter-section__select-all">
@@ -57,8 +57,8 @@ export function mountPanelRight(
             </div>
             <div class="filter-options">${options}</div>
           </section>`;
-      })
-      .join('');
+        })
+        .join('');
 
     // `.indeterminate` has no HTML attribute — must be set imperatively
     // after each render for the 'some selected' tri-state to render.

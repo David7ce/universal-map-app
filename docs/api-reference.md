@@ -11,16 +11,19 @@ Everything under `src/engine/` is the reusable core: it never hardcodes field na
 The area the design spec flags as most likely to hide subtle bugs — has the heaviest test coverage in the codebase.
 
 ### `isActiveOn(feature, date): boolean`
+
 `src/engine/time/is-active-on.ts`
 
 The one function everything else calls to answer "is this feature active on this date". A feature with no `properties.temporal` is always active. Otherwise checks `instant`, then `range` bounds, then `recurrence` (with `exceptions` excluded first). Dates are normalized to UTC day-boundary before comparing — a `Date` with a non-midnight time component still compares correctly.
 
 ### `parseRule(rule: string): ParsedRule` / `matchesRule(parsed, date, anchor?): boolean`
+
 `src/engine/time/rrule-subset.ts`
 
 The RRULE-subset parser and matcher `isActiveOn` delegates to for `recurrence.rule`. `parseRule` throws on a missing/unrecognized `FREQ`. `matchesRule` throws if `FREQ` is `MONTHLY`/`YEARLY` (parsed but not matchable in v1) or if `COUNT` is used with no `anchor`. `anchor` is `temporal.range.from` when present — see `docs/json-reference.md`'s "`recurrence.rule`" section for the supported key list.
 
 ### `startOfDayUtc(date: Date): Date` / `parseIsoDateUtc(iso: string): Date`
+
 `src/engine/time/rrule-subset.ts`
 
 Small date-normalization helpers, exported because `is-active-on.ts` needs the exact same UTC-midnight normalization `rrule-subset.ts` uses internally — this is the fix for a bug class (raw-millisecond `Date` comparison instead of day-boundary-normalized) that showed up twice during this project's build.
@@ -37,21 +40,25 @@ Small date-normalization helpers, exported because `is-active-on.ts` needs the e
 ## `engine/taxonomy` — filter dimensions
 
 ### `computeTaxonomyDimensions(layers, date): TaxonomyDimension[]`
+
 `src/engine/taxonomy/compute-dimensions.ts`
 
 Scans every loaded layer's declared `taxonomy` fields and, for features active on `date`, counts occurrences per value. Powers the right-hand filters panel — this is what turns `layer.json`'s `taxonomy` declarations into the checkbox groups you see.
 
 ### `featureMatchesFilters(feature, manifest, activeFilters): boolean`
+
 Same file.
 
 Whether a feature should be shown given the user's current filter selections. Semantics: a dimension absent from `activeFilters`, or with an empty `Set`, means "no restriction" — every feature passes it. Only once the user has actively selected at least one value does membership get enforced. This is what `renderDataLayer` and `SearchOverlay.ts` both call to stay in sync with the filters panel.
 
 ### `readField(feature, path): string[]`
+
 Same file.
 
 Reads a dotted property path (e.g. `"properties.category"`) off a feature, returning `[]` if absent/null, or a single-element array otherwise (array-valued properties are returned as-is, stringified). This is the one place field-path resolution lives — `taxonomy[].field` and `panel.infoFields[].field` both go through it.
 
 ### `getTriState(allValues, selected): 'all' | 'some' | 'none'` / `toggleAll(allValues, selected): Set<string>`
+
 `src/engine/taxonomy/tri-state.ts`
 
 Pure tri-state checkbox logic for a dimension's "select all" control. `toggleAll` returns everything selected if not already all-selected, otherwise clears the selection.
@@ -61,6 +68,7 @@ Pure tri-state checkbox logic for a dimension's "select all" control. `toggleAll
 ## `engine/region` — spatial membership
 
 ### `findContainingRegions(point, boundaryLayers, date): GeoFeature[]`
+
 `src/engine/region/spatial-join.ts`
 
 For a `[lng, lat]` point, returns every feature from any layer with `regionRole: "boundary"` that both contains the point (`@turf/boolean-point-in-polygon`) and is active on `date` (`isActiveOn`). This is the concrete mechanism behind "regions are just temporal geometry" — a boundary that changed shape on a given date is modeled as two ordinary features with non-overlapping `temporal.range`, not as special region objects. `SelectionCard.ts` calls this to show a selected point feature's containing region(s).
@@ -70,9 +78,11 @@ For a `[lng, lat]` point, returns every feature from any layer with `regionRole:
 ## `engine/manifests` — validation
 
 ### `validateAppManifest(json): AppManifest`
+
 `src/engine/manifests/app-manifest.ts`
 
 ### `validateLayerManifest(json): LayerManifest`
+
 `src/engine/manifests/layer-manifest.ts`
 
 Both throw a descriptive `Error` on a structurally invalid manifest, otherwise return the parsed object typed as the manifest interface. Validation is intentionally shallow today — required top-level fields are checked, most optional fields' inner shapes aren't deep-validated. See `docs/json-reference.md` for the full field tables these validate against.
@@ -82,13 +92,14 @@ Both throw a descriptive `Error` on a structurally invalid manifest, otherwise r
 ## `engine/state` — the reactive store
 
 ### `createStore<T>(initial: T): Store<T>`
+
 `src/engine/state/store.ts`
 
 ```ts
 interface Store<T> {
   get(): T;
   set(patch: Partial<T>): void;
-  subscribe(listener: (state: T) => void): () => void;  // returns an unsubscribe function
+  subscribe(listener: (state: T) => void): () => void; // returns an unsubscribe function
 }
 ```
 
@@ -101,21 +112,25 @@ A minimal reactive store: `set()` shallow-merges the patch into state and synchr
 ## `engine/space` — the map
 
 ### `createMap(container, appManifest): { map: L.Map, baseLayers: Record<string, L.TileLayer> }`
+
 `src/engine/space/map.ts`
 
 Creates the Leaflet map, adds the first `baseLayers` entry, adds a real Leaflet zoom control (repositioned via CSS), and applies `map.crs` if set (see `docs/json-reference.md`). Returns the raw tile-layer instances keyed by base-layer `id` so a caller (`LayerControl.ts`) can add/remove them on user action — base-layer switching is not Leaflet's built-in layers control, it's driven externally.
 
 ### `renderDataLayer(map, manifest, features, date, activeFilters?): L.Layer`
+
 `src/engine/space/data-layer-renderer.ts`
 
 Filters `features` to those active on `date` and matching `activeFilters` (`isActiveOn` + `featureMatchesFilters`), then renders them per `manifest.kind` — see `docs/json-reference.md`'s "Layer kinds" table. Returns the created `L.Layer` so the caller can remove it before the next render (this function doesn't track or diff previous renders itself — `main.ts`'s `renderMap()` owns that bookkeeping via a `Map<layerId, Layer>`).
 
 ### `resolveMarkerStyle(manifest): MarkerStyle` / `resolvePolygonStyle(manifest): PolygonStyle`
+
 `src/engine/space/style.ts`
 
 Read `manifest.style` and fill in defaults per field — see `docs/json-reference.md`'s "Style fields" table for exactly which keys each reads and their defaults.
 
 ### `isValidMapCrsConfig(value): value is MapCrsConfig`
+
 `src/engine/space/map-crs.ts`
 
 Runtime shape guard for `map.crs` — accepts `"EPSG:3857"`, `"EPSG:4326"`, or a `CustomCrsConfig` object with valid `proj4def`/`resolutions`/`origin`/optional `bounds`.
@@ -125,6 +140,7 @@ Runtime shape guard for `map.crs` — accepts `"EPSG:3857"`, `"EPSG:4326"`, or a
 ## `engine/data` — loading features
 
 ### `fetchFeatures(source, bounds?, dateRange?): Promise<GeoFeature[]>`
+
 `src/engine/data/loader-registry.ts`
 
 Dispatches on `source.type` (`"geojson"` / `"geojson-sharded"`) to the matching loader. `bounds`/`dateRange` are accepted but currently ignored by both loaders — this is the documented seam for a future server-backed `"api"` source type (see `docs/json-reference.md`'s `LayerSource` table) so this signature won't need to change when that's implemented.
@@ -159,7 +175,7 @@ interface PluginHooks {
 
 - `registerPlugin(id: string, hooks: PluginHooks): void` — registers a plugin. `main.ts` calls this for `participate` when `app-manifest.json`'s `plugins.participate` is set.
 - `getPanelSlots(): PanelSlot[]` — every registered plugin's `panelSlot`, if it declared one. `main.ts` mounts each into `#panel-right-actions`.
-- `PluginContext` is deliberately read-only — a plugin can *read* the current date/features/selection, but the only thing in this codebase allowed to mutate `AppState` is `store.set()` itself; plugins never get a `set()`.
+- `PluginContext` is deliberately read-only — a plugin can _read_ the current date/features/selection, but the only thing in this codebase allowed to mutate `AppState` is `store.set()` itself; plugins never get a `set()`.
 
 **Known gap:** `dispatchDateChange`/`dispatchFilterChange`/`dispatchFeatureSelect` are implemented and unit-tested at the registry level, but `main.ts` never calls them — only `panelSlot` is actually wired into the live bootstrap today. A plugin implementing `onDateChange`/`onFilterChange`/`onFeatureSelect` would register successfully but those hooks would never fire in the running app.
 

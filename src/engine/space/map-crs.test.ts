@@ -17,7 +17,7 @@ describe('isValidMapCrsConfig', () => {
         proj4def: '+proj=utm +zone=28 +datum=WGS84 +units=m +no_defs',
         resolutions: [8192, 4096, 2048],
         origin: [0, 0],
-      })
+      }),
     ).toBe(true);
   });
 
@@ -27,8 +27,11 @@ describe('isValidMapCrsConfig', () => {
         proj4def: '+proj=utm +zone=28 +datum=WGS84 +units=m +no_defs',
         resolutions: [8192, 4096, 2048],
         origin: [0, 0],
-        bounds: [[0, 0], [1000000, 1000000]],
-      })
+        bounds: [
+          [0, 0],
+          [1000000, 1000000],
+        ],
+      }),
     ).toBe(true);
   });
 
@@ -54,8 +57,11 @@ describe('isValidMapCrsConfig', () => {
         proj4def: '+proj=longlat',
         resolutions: [8192],
         origin: [0, 0],
-        bounds: [[0, 0], [1, 'x']],
-      })
+        bounds: [
+          [0, 0],
+          [1, 'x'],
+        ],
+      }),
     ).toBe(false);
   });
 

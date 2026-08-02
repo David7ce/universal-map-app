@@ -16,10 +16,10 @@ export function mountSelectionCard(
   store: Store<AppState>,
   layers: LoadedLayer[],
   strings: Record<string, string>,
-  calendarSystem: CalendarSystem = 'gregorian'
+  calendarSystem: CalendarSystem = 'gregorian',
 ): void {
   const featureEntries: { feature: GeoFeature; manifest: LayerManifest }[] = layers.flatMap((layer) =>
-    layer.features.map((feature) => ({ feature, manifest: layer.manifest }))
+    layer.features.map((feature) => ({ feature, manifest: layer.manifest })),
   );
 
   function featureLabel(feature: GeoFeature): string {

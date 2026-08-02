@@ -8,7 +8,7 @@ export function describeTemporalStatus(
   feature: GeoFeature,
   date: Date,
   strings: Record<string, string>,
-  system: CalendarSystem = 'gregorian'
+  system: CalendarSystem = 'gregorian',
 ): string {
   const temporal = feature.properties.temporal;
   const active = isActiveOn(feature, date);

@@ -11,6 +11,6 @@ export function t(key: string, strings: Record<string, string>, params?: Record<
   const resolved = strings[key] ?? key;
   if (!params) return resolved;
   return resolved.replace(/\{(\w+)\}/g, (match, paramName: string) =>
-    Object.prototype.hasOwnProperty.call(params, paramName) ? params[paramName] : match
+    Object.prototype.hasOwnProperty.call(params, paramName) ? params[paramName] : match,
   );
 }

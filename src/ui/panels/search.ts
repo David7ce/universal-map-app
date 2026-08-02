@@ -8,6 +8,6 @@ export function searchFeatures(features: GeoFeature[], query: string, searchable
     searchableFields.some((field) => {
       const value = feature.properties[field];
       return typeof value === 'string' && value.toLowerCase().includes(normalized);
-    })
+    }),
   );
 }

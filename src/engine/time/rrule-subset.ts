@@ -61,7 +61,7 @@ function matchesPattern(parsed: ParsedRule, date: Date, anchor: Date): boolean {
     return daysSinceAnchor % parsed.interval === 0;
   }
   const weeksSinceAnchor = Math.round(
-    (startOfWeekUtc(date).getTime() - startOfWeekUtc(anchor).getTime()) / MS_PER_WEEK
+    (startOfWeekUtc(date).getTime() - startOfWeekUtc(anchor).getTime()) / MS_PER_WEEK,
   );
   return weeksSinceAnchor % parsed.interval === 0;
 }

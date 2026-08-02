@@ -9,7 +9,7 @@ function mockFetchOnce(body: unknown, ok = true) {
       status: ok ? 200 : 500,
       statusText: ok ? 'OK' : 'Server Error',
       json: async () => body,
-    })
+    }),
   );
 }
 

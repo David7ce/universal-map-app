@@ -13,7 +13,7 @@ describe('loadStrings', () => {
   it('fetches and returns the strings JSON', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue({ ok: true, status: 200, statusText: 'OK', json: async () => ({ 'a.b': 'Hello' }) })
+      vi.fn().mockResolvedValue({ ok: true, status: 200, statusText: 'OK', json: async () => ({ 'a.b': 'Hello' }) }),
     );
     expect(await loadStrings('/strings.json')).toEqual({ 'a.b': 'Hello' });
   });
@@ -42,7 +42,7 @@ describe('t', () => {
 
   it('replaces multiple distinct and repeated placeholders', () => {
     expect(t('range', { range: 'from {from} to {to}, {from} onward' }, { from: 'A', to: 'B' })).toBe(
-      'from A to B, A onward'
+      'from A to B, A onward',
     );
   });
 

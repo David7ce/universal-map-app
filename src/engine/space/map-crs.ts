@@ -21,7 +21,11 @@ export function isValidMapCrsConfig(value: unknown): value is MapCrsConfig {
 
   const obj = value as Record<string, unknown>;
   if (typeof obj.proj4def !== 'string' || obj.proj4def.length === 0) return false;
-  if (!Array.isArray(obj.resolutions) || obj.resolutions.length === 0 || !obj.resolutions.every((r) => typeof r === 'number')) {
+  if (
+    !Array.isArray(obj.resolutions) ||
+    obj.resolutions.length === 0 ||
+    !obj.resolutions.every((r) => typeof r === 'number')
+  ) {
     return false;
   }
   if (!isNumberPair(obj.origin)) return false;

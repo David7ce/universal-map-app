@@ -22,9 +22,10 @@ function resolveCrs(config: MapCrsConfig | undefined): L.CRS | undefined {
 
 export function createMap(container: HTMLElement, appManifest: AppManifest): CreatedMap {
   const crs = resolveCrs(appManifest.map.crs);
-  const map = L
-    .map(container, { zoomControl: false, ...(crs ? { crs } : {}) })
-    .setView(appManifest.map.center, appManifest.map.zoom);
+  const map = L.map(container, { zoomControl: false, ...(crs ? { crs } : {}) }).setView(
+    appManifest.map.center,
+    appManifest.map.zoom,
+  );
 
   const baseLayers: Record<string, L.TileLayer> = {};
   appManifest.baseLayers.forEach((config, index) => {

@@ -23,11 +23,13 @@
 ### Task 1: `CalendarSystem` type + manifest validation
 
 **Files:**
+
 - Create: `src/engine/time/calendar-systems.ts`
 - Modify: `src/engine/manifests/app-manifest.ts`
 - Test: `src/engine/manifests/manifests.test.ts`
 
 **Interfaces:**
+
 - Produces: `export type CalendarSystem = 'gregorian' | 'julian' | 'islamic' | 'hebrew';` and `export const CALENDAR_SYSTEMS: CalendarSystem[]` from `calendar-systems.ts` — every later task imports `CalendarSystem` from here, and `app-manifest.ts`/`CALENDAR_SYSTEMS` for validation.
 
 - [ ] **Step 1: Create the `CalendarSystem` type file**
@@ -44,15 +46,15 @@ export const CALENDAR_SYSTEMS: CalendarSystem[] = ['gregorian', 'julian', 'islam
 Add to `src/engine/manifests/manifests.test.ts`, inside the existing `describe('validateAppManifest', ...)` block (after the `'rejects a missing calendar.min'` test):
 
 ```ts
-  it('accepts a valid calendar.system', () => {
-    const withSystem = { ...valid, calendar: { ...valid.calendar, system: 'islamic' } };
-    expect(validateAppManifest(withSystem)).toEqual(withSystem);
-  });
+it('accepts a valid calendar.system', () => {
+  const withSystem = { ...valid, calendar: { ...valid.calendar, system: 'islamic' } };
+  expect(validateAppManifest(withSystem)).toEqual(withSystem);
+});
 
-  it('rejects an invalid calendar.system', () => {
-    const invalid = { ...valid, calendar: { ...valid.calendar, system: 'martian' } };
-    expect(() => validateAppManifest(invalid)).toThrow(/calendar\.system/);
-  });
+it('rejects an invalid calendar.system', () => {
+  const invalid = { ...valid, calendar: { ...valid.calendar, system: 'martian' } };
+  expect(() => validateAppManifest(invalid)).toThrow(/calendar\.system/);
+});
 ```
 
 - [ ] **Step 3: Run the tests and confirm the second one fails**
@@ -83,9 +85,9 @@ to:
 Then add this validation block right after the existing `calendar.default` check (after the block that throws for an invalid `calendar.default`, before `return json as AppManifest;`):
 
 ```ts
-  if (calendar.system !== undefined && !CALENDAR_SYSTEMS.includes(calendar.system as CalendarSystem)) {
-    throw new Error(`App manifest "${obj.id}" has invalid "calendar.system": ${String(calendar.system)}`);
-  }
+if (calendar.system !== undefined && !CALENDAR_SYSTEMS.includes(calendar.system as CalendarSystem)) {
+  throw new Error(`App manifest "${obj.id}" has invalid "calendar.system": ${String(calendar.system)}`);
+}
 ```
 
 - [ ] **Step 5: Run the tests and confirm they pass**
@@ -108,10 +110,12 @@ git commit -m "feat: add calendar.system manifest field with validation"
 ### Task 2: Julian calendar conversion (hand-rolled)
 
 **Files:**
+
 - Create: `src/engine/time/julian-calendar.ts`
 - Test: `src/engine/time/julian-calendar.test.ts`
 
 **Interfaces:**
+
 - Consumes: nothing (pure math, no dependency on Task 1).
 - Produces: `DateParts { year: number; month: number; day: number }`, `gregorianIsoToJulianParts(isoDate: string): DateParts`, `julianPartsToGregorianIso(parts: DateParts): string`, `addJulianUnit(parts: DateParts, unit: 'month' | 'year', delta: number): DateParts`, `monthNameFromNumbers(year: number, month: number, locale: string): string` — Task 3 imports all five from this file.
 
@@ -316,11 +320,13 @@ git commit -m "feat: add hand-rolled Julian calendar conversion"
 ### Task 3: Unified calendar conversion API
 
 **Files:**
+
 - Modify: `package.json`, `package-lock.json` (new dependency)
 - Create: `src/engine/time/calendar-conversion.ts`
 - Test: `src/engine/time/calendar-conversion.test.ts`
 
 **Interfaces:**
+
 - Consumes: `CalendarSystem` from `./calendar-systems` (Task 1); `gregorianIsoToJulianParts`, `julianPartsToGregorianIso`, `addJulianUnit`, `monthNameFromNumbers` from `./julian-calendar` (Task 2); `Temporal` from `@js-temporal/polyfill`.
 - Produces: `CalendarDateParts { year: number; month: number; day: number; monthName: string }`, `toCalendarParts(isoDate: string, system: CalendarSystem, locale?: string): CalendarDateParts`, `addCalendarUnit(isoDate: string, system: CalendarSystem, unit: 'month' | 'year', delta: number): string`, `formatCalendarDate(isoDate: string, system: CalendarSystem, locale?: string): string` — Task 4 and Task 5 import `addCalendarUnit` and `formatCalendarDate`.
 
@@ -470,7 +476,7 @@ export function addCalendarUnit(
   isoDate: string,
   system: CalendarSystem,
   unit: 'month' | 'year',
-  delta: number
+  delta: number,
 ): string {
   if (system === 'gregorian') {
     const date = new Date(`${isoDate}T00:00:00Z`);
@@ -491,7 +497,7 @@ export function formatCalendarDate(isoDate: string, system: CalendarSystem, loca
   if (system === 'gregorian') {
     const [year, month, day] = isoDate.split('-').map(Number);
     return new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(
-      Date.UTC(year, month - 1, day)
+      Date.UTC(year, month - 1, day),
     );
   }
   if (system === 'julian') {
@@ -527,11 +533,13 @@ git commit -m "feat: add unified calendar conversion API (gregorian/julian/islam
 ### Task 4: Calendar-aware stepping and label in `CalendarBar.ts`
 
 **Files:**
+
 - Modify: `src/ui/panels/CalendarBar.ts`
 - Modify: `src/styles.css`
 - Test: `src/ui/panels/CalendarBar.test.ts` (new)
 
 **Interfaces:**
+
 - Consumes: `CalendarSystem` from `../../engine/time/calendar-systems` (Task 1); `addCalendarUnit`, `formatCalendarDate` from `../../engine/time/calendar-conversion` (Task 3).
 - Produces: `export type Granularity = 'day' | 'week' | 'month' | 'year';`, `export function nextSelectedDate(currentIso: string, granularity: Granularity, direction: 1 | -1, system: CalendarSystem): string`, `export function calendarSystemLabel(dateIso: string, system: CalendarSystem): string` — both newly exported and unit-tested directly (no DOM needed to test them, since merely importing `CalendarBar.ts` doesn't touch the DOM — only calling `mountCalendarBar()` does).
 
@@ -607,7 +615,7 @@ export function nextSelectedDate(
   currentIso: string,
   granularity: Granularity,
   direction: 1 | -1,
-  system: CalendarSystem
+  system: CalendarSystem,
 ): string {
   if (system !== 'gregorian' && (granularity === 'month' || granularity === 'year')) {
     return addCalendarUnit(currentIso, system, granularity, direction);
@@ -638,11 +646,11 @@ export function calendarSystemLabel(dateIso: string, system: CalendarSystem): st
 Replace the existing `stepDate` function body with:
 
 ```ts
-  function stepDate(direction: 1 | -1): void {
-    const system = config.system ?? 'gregorian';
-    const granularity = granularitySelect.value as Granularity;
-    store.set({ selectedDate: nextSelectedDate(store.get().selectedDate, granularity, direction, system) });
-  }
+function stepDate(direction: 1 | -1): void {
+  const system = config.system ?? 'gregorian';
+  const granularity = granularitySelect.value as Granularity;
+  store.set({ selectedDate: nextSelectedDate(store.get().selectedDate, granularity, direction, system) });
+}
 ```
 
 Add the label element to the template — change:
@@ -663,30 +671,30 @@ to:
 Add the label wiring right after `const dateSlider = ...` line:
 
 ```ts
-  const systemLabel = container.querySelector<HTMLElement>('[data-role="system-label"]')!;
+const systemLabel = container.querySelector<HTMLElement>('[data-role="system-label"]')!;
 
-  function renderSystemLabel(dateIso: string): void {
-    systemLabel.textContent = calendarSystemLabel(dateIso, config.system ?? 'gregorian');
-  }
+function renderSystemLabel(dateIso: string): void {
+  systemLabel.textContent = calendarSystemLabel(dateIso, config.system ?? 'gregorian');
+}
 ```
 
 Update the initial-render block (currently `dateInput.value = ...; dateSlider.value = ...;`) to also call it:
 
 ```ts
-  dateInput.value = store.get().selectedDate;
-  dateSlider.value = sliderOffsetFor(store.get().selectedDate);
-  renderSystemLabel(store.get().selectedDate);
+dateInput.value = store.get().selectedDate;
+dateSlider.value = sliderOffsetFor(store.get().selectedDate);
+renderSystemLabel(store.get().selectedDate);
 ```
 
 And update the `store.subscribe` callback at the bottom to also call it:
 
 ```ts
-  store.subscribe((state) => {
-    if (dateInput.value !== state.selectedDate) dateInput.value = state.selectedDate;
-    const offset = sliderOffsetFor(state.selectedDate);
-    if (dateSlider.value !== offset) dateSlider.value = offset;
-    renderSystemLabel(state.selectedDate);
-  });
+store.subscribe((state) => {
+  if (dateInput.value !== state.selectedDate) dateInput.value = state.selectedDate;
+  const offset = sliderOffsetFor(state.selectedDate);
+  if (dateSlider.value !== offset) dateSlider.value = offset;
+  renderSystemLabel(state.selectedDate);
+});
 ```
 
 Add the label's styling to `src/styles.css`, right after the existing `#calendar-bar input[type='range']` rule:
@@ -719,12 +727,14 @@ git commit -m "feat: calendar-aware stepping and system label in CalendarBar"
 ### Task 5: Thread `calendar.system` through `temporal-status.ts` and `SelectionCard.ts`
 
 **Files:**
+
 - Modify: `src/ui/panels/temporal-status.ts`
 - Modify: `src/ui/panels/SelectionCard.ts`
 - Modify: `src/main.ts`
 - Test: `src/ui/panels/temporal-status.test.ts`
 
 **Interfaces:**
+
 - Consumes: `CalendarSystem` from `../../engine/time/calendar-systems`; `formatCalendarDate` from `../../engine/time/calendar-conversion` (both Task 1/3).
 - Produces: `describeTemporalStatus(feature, date, strings, system?: CalendarSystem)` (4th param, defaults to `'gregorian'`) and `mountSelectionCard(container, store, layers, strings, calendarSystem?: CalendarSystem)` (5th param, defaults to `'gregorian'`) — both backward compatible with existing call sites that don't pass the new argument.
 
@@ -733,26 +743,24 @@ git commit -m "feat: calendar-aware stepping and system label in CalendarBar"
 Add to `src/ui/panels/temporal-status.test.ts`, inside the existing `describe('describeTemporalStatus', ...)` block (after the last existing test):
 
 ```ts
-  it('formats an instant date in a non-gregorian calendar system when provided', () => {
-    const f = feature({ instant: '2026-03-14' });
-    expect(describeTemporalStatus(f, new Date('2026-03-14T00:00:00Z'), enStrings, 'julian')).toBe(
-      'Active on March 1, 2026'
-    );
-  });
+it('formats an instant date in a non-gregorian calendar system when provided', () => {
+  const f = feature({ instant: '2026-03-14' });
+  expect(describeTemporalStatus(f, new Date('2026-03-14T00:00:00Z'), enStrings, 'julian')).toBe(
+    'Active on March 1, 2026',
+  );
+});
 
-  it('formats range bounds in a non-gregorian calendar system when provided', () => {
-    const f = feature({ range: { from: '2020-01-01', to: '2023-06-30' } });
-    expect(describeTemporalStatus(f, new Date('2021-01-01T00:00:00Z'), enStrings, 'julian')).toBe(
-      'Active (since December 19, 2019 until June 17, 2023)'
-    );
-  });
+it('formats range bounds in a non-gregorian calendar system when provided', () => {
+  const f = feature({ range: { from: '2020-01-01', to: '2023-06-30' } });
+  expect(describeTemporalStatus(f, new Date('2021-01-01T00:00:00Z'), enStrings, 'julian')).toBe(
+    'Active (since December 19, 2019 until June 17, 2023)',
+  );
+});
 
-  it('defaults to gregorian (raw ISO strings) when no system is given', () => {
-    const f = feature({ instant: '2026-03-14' });
-    expect(describeTemporalStatus(f, new Date('2026-03-14T00:00:00Z'), enStrings)).toBe(
-      'Active on 2026-03-14'
-    );
-  });
+it('defaults to gregorian (raw ISO strings) when no system is given', () => {
+  const f = feature({ instant: '2026-03-14' });
+  expect(describeTemporalStatus(f, new Date('2026-03-14T00:00:00Z'), enStrings)).toBe('Active on 2026-03-14');
+});
 ```
 
 - [ ] **Step 2: Run the tests and confirm the first two fail**
@@ -776,7 +784,7 @@ export function describeTemporalStatus(
   feature: GeoFeature,
   date: Date,
   strings: Record<string, string>,
-  system: CalendarSystem = 'gregorian'
+  system: CalendarSystem = 'gregorian',
 ): string {
   const temporal = feature.properties.temporal;
   const active = isActiveOn(feature, date);
@@ -851,31 +859,31 @@ export function mountSelectionCard(
 Change the `contentEl.innerHTML` line from:
 
 ```ts
-    contentEl.innerHTML = `<p>${describeTemporalStatus(feature, date, strings)}</p>${regionLine}${coordinatesLine}${infoFieldLines}`;
+contentEl.innerHTML = `<p>${describeTemporalStatus(feature, date, strings)}</p>${regionLine}${coordinatesLine}${infoFieldLines}`;
 ```
 
 to:
 
 ```ts
-    contentEl.innerHTML = `<p>${describeTemporalStatus(feature, date, strings, calendarSystem)}</p>${regionLine}${coordinatesLine}${infoFieldLines}`;
+contentEl.innerHTML = `<p>${describeTemporalStatus(feature, date, strings, calendarSystem)}</p>${regionLine}${coordinatesLine}${infoFieldLines}`;
 ```
 
 In `src/main.ts`, change the `mountSelectionCard` call from:
 
 ```ts
-  mountSelectionCard(document.querySelector('#selection-card')!, store, loadedLayers, strings);
+mountSelectionCard(document.querySelector('#selection-card')!, store, loadedLayers, strings);
 ```
 
 to:
 
 ```ts
-  mountSelectionCard(
-    document.querySelector('#selection-card')!,
-    store,
-    loadedLayers,
-    strings,
-    appManifest.calendar.system ?? 'gregorian'
-  );
+mountSelectionCard(
+  document.querySelector('#selection-card')!,
+  store,
+  loadedLayers,
+  strings,
+  appManifest.calendar.system ?? 'gregorian',
+);
 ```
 
 - [ ] **Step 6: Run the full test suite and typecheck**
@@ -898,6 +906,7 @@ git commit -m "feat: render temporal-status dates in the app's configured calend
 ### Task 6: Docs, demo opt-in example, and manual verification
 
 **Files:**
+
 - Modify: `README.md`
 - Modify: `docs/json-reference.md`
 - Modify: `CHANGELOG.md`
@@ -911,7 +920,7 @@ git commit -m "feat: render temporal-status dates in the app's configured calend
 Find the row describing `calendar.min`/`calendar.max`/`calendar.default` (the app-manifest section) and add a new row directly after it:
 
 ```markdown
-| `calendar.system` | `"gregorian" \| "julian" \| "islamic" \| "hebrew"` | no | Calendar system used for *display* only (default `"gregorian"`). Storage and all temporal computation (`isActiveOn`, RRULE) always stay Gregorian ISO 8601 regardless of this field — `calendar.min`/`calendar.max`/`calendar.default` are still authored as Gregorian ISO even when `system` is set to something else. Affects `CalendarBar.ts`'s stepping math and system label, and the dates shown in `temporal-status.ts`. See `src/engine/time/calendar-conversion.ts`. |
+| `calendar.system` | `"gregorian" \| "julian" \| "islamic" \| "hebrew"` | no | Calendar system used for _display_ only (default `"gregorian"`). Storage and all temporal computation (`isActiveOn`, RRULE) always stay Gregorian ISO 8601 regardless of this field — `calendar.min`/`calendar.max`/`calendar.default` are still authored as Gregorian ISO even when `system` is set to something else. Affects `CalendarBar.ts`'s stepping math and system label, and the dates shown in `temporal-status.ts`. See `src/engine/time/calendar-conversion.ts`. |
 ```
 
 - [ ] **Step 2: Document the known deviation in `README.md`**
@@ -949,6 +958,7 @@ npm run dev
 ```
 
 Open the printed local URL and confirm:
+
 - The calendar bar shows a small Islamic-calendar label (e.g. "Safar 15, 1448 AH") next to the native (still-Gregorian) date input.
 - Clicking the month/year granularity's `→`/`←` buttons steps by an Islamic month/year (the native date input's value jumps by roughly 29-30 days for a month step, not exactly one Gregorian month).
 - Selecting a feature (e.g. "Ayuntamiento" via search) shows its temporal-status text unaffected (it has no `temporal` property, so it just says "Always active" regardless of calendar system — for a stronger check, temporarily add `"instant": "2026-03-14"` to one feature's `properties.temporal` in `apps/demo/data/poi.geojson` and confirm the card shows an Islamic-calendar date, not the raw ISO string).

@@ -91,9 +91,11 @@ Rationale: each engine module is one responsibility (time math, loading, validat
 ### Task 1: Project scaffold
 
 **Files:**
+
 - Create: `package.json`, `tsconfig.json`, `vite.config.ts`, `index.html`, `src/styles.css`, `src/main.ts`
 
 **Interfaces:**
+
 - Produces: a working `npm run dev` / `npm run build` / `npm test` toolchain that every later task builds on.
 
 - [ ] **Step 1: Create `package.json`**
@@ -186,7 +188,9 @@ export default defineConfig({
 - [ ] **Step 6: Create `src/styles.css`**
 
 ```css
-html, body, #app {
+html,
+body,
+#app {
   height: 100%;
   margin: 0;
   font-family: system-ui, sans-serif;
@@ -198,10 +202,28 @@ html, body, #app {
   grid-template-rows: 1fr auto;
 }
 
-#map { grid-column: 2; grid-row: 1; }
-#panel-left { grid-column: 1; grid-row: 1 / span 2; overflow-y: auto; border-right: 1px solid #ccc; }
-#panel-right { grid-column: 3; grid-row: 1 / span 2; overflow-y: auto; border-left: 1px solid #ccc; }
-#calendar-bar { grid-column: 2; grid-row: 2; border-top: 1px solid #ccc; padding: 0.5rem; }
+#map {
+  grid-column: 2;
+  grid-row: 1;
+}
+#panel-left {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+}
+#panel-right {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  overflow-y: auto;
+  border-left: 1px solid #ccc;
+}
+#calendar-bar {
+  grid-column: 2;
+  grid-row: 2;
+  border-top: 1px solid #ccc;
+  padding: 0.5rem;
+}
 ```
 
 - [ ] **Step 7: Create minimal `src/main.ts`** (replaced fully in Task 15; this just proves the toolchain works end to end)
@@ -229,11 +251,13 @@ git commit -m "chore: scaffold Vite + TypeScript project"
 ### Task 2: Temporal types and RRULE-subset parser
 
 **Files:**
+
 - Create: `src/engine/time/temporal-types.ts`
 - Create: `src/engine/time/rrule-subset.ts`
 - Test: `src/engine/time/rrule-subset.test.ts`
 
 **Interfaces:**
+
 - Produces: `Temporal`, `GeoFeature` types (used by every later task that touches feature data); `parseRule(rule: string): ParsedRule`, `matchesRule(parsed: ParsedRule, date: Date, anchor?: Date): boolean`, `parseIsoDateUtc(iso: string): Date` (used by Task 3's `isActiveOn`).
 
 - [ ] **Step 1: Create `src/engine/time/temporal-types.ts`**
@@ -398,7 +422,7 @@ function matchesPattern(parsed: ParsedRule, date: Date, anchor: Date): boolean {
     return daysSinceAnchor % parsed.interval === 0;
   }
   const weeksSinceAnchor = Math.round(
-    (startOfWeekUtc(date).getTime() - startOfWeekUtc(anchor).getTime()) / MS_PER_WEEK
+    (startOfWeekUtc(date).getTime() - startOfWeekUtc(anchor).getTime()) / MS_PER_WEEK,
   );
   return weeksSinceAnchor % parsed.interval === 0;
 }
@@ -449,10 +473,12 @@ git commit -m "feat: add RRULE-subset parser and matcher"
 ### Task 3: `isActiveOn` temporal resolver
 
 **Files:**
+
 - Create: `src/engine/time/is-active-on.ts`
 - Test: `src/engine/time/is-active-on.test.ts`
 
 **Interfaces:**
+
 - Consumes: `GeoFeature`, `parseRule`, `matchesRule`, `parseIsoDateUtc` from Task 2.
 - Produces: `isActiveOn(feature: GeoFeature, date: Date): boolean` — the single function every other module uses to decide if a feature counts on a given date.
 
@@ -582,6 +608,7 @@ git commit -m "feat: add isActiveOn temporal resolver"
 ### Task 4: Data source loaders
 
 **Files:**
+
 - Create: `src/engine/data/source-types.ts`
 - Create: `src/engine/data/loaders/geojson-loader.ts`
 - Create: `src/engine/data/loaders/geojson-sharded-loader.ts`
@@ -589,15 +616,14 @@ git commit -m "feat: add isActiveOn temporal resolver"
 - Test: `src/engine/data/loader-registry.test.ts`
 
 **Interfaces:**
+
 - Consumes: `GeoFeature` from Task 2.
 - Produces: `LayerSource` type, `fetchFeatures(source: LayerSource, bounds?: BBox, dateRange?: DateRange): Promise<GeoFeature[]>` — used by Task 15's bootstrap.
 
 - [ ] **Step 1: Create `src/engine/data/source-types.ts`**
 
 ```ts
-export type LayerSource =
-  | { type: 'geojson'; url: string }
-  | { type: 'geojson-sharded'; urls: string[] };
+export type LayerSource = { type: 'geojson'; url: string } | { type: 'geojson-sharded'; urls: string[] };
 
 export interface BBox {
   minLng: number;
@@ -628,7 +654,7 @@ function mockFetchOnce(body: unknown, ok = true) {
       status: ok ? 200 : 500,
       statusText: ok ? 'OK' : 'Server Error',
       json: async () => body,
-    })
+    }),
   );
 }
 
@@ -727,11 +753,7 @@ import { loadGeojsonSharded } from './loaders/geojson-sharded-loader';
 
 // bounds/dateRange are accepted but unused in v1 — forward-compatible seam
 // for a future server-backed "api" source type (design spec Section 9).
-export async function fetchFeatures(
-  source: LayerSource,
-  bounds?: BBox,
-  dateRange?: DateRange
-): Promise<GeoFeature[]> {
+export async function fetchFeatures(source: LayerSource, bounds?: BBox, dateRange?: DateRange): Promise<GeoFeature[]> {
   switch (source.type) {
     case 'geojson':
       return loadGeojson(source.url);
@@ -762,11 +784,13 @@ git commit -m "feat: add geojson data loaders and fetchFeatures registry"
 ### Task 5: Manifest types and validation
 
 **Files:**
+
 - Create: `src/engine/manifests/layer-manifest.ts`
 - Create: `src/engine/manifests/app-manifest.ts`
 - Test: `src/engine/manifests/manifests.test.ts`
 
 **Interfaces:**
+
 - Consumes: `LayerSource` from Task 4.
 - Produces: `LayerManifest`, `TaxonomyFieldDef`, `LayerKind` types + `validateLayerManifest(json: unknown): LayerManifest`; `AppManifest`, `BaseLayerConfig`, `ParticipateConfig` types + `validateAppManifest(json: unknown): AppManifest`. Used by Task 7 (taxonomy), Task 8 (region), Task 10 (space), Task 15 (bootstrap), Task 16 (participate).
 
@@ -960,10 +984,12 @@ git commit -m "feat: add layer and app manifest validation"
 ### Task 6: Central state store
 
 **Files:**
+
 - Create: `src/engine/state/store.ts`
 - Test: `src/engine/state/store.test.ts`
 
 **Interfaces:**
+
 - Produces: generic `createStore<T>(initial: T): Store<T>` with `{ get, set, subscribe }`; `AppState` interface (`selectedDate`, `activeFilters`, `selectedFeatureId`, `activeBaseLayerId`, `panels`). Used by Tasks 10, 13, 14, 15, 16.
 
 - [ ] **Step 1: Write the failing test**
@@ -1064,11 +1090,13 @@ git commit -m "feat: add generic reactive state store"
 ### Task 7: Taxonomy dimension computation and tri-state logic
 
 **Files:**
+
 - Create: `src/engine/taxonomy/compute-dimensions.ts`
 - Create: `src/engine/taxonomy/tri-state.ts`
 - Test: `src/engine/taxonomy/taxonomy.test.ts`
 
 **Interfaces:**
+
 - Consumes: `GeoFeature`, `isActiveOn` (Tasks 2–3), `LayerManifest` (Task 5).
 - Produces: `LoadedLayer` interface (`{ manifest: LayerManifest; features: GeoFeature[] }`, reused by Task 8 and Task 15), `TaxonomyDimension` interface, `computeTaxonomyDimensions(layers: LoadedLayer[], date: Date): TaxonomyDimension[]`, `getTriState(allValues: string[], selected: Set<string>): TriState`, `toggleAll(allValues: string[], selected: Set<string>): Set<string>`. Used by Task 14 (PanelRight).
 
@@ -1108,9 +1136,7 @@ function layer(): LoadedLayer {
 describe('computeTaxonomyDimensions', () => {
   it('counts values per dimension for features active on the given date', () => {
     const dims = computeTaxonomyDimensions([layer()], new Date('2026-01-01T00:00:00Z'));
-    expect(dims).toEqual([
-      { id: 'categoria', label: 'Category', values: [{ value: 'shop', count: 2 }] },
-    ]);
+    expect(dims).toEqual([{ id: 'categoria', label: 'Category', values: [{ value: 'shop', count: 2 }] }]);
   });
 
   it('includes instant-matched features on their exact date', () => {
@@ -1120,7 +1146,7 @@ describe('computeTaxonomyDimensions', () => {
       expect.arrayContaining([
         { value: 'shop', count: 2 },
         { value: 'market', count: 1 },
-      ])
+      ]),
     );
   });
 });
@@ -1239,16 +1265,18 @@ git commit -m "feat: add taxonomy dimension computation and tri-state helpers"
 ### Task 8: Region spatial join
 
 **Files:**
+
 - Create: `src/engine/region/spatial-join.ts`
 - Test: `src/engine/region/spatial-join.test.ts`
 
 **Interfaces:**
+
 - Consumes: `GeoFeature`, `isActiveOn` (Tasks 2-3), `LayerManifest`, `LoadedLayer` (Tasks 5, 7), `@turf/boolean-point-in-polygon`.
 - Produces: `findContainingRegions(point: [number, number], boundaryLayers: LoadedLayer[], date: Date): GeoFeature[]`. This is the concrete proof that region boundaries are temporal like any other feature — used by Task 14 (PanelRight/info) and demonstrated by the demo dataset in Task 15.
 
 - [ ] **Step 1: Write the failing test**
 
-Create `src/engine/region/spatial-join.test.ts`. The fixture defines two square polygons covering the *same area* but with non-overlapping validity — modeling a boundary that changed on 2023-01-01.
+Create `src/engine/region/spatial-join.test.ts`. The fixture defines two square polygons covering the _same area_ but with non-overlapping validity — modeling a boundary that changed on 2023-01-01.
 
 ```ts
 import { describe, expect, it } from 'vitest';
@@ -1263,7 +1291,15 @@ function square(id: string, temporal: unknown) {
     properties: { nombre: id, temporal },
     geometry: {
       type: 'Polygon' as const,
-      coordinates: [[[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]],
+      coordinates: [
+        [
+          [0, 0],
+          [10, 0],
+          [10, 10],
+          [0, 10],
+          [0, 0],
+        ],
+      ],
     },
   };
 }
@@ -1326,7 +1362,7 @@ import { isActiveOn } from '../time/is-active-on';
 export function findContainingRegions(
   point: [number, number],
   boundaryLayers: LoadedLayer[],
-  date: Date
+  date: Date,
 ): GeoFeature[] {
   const matches: GeoFeature[] = [];
 
@@ -1363,10 +1399,12 @@ git commit -m "feat: add temporal-aware region spatial join"
 ### Task 9: Space pure style helpers
 
 **Files:**
+
 - Create: `src/engine/space/style.ts`
 - Test: `src/engine/space/style.test.ts`
 
 **Interfaces:**
+
 - Consumes: `LayerManifest` (Task 5).
 - Produces: `MarkerStyle` interface, `resolveMarkerStyle(manifest: LayerManifest): MarkerStyle`. Used by Task 10.
 
@@ -1438,11 +1476,13 @@ git commit -m "feat: add layer style resolution helper"
 ### Task 10: Space Leaflet integration (map + data layer rendering)
 
 **Files:**
+
 - Create: `src/types/leaflet-markercluster.d.ts`
 - Create: `src/engine/space/map.ts`
 - Create: `src/engine/space/data-layer-renderer.ts`
 
 **Interfaces:**
+
 - Consumes: `AppManifest` (Task 5), `LayerManifest`, `GeoFeature`, `isActiveOn` (Tasks 2-3, 5), `resolveMarkerStyle` (Task 9).
 - Produces: `createMap(container: HTMLElement, appManifest: AppManifest): L.Map`, `renderDataLayer(map: L.Map, manifest: LayerManifest, features: GeoFeature[], date: Date): L.Layer`. Used by Task 15's bootstrap.
 
@@ -1491,12 +1531,7 @@ import type { LayerManifest } from '../manifests/layer-manifest';
 import { isActiveOn } from '../time/is-active-on';
 import { resolveMarkerStyle } from './style';
 
-export function renderDataLayer(
-  map: L.Map,
-  manifest: LayerManifest,
-  features: GeoFeature[],
-  date: Date
-): L.Layer {
+export function renderDataLayer(map: L.Map, manifest: LayerManifest, features: GeoFeature[], date: Date): L.Layer {
   const active = features.filter((f) => isActiveOn(f, date));
   const geoJsonLayer = L.geoJSON(active as GeoJSON.Feature[]);
 
@@ -1525,7 +1560,13 @@ const map = createMap(document.querySelector('#map')!, {
   title: 'Smoke Test',
   map: { center: [28.29, -16.62], zoom: 12 },
   baseLayers: [
-    { id: 'osm', title: 'OSM', type: 'raster-tile', url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '© OpenStreetMap contributors' },
+    {
+      id: 'osm',
+      title: 'OSM',
+      type: 'raster-tile',
+      url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      attribution: '© OpenStreetMap contributors',
+    },
   ],
   dataLayers: [],
   calendar: { default: 'today', min: '2015-01-01', max: '2030-12-31' },
@@ -1535,7 +1576,7 @@ renderDataLayer(
   map,
   { id: 'x', title: 'X', kind: 'point', source: { type: 'geojson', url: '' }, style: { cluster: true } },
   [{ type: 'Feature', id: '1', properties: {}, geometry: { type: 'Point', coordinates: [-16.62, 28.29] } }],
-  new Date()
+  new Date(),
 );
 ```
 
@@ -1556,10 +1597,12 @@ git commit -m "feat: add Leaflet map creation and data layer rendering"
 ### Task 11: Plugin registry
 
 **Files:**
+
 - Create: `src/engine/plugins/registry.ts`
 - Test: `src/engine/plugins/registry.test.ts`
 
 **Interfaces:**
+
 - Consumes: `GeoFeature` (Task 2).
 - Produces: `PanelSlot`, `PluginContext`, `PluginHooks` interfaces; `registerPlugin(id, hooks)`, `getPanelSlots()`, `dispatchDateChange(date, ctx)`, `dispatchFilterChange(features, ctx)`, `dispatchFeatureSelect(feature, ctx)`, `_resetPluginsForTest()`. Used by Task 14 (panel-actions area) and Task 16 (`participate` plugin).
 
@@ -1695,10 +1738,12 @@ git commit -m "feat: add plugin registry and hook dispatch"
 ### Task 12: Strings (i18n seam) loader
 
 **Files:**
+
 - Create: `src/ui/strings.ts`
 - Test: `src/ui/strings.test.ts`
 
 **Interfaces:**
+
 - Produces: `loadStrings(path: string | undefined): Promise<Record<string, string>>`, `t(key: string, strings: Record<string, string>): string`. Used by Task 14 (PanelLeft) and Task 15 (bootstrap).
 
 - [ ] **Step 1: Write the failing test**
@@ -1721,7 +1766,7 @@ describe('loadStrings', () => {
   it('fetches and returns the strings JSON', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue({ ok: true, status: 200, statusText: 'OK', json: async () => ({ 'a.b': 'Hello' }) })
+      vi.fn().mockResolvedValue({ ok: true, status: 200, statusText: 'OK', json: async () => ({ 'a.b': 'Hello' }) }),
     );
     expect(await loadStrings('/strings.json')).toEqual({ 'a.b': 'Hello' });
   });
@@ -1781,12 +1826,14 @@ git commit -m "feat: add strings loader (i18n seam)"
 ### Task 13: Panel pure logic — search and temporal status
 
 **Files:**
+
 - Create: `src/ui/panels/search.ts`
 - Create: `src/ui/panels/temporal-status.ts`
 - Test: `src/ui/panels/search.test.ts`
 - Test: `src/ui/panels/temporal-status.test.ts`
 
 **Interfaces:**
+
 - Consumes: `GeoFeature`, `isActiveOn` (Tasks 2-3).
 - Produces: `searchFeatures(features: GeoFeature[], query: string, searchableFields: string[]): GeoFeature[]`, `describeTemporalStatus(feature: GeoFeature, date: Date): string`. Used by Task 14 (PanelLeft).
 
@@ -1800,8 +1847,18 @@ import { searchFeatures } from './search';
 import type { GeoFeature } from '../../engine/time/temporal-types';
 
 const features: GeoFeature[] = [
-  { type: 'Feature', id: '1', properties: { nombre: 'Panadería Central' }, geometry: { type: 'Point', coordinates: [0, 0] } },
-  { type: 'Feature', id: '2', properties: { nombre: 'Ferretería Norte' }, geometry: { type: 'Point', coordinates: [0, 0] } },
+  {
+    type: 'Feature',
+    id: '1',
+    properties: { nombre: 'Panadería Central' },
+    geometry: { type: 'Point', coordinates: [0, 0] },
+  },
+  {
+    type: 'Feature',
+    id: '2',
+    properties: { nombre: 'Ferretería Norte' },
+    geometry: { type: 'Point', coordinates: [0, 0] },
+  },
 ];
 
 describe('searchFeatures', () => {
@@ -1843,19 +1900,21 @@ describe('describeTemporalStatus', () => {
 
   it('describes a ranged feature', () => {
     const f = feature({ range: { from: '2020-01-01', to: '2023-06-30' } });
-    expect(describeTemporalStatus(f, new Date('2021-01-01T00:00:00Z'))).toBe('Active (since 2020-01-01 until 2023-06-30)');
+    expect(describeTemporalStatus(f, new Date('2021-01-01T00:00:00Z'))).toBe(
+      'Active (since 2020-01-01 until 2023-06-30)',
+    );
     expect(describeTemporalStatus(f, new Date('2024-01-01T00:00:00Z'))).toBe(
-      'Not active on selected date (since 2020-01-01 until 2023-06-30)'
+      'Not active on selected date (since 2020-01-01 until 2023-06-30)',
     );
   });
 
   it('describes a recurring feature', () => {
     const f = feature({ range: { from: '2026-03-01' }, recurrence: { rule: 'FREQ=WEEKLY;BYDAY=SU' } });
     expect(describeTemporalStatus(f, new Date('2026-03-01T00:00:00Z'))).toBe(
-      'Active today (recurs: FREQ=WEEKLY;BYDAY=SU)'
+      'Active today (recurs: FREQ=WEEKLY;BYDAY=SU)',
     );
     expect(describeTemporalStatus(f, new Date('2026-03-02T00:00:00Z'))).toBe(
-      'Not active on selected date (recurs: FREQ=WEEKLY;BYDAY=SU)'
+      'Not active on selected date (recurs: FREQ=WEEKLY;BYDAY=SU)',
     );
   });
 });
@@ -1879,7 +1938,7 @@ export function searchFeatures(features: GeoFeature[], query: string, searchable
     searchableFields.some((field) => {
       const value = feature.properties[field];
       return typeof value === 'string' && value.toLowerCase().includes(normalized);
-    })
+    }),
   );
 }
 ```
@@ -1934,11 +1993,13 @@ git commit -m "feat: add search and temporal-status panel logic"
 ### Task 14: Panel DOM wiring — PanelLeft, PanelRight, CalendarBar
 
 **Files:**
+
 - Create: `src/ui/panels/PanelLeft.ts`
 - Create: `src/ui/panels/PanelRight.ts`
 - Create: `src/ui/panels/CalendarBar.ts`
 
 **Interfaces:**
+
 - Consumes: `Store<AppState>` (Task 6), `LoadedLayer`, `computeTaxonomyDimensions`, `getTriState`, `toggleAll` (Task 7), `searchFeatures`, `describeTemporalStatus` (Task 13), `t` (Task 12).
 - Produces: `mountPanelLeft(container, store, layers, strings)`, `mountPanelRight(container, store, layers)`, `mountCalendarBar(container, store, config)`. Used by Task 15's bootstrap.
 
@@ -2007,7 +2068,7 @@ export function mountPanelRight(container: HTMLElement, store: Store<AppState>, 
               <label>
                 <input type="checkbox" data-dimension="${dimension.id}" data-value="${v.value}" ${selected.has(v.value) ? 'checked' : ''} />
                 ${v.value} (${v.count})
-              </label>`
+              </label>`,
           )
           .join('');
 
@@ -2062,7 +2123,7 @@ export function mountPanelLeft(
   container: HTMLElement,
   store: Store<AppState>,
   layers: LoadedLayer[],
-  strings: Record<string, string>
+  strings: Record<string, string>,
 ): void {
   container.innerHTML = `
     <input type="search" data-role="search-input" placeholder="${t('search.placeholder', strings)}" />
@@ -2123,6 +2184,7 @@ git commit -m "feat: add panel DOM wiring (search/info, filters, calendar bar)"
 ### Task 15: Bootstrap and the `demo` app instance
 
 **Files:**
+
 - Modify: `src/main.ts` (replace the Task 1/10 placeholder content entirely)
 - Create: `apps/demo/app-manifest.json`
 - Create: `apps/demo/strings.json`
@@ -2132,6 +2194,7 @@ git commit -m "feat: add panel DOM wiring (search/info, filters, calendar bar)"
 - Create: `apps/demo/data/regions.geojson`
 
 **Interfaces:**
+
 - Consumes: everything from Tasks 2–14.
 - Produces: a running end-to-end app. This is the task that proves the whole spec works together and is the reference example for anyone building a second app instance.
 
@@ -2202,7 +2265,15 @@ git commit -m "feat: add panel DOM wiring (search/info, filters, calendar bar)"
       "properties": { "nombre": "Distrito Norte (pre-2023)", "temporal": { "range": { "to": "2022-12-31" } } },
       "geometry": {
         "type": "Polygon",
-        "coordinates": [[[-16.65, 28.27], [-16.60, 28.27], [-16.60, 28.31], [-16.65, 28.31], [-16.65, 28.27]]]
+        "coordinates": [
+          [
+            [-16.65, 28.27],
+            [-16.6, 28.27],
+            [-16.6, 28.31],
+            [-16.65, 28.31],
+            [-16.65, 28.27]
+          ]
+        ]
       }
     },
     {
@@ -2211,7 +2282,15 @@ git commit -m "feat: add panel DOM wiring (search/info, filters, calendar bar)"
       "properties": { "nombre": "Distrito Norte (post-2023)", "temporal": { "range": { "from": "2023-01-01" } } },
       "geometry": {
         "type": "Polygon",
-        "coordinates": [[[-16.65, 28.27], [-16.60, 28.27], [-16.60, 28.31], [-16.65, 28.31], [-16.65, 28.27]]]
+        "coordinates": [
+          [
+            [-16.65, 28.27],
+            [-16.6, 28.27],
+            [-16.6, 28.31],
+            [-16.65, 28.31],
+            [-16.65, 28.27]
+          ]
+        ]
       }
     }
   ]
@@ -2360,6 +2439,7 @@ Note the `renderedLayers` map: it removes each layer's previous render before ad
 Run: `npm run dev`, open the local URL in a browser.
 
 Expected:
+
 - Map loads centered on Tenerife with OSM tiles, a cluster near the center (5 POI markers, clustered), and one region polygon outline.
 - Right panel shows two filter sections: "Category" (administracion, evento, comercio, mercado — counts reflect today's date) and "Region" (one region, matching whichever boundary is valid today).
 - Left panel search box: typing "ayuntamiento" shows one result; clicking it switches to the info view showing "Always active".
@@ -2379,6 +2459,7 @@ git commit -m "feat: wire full bootstrap and add demo app instance"
 ### Task 16: `participate` plugin and README
 
 **Files:**
+
 - Create: `plugins/participate/links.ts`
 - Test: `plugins/participate/links.test.ts`
 - Create: `plugins/participate/index.ts`
@@ -2387,6 +2468,7 @@ git commit -m "feat: wire full bootstrap and add demo app instance"
 - Create: `README.md`
 
 **Interfaces:**
+
 - Consumes: `ParticipateConfig` (Task 5), `registerPlugin`, `getPanelSlots`, `PluginContext` (Task 11).
 - Produces: `buildParticipateUrl(config: ParticipateConfig, context: { date: string }): string`, `registerParticipatePlugin(config: ParticipateConfig): void`.
 
@@ -2402,7 +2484,7 @@ describe('buildParticipateUrl', () => {
   it('builds a mailto link with an encoded subject', () => {
     const url = buildParticipateUrl(
       { channel: 'email', target: 'demo@example.org', messageTemplate: 'Report for {{date}}' },
-      { date: '2026-07-26' }
+      { date: '2026-07-26' },
     );
     expect(url).toBe('mailto:demo@example.org?subject=Report%20for%202026-07-26');
   });
@@ -2410,7 +2492,7 @@ describe('buildParticipateUrl', () => {
   it('builds a WhatsApp deep link', () => {
     const url = buildParticipateUrl(
       { channel: 'whatsapp', target: '34600000000', messageTemplate: 'Hi, re: {{date}}' },
-      { date: '2026-07-26' }
+      { date: '2026-07-26' },
     );
     expect(url).toBe('https://wa.me/34600000000?text=Hi%2C%20re%3A%202026-07-26');
   });
@@ -2418,7 +2500,7 @@ describe('buildParticipateUrl', () => {
   it('builds a Telegram deep link', () => {
     const url = buildParticipateUrl(
       { channel: 'telegram', target: 'demo_bot', messageTemplate: 'Hi {{date}}' },
-      { date: '2026-07-26' }
+      { date: '2026-07-26' },
     );
     expect(url).toBe('https://t.me/demo_bot?text=Hi%202026-07-26');
   });
@@ -2511,27 +2593,27 @@ import { getPanelSlots, type PluginContext } from './engine/plugins/registry';
 Inside `bootstrap()`, after loading `appManifest`:
 
 ```ts
-  if (appManifest.plugins?.participate) {
-    registerParticipatePlugin(appManifest.plugins.participate);
-  }
+if (appManifest.plugins?.participate) {
+  registerParticipatePlugin(appManifest.plugins.participate);
+}
 ```
 
 After `mountPanelLeft(...)` at the end of `bootstrap()`, mount any registered panel slots into the right panel's action area:
 
 ```ts
-  const pluginCtx: PluginContext = {
-    getSelectedDate: () => store.get().selectedDate,
-    getActiveFeatures: () => loadedLayers.flatMap((l) => l.features),
-    getSelectedFeature: () =>
-      loadedLayers.flatMap((l) => l.features).find((f) => String(f.id ?? '') === store.get().selectedFeatureId) ?? null,
-  };
-  const actionsContainer = document.querySelector<HTMLDivElement>('#panel-right')!;
-  for (const slot of getPanelSlots()) {
-    const slotContainer = document.createElement('div');
-    slotContainer.dataset.pluginSlot = slot.id;
-    actionsContainer.appendChild(slotContainer);
-    slot.render(slotContainer, pluginCtx);
-  }
+const pluginCtx: PluginContext = {
+  getSelectedDate: () => store.get().selectedDate,
+  getActiveFeatures: () => loadedLayers.flatMap((l) => l.features),
+  getSelectedFeature: () =>
+    loadedLayers.flatMap((l) => l.features).find((f) => String(f.id ?? '') === store.get().selectedFeatureId) ?? null,
+};
+const actionsContainer = document.querySelector<HTMLDivElement>('#panel-right')!;
+for (const slot of getPanelSlots()) {
+  const slotContainer = document.createElement('div');
+  slotContainer.dataset.pluginSlot = slot.id;
+  actionsContainer.appendChild(slotContainer);
+  slot.render(slotContainer, pluginCtx);
+}
 ```
 
 - [ ] **Step 8: Manually verify in a browser**

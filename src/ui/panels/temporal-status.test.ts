@@ -22,7 +22,7 @@ const enStrings: Record<string, string> = {
 describe('describeTemporalStatus', () => {
   it('describes a feature with no temporal data as always active', () => {
     expect(describeTemporalStatus(feature(undefined), new Date('2026-01-01T00:00:00Z'), enStrings)).toBe(
-      'Always active'
+      'Always active',
     );
   });
 
@@ -35,10 +35,10 @@ describe('describeTemporalStatus', () => {
   it('describes a ranged feature', () => {
     const f = feature({ range: { from: '2020-01-01', to: '2023-06-30' } });
     expect(describeTemporalStatus(f, new Date('2021-01-01T00:00:00Z'), enStrings)).toBe(
-      'Active (since 2020-01-01 until 2023-06-30)'
+      'Active (since 2020-01-01 until 2023-06-30)',
     );
     expect(describeTemporalStatus(f, new Date('2024-01-01T00:00:00Z'), enStrings)).toBe(
-      'Not active on selected date (since 2020-01-01 until 2023-06-30)'
+      'Not active on selected date (since 2020-01-01 until 2023-06-30)',
     );
   });
 
@@ -50,7 +50,7 @@ describe('describeTemporalStatus', () => {
   it('describes a ranged feature with only an until bound', () => {
     const f = feature({ range: { to: '2023-06-30' } });
     expect(describeTemporalStatus(f, new Date('2024-01-01T00:00:00Z'), enStrings)).toBe(
-      'Not active on selected date (until 2023-06-30)'
+      'Not active on selected date (until 2023-06-30)',
     );
   });
 
@@ -62,10 +62,10 @@ describe('describeTemporalStatus', () => {
   it('describes a recurring feature', () => {
     const f = feature({ range: { from: '2026-03-01' }, recurrence: { rule: 'FREQ=WEEKLY;BYDAY=SU' } });
     expect(describeTemporalStatus(f, new Date('2026-03-01T00:00:00Z'), enStrings)).toBe(
-      'Active today (recurs: FREQ=WEEKLY;BYDAY=SU)'
+      'Active today (recurs: FREQ=WEEKLY;BYDAY=SU)',
     );
     expect(describeTemporalStatus(f, new Date('2026-03-02T00:00:00Z'), enStrings)).toBe(
-      'Not active on selected date (recurs: FREQ=WEEKLY;BYDAY=SU)'
+      'Not active on selected date (recurs: FREQ=WEEKLY;BYDAY=SU)',
     );
   });
 
@@ -92,21 +92,19 @@ describe('describeTemporalStatus', () => {
   it('formats an instant date in a non-gregorian calendar system when provided', () => {
     const f = feature({ instant: '2026-03-14' });
     expect(describeTemporalStatus(f, new Date('2026-03-14T00:00:00Z'), enStrings, 'julian')).toBe(
-      'Active on March 1, 2026'
+      'Active on March 1, 2026',
     );
   });
 
   it('formats range bounds in a non-gregorian calendar system when provided', () => {
     const f = feature({ range: { from: '2020-01-01', to: '2023-06-30' } });
     expect(describeTemporalStatus(f, new Date('2021-01-01T00:00:00Z'), enStrings, 'julian')).toBe(
-      'Active (since December 19, 2019 until June 17, 2023)'
+      'Active (since December 19, 2019 until June 17, 2023)',
     );
   });
 
   it('defaults to gregorian (raw ISO strings) when no system is given', () => {
     const f = feature({ instant: '2026-03-14' });
-    expect(describeTemporalStatus(f, new Date('2026-03-14T00:00:00Z'), enStrings)).toBe(
-      'Active on 2026-03-14'
-    );
+    expect(describeTemporalStatus(f, new Date('2026-03-14T00:00:00Z'), enStrings)).toBe('Active on 2026-03-14');
   });
 });

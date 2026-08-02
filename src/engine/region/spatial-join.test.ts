@@ -11,7 +11,15 @@ function square(id: string, temporal: Temporal | undefined) {
     properties: { name: id, temporal },
     geometry: {
       type: 'Polygon' as const,
-      coordinates: [[[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]],
+      coordinates: [
+        [
+          [0, 0],
+          [10, 0],
+          [10, 10],
+          [0, 10],
+          [0, 0],
+        ],
+      ],
     },
   };
 }

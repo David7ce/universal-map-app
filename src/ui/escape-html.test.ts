@@ -28,7 +28,7 @@ describe('escapeHtml', () => {
 
   it('escapes multiple special characters in a single string', () => {
     expect(escapeHtml(`<a href="x">Tom & "Jerry's" </a>`)).toBe(
-      '&lt;a href=&quot;x&quot;&gt;Tom &amp; &quot;Jerry&#39;s&quot; &lt;/a&gt;'
+      '&lt;a href=&quot;x&quot;&gt;Tom &amp; &quot;Jerry&#39;s&quot; &lt;/a&gt;',
     );
   });
 });

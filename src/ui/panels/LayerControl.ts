@@ -21,7 +21,7 @@ export function mountLayerControl(
   container: HTMLElement,
   store: Store<AppState>,
   strings: Record<string, string>,
-  deps: LayerControlDeps
+  deps: LayerControlDeps,
 ): void {
   const baseLayerCards = deps.baseLayerConfigs
     .map(
@@ -30,7 +30,7 @@ export function mountLayerControl(
           <input type="radio" name="base-layer" data-base-layer="${escapeHtml(config.id)}" class="layer-control-card__input" />
           <span class="layer-control-card__thumb" data-layer-id="${escapeHtml(config.id)}" aria-hidden="true"></span>
           <span class="layer-control-card__label">${escapeHtml(config.title)}</span>
-        </label>`
+        </label>`,
     )
     .join('');
 
@@ -41,7 +41,7 @@ export function mountLayerControl(
           <input type="checkbox" data-detail-layer="${escapeHtml(layer.id)}" class="layer-control-card__input" />
           <span class="layer-control-card__thumb" data-layer-id="${escapeHtml(layer.id)}" aria-hidden="true"></span>
           <span class="layer-control-card__label">${escapeHtml(layer.title)}</span>
-        </label>`
+        </label>`,
     )
     .join('');
 

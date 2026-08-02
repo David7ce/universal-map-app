@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { calendarSystemLabel, getVisibleGranularityOptions, nextSelectedDate, parseDateInputValue, stepDatePart } from './CalendarBar';
+import {
+  calendarSystemLabel,
+  getVisibleGranularityOptions,
+  nextSelectedDate,
+  parseDateInputValue,
+  stepDatePart,
+} from './CalendarBar';
 
 describe('nextSelectedDate', () => {
   it('steps by day the same way regardless of calendar system', () => {

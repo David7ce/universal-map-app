@@ -30,9 +30,7 @@ function layer(): LoadedLayer {
 describe('computeTaxonomyDimensions', () => {
   it('counts values per dimension for features active on the given date', () => {
     const dims = computeTaxonomyDimensions([layer()], new Date('2026-01-01T00:00:00Z'));
-    expect(dims).toEqual([
-      { id: 'category', label: 'Category', values: [{ value: 'shop', count: 2 }] },
-    ]);
+    expect(dims).toEqual([{ id: 'category', label: 'Category', values: [{ value: 'shop', count: 2 }] }]);
   });
 
   it('includes instant-matched features on their exact date', () => {
@@ -42,7 +40,7 @@ describe('computeTaxonomyDimensions', () => {
       expect.arrayContaining([
         { value: 'shop', count: 2 },
         { value: 'market', count: 1 },
-      ])
+      ]),
     );
   });
 });
@@ -113,12 +111,8 @@ describe('featureMatchesFilters', () => {
       category: new Set(['shop']),
       region: new Set(['north']),
     };
-    expect(featureMatchesFilters(feature({ category: 'shop', region: 'south' }), manifest, activeFilters)).toBe(
-      false
-    );
-    expect(featureMatchesFilters(feature({ category: 'shop', region: 'north' }), manifest, activeFilters)).toBe(
-      true
-    );
+    expect(featureMatchesFilters(feature({ category: 'shop', region: 'south' }), manifest, activeFilters)).toBe(false);
+    expect(featureMatchesFilters(feature({ category: 'shop', region: 'north' }), manifest, activeFilters)).toBe(true);
   });
 
   it('rejects a feature missing the field entirely when that dimension is restricted', () => {

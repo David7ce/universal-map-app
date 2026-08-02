@@ -13,7 +13,7 @@ export function renderDataLayer(
   features: GeoFeature[],
   date: Date,
   activeFilters: Record<string, Set<string>> = {},
-  onFeatureClick?: (feature: GeoFeature) => void
+  onFeatureClick?: (feature: GeoFeature) => void,
 ): L.Layer {
   const active = features.filter((f) => isActiveOn(f, date) && featureMatchesFilters(f, manifest, activeFilters));
 

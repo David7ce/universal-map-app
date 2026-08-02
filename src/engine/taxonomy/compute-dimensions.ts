@@ -41,7 +41,7 @@ export function readField(feature: GeoFeature, path: string): string[] {
 export function featureMatchesFilters(
   feature: GeoFeature,
   manifest: LayerManifest,
-  activeFilters: Record<string, Set<string>>
+  activeFilters: Record<string, Set<string>>,
 ): boolean {
   for (const dim of manifest.taxonomy ?? []) {
     const selected = activeFilters[dim.id];

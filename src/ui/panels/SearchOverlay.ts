@@ -12,7 +12,7 @@ export function mountSearchOverlay(
   container: HTMLElement,
   store: Store<AppState>,
   layers: LoadedLayer[],
-  strings: Record<string, string>
+  strings: Record<string, string>,
 ): void {
   container.innerHTML = `
     <button type="button" class="control-btn control-btn--search" aria-label="${t('search.openLabel', strings)}">${icons.search}</button>
@@ -78,7 +78,7 @@ export function mountSearchOverlay(
       ? matches
           .map(
             (feature, index) =>
-              `<button type="button" class="search-result-item" data-result-index="${index}"><span class="search-result-item__name">${escapeHtml(featureLabel(feature))}</span></button>`
+              `<button type="button" class="search-result-item" data-result-index="${index}"><span class="search-result-item__name">${escapeHtml(featureLabel(feature))}</span></button>`,
           )
           .join('')
       : `<p class="search-results__empty">${t('search.noResults', strings)}</p>`;

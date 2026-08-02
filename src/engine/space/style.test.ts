@@ -31,7 +31,7 @@ describe('resolvePolygonStyle', () => {
 
   it('reads color/weight/fillColor/fillOpacity from the manifest style', () => {
     expect(
-      resolvePolygonStyle(manifest({ color: '#123456', weight: 4, fillColor: '#abcdef', fillOpacity: 0.5 }))
+      resolvePolygonStyle(manifest({ color: '#123456', weight: 4, fillColor: '#abcdef', fillOpacity: 0.5 })),
     ).toEqual({ color: '#123456', weight: 4, fillColor: '#abcdef', fillOpacity: 0.5 });
   });
 
