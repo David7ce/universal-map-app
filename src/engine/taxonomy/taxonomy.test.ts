@@ -30,7 +30,16 @@ function layer(): LoadedLayer {
 describe('computeTaxonomyDimensions', () => {
   it('counts values per dimension for features active on the given date', () => {
     const dims = computeTaxonomyDimensions([layer()], new Date('2026-01-01T00:00:00Z'));
-    expect(dims).toEqual([{ id: 'category', label: 'Category', values: [{ value: 'shop', count: 2 }] }]);
+    expect(dims).toEqual([
+      { id: 'category', label: 'Category', values: [{ value: 'shop', count: 2 }], showCounts: true },
+    ]);
+  });
+
+  it('turns off counts for a boundary-region layer (one polygon per value, count always 1)', () => {
+    const boundaryLayer = layer();
+    boundaryLayer.manifest = { ...boundaryLayer.manifest, regionRole: 'boundary' };
+    const dims = computeTaxonomyDimensions([boundaryLayer], new Date('2026-01-01T00:00:00Z'));
+    expect(dims[0].showCounts).toBe(false);
   });
 
   it('includes instant-matched features on their exact date', () => {

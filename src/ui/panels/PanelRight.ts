@@ -31,11 +31,12 @@ export function mountPanelRight(
           .map((v) => {
             const resolvedIcon = resolveTaxonomyIcon(dimension.icons, dimension.defaultIcon, v.value);
             const icon = resolvedIcon ? `${resolvedIcon} ` : '';
+            const count = dimension.showCounts ? `<span class="filter-options__count">${v.count}</span>` : '';
             return `
               <label>
                 <input type="checkbox" data-dimension="${escapeHtml(dimension.id)}" data-value="${escapeHtml(v.value)}" ${selected.has(v.value) ? 'checked' : ''} />
                 <span>${icon}${escapeHtml(v.value)}</span>
-                <span class="filter-options__count">${v.count}</span>
+                ${count}
               </label>`;
           })
           .join('');

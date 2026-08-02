@@ -2,12 +2,20 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Taxonomy value counts in filter checkboxes
+
+`PanelRight.ts` now renders each taxonomy value's match count (`computeTaxonomyDimensions` already computed it, per `{ value, count }`) next to its checkbox label, right-aligned via `.filter-options__count`. Suppressed for boundary-region layers (`regionRole: 'boundary'`, e.g. `regions.layer.json`) via a new `TaxonomyDimension.showCounts` flag — one polygon per region name means the count is always 1, not useful information.
+
+## Wider gap between the bottom-left Layers button and the docked search/info panel
+
+At desktop width, `.bottom-left-controls` shifting right to clear the docked search/info panel only added `--control-btn-offset` (15px), which read flush against the panel edge. It now also adds `--controls-gap`, matching the spacing already used between controls in the same row.
+
 ## Time editor, calendar system, and map settings moved into the filters panel
 
 The filters panel (`#panel-right`) now also hosts, below the Category/Region filters:
 
-- **Time** (`src/ui/panels/CalendarBar.ts`, mounted at `#panel-right-time`): a live calendar-system select (gregorian/julian/islamic/hebrew, independent of the manifest's default — `AppState.calendarSystem` is the single source of truth read by `CalendarBar.ts` and `SelectionCard.ts`; switching to islamic/hebrew lazy-loads `@js-temporal/polyfill` on demand via `ensureCalendarSystemLoaded()`), the year/month/day date editor, and a range slider on its own full-width row so it always has real drag room, even in the panel's narrow column.
-- **Settings** (`src/ui/panels/SettingsControl.ts`, mounted at `#panel-right-map-settings`): a small button that opens a popover with the active map projection (read-only, `map.crs`) and a "show coordinate grid" checkbox that draws a lat/lng graticule (`src/engine/space/coordinate-grid.ts` for the pure line-generation math, `coordinate-grid-layer.ts` for the Leaflet layer — split so the math stays unit-testable without a `window` global).
+- **Time** (`src/ui/panels/CalendarBar.ts`, mounted at `#panel-right-time`): the year/month/day date editor and a range slider on its own full-width row so it always has real drag room, even in the panel's narrow column. `AppState.calendarSystem` is the single source of truth read by `CalendarBar.ts` and `SelectionCard.ts`.
+- **Settings** (`src/ui/panels/SettingsControl.ts`, mounted at `#panel-right-map-settings`): a small button that opens a popover with a live calendar-system select (gregorian/julian/islamic/hebrew, independent of the manifest's default; switching to islamic/hebrew lazy-loads `@js-temporal/polyfill` on demand via `ensureCalendarSystemLoaded()`), the active map projection (read-only, `map.crs`), and a "show coordinate grid" checkbox that draws a lat/lng graticule (`src/engine/space/coordinate-grid.ts` for the pure line-generation math, `coordinate-grid-layer.ts` for the Leaflet layer — split so the math stays unit-testable without a `window` global). The calendar-system select originally lived inline in the Time section; moved into Settings since it's map/app-level config, not a per-lookup date field.
 
 No more full-width calendar bar or separate floating buttons for either — `#calendar-bar`/`#settings-control` are gone from `.bottom-left-controls`, which now holds only the Layers button. The footer legend gained a plain-text current-date reading (`#map-date-text`) as the one always-visible date indicator now that the full editor lives inside the (closed-by-default) filters panel.
 

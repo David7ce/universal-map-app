@@ -8,6 +8,9 @@ export interface TaxonomyDimension {
   values: { value: string; count: number }[];
   icons?: Record<string, string>;
   defaultIcon?: string;
+  // Boundary-region layers (`regionRole: 'boundary'`) give each value a
+  // trivial count of 1 (one polygon per region name) — not worth showing.
+  showCounts: boolean;
 }
 
 export interface LoadedLayer {
@@ -65,6 +68,7 @@ export function computeTaxonomyDimensions(layers: LoadedLayer[], date: Date): Ta
         values: [],
         icons: dim.icons,
         defaultIcon: dim.defaultIcon,
+        showCounts: layer.manifest.regionRole !== 'boundary',
       };
       const counts = new Map(bucket.values.map((v) => [v.value, v.count]));
 

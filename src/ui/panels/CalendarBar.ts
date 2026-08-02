@@ -1,8 +1,7 @@
 import type { Store, AppState } from '../../engine/state/store';
-import { CALENDAR_SYSTEMS, type CalendarSystem } from '../../engine/time/calendar-systems';
-import { addCalendarUnit, ensureCalendarSystemLoaded, formatCalendarDate } from '../../engine/time/calendar-conversion';
+import type { CalendarSystem } from '../../engine/time/calendar-systems';
+import { addCalendarUnit, formatCalendarDate } from '../../engine/time/calendar-conversion';
 import { t } from '../strings';
-import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
 
 export interface CalendarConfig {
@@ -160,19 +159,12 @@ export function mountCalendarBar(
   const yearMin = new Date(`${config.min}T00:00:00Z`).getUTCFullYear();
   const yearMax = new Date(`${maxIso}T00:00:00Z`).getUTCFullYear();
 
-  const systemOptions = CALENDAR_SYSTEMS.map(
-    (system) => `<option value="${system}">${escapeHtml(t(`calendar.system.${system}`, strings))}</option>`,
-  ).join('');
-
   // Lives inline inside the filters panel — always visible, no toggle of
-  // its own. Layout: system select, then the date fields row, then the
-  // range slider on its own full-width row at the end.
+  // its own. Layout: the date fields row, then the range slider on its own
+  // full-width row at the end. The calendar-system select lives in
+  // SettingsControl.ts, not here — CalendarBar only reads store.calendarSystem.
   container.innerHTML = `
     <p class="settings-control-group__title">${t('layerControl.time', strings)}</p>
-    <label class="settings-control-row">
-      <span>${t('settings.calendarSystemLabel', strings)}</span>
-      <select data-role="calendar-system">${systemOptions}</select>
-    </label>
     <div class="calendar-bar__controls">
       <div class="calendar-bar__row">
         <div class="calendar-bar__field" data-field="year">
@@ -217,7 +209,6 @@ export function mountCalendarBar(
   const dateSlider = container.querySelector<HTMLInputElement>('[data-role="date-slider"]')!;
   const systemLabel = container.querySelector<HTMLElement>('[data-role="system-label"]')!;
   const editButton = container.querySelector<HTMLButtonElement>('[data-action="edit"]')!;
-  const systemSelect = container.querySelector<HTMLSelectElement>('[data-role="calendar-system"]')!;
 
   function sliderOffsetFor(dateIso: string): string {
     return String(clamp(daysBetween(config.min, dateIso), 0, totalDays));
@@ -260,7 +251,6 @@ export function mountCalendarBar(
   }
 
   dateSlider.value = sliderOffsetFor(store.get().selectedDate);
-  systemSelect.value = store.get().calendarSystem;
   renderSystemLabel(store.get().selectedDate);
   renderFields(store.get().selectedDate);
 
@@ -271,13 +261,6 @@ export function mountCalendarBar(
       yearInputEl.focus();
       yearInputEl.select();
     }
-  });
-
-  systemSelect.addEventListener('change', () => {
-    const system = systemSelect.value as CalendarSystem;
-    ensureCalendarSystemLoaded(system)
-      .then(() => store.set({ calendarSystem: system }))
-      .catch((error: unknown) => console.error('Failed to load calendar system', system, error));
   });
 
   // Each numeric input commits its part on change and on Enter; Escape exits.
@@ -332,7 +315,6 @@ export function mountCalendarBar(
   store.subscribe((state) => {
     const offset = sliderOffsetFor(state.selectedDate);
     if (dateSlider.value !== offset) dateSlider.value = offset;
-    if (document.activeElement !== systemSelect) systemSelect.value = state.calendarSystem;
     renderSystemLabel(state.selectedDate);
     renderFields(state.selectedDate);
   });
