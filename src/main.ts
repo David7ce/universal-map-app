@@ -18,6 +18,7 @@ import { mountPanelRight } from './ui/panels/PanelRight';
 import { mountLayerControl } from './ui/panels/LayerControl';
 import { mountCalendarBar } from './ui/panels/CalendarBar';
 import { mountAppChrome } from './ui/app-chrome';
+import { ensureCalendarSystemLoaded } from './engine/time/calendar-conversion';
 import type { GeoFeature } from './engine/time/temporal-types';
 import type { LoadedLayer } from './engine/taxonomy/compute-dimensions';
 import { registerParticipatePlugin } from '../plugins/participate';
@@ -41,6 +42,11 @@ function resolveAppId(): string {
 async function bootstrap(): Promise<void> {
   const appId = resolveAppId();
   const appManifest = validateAppManifest(await fetchJson(`/apps/${appId}/app-manifest.json`));
+
+  // Only islamic/hebrew calendars pull in @js-temporal/polyfill (a sizable
+  // dependency); kick the load off now so it runs in parallel with the
+  // fetches below, and await it right before the first consumer needs it.
+  const calendarSystemLoaded = ensureCalendarSystemLoaded(appManifest.calendar.system ?? 'gregorian');
 
   const strings = await loadStrings(appManifest.strings ? `/apps/${appId}/${appManifest.strings}` : undefined);
 
@@ -72,7 +78,7 @@ async function bootstrap(): Promise<void> {
   });
 
   const mapContainer = document.querySelector<HTMLDivElement>('#map')!;
-  const { map, baseLayers } = createMap(mapContainer, appManifest);
+  const { map, baseLayers } = await createMap(mapContainer, appManifest);
   const renderedLayers = new Map<string, Layer>();
 
   function renderMap(): void {
@@ -107,6 +113,7 @@ async function bootstrap(): Promise<void> {
   renderMap();
   store.subscribe(renderMap);
 
+  await calendarSystemLoaded;
   mountCalendarBar(document.querySelector('#calendar-bar')!, store, appManifest.calendar, strings);
   mountPanelRight(document.querySelector('#panel-right-filters')!, store, loadedLayers, strings);
   mountSearchOverlay(document.querySelector('#search-overlay')!, store, loadedLayers, strings);

@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Lazy-loaded Temporal polyfill and proj4leaflet
+
+`@js-temporal/polyfill` (islamic/hebrew calendar display) and `proj4leaflet` (custom `map.crs` projections) are now dynamically `import()`ed only when an app manifest actually requests them, instead of shipping in every build. `ensureCalendarSystemLoaded()` (`src/engine/time/calendar-conversion.ts`) is awaited once at bootstrap, before the first calendar render; `createMap()` (`src/engine/space/map.ts`) awaits the proj4leaflet import only inside the custom-CRS branch. For the demo app (gregorian, default EPSG:3857) this drops the main bundle from ~157KB to ~67KB gzipped, with the rest split into on-demand chunks.
+
 ## `?app=` query-param app switcher
 
 `src/main.ts` no longer hardcodes `apps/demo/`: `resolveAppId()` reads `?app=<id>` from the URL (restricted to `[a-zA-Z0-9_-]+`, falling back to `"demo"`), so any `apps/<id>/` instance can be loaded by URL without touching engine code. Still a single-app-per-page-load static lookup, not a router — see `README.md` ("Add a new app instance").

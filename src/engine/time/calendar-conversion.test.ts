@@ -1,5 +1,15 @@
-import { describe, expect, it } from 'vitest';
-import { addCalendarUnit, formatCalendarDate, toCalendarParts } from './calendar-conversion';
+import { beforeAll, describe, expect, it } from 'vitest';
+import {
+  addCalendarUnit,
+  ensureCalendarSystemLoaded,
+  formatCalendarDate,
+  toCalendarParts,
+} from './calendar-conversion';
+
+beforeAll(async () => {
+  await ensureCalendarSystemLoaded('islamic');
+  await ensureCalendarSystemLoaded('hebrew');
+});
 
 describe('toCalendarParts', () => {
   it('is an identity pass-through for gregorian', () => {

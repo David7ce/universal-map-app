@@ -1,5 +1,4 @@
 import L from 'leaflet';
-import 'proj4leaflet';
 import type { AppManifest } from '../manifests/app-manifest';
 import type { MapCrsConfig } from './map-crs';
 
@@ -10,9 +9,13 @@ export interface CreatedMap {
   baseLayers: Record<string, L.TileLayer>;
 }
 
-function resolveCrs(config: MapCrsConfig | undefined): L.CRS | undefined {
+// proj4leaflet (and its proj4 dependency) is only needed for a custom CRS —
+// most apps use the default EPSG:3857 or the Leaflet-builtin EPSG:4326, so
+// it's dynamically imported here rather than paid for on every page load.
+async function resolveCrs(config: MapCrsConfig | undefined): Promise<L.CRS | undefined> {
   if (config === undefined || config === 'EPSG:3857') return undefined;
   if (config === 'EPSG:4326') return L.CRS.EPSG4326;
+  await import('proj4leaflet');
   return new L.Proj.CRS('custom', config.proj4def, {
     resolutions: config.resolutions,
     origin: config.origin,
@@ -20,8 +23,8 @@ function resolveCrs(config: MapCrsConfig | undefined): L.CRS | undefined {
   });
 }
 
-export function createMap(container: HTMLElement, appManifest: AppManifest): CreatedMap {
-  const crs = resolveCrs(appManifest.map.crs);
+export async function createMap(container: HTMLElement, appManifest: AppManifest): Promise<CreatedMap> {
+  const crs = await resolveCrs(appManifest.map.crs);
   const map = L.map(container, { zoomControl: false, ...(crs ? { crs } : {}) }).setView(
     appManifest.map.center,
     appManifest.map.zoom,

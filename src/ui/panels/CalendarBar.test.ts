@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
+import { ensureCalendarSystemLoaded } from '../../engine/time/calendar-conversion';
 import {
   calendarSystemLabel,
   getVisibleGranularityOptions,
@@ -6,6 +7,11 @@ import {
   parseDateInputValue,
   stepDatePart,
 } from './CalendarBar';
+
+beforeAll(async () => {
+  await ensureCalendarSystemLoaded('islamic');
+  await ensureCalendarSystemLoaded('hebrew');
+});
 
 describe('nextSelectedDate', () => {
   it('steps by day the same way regardless of calendar system', () => {
