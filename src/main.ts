@@ -26,30 +26,30 @@ async function fetchJson(url: string): Promise<unknown> {
   return response.json();
 }
 
-// Which `apps/<id>/` instance to load. Defaults to "demo"; override with
-// `?app=<id>` (e.g. during local development or a multi-app static host).
+// Which `worlds/<id>/` instance to load. Defaults to "demo"; override with
+// `?world=<id>` (e.g. during local development or a multi-world static host).
 // Restricted to a safe path segment — no traversal via the query string.
 function resolveAppId(): string {
-  const requested = new URLSearchParams(window.location.search).get('app');
+  const requested = new URLSearchParams(window.location.search).get('world');
   return requested && /^[a-zA-Z0-9_-]+$/.test(requested) ? requested : 'demo';
 }
 
 async function bootstrap(): Promise<void> {
   const appId = resolveAppId();
-  const appManifest = validateAppManifest(await fetchJson(`apps/${appId}/app-manifest.json`));
+  const appManifest = validateAppManifest(await fetchJson(`worlds/${appId}/world.json`));
 
   // Only islamic/hebrew calendars pull in @js-temporal/polyfill (a sizable
   // dependency); kick the load off now so it runs in parallel with the
   // fetches below, and await it right before the first consumer needs it.
   const calendarSystemLoaded = ensureCalendarSystemLoaded(appManifest.calendar.system ?? 'gregorian');
 
-  const strings = await loadStrings(appManifest.strings ? `apps/${appId}/${appManifest.strings}` : undefined);
+  const strings = await loadStrings(appManifest.strings ? `worlds/${appId}/${appManifest.strings}` : undefined);
 
   await activatePlugins(appManifest.plugins, strings);
 
   const loadedLayers: LoadedLayer[] = await Promise.all(
     appManifest.dataLayers.map(async (layerPath): Promise<LoadedLayer> => {
-      const manifest: LayerManifest = validateLayerManifest(await fetchJson(`apps/${appId}/${layerPath}`));
+      const manifest: LayerManifest = validateLayerManifest(await fetchJson(`worlds/${appId}/${layerPath}`));
       const features: GeoFeature[] = await fetchFeatures(manifest.source);
       return { manifest, features };
     }),

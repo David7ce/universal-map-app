@@ -5,33 +5,33 @@ import { resolve } from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
 
 /**
- * `apps/` (app manifests, layer manifests, strings, and .geojson data — see
- * design spec Section 10) lives at the project root, sibling to `src/`, not
- * inside `publicDir` (this repo has no `public/` directory). Vite's dev
+ * `worlds/` (world manifests, layer manifests, strings, and .geojson data —
+ * see design spec Section 10) lives at the project root, sibling to `src/`,
+ * not inside `publicDir` (this repo has no `public/` directory). Vite's dev
  * server happens to serve any file under the project root, so
- * `fetch('/apps/demo/...')` works fine under `npm run dev` — but the
+ * `fetch('/worlds/demo/...')` works fine under `npm run dev` — but the
  * production build only emits the bundled module graph plus a copy of
- * `publicDir`, so `apps/` is otherwise absent from `dist/` and every one of
+ * `publicDir`, so `worlds/` is otherwise absent from `dist/` and every one of
  * `main.ts`'s runtime `fetch()` calls 404s once deployed as a static site.
- * This plugin copies `apps/` into the build output directory after the
- * bundle is written, without requiring a new dependency or moving `apps/`
+ * This plugin copies `worlds/` into the build output directory after the
+ * bundle is written, without requiring a new dependency or moving `worlds/`
  * out of the documented folder structure.
  */
-function copyAppsDirPlugin(): Plugin {
+function copyWorldsDirPlugin(): Plugin {
   let rootDir = process.cwd();
   let outDir = 'dist';
 
   return {
-    name: 'copy-apps-dir',
+    name: 'copy-worlds-dir',
     apply: 'build',
     configResolved(resolvedConfig) {
       rootDir = resolvedConfig.root;
       outDir = resolvedConfig.build.outDir;
     },
     async closeBundle() {
-      const srcDir = resolve(rootDir, 'apps');
+      const srcDir = resolve(rootDir, 'worlds');
       if (!existsSync(srcDir)) return;
-      const destDir = resolve(rootDir, outDir, 'apps');
+      const destDir = resolve(rootDir, outDir, 'worlds');
       await cp(srcDir, destDir, { recursive: true });
     },
   };
@@ -44,7 +44,7 @@ export default defineConfig({
   // hardcoding the repo name — same build also works served from a domain
   // root or any other subpath.
   base: './',
-  plugins: [copyAppsDirPlugin()],
+  plugins: [copyWorldsDirPlugin()],
   test: {
     environment: 'node',
   },
