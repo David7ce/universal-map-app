@@ -57,7 +57,20 @@ export function featureMatchesFilters(
   return true;
 }
 
-export function computeTaxonomyDimensions(layers: LoadedLayer[], date: Date): TaxonomyDimension[] {
+export function isFeatureVisibleOn(date: Date | null, feature: GeoFeature): boolean {
+  return date === null || isActiveOn(feature, date);
+}
+
+export function filterActiveFeatures(
+  features: GeoFeature[],
+  date: Date | null,
+  manifest: LayerManifest,
+  activeFilters: Record<string, Set<string>>,
+): GeoFeature[] {
+  return features.filter((f) => isFeatureVisibleOn(date, f) && featureMatchesFilters(f, manifest, activeFilters));
+}
+
+export function computeTaxonomyDimensions(layers: LoadedLayer[], date: Date | null): TaxonomyDimension[] {
   const dimensions = new Map<string, TaxonomyDimension>();
 
   for (const layer of layers) {
@@ -73,7 +86,7 @@ export function computeTaxonomyDimensions(layers: LoadedLayer[], date: Date): Ta
       const counts = new Map(bucket.values.map((v) => [v.value, v.count]));
 
       for (const feature of layer.features) {
-        if (!isActiveOn(feature, date)) continue;
+        if (!isFeatureVisibleOn(date, feature)) continue;
         for (const value of readField(feature, dim.field)) {
           counts.set(value, (counts.get(value) ?? 0) + 1);
         }

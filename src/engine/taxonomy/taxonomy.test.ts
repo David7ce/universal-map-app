@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { computeTaxonomyDimensions, featureMatchesFilters, type LoadedLayer } from './compute-dimensions';
+import { computeTaxonomyDimensions, featureMatchesFilters, filterActiveFeatures, type LoadedLayer } from './compute-dimensions';
 import { getTriState, toggleAll } from './tri-state';
 import type { LayerManifest } from '../manifests/layer-manifest';
 import type { GeoFeature } from '../time/temporal-types';
@@ -44,6 +44,17 @@ describe('computeTaxonomyDimensions', () => {
 
   it('includes instant-matched features on their exact date', () => {
     const dims = computeTaxonomyDimensions([layer()], new Date('2020-01-01T00:00:00Z'));
+    const category = dims[0];
+    expect(category.values).toEqual(
+      expect.arrayContaining([
+        { value: 'shop', count: 2 },
+        { value: 'market', count: 1 },
+      ]),
+    );
+  });
+
+  it('counts every feature, ignoring temporal fields, when date is null', () => {
+    const dims = computeTaxonomyDimensions([layer()], null);
     const category = dims[0];
     expect(category.values).toEqual(
       expect.arrayContaining([
@@ -132,5 +143,37 @@ describe('featureMatchesFilters', () => {
   it('ignores activeFilters keys for dimensions the layer does not declare', () => {
     const activeFilters = { unrelatedDimension: new Set(['x']) };
     expect(featureMatchesFilters(feature({ category: 'shop' }), manifest, activeFilters)).toBe(true);
+  });
+});
+
+describe('filterActiveFeatures', () => {
+  const manifest: LayerManifest = {
+    id: 'poi',
+    title: 'POI',
+    kind: 'point',
+    source: { type: 'geojson', url: '/x' },
+    taxonomy: [{ id: 'category', label: 'Category', field: 'properties.category' }],
+  };
+
+  function feature(id: string, properties: Record<string, unknown>): GeoFeature {
+    return { type: 'Feature', id, properties, geometry: { type: 'Point', coordinates: [0, 0] } };
+  }
+
+  it('excludes a feature outside its temporal range on a real date', () => {
+    const features = [feature('1', { category: 'shop', temporal: { instant: '2020-01-01' } })];
+    const result = filterActiveFeatures(features, new Date('2026-01-01T00:00:00Z'), manifest, {});
+    expect(result).toEqual([]);
+  });
+
+  it('includes every feature regardless of temporal fields when date is null', () => {
+    const features = [feature('1', { category: 'shop', temporal: { instant: '2020-01-01' } })];
+    const result = filterActiveFeatures(features, null, manifest, {});
+    expect(result.map((f) => f.id)).toEqual(['1']);
+  });
+
+  it('still applies activeFilters when date is null', () => {
+    const features = [feature('1', { category: 'shop' }), feature('2', { category: 'market' })];
+    const result = filterActiveFeatures(features, null, manifest, { category: new Set(['market']) });
+    expect(result.map((f) => f.id)).toEqual(['2']);
   });
 });
