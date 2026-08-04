@@ -16,7 +16,7 @@ import { mountAppChrome } from './ui/app-chrome';
 import { ensureCalendarSystemLoaded } from './engine/time/calendar-conversion';
 import type { GeoFeature } from './engine/time/temporal-types';
 import type { LoadedLayer } from './engine/taxonomy/compute-dimensions';
-import { registerParticipatePlugin } from '../plugins/participate';
+import { activatePlugins } from './engine/plugins/activate';
 
 async function fetchJson(url: string): Promise<unknown> {
   const response = await fetch(url);
@@ -45,9 +45,7 @@ async function bootstrap(): Promise<void> {
 
   const strings = await loadStrings(appManifest.strings ? `apps/${appId}/${appManifest.strings}` : undefined);
 
-  if (appManifest.plugins?.participate) {
-    registerParticipatePlugin(appManifest.plugins.participate, strings);
-  }
+  await activatePlugins(appManifest.plugins, strings);
 
   const loadedLayers: LoadedLayer[] = await Promise.all(
     appManifest.dataLayers.map(async (layerPath): Promise<LoadedLayer> => {

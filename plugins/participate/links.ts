@@ -1,4 +1,4 @@
-import type { ParticipateConfig } from '../../src/engine/manifests/app-manifest';
+import type { ParticipateConfig } from './index';
 
 export function buildParticipateUrl(config: ParticipateConfig, context: { date: string }): string {
   const message = config.messageTemplate.replace('{{date}}', context.date);

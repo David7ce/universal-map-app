@@ -134,24 +134,23 @@ describe('validateAppManifest', () => {
     expect(() => validateAppManifest({ ...valid, strings: 42 })).toThrow(/strings/);
   });
 
-  it('accepts a valid plugins.participate config', () => {
-    const withParticipate = {
+  it('accepts an open plugins bag without inspecting its contents', () => {
+    const withPlugins = {
       ...valid,
-      plugins: { participate: { channel: 'email', target: 'a@b.com', messageTemplate: 'Hi {{date}}' } },
+      plugins: { participate: { channel: 'email', target: 'a@b.com', messageTemplate: 'Hi {{date}}' }, other: 42 },
     };
-    expect(validateAppManifest(withParticipate)).toEqual(withParticipate);
+    expect(validateAppManifest(withPlugins)).toEqual(withPlugins);
   });
 
-  it('rejects an invalid plugins.participate.channel', () => {
-    const invalid = {
-      ...valid,
-      plugins: { participate: { channel: 'carrier-pigeon', target: 'a@b.com', messageTemplate: 'Hi' } },
-    };
-    expect(() => validateAppManifest(invalid)).toThrow(/plugins\.participate\.channel/);
+  it('rejects a "plugins" that is an array', () => {
+    expect(() => validateAppManifest({ ...valid, plugins: [] })).toThrow(/plugins/);
   });
 
-  it('rejects a missing plugins.participate.target', () => {
-    const invalid = { ...valid, plugins: { participate: { channel: 'email', messageTemplate: 'Hi' } } };
-    expect(() => validateAppManifest(invalid)).toThrow(/plugins\.participate\.target/);
+  it('rejects a "plugins" that is a string', () => {
+    expect(() => validateAppManifest({ ...valid, plugins: 'participate' })).toThrow(/plugins/);
+  });
+
+  it('rejects a "plugins" that is null', () => {
+    expect(() => validateAppManifest({ ...valid, plugins: null })).toThrow(/plugins/);
   });
 });
