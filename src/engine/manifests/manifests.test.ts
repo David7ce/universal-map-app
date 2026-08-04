@@ -153,4 +153,24 @@ describe('validateAppManifest', () => {
   it('rejects a "plugins" that is null', () => {
     expect(() => validateAppManifest({ ...valid, plugins: null })).toThrow(/plugins/);
   });
+
+  it('accepts systems.time true and false', () => {
+    expect(validateAppManifest({ ...valid, systems: { time: true } })).toEqual({ ...valid, systems: { time: true } });
+    expect(validateAppManifest({ ...valid, systems: { time: false } })).toEqual({
+      ...valid,
+      systems: { time: false },
+    });
+  });
+
+  it('accepts a manifest with no "systems" field at all', () => {
+    expect(validateAppManifest(valid)).toEqual(valid);
+  });
+
+  it('rejects a non-boolean systems.time', () => {
+    expect(() => validateAppManifest({ ...valid, systems: { time: 'yes' } })).toThrow(/systems\.time/);
+  });
+
+  it('rejects a "systems" that is not a plain object', () => {
+    expect(() => validateAppManifest({ ...valid, systems: [] })).toThrow(/systems/);
+  });
 });

@@ -18,6 +18,7 @@ export interface AppManifest {
   calendar: { system?: CalendarSystem; default: 'today' | string; min: string; max: string };
   strings?: string;
   plugins?: Record<string, unknown>;
+  systems?: { time?: boolean };
 }
 
 export function validateAppManifest(json: unknown): AppManifest {
@@ -58,6 +59,16 @@ export function validateAppManifest(json: unknown): AppManifest {
   if (obj.plugins !== undefined) {
     if (typeof obj.plugins !== 'object' || obj.plugins === null || Array.isArray(obj.plugins)) {
       throw new Error(`App manifest "${obj.id}" "plugins" must be a plain object mapping plugin id to config`);
+    }
+  }
+
+  if (obj.systems !== undefined) {
+    if (typeof obj.systems !== 'object' || obj.systems === null || Array.isArray(obj.systems)) {
+      throw new Error(`App manifest "${obj.id}" "systems" must be a plain object`);
+    }
+    const systems = obj.systems as Record<string, unknown>;
+    if (systems.time !== undefined && typeof systems.time !== 'boolean') {
+      throw new Error(`App manifest "${obj.id}" "systems.time" must be a boolean`);
     }
   }
 
