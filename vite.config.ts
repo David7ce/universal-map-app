@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import { cp } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
+import { configDefaults } from 'vitest/config';
 
 /**
  * `worlds/` (world manifests, layer manifests, strings, and .geojson data —
@@ -47,5 +48,6 @@ export default defineConfig({
   plugins: [copyWorldsDirPlugin()],
   test: {
     environment: 'node',
+    exclude: [...configDefaults.exclude, '.claude/**'],
   },
 });
