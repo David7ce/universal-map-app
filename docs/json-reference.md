@@ -1,6 +1,6 @@
 # JSON format reference
 
-Field-by-field reference for the three JSON shapes the engine uses: the app manifest, the layer manifest, and the GeoJSON data (with the `temporal` extension). All of these live under `apps/<app-id>/` — see `apps/demo/` as a working reference instance.
+Field-by-field reference for the three JSON shapes the engine uses: the world manifest, the layer manifest, and the GeoJSON data (with the `temporal` extension). All of these live under `worlds/<world-id>/` — see `worlds/demo/` as a working reference instance.
 
 Validated at runtime by `validateAppManifest` (`src/engine/manifests/app-manifest.ts`) and `validateLayerManifest` (`src/engine/manifests/layer-manifest.ts`), which check both required top-level fields and the shape of most optional nested ones (`map.crs`, `plugins.participate`, `regionRole`, `temporal.defaultVisibility`, `taxonomy` entries, `panel`/`infoFields`). `docs/schemas/*.schema.json` has the same shapes as JSON Schema, for editor autocomplete while authoring.
 
@@ -8,9 +8,9 @@ See `docs/api-reference.md` for the internal function/module API (not the JSON f
 
 ---
 
-## `app-manifest.json`
+## `world.json`
 
-One object per app instance, referenced from `src/main.ts` (currently with the path `/apps/demo/app-manifest.json` hardcoded — see "Add a new app instance" in `README.md`).
+One object per world instance, referenced from `src/main.ts` (currently with the path `/worlds/demo/world.json` hardcoded — see "Add a new world instance" in `README.md`).
 
 | Field                           | Type                                               | Required                                                          | Description                                                                                                                                                                                                                                                                                |
 | ------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

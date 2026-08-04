@@ -13,15 +13,15 @@ Open the printed local URL. No backend, no paid services — `pnpm build` produc
 
     pnpm test
 
-## Add a new app instance
+## Add a new world instance
 
-1. Create a new folder under `apps/<your-app-id>/`.
-2. Add an `app-manifest.json` (see `apps/demo/app-manifest.json` for the shape).
-3. Add one `*.layer.json` per data layer under `apps/<your-app-id>/layers/`, and the matching GeoJSON under `apps/<your-app-id>/data/`.
+1. Create a new folder under `worlds/<your-world-id>/`.
+2. Add a `world.json` (see `worlds/demo/world.json` for the shape).
+3. Add one `*.layer.json` per data layer under `worlds/<your-world-id>/layers/`, and the matching GeoJSON under `worlds/<your-world-id>/data/`.
 4. Optionally add `strings.json` for your own UI text, and a `plugins` block to activate `participate`.
-5. Load it with `?app=<your-app-id>` in the URL (e.g. `http://localhost:5173/?app=my-app`), or leave the query param off to get `apps/demo/` by default. Full multi-app routing (an app switcher UI, per-app subdomains, etc.) is still intentionally out of scope for v1 (see the design spec's non-goals) — this is just a static id lookup, resolved once at page load.
+5. Load it with `?world=<your-world-id>` in the URL (e.g. `http://localhost:5173/?world=my-world`), or leave the query param off to get `worlds/demo/` by default. Full multi-world routing (a world switcher UI, per-world subdomains, etc.) is still intentionally out of scope for v1 (see the design spec's non-goals) — this is just a static id lookup, resolved once at page load.
 
-No engine code under `src/engine/` needs to change to add a new app instance.
+No engine code under `src/engine/` needs to change to add a new world instance.
 
 ## Isochrone (travel-time) layers
 

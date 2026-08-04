@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## `apps/` renamed to `worlds/`, `app-manifest.json` to `world.json`
+
+Pure rename, no behavior change — `worlds/<id>/` and `worlds/<id>/world.json` replace `apps/<id>/` and `apps/<id>/app-manifest.json`, and the URL switcher is now `?world=<id>` instead of `?app=<id>`. Matches the vocabulary `feature-request-world-def.md`'s "World Definition Package System" is specified in; this is sub-project 1 of that effort (see `docs/superpowers/specs/2026-08-04-worlds-rename-design.md`). Internal TypeScript naming (`AppManifest`, `validateAppManifest()`, `appManifest.ts`, `resolveAppId()`) deliberately stays as-is — external rename only, hard cutover, no alias for the old paths.
+
 ## Generic, manifest-driven plugin activation
 
 Replaced the hardcoded `if (appManifest.plugins?.participate) registerParticipatePlugin(...)` in `src/main.ts` with a generic activation path (design: `docs/superpowers/specs/2026-08-04-plugin-registry-design.md`). `AppManifest.plugins` is now an open `Record<string, unknown>` — `validateAppManifest` only checks it's a plain object, it no longer knows what any plugin id means. Every `plugins/<id>/index.ts` exports a default `register(config: unknown, strings: Record<string, string>): void` responsible for validating its own config and calling `registerPlugin`; `plugins/participate/index.ts` now owns `ParticipateConfig` and its validation (moved out of `app-manifest.ts`, same error messages). New `src/engine/plugins/activate.ts` (`activatePlugins`) does id → module lookup via `import.meta.glob('/plugins/*/index.ts')`, throwing a named error for a manifest id with no matching plugin folder — a plugin folder that isn't shipped is a configuration bug, not a silently-degraded state. Adding a second plugin now requires zero edits to `main.ts` or the manifest validator.
