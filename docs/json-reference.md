@@ -60,7 +60,7 @@ GeoJSON data is always WGS84 lon/lat regardless of `map.crs` — Leaflet reproje
 
 ## `layer.json`
 
-One file per data layer, referenced from `app-manifest.json`'s `dataLayers`.
+One file per data layer, referenced from `world.json`'s `dataLayers`.
 
 | Field                        | Type                                                        | Required | Description                                                                                                                                                                                                                                          |
 | ---------------------------- | ----------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -184,10 +184,10 @@ Not supported: `BYSETPOS`, `BYMONTHDAY`, or the rest of RFC 5545.
 
 ## `strings.json`
 
-Flat dictionary `{ "dotted.key": "text" }`, loaded by `loadStrings()` (`src/ui/strings.ts`) from the path given in `app-manifest.json`'s `strings`. Consumed via `t(key, strings, params?)`:
+Flat dictionary `{ "dotted.key": "text" }`, loaded by `loadStrings()` (`src/ui/strings.ts`) from the path given in `world.json`'s `strings`. Consumed via `t(key, strings, params?)`:
 
 - If the key isn't in the dictionary, `t()` returns the key itself as-is (silent fallback — handy during development, but means a misspelled key gives no warning).
-- `params` (optional) interpolates `{paramName}` inside the resolved text (or inside the key, if it fell back) — see `apps/demo/strings.json` for the full list of keys the engine currently uses (`search.*`, `filters.*`, `layerControl.*`, `calendar.*`, `participate.*`, `info.*`, `temporalStatus.*`, `selection.*`).
+- `params` (optional) interpolates `{paramName}` inside the resolved text (or inside the key, if it fell back) — see `worlds/demo/strings.json` for the full list of keys the engine currently uses (`search.*`, `filters.*`, `layerControl.*`, `calendar.*`, `participate.*`, `info.*`, `temporalStatus.*`, `selection.*`).
 
 ---
 

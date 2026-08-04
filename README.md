@@ -1,6 +1,6 @@
 # Universal Map-Time Engine
 
-A static, browser-only map (OpenStreetMap + Leaflet) with a Gregorian calendar as an equal first-class dimension. See `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the full design, `docs/json-reference.md` for a field-by-field reference of `app-manifest.json`, `layer.json`, `strings.json`, and the GeoJSON+`temporal` data format (`docs/schemas/*.schema.json` has the same shapes as JSON Schema, for editor autocomplete — add `"$schema": "../../docs/schemas/app-manifest.schema.json"` (adjust the relative path) to your own manifest files to pick it up), `docs/api-reference.md` for the internal function/module API, `CHANGELOG.md` for what's shipped beyond v1, and `ROADMAP.md` for what's next.
+A static, browser-only map (OpenStreetMap + Leaflet) with a Gregorian calendar as an equal first-class dimension. See `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the full design, `docs/json-reference.md` for a field-by-field reference of `world.json`, `layer.json`, `strings.json`, and the GeoJSON+`temporal` data format (`docs/schemas/*.schema.json` has the same shapes as JSON Schema, for editor autocomplete — add `"$schema": "../../docs/schemas/world.schema.json"` (adjust the relative path) to your own manifest files to pick it up), `docs/api-reference.md` for the internal function/module API, `CHANGELOG.md` for what's shipped beyond v1, and `ROADMAP.md` for what's next.
 
 ## Run locally
 
@@ -25,7 +25,7 @@ No engine code under `src/engine/` needs to change to add a new world instance.
 
 ## Isochrone (travel-time) layers
 
-There's no dedicated `kind` for isochrones — precompute the polygons with whatever routing tool fits your data (routing engines/APIs, GIS tools, etc.) and ship them as a normal `kind: "polygon"` layer, exactly like `apps/demo/layers/regions.layer.json`. Each isochrone gets `properties.temporal` if it should only apply on certain dates, and any `taxonomy` field (e.g. travel time bucket) like any other layer. This needs no engine code — the same reasoning that makes administrative regions "just temporal geometry" applies here. A layer that computes isochrones live (e.g. on click) would need an external routing service, which is out of scope for this static, no-backend engine.
+There's no dedicated `kind` for isochrones — precompute the polygons with whatever routing tool fits your data (routing engines/APIs, GIS tools, etc.) and ship them as a normal `kind: "polygon"` layer, exactly like `worlds/demo/layers/regions.layer.json`. Each isochrone gets `properties.temporal` if it should only apply on certain dates, and any `taxonomy` field (e.g. travel time bucket) like any other layer. This needs no engine code — the same reasoning that makes administrative regions "just temporal geometry" applies here. A layer that computes isochrones live (e.g. on click) would need an external routing service, which is out of scope for this static, no-backend engine.
 
 ## Recently shipped beyond the original v1 scope
 
