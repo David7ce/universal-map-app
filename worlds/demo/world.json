@@ -1,5 +1,5 @@
 {
-  "$schema": "../../docs/schemas/app-manifest.schema.json",
+  "$schema": "../../docs/schemas/world.schema.json",
   "id": "demo",
   "title": "Universal Map Demo",
   "map": { "center": [28.29, -16.62], "zoom": 12 },

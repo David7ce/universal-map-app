@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://universal-map-app/schemas/app-manifest.schema.json",
-  "title": "Universal Map app-manifest.json",
+  "$id": "https://universal-map-app/schemas/world.schema.json",
+  "title": "Universal Map world.json",
   "description": "See docs/json-reference.md for the full field-by-field reference. Mirrors the runtime checks in src/engine/manifests/app-manifest.ts (validateAppManifest) - keep both in sync when either changes.",
   "type": "object",
   "required": ["id", "baseLayers", "dataLayers", "calendar"],
