@@ -21,6 +21,7 @@
 ### Task 1: Move the filesystem, update path literals inside the moved files
 
 **Files:**
+
 - Move: `apps/` -> `worlds/` (`git mv`)
 - Move: `worlds/demo/app-manifest.json` -> `worlds/demo/world.json` (`git mv`, after the directory move above)
 - Move: `docs/schemas/app-manifest.schema.json` -> `docs/schemas/world.schema.json` (`git mv`)
@@ -43,52 +44,67 @@ git mv docs/schemas/app-manifest.schema.json docs/schemas/world.schema.json
 - [ ] **Step 2: Update `worlds/demo/world.json`'s `$schema` pointer**
 
 Current content (first line only needs to change):
+
 ```json
 {
   "$schema": "../../docs/schemas/app-manifest.schema.json",
   "id": "demo",
 ```
+
 Change the `$schema` line to:
+
 ```json
   "$schema": "../../docs/schemas/world.schema.json",
 ```
+
 Nothing else in this file changes — `id`, `title`, `map`, `baseLayers`, `dataLayers`, `calendar`, `strings`, `plugins` all stay exactly as they are.
 
 - [ ] **Step 3: Update the three layer files' `source.url`**
 
 `worlds/demo/layers/poi.layer.json` and `worlds/demo/layers/heatmap.layer.json` both currently have:
+
 ```json
   "source": { "type": "geojson", "url": "apps/demo/data/poi.geojson" },
 ```
+
 Change to:
+
 ```json
   "source": { "type": "geojson", "url": "worlds/demo/data/poi.geojson" },
 ```
 
 `worlds/demo/layers/regions.layer.json` currently has:
+
 ```json
   "source": { "type": "geojson", "url": "apps/demo/data/regions.geojson" },
 ```
+
 Change to:
+
 ```json
   "source": { "type": "geojson", "url": "worlds/demo/data/regions.geojson" },
 ```
+
 Every other field in all three layer files (`id`, `title`, `kind`, `temporal`, `taxonomy`, `regionRole`, `style`, `panel`, and each file's own `$schema` — which stays `"../../../docs/schemas/layer.schema.json"`, unchanged, since `apps`->`worlds` doesn't change path depth) is untouched.
 
 - [ ] **Step 4: Update `docs/schemas/world.schema.json`'s title**
 
 Current (lines 3-5):
+
 ```json
   "$id": "https://universal-map-app/schemas/app-manifest.schema.json",
   "title": "Universal Map app-manifest.json",
   "description": "See docs/json-reference.md for the full field-by-field reference. Mirrors the runtime checks in src/engine/manifests/app-manifest.ts (validateAppManifest) - keep both in sync when either changes.",
 ```
+
 Change to:
+
 ```json
   "$id": "https://universal-map-app/schemas/world.schema.json",
   "title": "Universal Map world.json",
   "description": "See docs/json-reference.md for the full field-by-field reference. Mirrors the runtime checks in src/engine/manifests/app-manifest.ts (validateAppManifest) - keep both in sync when either changes.",
 ```
+
 Note: the description's reference to `app-manifest.ts`/`validateAppManifest` is correct and unchanged — those internal names are not renamed (Global Constraints). Every other field in this schema file (the `properties` object, `definitions`, etc.) is untouched — this task only touches the three lines above.
 
 - [ ] **Step 5: Verify the moves and edits**
@@ -111,16 +127,19 @@ git commit -m "refactor: move apps/ to worlds/, app-manifest.json to world.json"
 ### Task 2: Update `src/main.ts` and `vite.config.ts` to read/copy the new paths
 
 **Files:**
+
 - Modify: `src/main.ts:29-52`
 - Modify: `vite.config.ts` (whole file — it's 51 lines, small enough to show in full)
 
 **Interfaces:**
+
 - Consumes: `worlds/demo/world.json` and `worlds/demo/layers/*.layer.json` existing at their new paths (Task 1).
-- Produces: nothing new — `resolveAppId()`, `bootstrap()`, and `copyAppsDirPlugin()` keep their existing names/signatures, per Global Constraints. No other file in the codebase calls these differently after this task.
+- Produces: nothing new — `resolveAppId()` and `bootstrap()` keep their existing names/signatures, per Global Constraints. No other file in the codebase calls these differently after this task.
 
 - [ ] **Step 1: Update `src/main.ts`'s comment, query param, and path literals**
 
 Current (lines 29-52):
+
 ```ts
 // Which `apps/<id>/` instance to load. Defaults to "demo"; override with
 // `?app=<id>` (e.g. during local development or a multi-app static host).
@@ -153,6 +172,7 @@ async function bootstrap(): Promise<void> {
 ```
 
 Change to:
+
 ```ts
 // Which `worlds/<id>/` instance to load. Defaults to "demo"; override with
 // `?world=<id>` (e.g. during local development or a multi-world static host).
@@ -279,6 +299,7 @@ git commit -m "refactor: read worlds/<id>/world.json and ?world= in main.ts, vit
 ### Task 3: Update forward-looking docs, add a CHANGELOG entry
 
 **Files:**
+
 - Modify: `README.md:16-24`
 - Modify: `docs/json-reference.md:3,5,11,13`
 - Modify: `CHANGELOG.md` (add a new entry — do not touch any existing entry)
@@ -288,6 +309,7 @@ git commit -m "refactor: read worlds/<id>/world.json and ?world= in main.ts, vit
 - [ ] **Step 1: Update `README.md`'s "Add a new app instance" section**
 
 Current (lines 16-24):
+
 ```markdown
 ## Add a new app instance
 
@@ -301,6 +323,7 @@ No engine code under `src/engine/` needs to change to add a new app instance.
 ```
 
 Change to:
+
 ```markdown
 ## Add a new world instance
 
@@ -316,28 +339,37 @@ No engine code under `src/engine/` needs to change to add a new world instance.
 - [ ] **Step 2: Update `docs/json-reference.md`'s intro and `world.json` heading**
 
 Current (line 3):
+
 ```markdown
 Field-by-field reference for the three JSON shapes the engine uses: the app manifest, the layer manifest, and the GeoJSON data (with the `temporal` extension). All of these live under `apps/<app-id>/` — see `apps/demo/` as a working reference instance.
 ```
+
 Change to:
+
 ```markdown
 Field-by-field reference for the three JSON shapes the engine uses: the world manifest, the layer manifest, and the GeoJSON data (with the `temporal` extension). All of these live under `worlds/<world-id>/` — see `worlds/demo/` as a working reference instance.
 ```
 
 Current (line 11):
+
 ```markdown
 ## `app-manifest.json`
 ```
+
 Change to:
+
 ```markdown
 ## `world.json`
 ```
 
 Current (line 13):
+
 ```markdown
 One object per app instance, referenced from `src/main.ts` (currently with the path `/apps/demo/app-manifest.json` hardcoded — see "Add a new app instance" in `README.md`).
 ```
+
 Change to:
+
 ```markdown
 One object per world instance, referenced from `src/main.ts` (currently with the path `/worlds/demo/world.json` hardcoded — see "Add a new world instance" in `README.md`).
 ```

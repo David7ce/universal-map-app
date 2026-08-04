@@ -29,7 +29,7 @@ There's no dedicated `kind` for isochrones — precompute the polygons with what
 
 ## Recently shipped beyond the original v1 scope
 
-- Multi-calendar display support for Gregorian, Julian, Islamic, and Hebrew calendars via `calendar.system` in the app manifest.
+- Multi-calendar display support for Gregorian, Julian, Islamic, and Hebrew calendars via `calendar.system` in `world.json`.
 - Multi-projection map display support for `EPSG:3857`, `EPSG:4326`, and custom CRS definitions via `map.crs`.
 - Calendar bar refinements with day/week/month/year granularity and a range slider, plus richer selection-card info rendering for links, images, and coordinates.
 
