@@ -19,7 +19,7 @@ export interface MapAdapter {
     id: string,
     manifest: LayerManifest,
     features: GeoFeature[],
-    date: Date,
+    date: Date | null,
     activeFilters: Record<string, Set<string>>,
     onFeatureClick?: (feature: GeoFeature) => void,
   ): void;

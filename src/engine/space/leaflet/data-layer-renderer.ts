@@ -3,19 +3,18 @@ import 'leaflet.markercluster';
 import 'leaflet.heat';
 import type { GeoFeature } from '../../time/temporal-types';
 import type { LayerManifest } from '../../manifests/layer-manifest';
-import { isActiveOn } from '../../time/is-active-on';
-import { featureMatchesFilters, readField } from '../../taxonomy/compute-dimensions';
+import { filterActiveFeatures, readField } from '../../taxonomy/compute-dimensions';
 import { resolveMarkerStyle, resolvePolygonStyle, resolveTaxonomyIcon } from '../style';
 
 export function renderDataLayer(
   map: L.Map,
   manifest: LayerManifest,
   features: GeoFeature[],
-  date: Date,
+  date: Date | null,
   activeFilters: Record<string, Set<string>> = {},
   onFeatureClick?: (feature: GeoFeature) => void,
 ): L.Layer {
-  const active = features.filter((f) => isActiveOn(f, date) && featureMatchesFilters(f, manifest, activeFilters));
+  const active = filterActiveFeatures(features, date, manifest, activeFilters);
 
   if (manifest.kind === 'heatmap') {
     // leaflet.heat wants [lat, lng] points, the opposite order from GeoJSON

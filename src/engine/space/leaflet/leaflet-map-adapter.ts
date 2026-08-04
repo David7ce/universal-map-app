@@ -14,7 +14,7 @@ import { mountCoordinateGrid } from './coordinate-grid-layer';
 interface RenderedLayerParams {
   manifest: LayerManifest;
   features: GeoFeature[];
-  date: Date;
+  date: Date | null;
   activeFilters: Record<string, Set<string>>;
   onFeatureClick?: (feature: GeoFeature) => void;
 }
