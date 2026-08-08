@@ -8,12 +8,12 @@ The engine should be able to load different thematic experiences from external "
 
 A World Definition Package describes:
 
-* what data exists;
-* what systems are enabled;
-* how layers are displayed;
-* what temporal models are used;
-* what plugins are active;
-* what rules affect visibility or behaviour.
+- what data exists;
+- what systems are enabled;
+- how layers are displayed;
+- what temporal models are used;
+- what plugins are active;
+- what rules affect visibility or behaviour.
 
 The engine provides the capabilities.
 The world package provides the content.
@@ -26,11 +26,11 @@ A world is not an application.
 
 A world is a declarative description of:
 
-* space;
-* time;
-* entities;
-* information layers;
-* visualization rules.
+- space;
+- time;
+- entities;
+- information layers;
+- visualization rules.
 
 Architecture:
 
@@ -118,21 +118,12 @@ Example:
 
   "calendar": {
     "default": "gregorian",
-    "available": [
-      "gregorian",
-      "julian"
-    ]
+    "available": ["gregorian", "julian"]
   },
 
-  "layers": [
-    "cities",
-    "borders",
-    "roads"
-  ],
+  "layers": ["cities", "borders", "roads"],
 
-  "plugins": [
-    "historical-events"
-  ]
+  "plugins": ["historical-events"]
 }
 ```
 
@@ -157,10 +148,7 @@ Example:
   },
 
   "visibility": {
-    "timeRange": [
-      -753,
-      476
-    ]
+    "timeRange": [-753, 476]
   }
 }
 ```
@@ -179,10 +167,10 @@ Existing loader architecture should be reused.
 
 Supported sources:
 
-* GeoJSON;
-* JSON;
-* external APIs;
-* future database adapters.
+- GeoJSON;
+- JSON;
+- external APIs;
+- future database adapters.
 
 Interface:
 
@@ -208,10 +196,7 @@ Example:
 {
   "condition": {
     "year": {
-      "between": [
-        0,
-        500
-      ]
+      "between": [0, 500]
     }
   },
 
@@ -223,10 +208,10 @@ Example:
 
 Future rules may control:
 
-* visibility;
-* styling;
-* filtering;
-* temporal behaviour.
+- visibility;
+- styling;
+- filtering;
+- temporal behaviour.
 
 ---
 
@@ -257,12 +242,12 @@ Reuse existing plugin registry.
 
 The engine must:
 
-* load a world package;
-* validate the definition;
-* initialize enabled systems;
-* load data sources;
-* register plugins;
-* create the application instance.
+- load a world package;
+- validate the definition;
+- initialize enabled systems;
+- load data sources;
+- register plugins;
+- create the application instance.
 
 The engine must not contain world-specific knowledge.
 
@@ -308,12 +293,12 @@ worlds/demo/
 
 Reuse:
 
-* app manifests;
-* layer manifests;
-* loader registry;
-* plugin registry;
-* calendar engine;
-* map adapters.
+- app manifests;
+- layer manifests;
+- loader registry;
+- plugin registry;
+- calendar engine;
+- map adapters.
 
 ---
 

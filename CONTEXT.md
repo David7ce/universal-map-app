@@ -8,12 +8,12 @@ It should be treated as a **spatio-temporal engine with a web interface**.
 
 The long-term vision is to build a platform combining:
 
-* Geographic space
-* Time systems
-* Cultural calendars
-* Data layers
-* Extensible plugins
-* Multiple visualization targets
+- Geographic space
+- Time systems
+- Cultural calendars
+- Data layers
+- Extensible plugins
+- Multiple visualization targets
 
 The application is a manifestation of the engine, not the other way around.
 
@@ -39,9 +39,9 @@ The UI should consume capabilities from the engine.
 
 Avoid designs where:
 
-* Leaflet logic leaks into domain models.
-* UI components contain business rules.
-* Data formats dictate core architecture.
+- Leaflet logic leaks into domain models.
+- UI components contain business rules.
+- Data formats dictate core architecture.
 
 ---
 
@@ -72,13 +72,13 @@ The engine represents the internal world model.
 
 Examples:
 
-* Coordinate systems
-* Map projections
-* Calendar calculations
-* Spatial relationships
-* Data loading
-* Plugin registration
-* Application state
+- Coordinate systems
+- Map projections
+- Calendar calculations
+- Spatial relationships
+- Data loading
+- Plugin registration
+- Application state
 
 ---
 
@@ -102,11 +102,11 @@ Leaflet Implementation
 
 Future possible adapters:
 
-* WebGL renderer
-* Desktop renderer
-* Mobile renderer
-* 3D globe renderer
-* WebAssembly accelerated modules
+- WebGL renderer
+- Desktop renderer
+- Mobile renderer
+- 3D globe renderer
+- WebAssembly accelerated modules
 
 ---
 
@@ -118,21 +118,21 @@ Do not treat dates as simple JavaScript Date objects.
 
 The system should support concepts such as:
 
-* Multiple calendar systems
-* Calendar conversion
-* Historical dates
-* Recurring events
-* Cultural representations of time
+- Multiple calendar systems
+- Calendar conversion
+- Historical dates
+- Recurring events
+- Cultural representations of time
 
 Possible future systems:
 
-* Gregorian
-* Julian
-* Islamic
-* Hebrew
-* Persian
-* Chinese
-* Other cultural calendars
+- Gregorian
+- Julian
+- Islamic
+- Hebrew
+- Persian
+- Chinese
+- Other cultural calendars
 
 ---
 
@@ -156,10 +156,10 @@ instead of hardcoding every feature.
 
 New capabilities should ideally be introduced through:
 
-* plugins
-* manifests
-* data layers
-* extensions
+- plugins
+- manifests
+- data layers
+- extensions
 
 ---
 
@@ -189,19 +189,19 @@ Avoid coupling features directly to code when configuration is enough.
 
 ## Prefer:
 
-* Small focused modules.
-* Explicit interfaces.
-* Strong typing.
-* Tests for algorithms.
-* Clear domain boundaries.
-* Readable code.
+- Small focused modules.
+- Explicit interfaces.
+- Strong typing.
+- Tests for algorithms.
+- Clear domain boundaries.
+- Readable code.
 
 ## Avoid:
 
-* Premature frameworks.
-* Adding dependencies without necessity.
-* Coupling to vendors.
-* Large abstractions without real use cases.
+- Premature frameworks.
+- Adding dependencies without necessity.
+- Coupling to vendors.
+- Large abstractions without real use cases.
 
 ---
 
@@ -225,19 +225,19 @@ This project is also a learning laboratory.
 
 Important goals:
 
-* Understand algorithms deeply.
-* Understand mathematical foundations.
-* Learn software architecture.
-* Improve programming without depending entirely on AI generation.
+- Understand algorithms deeply.
+- Understand mathematical foundations.
+- Learn software architecture.
+- Improve programming without depending entirely on AI generation.
 
 When possible:
 
 Prefer explaining:
 
-* why a solution works;
-* algorithm complexity;
-* alternative approaches;
-* design trade-offs.
+- why a solution works;
+- algorithm complexity;
+- alternative approaches;
+- design trade-offs.
 
 Do not only provide code.
 
@@ -267,10 +267,10 @@ Examples:
 
 TypeScript remains suitable for:
 
-* UI
-* Application logic
-* Browser integration
-* User interaction
+- UI
+- Application logic
+- Browser integration
+- User interaction
 
 The goal is not rewriting the project.
 

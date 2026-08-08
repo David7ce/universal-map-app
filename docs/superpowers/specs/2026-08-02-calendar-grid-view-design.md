@@ -9,9 +9,9 @@ Replace `CalendarBar.ts`'s plain "Month / Day / Year" text (shown when not in nu
 
 ## 2. Scope decision: single-day selection, no range-based map filtering
 
-`AppState.selectedDate` stays exactly what it is today: one Gregorian ISO date, filtering the map via `isActiveOn(feature, date)` for that one day. Clicking a week/month/year cell sets `selectedDate` to that cell's first day (day 1 of the month/year) — it does **not** make the map show every event across the whole period at once. That would require `isActiveOn` and the map-rendering path to accept a date *range* instead of a single date, a materially bigger change to `src/engine/time/` and `renderDataLayer` touching code well outside this feature's boundary. Explicitly out of scope; noted in Section 6.
+`AppState.selectedDate` stays exactly what it is today: one Gregorian ISO date, filtering the map via `isActiveOn(feature, date)` for that one day. Clicking a week/month/year cell sets `selectedDate` to that cell's first day (day 1 of the month/year) — it does **not** make the map show every event across the whole period at once. That would require `isActiveOn` and the map-rendering path to accept a date _range_ instead of a single date, a materially bigger change to `src/engine/time/` and `renderDataLayer` touching code well outside this feature's boundary. Explicitly out of scope; noted in Section 6.
 
-The numeric year/month/day edit fields (pencil-icon toggle, built last session) are unchanged — they remain the precise-entry fallback. The grid is what renders in their place when *not* editing.
+The numeric year/month/day edit fields (pencil-icon toggle, built last session) are unchanged — they remain the precise-entry fallback. The grid is what renders in their place when _not_ editing.
 
 ## 3. Engine module: `src/engine/time/calendar-grid.ts`
 
@@ -19,23 +19,38 @@ New pure functions, no DOM, no Leaflet — kept in `engine/` per `CONTEXT.md`'s 
 
 ```ts
 export interface CalendarGridDayCell {
-  iso: string;            // Gregorian ISO date this cell represents
-  day: number;             // day-of-month number, in the display calendar system
+  iso: string; // Gregorian ISO date this cell represents
+  day: number; // day-of-month number, in the display calendar system
   inCurrentPeriod: boolean; // false for leading/trailing blanks in a month grid
   hasEvents: boolean;
 }
 
 export interface CalendarGridMonthCell {
-  iso: string;   // Gregorian ISO of day 1 of that month, in the display system
-  month: number;  // 1-based month number, in the display system
+  iso: string; // Gregorian ISO of day 1 of that month, in the display system
+  month: number; // 1-based month number, in the display system
   hasEvents: boolean;
 }
 
-export function buildWeekCells(selectedIso: string, system: CalendarSystem, layers: LoadedLayer[], activeFilters: Record<string, Set<string>>): CalendarGridDayCell[];   // 7 cells, Sunday-start, the week containing selectedIso
+export function buildWeekCells(
+  selectedIso: string,
+  system: CalendarSystem,
+  layers: LoadedLayer[],
+  activeFilters: Record<string, Set<string>>,
+): CalendarGridDayCell[]; // 7 cells, Sunday-start, the week containing selectedIso
 
-export function buildMonthCells(selectedIso: string, system: CalendarSystem, layers: LoadedLayer[], activeFilters: Record<string, Set<string>>): CalendarGridDayCell[];  // full weeks (multiple of 7 cells), leading/trailing blanks for days outside the month
+export function buildMonthCells(
+  selectedIso: string,
+  system: CalendarSystem,
+  layers: LoadedLayer[],
+  activeFilters: Record<string, Set<string>>,
+): CalendarGridDayCell[]; // full weeks (multiple of 7 cells), leading/trailing blanks for days outside the month
 
-export function buildYearCells(selectedIso: string, system: CalendarSystem, layers: LoadedLayer[], activeFilters: Record<string, Set<string>>): CalendarGridMonthCell[]; // 12 cells (13 for a Hebrew leap year)
+export function buildYearCells(
+  selectedIso: string,
+  system: CalendarSystem,
+  layers: LoadedLayer[],
+  activeFilters: Record<string, Set<string>>,
+): CalendarGridMonthCell[]; // 12 cells (13 for a Hebrew leap year)
 ```
 
 Reuses existing `src/engine/time/calendar-conversion.ts` functions built last session: `toCalendarParts` (get the display-system year for a given ISO date), `calendarPartsToIso` (target-system year/month/day → Gregorian ISO for each cell), `daysInCalendarMonth`, `monthsInCalendarYear`. A cell's day-of-week (for month-grid column position) comes from the real underlying Gregorian date (`new Date(iso).getUTCDay()`) — Monday is Monday regardless of which calendar labels the year/month/day, so no per-system weekday logic is needed.

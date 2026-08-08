@@ -22,10 +22,12 @@ Full design: `docs/superpowers/specs/2026-08-04-systems-time-toggle-design.md`.
 ### Task 1: `systems.time` in the app manifest
 
 **Files:**
+
 - Modify: `src/engine/manifests/app-manifest.ts`
 - Test: `src/engine/manifests/manifests.test.ts`
 
 **Interfaces:**
+
 - Produces: `AppManifest.systems?: { time?: boolean }` — read by later tasks as `appManifest.systems?.time !== false`.
 
 - [ ] **Step 1: Write the failing tests**
@@ -33,25 +35,25 @@ Full design: `docs/superpowers/specs/2026-08-04-systems-time-toggle-design.md`.
 Add to `src/engine/manifests/manifests.test.ts`, inside the existing `describe('validateAppManifest', ...)` block (after the `plugins` cases added by the previous spec):
 
 ```ts
-  it('accepts systems.time true and false', () => {
-    expect(validateAppManifest({ ...valid, systems: { time: true } })).toEqual({ ...valid, systems: { time: true } });
-    expect(validateAppManifest({ ...valid, systems: { time: false } })).toEqual({
-      ...valid,
-      systems: { time: false },
-    });
+it('accepts systems.time true and false', () => {
+  expect(validateAppManifest({ ...valid, systems: { time: true } })).toEqual({ ...valid, systems: { time: true } });
+  expect(validateAppManifest({ ...valid, systems: { time: false } })).toEqual({
+    ...valid,
+    systems: { time: false },
   });
+});
 
-  it('accepts a manifest with no "systems" field at all', () => {
-    expect(validateAppManifest(valid)).toEqual(valid);
-  });
+it('accepts a manifest with no "systems" field at all', () => {
+  expect(validateAppManifest(valid)).toEqual(valid);
+});
 
-  it('rejects a non-boolean systems.time', () => {
-    expect(() => validateAppManifest({ ...valid, systems: { time: 'yes' } })).toThrow(/systems\.time/);
-  });
+it('rejects a non-boolean systems.time', () => {
+  expect(() => validateAppManifest({ ...valid, systems: { time: 'yes' } })).toThrow(/systems\.time/);
+});
 
-  it('rejects a "systems" that is not a plain object', () => {
-    expect(() => validateAppManifest({ ...valid, systems: [] })).toThrow(/systems/);
-  });
+it('rejects a "systems" that is not a plain object', () => {
+  expect(() => validateAppManifest({ ...valid, systems: [] })).toThrow(/systems/);
+});
 ```
 
 - [ ] **Step 2: Run tests to verify they fail**
@@ -70,15 +72,15 @@ In `src/engine/manifests/app-manifest.ts`, add to the `AppManifest` interface (a
 Add validation after the existing `plugins` check (which ends with the closing `}` of `if (obj.plugins !== undefined) { ... }`):
 
 ```ts
-  if (obj.systems !== undefined) {
-    if (typeof obj.systems !== 'object' || obj.systems === null || Array.isArray(obj.systems)) {
-      throw new Error(`App manifest "${obj.id}" "systems" must be a plain object`);
-    }
-    const systems = obj.systems as Record<string, unknown>;
-    if (systems.time !== undefined && typeof systems.time !== 'boolean') {
-      throw new Error(`App manifest "${obj.id}" "systems.time" must be a boolean`);
-    }
+if (obj.systems !== undefined) {
+  if (typeof obj.systems !== 'object' || obj.systems === null || Array.isArray(obj.systems)) {
+    throw new Error(`App manifest "${obj.id}" "systems" must be a plain object`);
   }
+  const systems = obj.systems as Record<string, unknown>;
+  if (systems.time !== undefined && typeof systems.time !== 'boolean') {
+    throw new Error(`App manifest "${obj.id}" "systems.time" must be a boolean`);
+  }
+}
 ```
 
 - [ ] **Step 4: Run tests to verify they pass**
@@ -98,10 +100,12 @@ git commit -m "feat: add systems.time to the app manifest"
 ### Task 2: Date-filtering short-circuit in `compute-dimensions.ts`
 
 **Files:**
+
 - Modify: `src/engine/taxonomy/compute-dimensions.ts`
 - Test: `src/engine/taxonomy/taxonomy.test.ts`
 
 **Interfaces:**
+
 - Consumes: `isActiveOn(feature: GeoFeature, date: Date): boolean` from `src/engine/time/is-active-on.ts` (unchanged).
 - Produces:
   - `isFeatureVisibleOn(date: Date | null, feature: GeoFeature): boolean` — `date === null` short-circuits to `true`, otherwise defers to `isActiveOn`. Single source of truth for the "null means unfiltered" rule; Task 3 reuses it.
@@ -113,16 +117,16 @@ git commit -m "feat: add systems.time to the app manifest"
 Add to `src/engine/taxonomy/taxonomy.test.ts`, inside `describe('computeTaxonomyDimensions', ...)`:
 
 ```ts
-  it('counts every feature, ignoring temporal fields, when date is null', () => {
-    const dims = computeTaxonomyDimensions([layer()], null);
-    const category = dims[0];
-    expect(category.values).toEqual(
-      expect.arrayContaining([
-        { value: 'shop', count: 2 },
-        { value: 'market', count: 1 },
-      ]),
-    );
-  });
+it('counts every feature, ignoring temporal fields, when date is null', () => {
+  const dims = computeTaxonomyDimensions([layer()], null);
+  const category = dims[0];
+  expect(category.values).toEqual(
+    expect.arrayContaining([
+      { value: 'shop', count: 2 },
+      { value: 'market', count: 1 },
+    ]),
+  );
+});
 ```
 
 Add a new `describe` block for the new exports, after the `computeTaxonomyDimensions` block:
@@ -164,7 +168,12 @@ describe('filterActiveFeatures', () => {
 Update the top import line of `taxonomy.test.ts` to also pull in `filterActiveFeatures`:
 
 ```ts
-import { computeTaxonomyDimensions, featureMatchesFilters, filterActiveFeatures, type LoadedLayer } from './compute-dimensions';
+import {
+  computeTaxonomyDimensions,
+  featureMatchesFilters,
+  filterActiveFeatures,
+  type LoadedLayer,
+} from './compute-dimensions';
 ```
 
 - [ ] **Step 2: Run tests to verify they fail**
@@ -221,11 +230,13 @@ git commit -m "feat: null-date short-circuit for taxonomy/feature date filtering
 ### Task 3: Thread `Date | null` through the map-rendering path
 
 **Files:**
+
 - Modify: `src/engine/space/leaflet/data-layer-renderer.ts`
 - Modify: `src/engine/space/map-adapter.ts`
 - Modify: `src/engine/space/leaflet/leaflet-map-adapter.ts`
 
 **Interfaces:**
+
 - Consumes: `filterActiveFeatures` and `isFeatureVisibleOn` from Task 2 (`src/engine/taxonomy/compute-dimensions.ts`).
 - Produces: `renderDataLayer(map, manifest, features, date: Date | null, activeFilters, onFeatureClick?): L.Layer` (was `date: Date`); `MapAdapter.renderDataLayer(...)`'s `date` param is `Date | null` (was `Date`). Consumed by Task 4's `main.ts`.
 
@@ -311,12 +322,14 @@ git commit -m "refactor: accept Date | null through the map data-layer render pa
 ### Task 4: Wire `timeEnabled` through bootstrap and the panels
 
 **Files:**
+
 - Modify: `src/main.ts`
 - Modify: `src/ui/app-chrome.ts`
 - Modify: `src/ui/panels/PanelRight.ts`
 - Modify: `src/ui/panels/SearchOverlay.ts`
 
 **Interfaces:**
+
 - Consumes: `AppManifest.systems` (Task 1), `computeTaxonomyDimensions(layers, date: Date | null)` (Task 2), `MapAdapter.renderDataLayer(..., date: Date | null, ...)` (Task 3).
 - Produces: `mountPanelRight(container, store, layers, strings, timeEnabled: boolean): void` (new 5th param); `mountSearchOverlay(container, store, layers, strings, timeEnabled: boolean): void` (new 5th param).
 
@@ -327,28 +340,28 @@ No new automated test — this is bootstrap/UI wiring with no existing test file
 Replace:
 
 ```ts
-  const appManifest = validateAppManifest(await fetchJson(`apps/${appId}/app-manifest.json`));
+const appManifest = validateAppManifest(await fetchJson(`apps/${appId}/app-manifest.json`));
 
-  // Only islamic/hebrew calendars pull in @js-temporal/polyfill (a sizable
-  // dependency); kick the load off now so it runs in parallel with the
-  // fetches below, and await it right before the first consumer needs it.
-  const calendarSystemLoaded = ensureCalendarSystemLoaded(appManifest.calendar.system ?? 'gregorian');
+// Only islamic/hebrew calendars pull in @js-temporal/polyfill (a sizable
+// dependency); kick the load off now so it runs in parallel with the
+// fetches below, and await it right before the first consumer needs it.
+const calendarSystemLoaded = ensureCalendarSystemLoaded(appManifest.calendar.system ?? 'gregorian');
 ```
 
 with:
 
 ```ts
-  const appManifest = validateAppManifest(await fetchJson(`apps/${appId}/app-manifest.json`));
-  const timeEnabled = appManifest.systems?.time !== false;
+const appManifest = validateAppManifest(await fetchJson(`apps/${appId}/app-manifest.json`));
+const timeEnabled = appManifest.systems?.time !== false;
 
-  // Only islamic/hebrew calendars pull in @js-temporal/polyfill (a sizable
-  // dependency); kick the load off now so it runs in parallel with the
-  // fetches below, and await it right before the first consumer needs it.
-  // Skipped entirely for a time-disabled world — there's no calendar UI to
-  // need it, regardless of what "calendar.system" says.
-  const calendarSystemLoaded = timeEnabled
-    ? ensureCalendarSystemLoaded(appManifest.calendar.system ?? 'gregorian')
-    : Promise.resolve();
+// Only islamic/hebrew calendars pull in @js-temporal/polyfill (a sizable
+// dependency); kick the load off now so it runs in parallel with the
+// fetches below, and await it right before the first consumer needs it.
+// Skipped entirely for a time-disabled world — there's no calendar UI to
+// need it, regardless of what "calendar.system" says.
+const calendarSystemLoaded = timeEnabled
+  ? ensureCalendarSystemLoaded(appManifest.calendar.system ?? 'gregorian')
+  : Promise.resolve();
 ```
 
 - [ ] **Step 2: `main.ts` — pass `null` date to `renderDataLayer` when time is disabled**
@@ -356,27 +369,27 @@ with:
 Replace:
 
 ```ts
-      mapAdapter.renderDataLayer(
-        layer.manifest.id,
-        layer.manifest,
-        layer.features,
-        date,
-        state.activeFilters,
-        onFeatureClick,
-      );
+mapAdapter.renderDataLayer(
+  layer.manifest.id,
+  layer.manifest,
+  layer.features,
+  date,
+  state.activeFilters,
+  onFeatureClick,
+);
 ```
 
 with:
 
 ```ts
-      mapAdapter.renderDataLayer(
-        layer.manifest.id,
-        layer.manifest,
-        layer.features,
-        timeEnabled ? date : null,
-        state.activeFilters,
-        onFeatureClick,
-      );
+mapAdapter.renderDataLayer(
+  layer.manifest.id,
+  layer.manifest,
+  layer.features,
+  timeEnabled ? date : null,
+  state.activeFilters,
+  onFeatureClick,
+);
 ```
 
 - [ ] **Step 3: `main.ts` — pass `timeEnabled` to `PanelRight`/`SearchOverlay`, skip `CalendarBar`**
@@ -384,36 +397,36 @@ with:
 Replace:
 
 ```ts
-  await calendarSystemLoaded;
-  mountPanelRight(document.querySelector('#panel-right-filters')!, store, loadedLayers, strings);
-  mountSearchOverlay(document.querySelector('#search-overlay')!, store, loadedLayers, strings);
-  mountLayerControl(document.querySelector('#layer-control')!, store, strings, {
-    mapAdapter,
-    baseLayerConfigs: appManifest.baseLayers,
-    detailLayers: detailLayers.map((l) => ({ id: l.manifest.id, title: l.manifest.title })),
-  });
-  // Time editor and map-settings button both live inline inside the
-  // filters panel now, not as standalone floating controls.
-  mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings, loadedLayers);
+await calendarSystemLoaded;
+mountPanelRight(document.querySelector('#panel-right-filters')!, store, loadedLayers, strings);
+mountSearchOverlay(document.querySelector('#search-overlay')!, store, loadedLayers, strings);
+mountLayerControl(document.querySelector('#layer-control')!, store, strings, {
+  mapAdapter,
+  baseLayerConfigs: appManifest.baseLayers,
+  detailLayers: detailLayers.map((l) => ({ id: l.manifest.id, title: l.manifest.title })),
+});
+// Time editor and map-settings button both live inline inside the
+// filters panel now, not as standalone floating controls.
+mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings, loadedLayers);
 ```
 
 with:
 
 ```ts
-  await calendarSystemLoaded;
-  mountPanelRight(document.querySelector('#panel-right-filters')!, store, loadedLayers, strings, timeEnabled);
-  mountSearchOverlay(document.querySelector('#search-overlay')!, store, loadedLayers, strings, timeEnabled);
-  mountLayerControl(document.querySelector('#layer-control')!, store, strings, {
-    mapAdapter,
-    baseLayerConfigs: appManifest.baseLayers,
-    detailLayers: detailLayers.map((l) => ({ id: l.manifest.id, title: l.manifest.title })),
-  });
-  // Time editor and map-settings button both live inline inside the
-  // filters panel now, not as standalone floating controls. Not mounted at
-  // all for a time-disabled world — #panel-right-time stays an empty div.
-  if (timeEnabled) {
-    mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings, loadedLayers);
-  }
+await calendarSystemLoaded;
+mountPanelRight(document.querySelector('#panel-right-filters')!, store, loadedLayers, strings, timeEnabled);
+mountSearchOverlay(document.querySelector('#search-overlay')!, store, loadedLayers, strings, timeEnabled);
+mountLayerControl(document.querySelector('#layer-control')!, store, strings, {
+  mapAdapter,
+  baseLayerConfigs: appManifest.baseLayers,
+  detailLayers: detailLayers.map((l) => ({ id: l.manifest.id, title: l.manifest.title })),
+});
+// Time editor and map-settings button both live inline inside the
+// filters panel now, not as standalone floating controls. Not mounted at
+// all for a time-disabled world — #panel-right-time stays an empty div.
+if (timeEnabled) {
+  mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings, loadedLayers);
+}
 ```
 
 - [ ] **Step 4: `app-chrome.ts` — skip `mountDateText` when time is disabled**
@@ -482,15 +495,15 @@ export function mountPanelRight(
 Replace:
 
 ```ts
-    const date = new Date(`${store.get().selectedDate}T00:00:00Z`);
-    const dimensions = computeTaxonomyDimensions(layers, date);
+const date = new Date(`${store.get().selectedDate}T00:00:00Z`);
+const dimensions = computeTaxonomyDimensions(layers, date);
 ```
 
 with:
 
 ```ts
-    const date = timeEnabled ? new Date(`${store.get().selectedDate}T00:00:00Z`) : null;
-    const dimensions = computeTaxonomyDimensions(layers, date);
+const date = timeEnabled ? new Date(`${store.get().selectedDate}T00:00:00Z`) : null;
+const dimensions = computeTaxonomyDimensions(layers, date);
 ```
 
 - [ ] **Step 6: `SearchOverlay.ts` — accept `timeEnabled`, omit the temporal-status line when disabled**
@@ -521,16 +534,16 @@ export function mountSearchOverlay(
 Replace:
 
 ```ts
-    infoEl.innerHTML = `<p>${describeTemporalStatus(feature, date, strings, state.calendarSystem)}</p>${regionLine}${coordinatesLine}${infoFieldLines}`;
+infoEl.innerHTML = `<p>${describeTemporalStatus(feature, date, strings, state.calendarSystem)}</p>${regionLine}${coordinatesLine}${infoFieldLines}`;
 ```
 
 with:
 
 ```ts
-    const temporalStatusLine = timeEnabled
-      ? `<p>${describeTemporalStatus(feature, date, strings, state.calendarSystem)}</p>`
-      : '';
-    infoEl.innerHTML = `${temporalStatusLine}${regionLine}${coordinatesLine}${infoFieldLines}`;
+const temporalStatusLine = timeEnabled
+  ? `<p>${describeTemporalStatus(feature, date, strings, state.calendarSystem)}</p>`
+  : '';
+infoEl.innerHTML = `${temporalStatusLine}${regionLine}${coordinatesLine}${infoFieldLines}`;
 ```
 
 `date` itself (used for `findContainingRegions` and, when `timeEnabled` is true, `describeTemporalStatus`) is left as the unconditional `new Date(...)` already built at the top of `renderInfo` — untouched, per the spec's Non-goal on `findContainingRegions`.
@@ -560,6 +573,7 @@ git commit -m "feat: wire systems.time through bootstrap, PanelRight, and Search
 ### Task 5: Update CHANGELOG
 
 **Files:**
+
 - Modify: `CHANGELOG.md`
 
 - [ ] **Step 1: Add an entry**

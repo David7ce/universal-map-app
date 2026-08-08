@@ -22,10 +22,12 @@
 ### Task 1: Engine module `calendar-grid.ts`
 
 **Files:**
+
 - Create: `src/engine/time/calendar-grid.ts`
 - Create: `src/engine/time/calendar-grid.test.ts`
 
 **Interfaces:**
+
 - Consumes: `toCalendarParts(isoDate: string, system: CalendarSystem, locale?: string): CalendarDateParts` (`{year,month,day,monthName}`), `calendarPartsToIso(parts: DateParts, system: CalendarSystem): string`, `daysInCalendarMonth(year: number, month: number, system: CalendarSystem): number`, `monthsInCalendarYear(year: number, system: CalendarSystem): number` — all from `./calendar-conversion`. `featureMatchesFilters(feature: GeoFeature, manifest: LayerManifest, activeFilters: Record<string,Set<string>>): boolean` from `../taxonomy/compute-dimensions`. `isActiveOn(feature: GeoFeature, date: Date): boolean` from `./is-active-on`. `LoadedLayer { manifest: LayerManifest; features: GeoFeature[] }` from `../taxonomy/compute-dimensions`.
 - Produces: `CalendarGridDayCell { iso: string; day: number; inCurrentPeriod: boolean; hasEvents: boolean }`, `CalendarGridMonthCell { iso: string; month: number; hasEvents: boolean }`, `buildWeekCells(selectedIso, system, layers, activeFilters): CalendarGridDayCell[]`, `buildMonthCells(selectedIso, system, layers, activeFilters): CalendarGridDayCell[]`, `buildYearCells(selectedIso, system, layers, activeFilters): CalendarGridMonthCell[]` — Task 2 (UI rendering) and Task 3 (wiring) call these three functions directly.
 
@@ -302,10 +304,12 @@ git commit -m "feat: pure calendar-grid cell builders for week/month/year views"
 ### Task 2: UI rendering — `CalendarGrid.ts` + CSS
 
 **Files:**
+
 - Create: `src/ui/panels/CalendarGrid.ts`
 - Modify: `src/styles.css` (append new rules near the existing `.calendar-bar__*` block, after the `.calendar-bar__system-label:empty` rule around line 1267)
 
 **Interfaces:**
+
 - Consumes: `buildWeekCells`/`buildMonthCells`/`buildYearCells` and `CalendarGridDayCell`/`CalendarGridMonthCell` from `../../engine/time/calendar-grid` (Task 1). `toCalendarParts` from `../../engine/time/calendar-conversion`. `t(key, strings, params?): string` from `../strings`. `escapeHtml(value: string): string` from `../escape-html`. `Granularity` type from `./CalendarBar` (already exported there: `'day' | 'week' | 'month' | 'year'`).
 - Produces: `CalendarGridDeps` interface and `renderCalendarGrid(container: HTMLElement, deps: CalendarGridDeps): void` — Task 3 calls this from `CalendarBar.ts`.
 
@@ -397,7 +401,6 @@ export function renderCalendarGrid(container: HTMLElement, deps: CalendarGridDep
 Insert after the `.calendar-bar__system-label:empty { display: none; }` rule (around line 1267):
 
 ```css
-
 /* ========================================
    CALENDAR GRID (week/month/year views inside the Time editor)
    ======================================== */
@@ -483,10 +486,12 @@ git commit -m "feat: render week/month/year calendar grid with event dots"
 ### Task 3: Wire the grid into `CalendarBar.ts` and `main.ts`
 
 **Files:**
+
 - Modify: `src/ui/panels/CalendarBar.ts`
 - Modify: `src/main.ts`
 
 **Interfaces:**
+
 - Consumes: `renderCalendarGrid`, `CalendarGridDeps` from `./CalendarGrid` (Task 2). `LoadedLayer` from `../../engine/taxonomy/compute-dimensions`.
 - Produces: `mountCalendarBar`'s signature changes from `(container, store, config, strings)` to `(container, store, config, strings, layers)` — `main.ts` is the only caller, updated in this task.
 
@@ -528,30 +533,30 @@ export function mountCalendarBar(
 Right after the existing `const granularitySelect = container.querySelector<HTMLSelectElement>('[data-role="granularity"]')!;` line, add:
 
 ```ts
-  const gridContainer = container.querySelector<HTMLElement>('[data-role="grid"]')!;
+const gridContainer = container.querySelector<HTMLElement>('[data-role="grid"]')!;
 
-  function renderGrid(): void {
-    if (granularity === 'day') {
-      gridContainer.hidden = true;
-      return;
-    }
-    gridContainer.hidden = false;
-    const state = store.get();
-    renderCalendarGrid(gridContainer, {
-      granularity,
-      selectedIso: state.selectedDate,
-      system: state.calendarSystem,
-      layers,
-      activeFilters: state.activeFilters,
-      strings,
-      onSelectDay: (iso) => store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) }),
-      onSelectMonth: (iso) => {
-        granularity = 'month';
-        granularitySelect.value = granularity;
-        store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
-      },
-    });
+function renderGrid(): void {
+  if (granularity === 'day') {
+    gridContainer.hidden = true;
+    return;
   }
+  gridContainer.hidden = false;
+  const state = store.get();
+  renderCalendarGrid(gridContainer, {
+    granularity,
+    selectedIso: state.selectedDate,
+    system: state.calendarSystem,
+    layers,
+    activeFilters: state.activeFilters,
+    strings,
+    onSelectDay: (iso) => store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) }),
+    onSelectMonth: (iso) => {
+      granularity = 'month';
+      granularitySelect.value = granularity;
+      store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
+    },
+  });
+}
 ```
 
 - [ ] **Step 4: Call `renderGrid` at the right points**
@@ -559,58 +564,58 @@ Right after the existing `const granularitySelect = container.querySelector<HTML
 Change the `granularitySelect` change handler from:
 
 ```ts
-  granularitySelect.addEventListener('change', () => {
-    granularity = granularitySelect.value as Granularity;
-  });
+granularitySelect.addEventListener('change', () => {
+  granularity = granularitySelect.value as Granularity;
+});
 ```
 
 to:
 
 ```ts
-  granularitySelect.addEventListener('change', () => {
-    granularity = granularitySelect.value as Granularity;
-    renderGrid();
-  });
+granularitySelect.addEventListener('change', () => {
+  granularity = granularitySelect.value as Granularity;
+  renderGrid();
+});
 ```
 
 Change the initial render block from:
 
 ```ts
-  dateSlider.value = sliderOffsetFor(store.get().selectedDate);
-  renderSystemLabel(store.get().selectedDate);
-  renderFields(store.get().selectedDate);
+dateSlider.value = sliderOffsetFor(store.get().selectedDate);
+renderSystemLabel(store.get().selectedDate);
+renderFields(store.get().selectedDate);
 ```
 
 to:
 
 ```ts
-  dateSlider.value = sliderOffsetFor(store.get().selectedDate);
-  renderSystemLabel(store.get().selectedDate);
-  renderFields(store.get().selectedDate);
-  renderGrid();
+dateSlider.value = sliderOffsetFor(store.get().selectedDate);
+renderSystemLabel(store.get().selectedDate);
+renderFields(store.get().selectedDate);
+renderGrid();
 ```
 
 Change the `store.subscribe` callback from:
 
 ```ts
-  store.subscribe((state) => {
-    const offset = sliderOffsetFor(state.selectedDate);
-    if (dateSlider.value !== offset) dateSlider.value = offset;
-    renderSystemLabel(state.selectedDate);
-    renderFields(state.selectedDate);
-  });
+store.subscribe((state) => {
+  const offset = sliderOffsetFor(state.selectedDate);
+  if (dateSlider.value !== offset) dateSlider.value = offset;
+  renderSystemLabel(state.selectedDate);
+  renderFields(state.selectedDate);
+});
 ```
 
 to:
 
 ```ts
-  store.subscribe((state) => {
-    const offset = sliderOffsetFor(state.selectedDate);
-    if (dateSlider.value !== offset) dateSlider.value = offset;
-    renderSystemLabel(state.selectedDate);
-    renderFields(state.selectedDate);
-    renderGrid();
-  });
+store.subscribe((state) => {
+  const offset = sliderOffsetFor(state.selectedDate);
+  if (dateSlider.value !== offset) dateSlider.value = offset;
+  renderSystemLabel(state.selectedDate);
+  renderFields(state.selectedDate);
+  renderGrid();
+});
 ```
 
 - [ ] **Step 5: Update the `main.ts` call site**
@@ -618,13 +623,13 @@ to:
 In `src/main.ts`, change:
 
 ```ts
-  mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings);
+mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings);
 ```
 
 to:
 
 ```ts
-  mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings, loadedLayers);
+mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings, loadedLayers);
 ```
 
 - [ ] **Step 6: Type-check**
@@ -646,6 +651,7 @@ Run: `npx prettier --check src/ui/panels/CalendarBar.ts src/main.ts` — if it w
 - [ ] **Step 10: Manual verification**
 
 Run: `npx vite --port 5173` in the background, open `http://localhost:5173` in a browser. Check:
+
 - Time section shows a grid (not plain text) when granularity is week/month/year, and plain text when granularity is day.
 - Clicking a day cell in month view selects it (highlight moves, footer date updates).
 - Switching to year view and clicking a month switches to month view of that month.
@@ -666,6 +672,7 @@ git commit -m "feat: wire calendar grid into the Time editor"
 ### Task 4: Docs and final verification
 
 **Files:**
+
 - Modify: `CHANGELOG.md`
 
 **Interfaces:** None — documentation only.

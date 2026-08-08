@@ -184,9 +184,9 @@ select:disabled {
 .map-search {
   position: fixed;
   inset: 0;
-    /* Above Leaflet and the footer, but below the filters drawer when that
+  /* Above Leaflet and the footer, but below the filters drawer when that
        drawer is open. */
-    z-index: var(--z-search);
+  z-index: var(--z-search);
 }
 .map-search[hidden] {
   display: none;
@@ -1468,9 +1468,9 @@ select:disabled {
   bottom: 0;
   height: var(--footer-bar-height);
   max-width: min(70vw, 26rem);
-    /* Keep the legend with the map chrome; drawers and dialogs must be able to
+  /* Keep the legend with the map chrome; drawers and dialogs must be able to
       cover it instead of leaving a strip above the active panel. */
-    z-index: var(--z-fixed);
+  z-index: var(--z-fixed);
   background: rgba(255, 255, 255, 0.92);
   border-top: 1px solid var(--color-border);
   border-left: 1px solid var(--color-border);

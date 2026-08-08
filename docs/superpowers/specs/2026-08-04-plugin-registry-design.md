@@ -13,7 +13,7 @@ Replace the hardcoded `if (appManifest.plugins?.participate) registerParticipate
 - `validateAppManifest` has `participate`-specific field checks (`channel`/`target`/`messageTemplate`) inlined directly in the generic manifest validator.
 - `src/main.ts` imports `registerParticipatePlugin` by name and calls it behind an `if` checking that one specific key. A second plugin means a second hardcoded import-and-`if` block in `main.ts`.
 - The original core design spec (`docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md`, Section 7) already described the intent — "plugin code lives under `/plugins/<id>/` and self-registers on import," activated by an app manifest's `plugins` list — but the v1 implementation diverged from that into the single hardcoded check above. This spec is that seam catching up to the original intent.
-- The low-level registration/dispatch API in `src/engine/plugins/registry.ts` (`registerPlugin`, `PluginHooks`, `dispatchDateChange`/`dispatchFilterChange`/`dispatchFeatureSelect`, `getPanelSlots`) already is generic and does not change in this work — only how a plugin gets *triggered* into calling `registerPlugin` changes.
+- The low-level registration/dispatch API in `src/engine/plugins/registry.ts` (`registerPlugin`, `PluginHooks`, `dispatchDateChange`/`dispatchFilterChange`/`dispatchFeatureSelect`, `getPanelSlots`) already is generic and does not change in this work — only how a plugin gets _triggered_ into calling `registerPlugin` changes.
 
 ## 3. Manifest shape
 
@@ -34,7 +34,7 @@ An open id → opaque-config bag. `validateAppManifest` no longer knows what any
 Every plugin folder `plugins/<id>/` must export, from `index.ts`, a default function:
 
 ```ts
-export default function register(config: unknown, strings: Record<string, string>): void
+export default function register(config: unknown, strings: Record<string, string>): void;
 ```
 
 `register` is responsible for:
