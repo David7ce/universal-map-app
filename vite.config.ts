@@ -1,4 +1,3 @@
-/// <reference types="vitest/config" />
 import { existsSync } from 'node:fs';
 import { cp } from 'node:fs/promises';
 import { resolve } from 'node:path';
