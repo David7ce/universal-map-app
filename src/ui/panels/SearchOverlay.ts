@@ -18,16 +18,17 @@ export function mountSearchOverlay(
   strings: Record<string, string>,
 ): void {
   container.innerHTML = `
-    <button type="button" class="control-btn control-btn--search" aria-label="${t('search.openLabel', strings)}">${icons.search}</button>
-    <section class="map-search" hidden>
+    <button type="button" class="control-btn control-btn--search" aria-controls="map-search-panel" aria-expanded="false" aria-label="${t('search.openLabel', strings)}">${icons.search}</button>
+    <section id="map-search-panel" class="map-search" role="dialog" aria-label="${t('search.openLabel', strings)}" aria-modal="true" hidden>
       <div class="map-search__backdrop"></div>
       <div class="map-search__panel">
         <div class="map-search__header">
           <div class="search-field">
             <span class="search-submit">${icons.search}</span>
-            <input type="search" data-role="search-input" placeholder="${t('search.placeholder', strings)}" />
+            <input type="search" data-role="search-input" aria-label="${t('search.placeholder', strings)}" placeholder="${t('search.placeholder', strings)}" />
             <button type="button" class="search-clear" data-action="clear" hidden>${icons.close}</button>
           </div>
+          <button type="button" class="map-search__close" data-action="close" aria-label="${t('selection.closeLabel', strings)}">${icons.close}</button>
         </div>
         <div class="search-results" data-role="results" aria-live="polite" aria-atomic="false" hidden></div>
         <div class="search-info" data-role="info" hidden></div>
@@ -40,6 +41,7 @@ export function mountSearchOverlay(
   const backdrop = container.querySelector<HTMLElement>('.map-search__backdrop')!;
   const searchInput = container.querySelector<HTMLInputElement>('[data-role="search-input"]')!;
   const clearButton = container.querySelector<HTMLButtonElement>('[data-action="clear"]')!;
+  const closeButton = container.querySelector<HTMLButtonElement>('[data-action="close"]')!;
   const resultsEl = container.querySelector<HTMLDivElement>('[data-role="results"]')!;
   const infoEl = container.querySelector<HTMLDivElement>('[data-role="info"]')!;
   const appEl = document.querySelector<HTMLElement>('#app')!;
@@ -146,6 +148,7 @@ export function mountSearchOverlay(
     else open();
   });
   backdrop.addEventListener('click', close);
+  closeButton.addEventListener('click', close);
   clearButton.addEventListener('click', () => {
     const hadSelection = store.get().selectedFeatureId !== null;
     searchInput.value = '';
@@ -192,6 +195,7 @@ export function mountSearchOverlay(
         : featureEntries.find((e) => String(e.feature.id ?? '') === state.selectedFeatureId);
 
     overlay.hidden = !isOpen;
+    overlay.setAttribute('aria-hidden', String(!isOpen));
     overlay.classList.toggle('is-info', selected !== undefined);
     toggleButton.setAttribute('aria-expanded', String(isOpen));
     clearButton.setAttribute(

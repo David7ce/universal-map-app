@@ -34,9 +34,13 @@
   --transition-base: 250ms ease-in-out;
 
   --z-fixed: 300;
-  --z-modal-backdrop: 999;
-  --z-modal: 1000;
-  --z-tooltip: 1100;
+  /* Keep page-level controls above Leaflet's panes and controls. Leaflet
+     uses values up to 1000 internally, so these layers intentionally start
+     above that range. */
+  --z-search: 1200;
+  --z-modal-backdrop: 1300;
+  --z-modal: 1400;
+  --z-tooltip: 1500;
 
   --control-btn-offset: 15px;
   --control-btn-size: 48px;
@@ -100,6 +104,35 @@ body {
   overflow: hidden;
 }
 
+button,
+input,
+select {
+  font: inherit;
+}
+
+button:disabled,
+input:disabled,
+select:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+::selection {
+  background: var(--color-primary-light);
+  color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ========================================
    GENERIC CONTROL BUTTON (search trigger)
    ======================================== */
@@ -136,7 +169,7 @@ body {
   position: fixed;
   top: var(--control-btn-offset);
   left: var(--control-btn-offset);
-  z-index: var(--z-fixed);
+  z-index: var(--z-search);
 }
 /* The overlay's own header already has a clear/close control once it's
    open — keep this a plain closed icon rather than a redundant floating
@@ -151,9 +184,9 @@ body {
 .map-search {
   position: fixed;
   inset: 0;
-  /* Explicitly below the filters panel/backdrop (999-1110) — search is
-     never meant to outrank it, not left to an accidental z-index tie. */
-  z-index: calc(var(--z-modal-backdrop) - 1);
+    /* Above Leaflet and the footer, but below the filters drawer when that
+       drawer is open. */
+    z-index: var(--z-search);
 }
 .map-search[hidden] {
   display: none;
@@ -177,6 +210,46 @@ body {
   background-color: var(--color-white);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
+}
+
+.map-search__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.map-search__header .search-field {
+  flex: 1;
+}
+
+.map-search__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-text-light);
+  cursor: pointer;
+}
+
+.map-search__close:hover {
+  background: var(--color-bg-alt);
+  color: var(--color-text);
+}
+
+.map-search__close:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.map-search__close svg {
+  width: 16px;
+  height: 16px;
 }
 
 .search-field {
@@ -231,6 +304,8 @@ body {
 .search-results {
   overflow-y: auto;
   min-height: 0;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 .search-results[hidden] {
   display: none;
@@ -264,6 +339,13 @@ body {
 }
 .search-result-item:hover {
   background-color: var(--color-bg-alt);
+}
+.search-result-item:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  background-color: var(--color-primary-light);
 }
 .search-result-item__name {
   font-weight: var(--font-weight-semibold);
@@ -308,6 +390,9 @@ body {
   .search-field {
     background-color: var(--color-white);
     box-shadow: var(--shadow-md);
+  }
+  .map-search__close {
+    display: none;
   }
   .search-results {
     position: absolute;
@@ -513,6 +598,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 .panel__section-separator {
   height: 1px;
@@ -617,6 +704,8 @@ body {
   flex-direction: column;
   max-height: 240px;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
   background-color: var(--color-white);
 }
 .filter-section.is-open .filter-options {
@@ -958,7 +1047,7 @@ body {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: calc(var(--z-fixed) + 2);
+  z-index: var(--z-search);
   pointer-events: none;
 }
 .map-search.is-info .map-search__backdrop {
@@ -1011,6 +1100,10 @@ body {
   }
   .map-search.is-info .search-field {
     box-shadow: none;
+  }
+
+  .map-search.is-info .map-search__close {
+    display: none;
   }
 }
 
@@ -1375,8 +1468,9 @@ body {
   bottom: 0;
   height: var(--footer-bar-height);
   max-width: min(70vw, 26rem);
-  /* Stay above the panel backdrop (999) so attribution is always readable */
-  z-index: calc(var(--z-modal) + 1);
+    /* Keep the legend with the map chrome; drawers and dialogs must be able to
+      cover it instead of leaving a strip above the active panel. */
+    z-index: var(--z-fixed);
   background: rgba(255, 255, 255, 0.92);
   border-top: 1px solid var(--color-border);
   border-left: 1px solid var(--color-border);
