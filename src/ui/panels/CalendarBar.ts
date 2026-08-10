@@ -11,8 +11,6 @@ import {
 import { t } from '../strings';
 import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
-import type { LoadedLayer } from '../../engine/taxonomy/compute-dimensions';
-import { renderCalendarGrid } from './CalendarGrid';
 
 export interface CalendarConfig {
   system?: CalendarSystem;
@@ -78,7 +76,7 @@ export function calendarSystemLabel(dateIso: string, system: CalendarSystem): st
   return system === 'gregorian' ? '' : formatCalendarDate(dateIso, system);
 }
 
-function clampDateToRange(iso: string, min: string, max: string): string {
+export function clampDateToRange(iso: string, min: string, max: string): string {
   const startOffset = daysBetween(min, iso);
   const endOffset = daysBetween(iso, max);
   if (startOffset < 0) return min;
@@ -125,7 +123,6 @@ export function mountCalendarBar(
   store: Store<AppState>,
   config: CalendarConfig,
   strings: Record<string, string>,
-  layers: LoadedLayer[],
 ): void {
   // The calendar never shows the future — cap the manifest's configured
   // max at today, whatever today actually is (not a fixed future date).
@@ -189,7 +186,6 @@ export function mountCalendarBar(
         </div>
         <button type="button" class="calendar-bar__edit" data-action="edit" aria-label="${t('calendar.editLabel', strings)}">${icons.edit}</button>
       </div>
-      <div class="calendar-bar__grid" data-role="grid"></div>
       <span class="calendar-bar__system-label" data-role="system-label"></span>
       <input type="range" class="calendar-bar__slider" data-role="date-slider" min="0" max="${totalDays}" step="1" />
     </div>
@@ -205,35 +201,6 @@ export function mountCalendarBar(
   const systemLabel = container.querySelector<HTMLElement>('[data-role="system-label"]')!;
   const editButton = container.querySelector<HTMLButtonElement>('[data-action="edit"]')!;
   const granularitySelect = container.querySelector<HTMLSelectElement>('[data-role="granularity"]')!;
-  const gridContainer = container.querySelector<HTMLElement>('[data-role="grid"]')!;
-
-  function renderGrid(): void {
-    if (granularity === 'day') {
-      gridContainer.hidden = true;
-      gridContainer.className = 'calendar-bar__grid';
-      gridContainer.innerHTML = '';
-      return;
-    }
-    gridContainer.hidden = false;
-    const state = store.get();
-    const visibleLayers = layers.filter((layer) => !state.hiddenLayerIds.has(layer.manifest.id));
-    renderCalendarGrid(gridContainer, {
-      granularity,
-      selectedIso: state.selectedDate,
-      system: state.calendarSystem,
-      layers: visibleLayers,
-      activeFilters: state.activeFilters,
-      strings,
-      min: config.min,
-      max: maxIso,
-      onSelectDay: (iso) => store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) }),
-      onSelectMonth: (iso) => {
-        granularity = 'month';
-        granularitySelect.value = granularity;
-        store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
-      },
-    });
-  }
 
   // UI-only, doesn't need to survive a reload or be shared with other
   // panels — kept in this closure the same way PanelRight.ts keeps its
@@ -242,7 +209,6 @@ export function mountCalendarBar(
   granularitySelect.value = granularity;
   granularitySelect.addEventListener('change', () => {
     granularity = granularitySelect.value as Granularity;
-    renderGrid();
   });
 
   function step(direction: 1 | -1): void {
@@ -316,7 +282,6 @@ export function mountCalendarBar(
   dateSlider.value = sliderOffsetFor(store.get().selectedDate);
   renderSystemLabel(store.get().selectedDate);
   renderFields(store.get().selectedDate);
-  renderGrid();
 
   editButton.addEventListener('click', () => {
     const isEditing = container.classList.toggle('is-editing');
@@ -388,6 +353,5 @@ export function mountCalendarBar(
     if (dateSlider.value !== offset) dateSlider.value = offset;
     renderSystemLabel(state.selectedDate);
     renderFields(state.selectedDate);
-    renderGrid();
   });
 }
