@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { computeTaxonomyDimensions, featureMatchesFilters, filterActiveFeatures, type LoadedLayer } from './compute-dimensions';
+import {
+  computeTaxonomyDimensions,
+  featureMatchesFilters,
+  filterActiveFeatures,
+  type LoadedLayer,
+} from './compute-dimensions';
 import { getTriState, toggleAll } from './tri-state';
 import type { LayerManifest } from '../manifests/layer-manifest';
 import type { GeoFeature } from '../time/temporal-types';
