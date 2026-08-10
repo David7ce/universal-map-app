@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import { buildMonthCells, buildWeekCells, buildYearCells, buildYearMonthCells } from './calendar-grid';
+import { buildMonthCells, buildWeekCells, buildYearMonthCells } from './calendar-grid';
 import { daysInCalendarMonth, ensureCalendarSystemLoaded, monthsInCalendarYear } from './calendar-conversion';
 import type { LoadedLayer } from '../taxonomy/compute-dimensions';
 import type { LayerManifest } from '../manifests/layer-manifest';
@@ -100,25 +100,6 @@ describe('buildMonthCells', () => {
   it('blank cells never report hasEvents even if a feature is active that day', () => {
     const cells = buildMonthCells('2024-02-15', 'gregorian', [layerWithEventOn('2024-01-30')], {});
     expect(cells.filter((c) => !c.inCurrentPeriod).every((c) => c.hasEvents === false)).toBe(true);
-  });
-});
-
-describe('buildYearCells', () => {
-  it('returns 12 cells for gregorian, months 1-12 in order', () => {
-    const cells = buildYearCells('2026-07-29', 'gregorian', [], {});
-    expect(cells.length).toBe(12);
-    expect(cells.map((c) => c.month)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
-  });
-
-  it('cell count matches monthsInCalendarYear for hebrew (12 or 13)', () => {
-    const cells = buildYearCells('2026-07-29', 'hebrew', [], {});
-    expect(cells.length).toBe(monthsInCalendarYear(5786, 'hebrew'));
-  });
-
-  it('marks hasEvents true for a month containing an active feature, false for others', () => {
-    const cells = buildYearCells('2026-01-15', 'gregorian', [layerWithEventOn('2026-03-10')], {});
-    expect(cells.find((c) => c.month === 3)!.hasEvents).toBe(true);
-    expect(cells.find((c) => c.month === 1)!.hasEvents).toBe(false);
   });
 });
 

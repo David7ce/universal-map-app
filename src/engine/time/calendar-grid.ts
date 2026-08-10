@@ -11,12 +11,6 @@ export interface CalendarGridDayCell {
   hasEvents: boolean;
 }
 
-export interface CalendarGridMonthCell {
-  iso: string;
-  month: number;
-  hasEvents: boolean;
-}
-
 export interface CalendarGridMonthGroup {
   iso: string; // Gregorian ISO of day 1 of this month, in the display system
   month: number; // 1-based, display system
@@ -52,20 +46,6 @@ function hasActiveFeatureOn(layers: LoadedLayer[], activeFilters: Record<string,
         isActiveOn(feature, date),
     ),
   );
-}
-
-function hasActiveFeatureInMonth(
-  layers: LoadedLayer[],
-  activeFilters: Record<string, Set<string>>,
-  year: number,
-  month: number,
-  system: CalendarSystem,
-): boolean {
-  const dayCount = daysInCalendarMonth(year, month, system);
-  for (let day = 1; day <= dayCount; day++) {
-    if (hasActiveFeatureOn(layers, activeFilters, calendarPartsToIso({ year, month, day }, system))) return true;
-  }
-  return false;
 }
 
 export function buildWeekCells(
@@ -115,28 +95,9 @@ export function buildMonthCells(
   return cells;
 }
 
-export function buildYearCells(
-  selectedIso: string,
-  system: CalendarSystem,
-  layers: LoadedLayer[],
-  activeFilters: Record<string, Set<string>>,
-): CalendarGridMonthCell[] {
-  const { year } = toCalendarParts(selectedIso, system);
-  const monthCount = monthsInCalendarYear(year, system);
-  const cells: CalendarGridMonthCell[] = [];
-  for (let month = 1; month <= monthCount; month++) {
-    cells.push({
-      iso: calendarPartsToIso({ year, month, day: 1 }, system),
-      month,
-      hasEvents: hasActiveFeatureInMonth(layers, activeFilters, year, month, system),
-    });
-  }
-  return cells;
-}
-
 // One buildMonthCells call per month in the display-system year — used by the
 // full-screen Calendar view's year layout (all 12 months laid out at once,
-// every day visible), unlike buildYearCells' 12 clickable month buttons.
+// every day visible).
 export function buildYearMonthCells(
   selectedIso: string,
   system: CalendarSystem,
