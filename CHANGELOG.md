@@ -2,6 +2,12 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Full-screen Calendar view (day/week/month/year), separate from Map view
+
+The app now has two top-level, switchable views — Map (unchanged) and a new full-screen **Calendar view** (`src/ui/panels/CalendarView.ts`), toggled by a pill-shaped Map/Calendar control (`app-chrome.ts`, always visible). Calendar view has its own day/week/month/year granularity tabs: week/month reuse the existing `CalendarGrid.ts` grid, and year is new — all 12 months (13 for a Hebrew leap year) laid out at once, every day visible with event dots, via a new engine function `buildYearMonthCells` (`src/engine/time/calendar-grid.ts`). Picking any day switches to day view and shows an agenda of that day's events (new `getFeaturesOnDate`, `src/engine/time/day-agenda.ts`) with a "View on map" button per entry that selects the feature and switches back to Map view. `#map` isn't torn down when Calendar view is showing — `MapAdapter` gained `invalidateSize()` so Leaflet recalculates its container size correctly when the user switches back.
+
+`CalendarBar.ts`'s embedded grid (added in "Visual calendar grid in the Time editor", below) is removed — it's superseded by the new full-screen Calendar view. `CalendarBar.ts` goes back to being a compact spinner-only date editor for quick nudges while on Map view. This also removed the old 12-button year grid (`buildYearCells`, `CalendarGridMonthCell`) as dead code, since Calendar view's year layout replaced its only caller.
+
 ## `apps/` renamed to `worlds/`, `app-manifest.json` to `world.json`
 
 Pure rename, no behavior change — `worlds/<id>/` and `worlds/<id>/world.json` replace `apps/<id>/` and `apps/<id>/app-manifest.json`, and the URL switcher is now `?world=<id>` instead of `?app=<id>`. Matches the vocabulary `feature-request-world-def.md`'s "World Definition Package System" is specified in; this is sub-project 1 of that effort (see `docs/superpowers/specs/2026-08-04-worlds-rename-design.md`). Internal TypeScript naming (`AppManifest`, `validateAppManifest()`, `appManifest.ts`, `resolveAppId()`) deliberately stays as-is — external rename only, hard cutover, no alias for the old paths. `docs/schemas/app-manifest.schema.json` was also renamed to `docs/schemas/world.schema.json`; anyone referencing the old schema path via `$schema` in their own manifest will need to update it, since there's no alias for that either.
