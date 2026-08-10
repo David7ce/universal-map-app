@@ -42,4 +42,7 @@ export interface AppState {
   calendarSystem: CalendarSystem;
   // Whether the lat/lng coordinate grid overlay is shown on the map.
   showGrid: boolean;
+  // Which top-level screen is showing: the full-screen map, or the
+  // full-screen Calendar view (day/week/month/year + day agenda).
+  view: 'map' | 'calendar';
 }

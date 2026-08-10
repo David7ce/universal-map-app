@@ -1360,6 +1360,64 @@ select:disabled {
 }
 
 /* ========================================
+   VIEW SWITCHER (Map / Calendar)
+   ======================================== */
+.view-switcher {
+  position: absolute;
+  top: var(--control-btn-offset);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-fixed);
+  display: flex;
+  gap: 0.25rem;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 0.25rem;
+  box-shadow: var(--shadow-md);
+}
+.view-switcher__btn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-full);
+  padding: 0.4rem 0.9rem;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  color: var(--color-text-light);
+  transition: background-color var(--transition-fast);
+}
+.view-switcher__btn svg {
+  width: 18px;
+  height: 18px;
+}
+.view-switcher__btn.is-active {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+.calendar-view {
+  display: none;
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  background: var(--color-bg);
+  padding: calc(var(--control-btn-size) + var(--control-btn-offset) * 2) 1rem 1.5rem;
+}
+.map-app.view-calendar #calendar-view {
+  display: block;
+}
+.map-app.view-calendar #map,
+.map-app.view-calendar #search-overlay,
+.map-app.view-calendar .bottom-left-controls,
+.map-app.view-calendar .map-footer-legend,
+.map-app.view-calendar .leaflet-control-zoom {
+  display: none;
+}
+
+/* ========================================
    CALENDAR GRID (week/month/year views inside the Time editor)
    ======================================== */
 .calendar-bar__grid {

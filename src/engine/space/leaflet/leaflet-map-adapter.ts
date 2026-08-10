@@ -88,6 +88,10 @@ export async function createLeafletMapAdapter(container: HTMLElement, appManifes
       };
     },
 
+    invalidateSize() {
+      map.invalidateSize();
+    },
+
     async setCrs(crs: MapCrsConfig | undefined) {
       const previousBaseLayerId = activeBaseLayerId;
       map.remove();

@@ -1,4 +1,6 @@
 {
+  "views.map": "Map",
+  "views.calendar": "Calendar",
   "search.placeholder": "Search...",
   "search.openLabel": "Open search",
   "search.clearLabel": "Clear search",

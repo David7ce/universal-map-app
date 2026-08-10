@@ -70,6 +70,7 @@ async function bootstrap(): Promise<void> {
     hiddenLayerIds: new Set(detailLayers.map((l) => l.manifest.id)),
     calendarSystem: appManifest.calendar.system ?? 'gregorian',
     showGrid: false,
+    view: 'map',
   });
 
   const mapContainer = document.querySelector<HTMLDivElement>('#map')!;

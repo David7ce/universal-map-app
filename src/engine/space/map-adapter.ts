@@ -38,4 +38,10 @@ export interface MapAdapter {
   // active base layer and every previously rendered data layer onto the
   // new instance, so callers don't have to re-render anything themselves.
   setCrs(crs: MapCrsConfig | undefined): Promise<void>;
+
+  // Leaflet caches the container's pixel size; when the map's container was
+  // hidden (`display: none`, e.g. while Calendar view is showing) and then
+  // shown again, panning/zoom controls end up misaligned until this is
+  // called once.
+  invalidateSize(): void;
 }

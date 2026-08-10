@@ -53,6 +53,39 @@ function mountRightPanel(store: Store<AppState>, strings: Record<string, string>
   });
 }
 
+// Always-visible top-center Map/Calendar toggle. `#map` isn't torn down
+// when hidden (same as the filters panel not being destroyed on close) —
+// switching back doesn't re-fetch tiles or re-render layers, it just needs
+// mapAdapter.invalidateSize() once Leaflet's container is visible again.
+function mountViewSwitcher(store: Store<AppState>, strings: Record<string, string>, mapAdapter: MapAdapter): void {
+  const appEl = document.querySelector<HTMLElement>('#app')!;
+  const switcherEl = document.querySelector<HTMLElement>('#view-switcher')!;
+
+  switcherEl.innerHTML = `
+    <button type="button" class="view-switcher__btn" data-view="map">${icons.pushpin}<span>${t('views.map', strings)}</span></button>
+    <button type="button" class="view-switcher__btn" data-view="calendar">${icons.calendar}<span>${t('views.calendar', strings)}</span></button>
+  `;
+  const buttons = switcherEl.querySelectorAll<HTMLButtonElement>('[data-view]');
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => store.set({ view: button.dataset.view as AppState['view'] }));
+  });
+
+  let previousView = store.get().view;
+  function render(): void {
+    const state = store.get();
+    buttons.forEach((button) => {
+      const isActive = button.dataset.view === state.view;
+      button.classList.toggle('is-active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
+    });
+    appEl.classList.toggle('view-calendar', state.view === 'calendar');
+    if (previousView !== state.view && state.view === 'map') mapAdapter.invalidateSize();
+    previousView = state.view;
+  }
+  render();
+  store.subscribe(render);
+}
+
 // Current selected date, plain text — the full editor lives inline in the
 // filters panel now, so this is the only always-visible date indicator.
 function mountDateText(store: Store<AppState>): void {
@@ -142,6 +175,7 @@ export function mountAppChrome(
   loadedLayers: LoadedLayer[],
 ): void {
   mountRightPanel(store, strings);
+  mountViewSwitcher(store, strings, mapAdapter);
   mountDateText(store);
   mountAttribution(store, appManifest);
   mountScaleIndicator(mapAdapter);
