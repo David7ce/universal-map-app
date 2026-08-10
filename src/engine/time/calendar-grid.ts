@@ -17,6 +17,12 @@ export interface CalendarGridMonthCell {
   hasEvents: boolean;
 }
 
+export interface CalendarGridMonthGroup {
+  iso: string; // Gregorian ISO of day 1 of this month, in the display system
+  month: number; // 1-based, display system
+  cells: CalendarGridDayCell[]; // same shape buildMonthCells returns for this month
+}
+
 // Deliberately not imported from CalendarBar.ts — engine/ must not depend on
 // ui/ (see CONTEXT.md). Two five-line helpers duplicated is cheaper than
 // threading a shared utility module across that boundary.
@@ -126,4 +132,23 @@ export function buildYearCells(
     });
   }
   return cells;
+}
+
+// One buildMonthCells call per month in the display-system year — used by the
+// full-screen Calendar view's year layout (all 12 months laid out at once,
+// every day visible), unlike buildYearCells' 12 clickable month buttons.
+export function buildYearMonthCells(
+  selectedIso: string,
+  system: CalendarSystem,
+  layers: LoadedLayer[],
+  activeFilters: Record<string, Set<string>>,
+): CalendarGridMonthGroup[] {
+  const { year } = toCalendarParts(selectedIso, system);
+  const monthCount = monthsInCalendarYear(year, system);
+  const groups: CalendarGridMonthGroup[] = [];
+  for (let month = 1; month <= monthCount; month++) {
+    const iso = calendarPartsToIso({ year, month, day: 1 }, system);
+    groups.push({ iso, month, cells: buildMonthCells(iso, system, layers, activeFilters) });
+  }
+  return groups;
 }

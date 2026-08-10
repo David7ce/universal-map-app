@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import { buildMonthCells, buildWeekCells, buildYearCells } from './calendar-grid';
+import { buildMonthCells, buildWeekCells, buildYearCells, buildYearMonthCells } from './calendar-grid';
 import { daysInCalendarMonth, ensureCalendarSystemLoaded, monthsInCalendarYear } from './calendar-conversion';
 import type { LoadedLayer } from '../taxonomy/compute-dimensions';
 import type { LayerManifest } from '../manifests/layer-manifest';
@@ -119,5 +119,28 @@ describe('buildYearCells', () => {
     const cells = buildYearCells('2026-01-15', 'gregorian', [layerWithEventOn('2026-03-10')], {});
     expect(cells.find((c) => c.month === 3)!.hasEvents).toBe(true);
     expect(cells.find((c) => c.month === 1)!.hasEvents).toBe(false);
+  });
+});
+
+describe('buildYearMonthCells', () => {
+  it('returns 12 groups for gregorian, in month order, each matching buildMonthCells for that month', () => {
+    const groups = buildYearMonthCells('2026-07-29', 'gregorian', [], {});
+    expect(groups.length).toBe(12);
+    expect(groups.map((g) => g.month)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+    expect(groups[1].iso).toBe('2026-02-01');
+    expect(groups[1].cells).toEqual(buildMonthCells('2026-02-01', 'gregorian', [], {}));
+  });
+
+  it('returns as many groups as monthsInCalendarYear for a hebrew leap year', () => {
+    const groups = buildYearMonthCells('2026-07-29', 'hebrew', [], {});
+    expect(groups.length).toBe(monthsInCalendarYear(5786, 'hebrew'));
+  });
+
+  it('marks hasEvents on the correct day cell inside the correct month group', () => {
+    const groups = buildYearMonthCells('2026-01-15', 'gregorian', [layerWithEventOn('2026-03-10')], {});
+    const march = groups.find((g) => g.month === 3)!;
+    expect(march.cells.find((c) => c.iso === '2026-03-10')!.hasEvents).toBe(true);
+    const january = groups.find((g) => g.month === 1)!;
+    expect(january.cells.every((c) => c.hasEvents === false)).toBe(true);
   });
 });
