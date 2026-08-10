@@ -11,6 +11,11 @@ import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
 import { formatCoordinates, formatInfoFieldHtml } from './info-field-format';
 
+export function featureLabel(feature: GeoFeature, strings: Record<string, string>): string {
+  const props = feature.properties;
+  return String(props.name ?? props.title ?? feature.id ?? t('search.untitledFeature', strings));
+}
+
 export function mountSearchOverlay(
   container: HTMLElement,
   store: Store<AppState>,
@@ -57,11 +62,6 @@ export function mountSearchOverlay(
   // a boundary or heatmap layer that exists to render, not to be searched).
   const searchableEntries = featureEntries.filter((entry) => entry.manifest.panel?.showInSearch !== false);
 
-  function featureLabel(feature: GeoFeature): string {
-    const props = feature.properties;
-    return String(props.name ?? props.title ?? feature.id ?? t('search.untitledFeature', strings));
-  }
-
   function searchableFeatures(): GeoFeature[] {
     const activeFilters = store.get().activeFilters;
     return searchableEntries
@@ -95,7 +95,7 @@ export function mountSearchOverlay(
       ? matches
           .map(
             (feature, index) =>
-              `<button type="button" class="search-result-item" data-result-index="${index}"><span class="search-result-item__name">${escapeHtml(featureLabel(feature))}</span></button>`,
+              `<button type="button" class="search-result-item" data-result-index="${index}"><span class="search-result-item__name">${escapeHtml(featureLabel(feature, strings))}</span></button>`,
           )
           .join('')
       : `<p class="search-results__empty">${t('search.noResults', strings)}</p>`;
@@ -119,7 +119,7 @@ export function mountSearchOverlay(
       const coords = feature.geometry.coordinates as [number, number];
       const regions = findContainingRegions(coords, layers, date);
       if (regions.length > 0) {
-        const regionNames = regions.map((region) => escapeHtml(featureLabel(region))).join(', ');
+        const regionNames = regions.map((region) => escapeHtml(featureLabel(region, strings))).join(', ');
         regionLine = `<p>${t('info.containingRegion', strings, { regions: regionNames })}</p>`;
       }
       coordinatesLine = `<p>${t('info.coordinates', strings, formatCoordinates(coords))}</p>`;
@@ -204,7 +204,7 @@ export function mountSearchOverlay(
     );
 
     if (selected !== undefined) {
-      searchInput.value = featureLabel(selected.feature);
+      searchInput.value = featureLabel(selected.feature, strings);
       syncClearButton();
       resultsEl.hidden = true;
       infoEl.hidden = false;

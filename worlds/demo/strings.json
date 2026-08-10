@@ -1,6 +1,8 @@
 {
   "views.map": "Map",
   "views.calendar": "Calendar",
+  "calendarView.viewOnMap": "View on map",
+  "calendarView.noEvents": "No events on this day",
   "search.placeholder": "Search...",
   "search.openLabel": "Open search",
   "search.clearLabel": "Clear search",

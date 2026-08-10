@@ -11,6 +11,7 @@ import { mountSearchOverlay } from './ui/panels/SearchOverlay';
 import { mountPanelRight } from './ui/panels/PanelRight';
 import { mountLayerControl } from './ui/panels/LayerControl';
 import { mountCalendarBar } from './ui/panels/CalendarBar';
+import { mountCalendarView } from './ui/panels/CalendarView';
 import { mountSettingsControl } from './ui/panels/SettingsControl';
 import { mountAppChrome } from './ui/app-chrome';
 import { ensureCalendarSystemLoaded } from './engine/time/calendar-conversion';
@@ -122,6 +123,7 @@ async function bootstrap(): Promise<void> {
   // Time editor and map-settings button both live inline inside the
   // filters panel now, not as standalone floating controls.
   mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings);
+  mountCalendarView(document.querySelector('#calendar-view')!, store, appManifest.calendar, strings, loadedLayers);
   mountSettingsControl(document.querySelector('#panel-right-map-settings')!, store, strings, {
     appManifest,
     mapAdapter,

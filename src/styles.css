@@ -1416,6 +1416,103 @@ select:disabled {
 .map-app.view-calendar .leaflet-control-zoom {
   display: none;
 }
+.calendar-view__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.calendar-view__tabs {
+  display: flex;
+  gap: 0.25rem;
+}
+.calendar-view__tab {
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.9rem;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+.calendar-view__tab.is-active {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+.calendar-view__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.calendar-view__period {
+  font-weight: var(--font-weight-semibold);
+  min-width: 8rem;
+  text-align: center;
+}
+/* renderCalendarGrid() (CalendarGrid.ts) fully overwrites its container's
+   className to "calendar-bar__grid calendar-grid calendar-grid--<granularity>"
+   — the "calendar-view__grid" class on the wrapper div in the template below
+   gets wiped the instant renderCalendarGrid runs, so this targets the class
+   that actually survives (.calendar-grid, which renderCalendarGrid sets)
+   scoped under .calendar-view__body instead of relying on a class of our own. */
+.calendar-view__body > .calendar-grid {
+  max-width: 28rem;
+}
+.calendar-view__year {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 1.5rem;
+}
+.calendar-view__year-month-title {
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 0.4rem;
+}
+.calendar-view__agenda {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 32rem;
+}
+.calendar-view__agenda-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.6rem 0.8rem;
+}
+.calendar-view__agenda-layer {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+  text-transform: uppercase;
+}
+.calendar-view__agenda-name {
+  flex: 1;
+  font-weight: var(--font-weight-medium);
+}
+.calendar-view__agenda-view-btn {
+  border: 1px solid var(--color-primary);
+  background: var(--color-white);
+  color: var(--color-primary);
+  border-radius: var(--radius-full);
+  padding: 0.3rem 0.75rem;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+.calendar-view__agenda-view-btn:hover {
+  background: var(--color-primary-light);
+}
+.calendar-view__agenda-empty {
+  color: var(--color-text-light);
+}
 
 /* ========================================
    CALENDAR GRID (week/month/year views inside the Time editor)
