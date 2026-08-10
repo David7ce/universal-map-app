@@ -3,7 +3,7 @@ import type { CalendarSystem } from '../../engine/time/calendar-systems';
 import type { LoadedLayer } from '../../engine/taxonomy/compute-dimensions';
 import { buildYearMonthCells, type CalendarGridMonthGroup } from '../../engine/time/calendar-grid';
 import { getFeaturesOnDate } from '../../engine/time/day-agenda';
-import { toCalendarParts } from '../../engine/time/calendar-conversion';
+import { toCalendarParts, formatCalendarDate } from '../../engine/time/calendar-conversion';
 import type { CalendarConfig, Granularity } from './CalendarBar';
 import { clampDateToRange, getVisibleGranularityOptions, nextSelectedDate } from './CalendarBar';
 import { renderCalendarGrid } from './CalendarGrid';
@@ -72,6 +72,7 @@ export function mountCalendarView(
   let granularity: Granularity = 'month';
 
   function periodLabel(selectedIso: string, system: CalendarSystem): string {
+    if (granularity === 'day') return formatCalendarDate(selectedIso, system);
     const parts = toCalendarParts(selectedIso, system);
     if (granularity === 'year') return String(parts.year);
     const monthName =
@@ -90,6 +91,7 @@ export function mountCalendarView(
   }
 
   function render(): void {
+    if (store.get().view !== 'calendar') return;
     const state = store.get();
     const visibleLayers = layers.filter((layer) => !state.hiddenLayerIds.has(layer.manifest.id));
     const system = state.calendarSystem;
@@ -157,21 +159,23 @@ export function mountCalendarView(
         min: config.min,
         max: maxIso,
         onSelectDay: (iso) => {
-          store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
           granularity = 'day';
+          store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
           render();
         },
       });
     }
 
     if (granularity === 'year') {
-      container.querySelectorAll<HTMLButtonElement>('.calendar-view__year [data-iso]:not([disabled])').forEach((button) => {
-        button.addEventListener('click', () => {
-          store.set({ selectedDate: clampDateToRange(button.dataset.iso!, config.min, maxIso) });
-          granularity = 'day';
-          render();
+      container
+        .querySelectorAll<HTMLButtonElement>('.calendar-view__year [data-iso]:not([disabled])')
+        .forEach((button) => {
+          button.addEventListener('click', () => {
+            granularity = 'day';
+            store.set({ selectedDate: clampDateToRange(button.dataset.iso!, config.min, maxIso) });
+            render();
+          });
         });
-      });
     }
 
     if (granularity === 'day') {

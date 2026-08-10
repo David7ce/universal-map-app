@@ -23,10 +23,12 @@
 ### Task 1: Engine — `buildYearMonthCells` (12 mini-months, each with all days)
 
 **Files:**
+
 - Modify: `src/engine/time/calendar-grid.ts`
 - Test: `src/engine/time/calendar-grid.test.ts`
 
 **Interfaces:**
+
 - Consumes: existing `buildMonthCells(selectedIso, system, layers, activeFilters): CalendarGridDayCell[]`, `toCalendarParts`, `calendarPartsToIso`, `monthsInCalendarYear` (all already imported in this file).
 - Produces: `export interface CalendarGridMonthGroup { month: number; iso: string; cells: CalendarGridDayCell[] }` and `export function buildYearMonthCells(selectedIso: string, system: CalendarSystem, layers: LoadedLayer[], activeFilters: Record<string, Set<string>>): CalendarGridMonthGroup[]` — consumed by `CalendarView.ts` in Task 6.
 
@@ -127,10 +129,12 @@ EOF
 ### Task 2: Engine — `getFeaturesOnDate` (day agenda)
 
 **Files:**
+
 - Create: `src/engine/time/day-agenda.ts`
 - Test: `src/engine/time/day-agenda.test.ts`
 
 **Interfaces:**
+
 - Consumes: `LoadedLayer` (`src/engine/taxonomy/compute-dimensions.ts`), `featureMatchesFilters` (same file), `isActiveOn` (`src/engine/time/is-active-on.ts`), `GeoFeature` (`src/engine/time/temporal-types.ts`).
 - Produces: `export interface DayAgendaEntry { layerId: string; layerTitle: string; feature: GeoFeature }` and `export function getFeaturesOnDate(layers: LoadedLayer[], activeFilters: Record<string, Set<string>>, iso: string): DayAgendaEntry[]` — consumed by `CalendarView.ts` in Task 6.
 
@@ -299,14 +303,16 @@ EOF
 ### Task 3: Simplify `CalendarBar.ts` — drop the embedded grid
 
 **Files:**
+
 - Modify: `src/ui/panels/CalendarBar.ts`
 - Modify: `src/main.ts`
 
 **Interfaces:**
+
 - Consumes: nothing new.
 - Produces: `export function clampDateToRange(iso: string, min: string, max: string): string` (was private) — consumed by `CalendarView.ts` in Task 6. `mountCalendarBar`'s signature drops its `layers: LoadedLayer[]` parameter (5 args → 4).
 
-This makes `CalendarBar.ts` go back to being purely the compact year/month/day spinner + slider (its role while on Map view) — the grid it currently renders is superseded by the new full-screen `CalendarView.ts` (Task 6). Doing this simplification *before* the dead-code cleanup in Task 4 avoids a window where the app briefly renders an inconsistent hybrid.
+This makes `CalendarBar.ts` go back to being purely the compact year/month/day spinner + slider (its role while on Map view) — the grid it currently renders is superseded by the new full-screen `CalendarView.ts` (Task 6). Doing this simplification _before_ the dead-code cleanup in Task 4 avoids a window where the app briefly renders an inconsistent hybrid.
 
 - [ ] **Step 1: Remove the grid from `CalendarBar.ts`**
 
@@ -438,11 +444,13 @@ EOF
 ### Task 4: Remove the now-dead 12-button year grid
 
 **Files:**
+
 - Modify: `src/engine/time/calendar-grid.ts`
 - Modify: `src/engine/time/calendar-grid.test.ts`
 - Modify: `src/ui/panels/CalendarGrid.ts`
 
 **Interfaces:**
+
 - Consumes: nothing new.
 - Produces: nothing new — pure removal. `renderCalendarGrid`'s `CalendarGridDeps.granularity` narrows from `Exclude<Granularity, 'day'>` to `'week' | 'month'`, and `onSelectMonth` is removed from `CalendarGridDeps` (both consumed by `CalendarView.ts` in Task 6, which only ever calls it for week/month).
 
@@ -613,6 +621,7 @@ EOF
 ### Task 5: View switcher — `AppState.view`, containers, Map/Leaflet resize fix
 
 **Files:**
+
 - Modify: `src/engine/state/store.ts`
 - Modify: `src/engine/space/map-adapter.ts`
 - Modify: `src/engine/space/leaflet/leaflet-map-adapter.ts`
@@ -622,6 +631,7 @@ EOF
 - Modify: `src/styles.css`
 
 **Interfaces:**
+
 - Consumes: `icons.pushpin`, `icons.calendar` (`src/ui/icons.ts`, unchanged), `MapAdapter` (extended).
 - Produces: `AppState.view: 'map' | 'calendar'`. `MapAdapter.invalidateSize(): void`. A `#calendar-view` container in the DOM that Task 6 mounts `CalendarView.ts` into — empty in this task.
 
@@ -630,9 +640,9 @@ EOF
 In `src/engine/state/store.ts`, add to the `AppState` interface (after `showGrid`):
 
 ```ts
-  // Which top-level screen is showing: the full-screen map, or the
-  // full-screen Calendar view (day/week/month/year + day agenda).
-  view: 'map' | 'calendar';
+// Which top-level screen is showing: the full-screen map, or the
+// full-screen Calendar view (day/week/month/year + day agenda).
+view: 'map' | 'calendar';
 ```
 
 - [ ] **Step 2: Add `invalidateSize` to `MapAdapter`**
@@ -660,9 +670,9 @@ In `src/engine/space/leaflet/leaflet-map-adapter.ts`, add to the returned `adapt
 In `index.html`, right after `<div id="map" class="map"></div>`, add:
 
 ```html
-      <div id="view-switcher" class="view-switcher"></div>
+<div id="view-switcher" class="view-switcher"></div>
 
-      <div id="calendar-view" class="calendar-view"></div>
+<div id="calendar-view" class="calendar-view"></div>
 ```
 
 - [ ] **Step 4: Seed `view` in `main.ts`**
@@ -779,7 +789,7 @@ function mountViewSwitcher(store: Store<AppState>, strings: Record<string, strin
 Wire it into `mountAppChrome` (add the call alongside the other `mount*` calls at the bottom of that function):
 
 ```ts
-  mountViewSwitcher(store, strings, mapAdapter);
+mountViewSwitcher(store, strings, mapAdapter);
 ```
 
 - [ ] **Step 7: Add the two new strings**
@@ -799,6 +809,7 @@ Expected: no errors.
 - [ ] **Step 9: Manual verification**
 
 Run: `pnpm run build && pnpm run preview` (or `pnpm dev`), open the printed URL:
+
 - A pill-shaped Map/Calendar switcher shows top-center, "Map" active by default.
 - Click "Calendar" — the map, search button, layers button, and footer legend disappear; an empty area shows where `#calendar-view` is (nothing rendered into it yet — that's Task 6).
 - Click "Map" again — the map reappears and is still fully interactive (pan/zoom/click a marker) with no visual glitches (this exercises `invalidateSize()`).
@@ -824,6 +835,7 @@ EOF
 ### Task 6: `CalendarView.ts` — the full-screen calendar browser
 
 **Files:**
+
 - Create: `src/ui/panels/CalendarView.ts`
 - Modify: `src/ui/panels/SearchOverlay.ts`
 - Modify: `src/main.ts`
@@ -831,6 +843,7 @@ EOF
 - Modify: `worlds/demo/strings.json`
 
 **Interfaces:**
+
 - Consumes: `buildYearMonthCells`, `CalendarGridMonthGroup` (Task 1), `getFeaturesOnDate`, `DayAgendaEntry` (Task 2), `clampDateToRange`, `Granularity`, `CalendarConfig`, `getVisibleGranularityOptions`, `nextSelectedDate` (all from `CalendarBar.ts`, Task 3), `renderCalendarGrid` (`CalendarGrid.ts`, now `'week' | 'month'`-only per Task 4), `CalendarSystem` (`calendar-systems.ts`), `toCalendarParts` (`calendar-conversion.ts`), `LoadedLayer` (`compute-dimensions.ts`), `Store`/`AppState` (`store.ts`), `t`/`strings`, `escapeHtml`, `icons`.
 - Produces: `export function mountCalendarView(container: HTMLElement, store: Store<AppState>, config: CalendarConfig, strings: Record<string, string>, layers: LoadedLayer[]): void`. `featureLabel` becomes exported from `SearchOverlay.ts` (was private).
 
@@ -1038,13 +1051,15 @@ export function mountCalendarView(
     }
 
     if (granularity === 'year') {
-      container.querySelectorAll<HTMLButtonElement>('.calendar-view__year [data-iso]:not([disabled])').forEach((button) => {
-        button.addEventListener('click', () => {
-          store.set({ selectedDate: clampDateToRange(button.dataset.iso!, config.min, maxIso) });
-          granularity = 'day';
-          render();
+      container
+        .querySelectorAll<HTMLButtonElement>('.calendar-view__year [data-iso]:not([disabled])')
+        .forEach((button) => {
+          button.addEventListener('click', () => {
+            store.set({ selectedDate: clampDateToRange(button.dataset.iso!, config.min, maxIso) });
+            granularity = 'day';
+            render();
+          });
         });
-      });
     }
 
     if (granularity === 'day') {
@@ -1180,7 +1195,7 @@ import { mountCalendarView } from './ui/panels/CalendarView';
 Add the mount call right after the existing `mountCalendarBar(...)` call:
 
 ```ts
-  mountCalendarView(document.querySelector('#calendar-view')!, store, appManifest.calendar, strings, loadedLayers);
+mountCalendarView(document.querySelector('#calendar-view')!, store, appManifest.calendar, strings, loadedLayers);
 ```
 
 - [ ] **Step 6: Run typecheck, lint, and tests**
@@ -1191,6 +1206,7 @@ Expected: no errors; `SearchOverlay.ts`'s behavior is unchanged (only `featureLa
 - [ ] **Step 7: Manual verification**
 
 Run: `pnpm dev`, open the printed URL:
+
 - Switch to Calendar view — month view shows by default, with the demo data's event dots visible on days that have POIs.
 - Click the Week/Day/Year tabs — each renders (year shows 12 mini-months, every day visible, with a header per month).
 - Click a day cell anywhere (week, month, or a mini-month in year view) — it switches to Day view and shows either the agenda list for that day or "No events on this day".
@@ -1219,6 +1235,7 @@ EOF
 ### Task 7: Full regression pass and docs
 
 **Files:**
+
 - Modify: `CHANGELOG.md`
 - Modify: `README.md`
 
@@ -1232,6 +1249,7 @@ Expected: all clean; test count should be 213 (baseline) + 6 new (`buildYearMont
 - [ ] **Step 2: Full manual smoke test**
 
 Run: `pnpm run preview` (serves the production build), open the printed URL, and walk through:
+
 1. Map view loads exactly as before (search, filters, layers, selection, footer legend all work).
 2. Switch to Calendar view and back to Map multiple times — map stays interactive every time (pans/zooms correctly, `invalidateSize` fix holds).
 3. In Calendar view, change a category filter in the filters panel (still reachable in both views), then check the agenda/grid dots reflect the filtered set.

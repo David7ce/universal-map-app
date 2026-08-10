@@ -3,3 +3,5 @@ dist/
 .worktrees/
 .claude/worktrees/
 *.log
+.playwright-mcp/
+*.png
