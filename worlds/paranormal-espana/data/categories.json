@@ -1,57 +1,57 @@
 {
-  "Apparitions": {
+  "Apariciones": {
     "icon": "👻",
     "color": "gray",
-    "description": "Ghosts, specters, souls in torment and phenomena related to the afterlife"
+    "description": "Fantasmas, espectros, almas en pena y fenómenos relacionados con el más allá"
   },
-  "UFOs": {
+  "OVNIs": {
     "icon": "🛸",
     "color": "blue",
-    "description": "Unidentified flying objects and encounters with beings from other worlds"
+    "description": "Objetos voladores no identificados y encuentros con seres de otros mundos"
   },
-  "Curses": {
+  "Maldiciones": {
     "icon": "🪦",
     "color": "purple",
-    "description": "Cursed villages, excommunicated places and lands under ancestral curses"
+    "description": "Pueblos malditos, lugares excomulgados y tierras con maldiciones ancestrales"
   },
-  "Witchcraft": {
+  "Brujería": {
     "icon": "🔮",
     "color": "indigo",
-    "description": "Covens, spells, historical witches and magic ceremonies"
+    "description": "Aquelarres, hechizos, brujas históricas y ceremonias mágicas"
   },
-  "Mythical Creatures": {
+  "Criaturas Míticas": {
     "icon": "🐉",
     "color": "green",
-    "description": "Dragons, legendary beasts, mythological animals and cryptozoology"
+    "description": "Dragones, bestias legendarias, animales mitológicos y criptozoología"
   },
-  "Humanoid Monsters": {
+  "Monstruos Humanoides": {
     "icon": "🧛",
     "color": "red",
-    "description": "Werewolves, vampires and beings with human form but supernatural nature"
+    "description": "Hombres lobo, vampiros y seres con forma humana pero sobrenaturales"
   },
-  "Natural Disasters": {
+  "Desastres Naturales": {
     "icon": "🌊",
     "color": "cyan",
-    "description": "Earthquakes, tsunamis, eruptions and natural tragedies with or without a paranormal component"
+    "description": "Terremotos, tsunamis, erupciones y tragedias naturales con o sin componente paranormal"
   },
-  "Tragedies": {
+  "Tragedias": {
     "icon": "🔪",
     "color": "pink",
-    "description": "Historical murders, atrocious crimes and places of violent death"
+    "description": "Asesinatos históricos, crímenes atroces y lugares de muertes violentas"
   },
-  "Portals": {
+  "Portales": {
     "icon": "🌀",
     "color": "violet",
-    "description": "Dimensional portals, doorways to the underworld and energy vortexes"
+    "description": "Portales dimensionales, puertas al inframundo y vórtices de energía"
   },
-  "Cursed Objects": {
+  "Objetos Malditos": {
     "icon": "🗿",
     "color": "orange",
-    "description": "Paintings, dolls, relics and objects that bring misfortune"
+    "description": "Cuadros, muñecas, reliquias y objetos que causan desgracias"
   },
-  "Power Places": {
+  "Lugares de Poder": {
     "icon": "⚡",
     "color": "yellow",
-    "description": "Strange energies, ley lines, magnetic points and sacred sites"
+    "description": "Energías extrañas, líneas ley, puntos magnéticos y lugares sagrados"
   }
 }

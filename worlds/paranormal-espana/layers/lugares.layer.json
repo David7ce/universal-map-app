@@ -10,17 +10,17 @@
       "label": "Category",
       "field": "properties.category",
       "icons": {
-        "Apparitions": "👻",
-        "UFOs": "🛸",
-        "Curses": "🪦",
-        "Witchcraft": "🔮",
-        "Mythical Creatures": "🐉",
-        "Humanoid Monsters": "🧛",
-        "Natural Disasters": "🌊",
-        "Tragedies": "🔪",
-        "Portals": "🌀",
-        "Cursed Objects": "🗿",
-        "Power Places": "⚡"
+        "Apariciones": "👻",
+        "OVNIs": "🛸",
+        "Maldiciones": "🪦",
+        "Brujería": "🔮",
+        "Criaturas Míticas": "🐉",
+        "Monstruos Humanoides": "🧛",
+        "Desastres Naturales": "🌊",
+        "Tragedias": "🔪",
+        "Portales": "🌀",
+        "Objetos Malditos": "🗿",
+        "Lugares de Poder": "⚡"
       },
       "defaultIcon": "❓"
     },
@@ -29,11 +29,11 @@
       "label": "Verification Level",
       "field": "properties.verificationLevel",
       "icons": {
-        "Scientifically Studied": "🔬",
-        "Documented": "📰",
-        "Multiple Witnesses": "👁️",
-        "Popular Legend": "📚",
-        "Unverified": "❓"
+        "Científicamente Estudiado": "🔬",
+        "Documentado": "📰",
+        "Testimonios Múltiples": "👁️",
+        "Leyenda Popular": "📚",
+        "Sin Verificar": "❓"
       },
       "defaultIcon": "❓"
     }

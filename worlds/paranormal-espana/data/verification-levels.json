@@ -1,27 +1,27 @@
 {
-  "Scientifically Studied": {
+  "Científicamente Estudiado": {
     "icon": "🔬",
     "level": 5,
-    "description": "Formal research, university studies or forensic analysis"
+    "description": "Investigaciones formales, estudios universitarios o análisis forenses"
   },
-  "Documented": {
+  "Documentado": {
     "icon": "📰",
     "level": 4,
-    "description": "Press reports, documentaries or official historical archives"
+    "description": "Reportajes especializados, documentales o archivos históricos oficiales"
   },
-  "Multiple Witnesses": {
+  "Testimonios Múltiples": {
     "icon": "👁️",
     "level": 3,
-    "description": "Several independent witnesses with consistent reports"
+    "description": "Varios testigos independientes con reportes consistentes"
   },
-  "Popular Legend": {
+  "Leyenda Popular": {
     "icon": "📚",
     "level": 2,
-    "description": "Oral tradition, local stories with no external verification"
+    "description": "Tradición oral, historias locales sin verificación externa"
   },
-  "Unverified": {
+  "Sin Verificar": {
     "icon": "❓",
     "level": 1,
-    "description": "Single reports, no additional witnesses, or anecdotal stories"
+    "description": "Reportes únicos, sin testigos adicionales o historias anecdóticas"
   }
 }
