@@ -1,0 +1,25 @@
+{
+  "$schema": "../../docs/schemas/world.schema.json",
+  "id": "moon-img-map",
+  "title": "Moon Photo Map",
+  "map": { "center": [47, 2], "zoom": 5 },
+  "baseLayers": [
+    {
+      "id": "osm",
+      "title": "Map",
+      "type": "raster-tile",
+      "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+      "attribution": "© OpenStreetMap contributors"
+    },
+    {
+      "id": "satellite",
+      "title": "Satellite",
+      "type": "raster-tile",
+      "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      "attribution": "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community"
+    }
+  ],
+  "dataLayers": ["layers/photos.layer.json"],
+  "calendar": { "default": "2026-07-01", "min": "2026-07-01", "max": "2026-07-31" },
+  "strings": "strings.json"
+}

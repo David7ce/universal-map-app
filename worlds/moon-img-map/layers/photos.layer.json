@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../docs/schemas/layer.schema.json",
+  "id": "moon-photos",
+  "title": "Moon Photos",
+  "kind": "point",
+  "source": { "type": "geojson", "url": "worlds/moon-img-map/data/photos.geojson" },
+  "temporal": { "defaultVisibility": "time-filtered" },
+  "taxonomy": [
+    {
+      "id": "moonPhase",
+      "label": "Moon Phase",
+      "field": "properties.moonPhaseLabel",
+      "icons": {
+        "Luna Nueva": "🌑",
+        "Creciente": "🌒",
+        "Cuarto Creciente": "🌓",
+        "Gibosa Creciente": "🌔",
+        "Luna Llena": "🌕",
+        "Gibosa Menguante": "🌖",
+        "Cuarto Menguante": "🌗",
+        "Menguante": "🌘"
+      },
+      "defaultIcon": "🌙"
+    }
+  ],
+  "regionRole": null,
+  "style": { "cluster": true, "icon": "marker" },
+  "panel": {
+    "showInSearch": true,
+    "showInInfo": true,
+    "infoFields": [
+      { "field": "properties.thumb", "label": "Photo", "type": "image" },
+      { "field": "properties.moonPhaseLabel", "label": "Moon Phase" },
+      { "field": "properties.date", "label": "Taken" },
+      { "field": "properties.camera", "label": "Camera" },
+      { "field": "properties.tags", "label": "Location" }
+    ]
+  }
+}
