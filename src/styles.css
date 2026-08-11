@@ -1736,6 +1736,14 @@ select:disabled {
   color: var(--color-text-light);
 }
 
+.calendar-view__list-date {
+  font-weight: var(--font-weight-semibold);
+  margin: 1rem 0 0.4rem;
+}
+.calendar-view__list-date:first-child {
+  margin-top: 0;
+}
+
 /* ========================================
    CALENDAR GRID (week/month/year views inside the Time editor)
    ======================================== */

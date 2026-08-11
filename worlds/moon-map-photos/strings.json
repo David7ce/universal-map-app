@@ -30,6 +30,7 @@
   "calendar.granularity.week": "Week",
   "calendar.granularity.month": "Month",
   "calendar.granularity.year": "Year",
+  "calendar.granularity.list": "List",
   "calendar.weekday.sun": "Sun",
   "calendar.weekday.mon": "Mon",
   "calendar.weekday.tue": "Tue",

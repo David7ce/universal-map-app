@@ -2,7 +2,8 @@ import type { Store, AppState } from '../../engine/state/store';
 import type { CalendarSystem } from '../../engine/time/calendar-systems';
 import type { LoadedLayer } from '../../engine/taxonomy/compute-dimensions';
 import { buildYearMonthCells, type CalendarGridMonthGroup } from '../../engine/time/calendar-grid';
-import { getFeaturesOnDate } from '../../engine/time/day-agenda';
+import { getFeaturesOnDate, getFeaturesInRange } from '../../engine/time/day-agenda';
+import type { DayAgendaEntry } from '../../engine/time/day-agenda';
 import { toCalendarParts, formatCalendarDate } from '../../engine/time/calendar-conversion';
 import type { CalendarConfig, Granularity } from './CalendarBar';
 import { clampDateToRange, getVisibleGranularityOptions, nextSelectedDate } from './CalendarBar';
@@ -56,6 +57,20 @@ function renderYearMonth(
   </div>`;
 }
 
+// Shared by the day view's single-day agenda and the list view's per-date
+// groups — same calendar-view__agenda/-item markup either way.
+function renderAgendaList(entries: DayAgendaEntry[], strings: Record<string, string>): string {
+  return `<ul class="calendar-view__agenda">${entries
+    .map(
+      (entry) => `<li class="calendar-view__agenda-item">
+        <span class="calendar-view__agenda-layer">${escapeHtml(entry.layerTitle)}</span>
+        <span class="calendar-view__agenda-name">${escapeHtml(featureLabel(entry.feature, strings))}</span>
+        <button type="button" class="calendar-view__agenda-view-btn" data-feature-id="${escapeHtml(String(entry.feature.id ?? ''))}">${escapeHtml(t('calendarView.viewOnMap', strings))}</button>
+      </li>`,
+    )
+    .join('')}</ul>`;
+}
+
 export function mountCalendarView(
   container: HTMLElement,
   store: Store<AppState>,
@@ -95,7 +110,8 @@ export function mountCalendarView(
     const visibleLayers = layers.filter((layer) => !state.hiddenLayerIds.has(layer.manifest.id));
     const system = state.calendarSystem;
 
-    const tabsHtml = getVisibleGranularityOptions(system)
+    const tabOptions: Granularity[] = [...getVisibleGranularityOptions(system), 'list'];
+    const tabsHtml = tabOptions
       .map(
         (g) =>
           `<button type="button" class="calendar-view__tab${g === granularity ? ' is-active' : ''}" data-granularity="${g}">${escapeHtml(t(`calendar.granularity.${g}`, strings))}</button>`,
@@ -106,15 +122,17 @@ export function mountCalendarView(
     if (granularity === 'day') {
       const entries = getFeaturesOnDate(visibleLayers, state.activeFilters, state.selectedDate);
       bodyHtml = entries.length
-        ? `<ul class="calendar-view__agenda">${entries
+        ? renderAgendaList(entries, strings)
+        : `<p class="calendar-view__agenda-empty">${escapeHtml(t('calendarView.noEvents', strings))}</p>`;
+    } else if (granularity === 'list') {
+      const groups = getFeaturesInRange(visibleLayers, state.activeFilters, state.selectedDate, maxIso);
+      bodyHtml = groups.length
+        ? groups
             .map(
-              (entry) => `<li class="calendar-view__agenda-item">
-                <span class="calendar-view__agenda-layer">${escapeHtml(entry.layerTitle)}</span>
-                <span class="calendar-view__agenda-name">${escapeHtml(featureLabel(entry.feature, strings))}</span>
-                <button type="button" class="calendar-view__agenda-view-btn" data-feature-id="${escapeHtml(String(entry.feature.id ?? ''))}">${escapeHtml(t('calendarView.viewOnMap', strings))}</button>
-              </li>`,
+              (group) =>
+                `<div class="calendar-view__list-date">${escapeHtml(formatCalendarDate(group.iso, system))}</div>${renderAgendaList(group.entries, strings)}`,
             )
-            .join('')}</ul>`
+            .join('')
         : `<p class="calendar-view__agenda-empty">${escapeHtml(t('calendarView.noEvents', strings))}</p>`;
     } else if (granularity === 'year') {
       const groups = buildYearMonthCells(state.selectedDate, system, visibleLayers, state.activeFilters);
@@ -125,14 +143,19 @@ export function mountCalendarView(
       bodyHtml = `<div class="calendar-view__grid" data-role="grid"></div>`;
     }
 
-    container.innerHTML = `
-      <div class="calendar-view__header">
-        <div class="calendar-view__tabs">${tabsHtml}</div>
-        <div class="calendar-view__nav">
+    const navHtml =
+      granularity === 'list'
+        ? ''
+        : `<div class="calendar-view__nav">
           <button type="button" class="calendar-bar__step-btn" data-action="prev" aria-label="Step back">‹</button>
           <span class="calendar-view__period">${escapeHtml(periodLabel(state.selectedDate, system))}</span>
           <button type="button" class="calendar-bar__step-btn" data-action="next" aria-label="Step forward">›</button>
-        </div>
+        </div>`;
+
+    container.innerHTML = `
+      <div class="calendar-view__header">
+        <div class="calendar-view__tabs">${tabsHtml}</div>
+        ${navHtml}
       </div>
       <div class="calendar-view__body">${bodyHtml}</div>
     `;
@@ -143,8 +166,8 @@ export function mountCalendarView(
         render();
       });
     });
-    container.querySelector('[data-action="prev"]')!.addEventListener('click', () => step(-1));
-    container.querySelector('[data-action="next"]')!.addEventListener('click', () => step(1));
+    container.querySelector('[data-action="prev"]')?.addEventListener('click', () => step(-1));
+    container.querySelector('[data-action="next"]')?.addEventListener('click', () => step(1));
 
     if (granularity === 'week' || granularity === 'month') {
       const gridEl = container.querySelector<HTMLElement>('[data-role="grid"]')!;
@@ -177,7 +200,7 @@ export function mountCalendarView(
         });
     }
 
-    if (granularity === 'day') {
+    if (granularity === 'day' || granularity === 'list') {
       container.querySelectorAll<HTMLButtonElement>('[data-feature-id]').forEach((button) => {
         button.addEventListener('click', () => {
           store.set({
