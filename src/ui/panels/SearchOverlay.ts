@@ -11,6 +11,7 @@ import { t } from '../strings';
 import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
 import { formatCoordinates, formatInfoFieldHtml } from './info-field-format';
+import type { LightboxApi } from './Lightbox';
 
 export function featureLabel(feature: GeoFeature, strings: Record<string, string>): string {
   const props = feature.properties;
@@ -22,6 +23,7 @@ export function mountSearchOverlay(
   store: Store<AppState>,
   layers: LoadedLayer[],
   strings: Record<string, string>,
+  lightbox: LightboxApi,
 ): void {
   container.innerHTML = `
     <button type="button" class="control-btn control-btn--search" aria-controls="map-search-panel" aria-expanded="false" aria-label="${t('search.openLabel', strings)}">${icons.search}</button>
@@ -136,6 +138,17 @@ export function mountSearchOverlay(
       .join('');
 
     infoEl.innerHTML = `<p>${describeTemporalStatus(feature, date, strings, state.calendarSystem)}</p>${regionLine}${coordinatesLine}${infoFieldLines}`;
+
+    // Gallery info fields (formatInfoFieldHtml, image type with >1 value)
+    // render as plain buttons with the image list stashed in a data
+    // attribute — wire them to the shared lightbox here, after the HTML
+    // they're part of actually exists in the DOM.
+    infoEl.querySelectorAll<HTMLElement>('.search-info__gallery').forEach((galleryEl) => {
+      const images = JSON.parse(galleryEl.dataset.galleryImages ?? '[]');
+      galleryEl.querySelectorAll<HTMLButtonElement>('[data-gallery-index]').forEach((button) => {
+        button.addEventListener('click', () => lightbox.open(images, Number(button.dataset.galleryIndex)));
+      });
+    });
   }
 
   function open(): void {

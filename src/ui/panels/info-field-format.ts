@@ -27,8 +27,21 @@ export function formatInfoFieldHtml(def: InfoFieldDef, values: string[]): string
   if (def.type === 'link' && isAllowedUrl(values[0])) {
     return `<p><a href="${escapeHtml(values[0])}" target="_blank" rel="noopener">${label}</a></p>`;
   }
-  if (def.type === 'image' && isAllowedUrl(values[0])) {
-    return `<p><strong>${label}</strong></p><img class="search-info__image" src="${escapeHtml(values[0])}" alt="${label}">`;
+  if (def.type === 'image') {
+    const safeValues = values.filter(isAllowedUrl);
+    if (safeValues.length > 1) {
+      const images = safeValues.map((src) => ({ src, alt: def.label }));
+      const thumbs = safeValues
+        .map(
+          (src, i) =>
+            `<button type="button" class="search-info__gallery-thumb" data-gallery-index="${i}"><img src="${escapeHtml(src)}" alt="${escapeHtml(def.label)} ${i + 1}"></button>`,
+        )
+        .join('');
+      return `<p><strong>${label}</strong></p><div class="search-info__gallery" data-gallery-images="${escapeHtml(JSON.stringify(images))}">${thumbs}</div>`;
+    }
+    if (safeValues.length === 1) {
+      return `<p><strong>${label}</strong></p><img class="search-info__image" src="${escapeHtml(safeValues[0])}" alt="${label}">`;
+    }
   }
   return `<p><strong>${label}:</strong> ${escapeHtml(values.join(', '))}</p>`;
 }

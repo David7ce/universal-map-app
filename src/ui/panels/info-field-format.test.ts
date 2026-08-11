@@ -52,6 +52,31 @@ describe('formatInfoFieldHtml', () => {
     );
   });
 
+  it('renders image type with multiple values as a clickable gallery, not a single img', () => {
+    const html = formatInfoFieldHtml({ field: 'photos', label: 'Photos', type: 'image' }, [
+      'https://example.org/a.png',
+      'https://example.org/b.png',
+    ]);
+    expect(html).toContain('search-info__gallery');
+    expect(html).not.toContain('search-info__image');
+    expect(html).toContain('data-gallery-index="0"');
+    expect(html).toContain('data-gallery-index="1"');
+    expect(html).toContain('data-gallery-images=');
+    // The images payload the gallery buttons hand to the lightbox on click.
+    expect(html).toContain('https://example.org/a.png');
+    expect(html).toContain('https://example.org/b.png');
+  });
+
+  it('drops unsafe values from a gallery but keeps the safe ones', () => {
+    const html = formatInfoFieldHtml({ field: 'photos', label: 'Photos', type: 'image' }, [
+      'https://example.org/a.png',
+      'javascript:alert(1)',
+      'https://example.org/b.png',
+    ]);
+    expect(html).toContain('search-info__gallery');
+    expect(html).not.toContain('javascript:alert');
+  });
+
   it('escapes HTML-significant characters in label and value', () => {
     expect(formatInfoFieldHtml({ field: 'x', label: '<b>X</b>' }, ['<script>'])).toBe(
       '<p><strong>&lt;b&gt;X&lt;/b&gt;:</strong> &lt;script&gt;</p>',

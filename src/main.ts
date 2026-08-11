@@ -10,6 +10,7 @@ import { createLeafletMapAdapter } from './engine/space/leaflet/leaflet-map-adap
 import { loadStrings } from './ui/strings';
 import { applyBranding } from './ui/branding';
 import { mountSearchOverlay } from './ui/panels/SearchOverlay';
+import { mountLightbox } from './ui/panels/Lightbox';
 import { mountPanelRight } from './ui/panels/PanelRight';
 import { mountLayerControl } from './ui/panels/LayerControl';
 import { mountCalendarBar } from './ui/panels/CalendarBar';
@@ -112,7 +113,8 @@ async function bootstrap(): Promise<void> {
 
   await calendarSystemLoaded;
   mountPanelRight(document.querySelector('#panel-right-filters')!, store, loadedLayers, strings);
-  mountSearchOverlay(document.querySelector('#search-overlay')!, store, loadedLayers, strings);
+  const lightbox = mountLightbox(document.querySelector('#lightbox')!, strings);
+  mountSearchOverlay(document.querySelector('#search-overlay')!, store, loadedLayers, strings, lightbox);
   mountLayerControl(document.querySelector('#layer-control')!, store, strings, {
     mapAdapter,
     baseLayerConfigs: appManifest.baseLayers,
