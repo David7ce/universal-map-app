@@ -1653,7 +1653,7 @@ select:disabled {
    a "nice" ground distance, plus its label e.g. "3 km" */
 .map-scale {
   flex-shrink: 0;
-  display: flex;
+  display: none;
   align-items: center;
   gap: 0.35rem;
 }
@@ -1676,6 +1676,7 @@ select:disabled {
   color: var(--color-border);
 }
 .data-attribution {
+  display: none;
   color: var(--color-text-light);
   flex: 1 1 auto;
   min-width: 0;
@@ -1693,6 +1694,12 @@ select:disabled {
 @media (min-width: 48rem) {
   :root {
     --panel-right-width: 320px;
+  }
+  .map-scale {
+    display: flex;
+  }
+  .data-attribution {
+    display: block;
   }
 }
 
