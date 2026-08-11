@@ -7,6 +7,11 @@ export interface BaseLayerConfig {
   type: 'raster-tile';
   url: string;
   attribution: string;
+  // Optional second tile source rendered on top of `url` — e.g. a
+  // labels/reference layer over unlabeled satellite imagery, so place
+  // names still show. Defaults to `attribution` when omitted.
+  labelsUrl?: string;
+  labelsAttribution?: string;
 }
 
 export interface AppManifest {

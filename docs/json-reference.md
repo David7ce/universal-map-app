@@ -38,6 +38,8 @@ One object per world instance, referenced from `src/main.ts` (currently with the
 | `type`        | `"raster-tile"` | Only value supported today.                                                                                                      |
 | `url`         | `string`        | Tile URL, with the `{z}/{x}/{y}` placeholders Leaflet expects.                                                                   |
 | `attribution` | `string`        | Attribution text shown in the footer strip when this layer is active.                                                            |
+| `labelsUrl`   | `string`        | Optional. A second tile source rendered on top of `url` — e.g. a labels/reference layer over unlabeled satellite imagery, so place names still show. Not validated at runtime (same as `url`/`attribution`). |
+| `labelsAttribution` | `string`  | Attribution for `labelsUrl`. Defaults to `attribution` when omitted.                                                             |
 
 ### `map.crs` — projections
 

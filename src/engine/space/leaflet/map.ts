@@ -5,8 +5,10 @@ import type { MapCrsConfig } from '../map-crs';
 export interface CreatedMap {
   map: L.Map;
   // Keyed by base layer id (from the manifest) — not title, so callers don't
-  // have to round-trip through display text to switch layers.
-  baseLayers: Record<string, L.TileLayer>;
+  // have to round-trip through display text to switch layers. A plain
+  // `L.TileLayer`, or an `L.LayerGroup` of two when the config declares a
+  // `labelsUrl` overlay (e.g. place names over unlabeled satellite tiles).
+  baseLayers: Record<string, L.Layer>;
 }
 
 // proj4leaflet (and its proj4 dependency) is only needed for a custom CRS —
@@ -47,9 +49,18 @@ export async function createMap(container: HTMLElement, appManifest: AppManifest
     ...(crs ? { crs } : {}),
   }).setView(appManifest.map.center, appManifest.map.zoom);
 
-  const baseLayers: Record<string, L.TileLayer> = {};
+  const baseLayers: Record<string, L.Layer> = {};
   appManifest.baseLayers.forEach((config, index) => {
-    const layer = L.tileLayer(config.url, { attribution: config.attribution, noWrap: true });
+    const tiles = L.tileLayer(config.url, { attribution: config.attribution, noWrap: true });
+    const layer = config.labelsUrl
+      ? L.layerGroup([
+          tiles,
+          L.tileLayer(config.labelsUrl, {
+            attribution: config.labelsAttribution ?? config.attribution,
+            noWrap: true,
+          }),
+        ])
+      : tiles;
     baseLayers[config.id] = layer;
     if (index === 0) layer.addTo(map);
   });

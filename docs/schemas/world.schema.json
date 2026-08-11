@@ -134,7 +134,15 @@
         "title": { "type": "string" },
         "type": { "const": "raster-tile", "description": "Only value supported today." },
         "url": { "type": "string", "description": "Tile URL, with {z}/{x}/{y} placeholders." },
-        "attribution": { "type": "string" }
+        "attribution": { "type": "string" },
+        "labelsUrl": {
+          "type": "string",
+          "description": "Optional second tile source rendered on top of \"url\" — e.g. a labels/reference layer over unlabeled satellite imagery."
+        },
+        "labelsAttribution": {
+          "type": "string",
+          "description": "Attribution for labelsUrl. Defaults to \"attribution\" when omitted."
+        }
       }
     }
   }
