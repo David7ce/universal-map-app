@@ -19,7 +19,7 @@ export interface CalendarConfig {
   max: string;
 }
 
-export type Granularity = 'day' | 'week' | 'month' | 'year';
+export type Granularity = 'day' | 'week' | 'month' | 'year' | 'list';
 
 // `system` isn't used to filter yet — every calendar system currently
 // offers the same four units. Kept as a parameter so a future system with
