@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Fix: opening filters no longer buries an open search panel on mobile
+
+The search overlay (`panels.left`) and filters drawer (`panels.right`) are both full-screen mobile drawers with the filters drawer stacked above search in z-index; nothing previously closed one when the other opened, so opening filters while search was open visually covered it with no indication it was still open underneath. New `openPanel()` (`src/engine/state/store.ts`) enforces mutual exclusion — every call site that opens a panel (filters toggle, search open, search result selection, map marker click) now goes through it or an equivalent single-patch `store.set()`.
+
 ## Isolated per-domain world builds, plus `favicon`
 
 `vite build --mode <world-id>` now makes that mode name double as the default world (`resolveWorldId`, `src/engine/manifests/resolve-world-id.ts` — `?world=` still overrides it) and scopes `copyWorldsDirPlugin`'s output to only that world's folder, so a domain-specific build (e.g. `npm run build:demo-only`) ships none of another world's data. Plain `npm run dev`/`npm run build` (modes `development`/`production`) are unaffected — still default to `demo` with every world present. `world.json` gains an optional `favicon` field (validated alongside the existing `strings` field in `validateAppManifest`); a new `applyBranding()` (`src/ui/branding.ts`) sets `document.title` from the manifest's existing `title` field and swaps the favicon at bootstrap, both previously unused/hardcoded.
