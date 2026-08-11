@@ -186,4 +186,43 @@ describe('validateAppManifest', () => {
   it('rejects a "systems" that is not a plain object', () => {
     expect(() => validateAppManifest({ ...valid, systems: [] })).toThrow(/systems/);
   });
+
+  it('accepts a manifest with no "welcome" field at all', () => {
+    expect(validateAppManifest(valid)).toEqual(valid);
+  });
+
+  it('accepts a well-formed "welcome" with only the required fields', () => {
+    const withWelcome = { ...valid, welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go' } };
+    expect(validateAppManifest(withWelcome)).toEqual(withWelcome);
+  });
+
+  it('accepts a well-formed "welcome" with the optional fields too', () => {
+    const withWelcome = {
+      ...valid,
+      welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go', heroImage: 'assets/hero.jpg', itemNoun: 'places' },
+    };
+    expect(validateAppManifest(withWelcome)).toEqual(withWelcome);
+  });
+
+  it('rejects a "welcome" missing "title"', () => {
+    expect(() => validateAppManifest({ ...valid, welcome: { tagline: 'Tag', ctaLabel: 'Go' } })).toThrow(
+      /welcome\.title/,
+    );
+  });
+
+  it('rejects a "welcome" missing "tagline"', () => {
+    expect(() => validateAppManifest({ ...valid, welcome: { title: 'Hi', ctaLabel: 'Go' } })).toThrow(
+      /welcome\.tagline/,
+    );
+  });
+
+  it('rejects a "welcome" missing "ctaLabel"', () => {
+    expect(() => validateAppManifest({ ...valid, welcome: { title: 'Hi', tagline: 'Tag' } })).toThrow(
+      /welcome\.ctaLabel/,
+    );
+  });
+
+  it('rejects a "welcome" that is not a plain object', () => {
+    expect(() => validateAppManifest({ ...valid, welcome: [] })).toThrow(/welcome/);
+  });
 });

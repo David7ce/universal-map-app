@@ -15,6 +15,7 @@ import { mountPanelRight } from './ui/panels/PanelRight';
 import { mountLayerControl } from './ui/panels/LayerControl';
 import { mountCalendarBar } from './ui/panels/CalendarBar';
 import { mountCalendarView } from './ui/panels/CalendarView';
+import { mountWelcomeView } from './ui/panels/WelcomeView';
 import { mountSettingsControl } from './ui/panels/SettingsControl';
 import { mountAppChrome } from './ui/app-chrome';
 import { ensureCalendarSystemLoaded } from './engine/time/calendar-conversion';
@@ -68,7 +69,7 @@ async function bootstrap(): Promise<void> {
     hiddenLayerIds: new Set(detailLayers.map((l) => l.manifest.id)),
     calendarSystem: appManifest.calendar.system ?? 'gregorian',
     showGrid: false,
-    view: 'map',
+    view: appManifest.welcome ? 'welcome' : 'map',
   });
 
   const mapContainer = document.querySelector<HTMLDivElement>('#map')!;
@@ -130,6 +131,10 @@ async function bootstrap(): Promise<void> {
   });
 
   mountAppChrome(store, strings, appManifest, mapAdapter, loadedLayers);
+
+  if (appManifest.welcome) {
+    mountWelcomeView(document.querySelector('#welcome-view')!, store, appId, appManifest.welcome, loadedLayers);
+  }
 
   document.getElementById('loading-overlay')?.remove();
 }

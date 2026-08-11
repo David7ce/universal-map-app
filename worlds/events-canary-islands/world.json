@@ -23,5 +23,11 @@
   ],
   "dataLayers": ["layers/events.layer.json"],
   "calendar": { "default": "today", "min": "2026-01-01", "max": "2026-12-31" },
-  "strings": "strings.json"
+  "strings": "strings.json",
+  "welcome": {
+    "title": "Canary Islands Events",
+    "tagline": "Concerts, festivals, markets and more happening across the islands.",
+    "ctaLabel": "See what's on",
+    "itemNoun": "events"
+  }
 }

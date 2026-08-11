@@ -81,6 +81,7 @@ function mountViewSwitcher(store: Store<AppState>, strings: Record<string, strin
       button.setAttribute('aria-pressed', String(isActive));
     });
     appEl.classList.toggle('view-calendar', state.view === 'calendar');
+    appEl.classList.toggle('view-welcome', state.view === 'welcome');
     if (previousView !== state.view && state.view === 'map') mapAdapter.invalidateSize();
     previousView = state.view;
   }

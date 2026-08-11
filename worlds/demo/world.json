@@ -24,6 +24,12 @@
   "dataLayers": ["layers/regions.layer.json", "layers/poi.layer.json", "layers/heatmap.layer.json"],
   "calendar": { "default": "today", "min": "2015-01-01", "max": "2030-12-31" },
   "strings": "strings.json",
+  "welcome": {
+    "title": "Universal Map Demo",
+    "tagline": "A spatio-temporal engine with a web interface — space, time, and data layers, driven entirely by declarative world packages.",
+    "ctaLabel": "Explore the demo",
+    "itemNoun": "points of interest"
+  },
   "plugins": {
     "participate": {
       "channel": "email",

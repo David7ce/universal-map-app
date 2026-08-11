@@ -101,6 +101,25 @@
           "description": "Set to false to hide all time/calendar UI (filters panel's Time section, the Map/Calendar view switcher, and Settings' calendar-system row) for a world with no temporal data. Defaults to true (time UI shown) when omitted."
         }
       }
+    },
+    "welcome": {
+      "type": "object",
+      "required": ["title", "tagline", "ctaLabel"],
+      "additionalProperties": false,
+      "description": "If present, a one-way thematic splash is the initial view instead of the map — its CTA button switches to the map, nothing switches back.",
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "tagline": { "type": "string", "minLength": 1 },
+        "ctaLabel": { "type": "string", "minLength": 1 },
+        "heroImage": {
+          "type": "string",
+          "description": "Relative path (inside the world's folder) to a hero image. No hero section when omitted."
+        },
+        "itemNoun": {
+          "type": "string",
+          "description": "Pairs with a live feature count (e.g. \"8 haunted places\"). No count line shown when omitted."
+        }
+      }
     }
   },
   "definitions": {

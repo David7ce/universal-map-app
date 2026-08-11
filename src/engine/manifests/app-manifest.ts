@@ -25,6 +25,7 @@ export interface AppManifest {
   favicon?: string;
   plugins?: Record<string, unknown>;
   systems?: { time?: boolean };
+  welcome?: { title: string; tagline: string; ctaLabel: string; heroImage?: string; itemNoun?: string };
 }
 
 export function validateAppManifest(json: unknown): AppManifest {
@@ -79,6 +80,28 @@ export function validateAppManifest(json: unknown): AppManifest {
     const systems = obj.systems as Record<string, unknown>;
     if (systems.time !== undefined && typeof systems.time !== 'boolean') {
       throw new Error(`App manifest "${obj.id}" "systems.time" must be a boolean`);
+    }
+  }
+
+  if (obj.welcome !== undefined) {
+    if (typeof obj.welcome !== 'object' || obj.welcome === null || Array.isArray(obj.welcome)) {
+      throw new Error(`App manifest "${obj.id}" "welcome" must be a plain object`);
+    }
+    const welcome = obj.welcome as Record<string, unknown>;
+    if (typeof welcome.title !== 'string' || welcome.title.length === 0) {
+      throw new Error(`App manifest "${obj.id}" "welcome.title" is required and must be a non-empty string`);
+    }
+    if (typeof welcome.tagline !== 'string' || welcome.tagline.length === 0) {
+      throw new Error(`App manifest "${obj.id}" "welcome.tagline" is required and must be a non-empty string`);
+    }
+    if (typeof welcome.ctaLabel !== 'string' || welcome.ctaLabel.length === 0) {
+      throw new Error(`App manifest "${obj.id}" "welcome.ctaLabel" is required and must be a non-empty string`);
+    }
+    if (welcome.heroImage !== undefined && typeof welcome.heroImage !== 'string') {
+      throw new Error(`App manifest "${obj.id}" "welcome.heroImage" must be a string path when present`);
+    }
+    if (welcome.itemNoun !== undefined && typeof welcome.itemNoun !== 'string') {
+      throw new Error(`App manifest "${obj.id}" "welcome.itemNoun" must be a string when present`);
     }
   }
 

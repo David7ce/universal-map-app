@@ -28,6 +28,7 @@ One object per world instance, referenced from `src/main.ts` (currently with the
 | `favicon`                       | `string`                                           | no                                                                | Relative path (inside the world's folder) to a favicon image, e.g. `"assets/favicon.png"`. If omitted, the default favicon (set in `index.html`) is kept.                                                                                                                                |
 | `plugins.participate`           | `ParticipateConfig \| undefined`                   | no                                                                | See table below. If omitted, the "Participate" button doesn't appear.                                                                                                                                                                                                                      |
 | `systems.time`                  | `boolean`                                          | no                                                                 | `false` hides all time/calendar UI (filters panel's Time section, the Map/Calendar view switcher, Settings' calendar-system row) — for a world with no temporal data. Defaults to `true` (shown) when omitted.                                                                                                                                                                              |
+| `welcome`                       | `WelcomeConfig \| undefined`                       | no                                                                 | See table below. If omitted, the map is the initial view, same as before this field existed. If present, a one-way thematic splash (`WelcomeView.ts`) is the initial view instead — its CTA button switches to the map; nothing switches back.                                            |
 
 ### `BaseLayerConfig` (element of `baseLayers`)
 
@@ -59,6 +60,16 @@ GeoJSON data is always WGS84 lon/lat regardless of `map.crs` — Leaflet reproje
 | `channel`         | `"email" \| "whatsapp" \| "telegram"` | Determines the generated link's scheme (`mailto:`, `https://wa.me/`, `https://t.me/`).                                                |
 | `target`          | `string`                              | Email, WhatsApp number (no `+`), or Telegram user/bot, depending on `channel`.                                                        |
 | `messageTemplate` | `string`                              | Message text. The `{{date}}` placeholder is replaced with the selected date (`YYYY-MM-DD`). Only the first occurrence is substituted. |
+
+### `WelcomeConfig` (`welcome`)
+
+| Field       | Type     | Required | Description                                                                                                                              |
+| ----------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `title`     | `string` | yes      | Splash heading.                                                                                                                             |
+| `tagline`   | `string` | yes      | One line under the title.                                                                                                                   |
+| `ctaLabel`  | `string` | yes      | Button text. Clicking it sets `view` to `'map'` — the only way out of the splash.                                                          |
+| `heroImage` | `string` | no       | Relative path (inside the world's folder) to a hero image, e.g. `"assets/hero.jpg"`. No hero section when omitted.                          |
+| `itemNoun`  | `string` | no       | Pairs with a live count of every loaded feature across all `dataLayers` (e.g. `"8"` + `"haunted places"` → "8 haunted places"). No count line when omitted, or when the count is 0. |
 
 ---
 

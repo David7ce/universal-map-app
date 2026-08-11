@@ -24,5 +24,11 @@
   "dataLayers": ["layers/regions.layer.json", "layers/lugares.layer.json"],
   "calendar": { "default": "today", "min": "1500-01-01", "max": "2030-12-31" },
   "strings": "strings.json",
-  "systems": { "time": false }
+  "systems": { "time": false },
+  "welcome": {
+    "title": "Paranormal Spain",
+    "tagline": "Ghosts, tragedies and legends at real locations across the Canary Islands.",
+    "ctaLabel": "Explore the map",
+    "itemNoun": "haunted places"
+  }
 }

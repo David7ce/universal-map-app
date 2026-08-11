@@ -1508,6 +1508,66 @@ select:disabled {
   background: var(--color-primary);
   color: var(--color-white);
 }
+/* ========================================
+   WELCOME VIEW — one-way thematic splash, only reachable as the initial
+   view (see store.ts's AppState.view comment, WelcomeView.ts).
+   ======================================== */
+.welcome-view {
+  display: none;
+  position: absolute;
+  inset: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  text-align: center;
+  background: var(--color-bg);
+  padding: 2rem 1.5rem;
+}
+.welcome-view__hero {
+  max-width: min(90vw, 480px);
+  max-height: 40vh;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+}
+.welcome-view__content {
+  max-width: 32rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.welcome-view__title {
+  margin: 0;
+  font-size: var(--font-size-xl, 1.75rem);
+  color: var(--color-text);
+}
+.welcome-view__tagline {
+  margin: 0;
+  color: var(--color-text-light);
+  font-size: var(--font-size-base);
+}
+.welcome-view__count {
+  margin: 0;
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+}
+.welcome-view__cta {
+  margin-top: 0.75rem;
+  padding: 0.7rem 1.6rem;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-white);
+  font: inherit;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+.welcome-view__cta:hover {
+  background: var(--color-primary-dark, var(--color-primary));
+}
+
 .calendar-view {
   display: none;
   position: absolute;
@@ -1524,6 +1584,22 @@ select:disabled {
 .map-app.view-calendar .bottom-left-controls,
 .map-app.view-calendar .map-footer-legend,
 .map-app.view-calendar .leaflet-control-zoom {
+  display: none;
+}
+/* Welcome splash (only reachable as the initial view — see store.ts's
+   AppState.view comment) hides every other piece of chrome, including the
+   Map/Calendar switcher itself: there's nothing to switch between until
+   its own CTA button sets view to 'map'. */
+.map-app.view-welcome #welcome-view {
+  display: flex;
+}
+.map-app.view-welcome #map,
+.map-app.view-welcome #view-switcher,
+.map-app.view-welcome #search-overlay,
+.map-app.view-welcome #panel-right-toggle,
+.map-app.view-welcome .bottom-left-controls,
+.map-app.view-welcome .map-footer-legend,
+.map-app.view-welcome .leaflet-control-zoom {
   display: none;
 }
 /* `systems.time: false` in world.json (e.g. a world with no temporal data,
