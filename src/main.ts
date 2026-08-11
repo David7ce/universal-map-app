@@ -2,6 +2,7 @@ import './styles.css';
 
 import { validateAppManifest } from './engine/manifests/app-manifest';
 import { validateLayerManifest, type LayerManifest } from './engine/manifests/layer-manifest';
+import { resolveWorldId } from './engine/manifests/resolve-world-id';
 import { fetchFeatures } from './engine/data/loader-registry';
 import { createStore } from './engine/state/store';
 import type { AppState } from './engine/state/store';
@@ -27,16 +28,8 @@ async function fetchJson(url: string): Promise<unknown> {
   return response.json();
 }
 
-// Which `worlds/<id>/` instance to load. Defaults to "demo"; override with
-// `?world=<id>` (e.g. during local development or a multi-world static host).
-// Restricted to a safe path segment — no traversal via the query string.
-function resolveAppId(): string {
-  const requested = new URLSearchParams(window.location.search).get('world');
-  return requested && /^[a-zA-Z0-9_-]+$/.test(requested) ? requested : 'demo';
-}
-
 async function bootstrap(): Promise<void> {
-  const appId = resolveAppId();
+  const appId = resolveWorldId(new URLSearchParams(window.location.search), import.meta.env.MODE);
   const appManifest = validateAppManifest(await fetchJson(`worlds/${appId}/world.json`));
 
   // Only islamic/hebrew calendars pull in @js-temporal/polyfill (a sizable
