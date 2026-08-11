@@ -10,6 +10,7 @@
     "format:check": "prettier --check .",
     "build": "tsc --noEmit && vite build",
     "build:demo-only": "tsc --noEmit && vite build --mode demo --outDir builds/demo-only",
+    "build:paranormal-espana": "tsc --noEmit && vite build --mode paranormal-espana --outDir builds/paranormal-espana",
     "preview": "vite preview",
     "test": "vitest run"
   },
