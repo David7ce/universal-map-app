@@ -8,6 +8,7 @@ import { createStore } from './engine/state/store';
 import type { AppState } from './engine/state/store';
 import { createLeafletMapAdapter } from './engine/space/leaflet/leaflet-map-adapter';
 import { loadStrings } from './ui/strings';
+import { applyBranding } from './ui/branding';
 import { mountSearchOverlay } from './ui/panels/SearchOverlay';
 import { mountPanelRight } from './ui/panels/PanelRight';
 import { mountLayerControl } from './ui/panels/LayerControl';
@@ -31,6 +32,7 @@ async function fetchJson(url: string): Promise<unknown> {
 async function bootstrap(): Promise<void> {
   const appId = resolveWorldId(new URLSearchParams(window.location.search), import.meta.env.MODE);
   const appManifest = validateAppManifest(await fetchJson(`worlds/${appId}/world.json`));
+  applyBranding(appManifest, appId);
 
   // Only islamic/hebrew calendars pull in @js-temporal/polyfill (a sizable
   // dependency); kick the load off now so it runs in parallel with the
