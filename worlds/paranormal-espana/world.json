@@ -21,5 +21,6 @@
   ],
   "dataLayers": ["layers/lugares.layer.json"],
   "calendar": { "default": "today", "min": "1500-01-01", "max": "2030-12-31" },
+  "strings": "strings.json",
   "systems": { "time": false }
 }
