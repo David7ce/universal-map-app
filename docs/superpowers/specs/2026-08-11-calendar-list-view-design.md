@@ -36,7 +36,7 @@ export function getFeaturesInRange(
 
 `src/ui/panels/CalendarView.ts`:
 
-- `Granularity` type (in `CalendarBar.ts`) gains `'list'`. `getVisibleGranularityOptions` returns it as a 5th option alongside day/week/month/year, ordered last in the tab bar.
+- `Granularity` type (in `CalendarBar.ts`) gains `'list'`. `getVisibleGranularityOptions` is **not** changed — it's shared with `CalendarBar.ts`'s own compact date-stepper spinner (a different UI, filters-panel-only), which has no step logic for `'list'` and shouldn't offer it. Instead, `CalendarView.ts` builds its own tab list as `[...getVisibleGranularityOptions(system), 'list']`, ordered last, local to the full Calendar view only.
 - New branch in `render()`: when `granularity === 'list'`, call `getFeaturesInRange(visibleLayers, state.activeFilters, state.selectedDate, maxIso)` and render one `<div class="calendar-view__list-date">` heading (formatted via `formatCalendarDate`, matching the day view's date formatting) per group, followed by a `<ul class="calendar-view__agenda">` reusing the exact `calendar-view__agenda-item` markup the day view already renders (layer title, feature name, "View on map" button) — no new item markup, just repeated per date group.
 - Empty state (no groups in range): reuse existing `calendarView.noEvents` string.
 - "View on map" click wiring reuses the exact same handler pattern the day view's agenda already has (`selectedFeatureId`, open left panel, switch to map view).
