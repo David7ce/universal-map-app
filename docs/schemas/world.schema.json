@@ -118,6 +118,19 @@
         "itemNoun": {
           "type": "string",
           "description": "Pairs with a live feature count (e.g. \"8 haunted places\"). No count line shown when omitted."
+        },
+        "links": {
+          "type": "array",
+          "description": "Plain links to other worlds (e.g. from a hub/demo world to real ones), rendered as <a href=\"?world=<world>\">. A real navigation/reload, not a client-side switch.",
+          "items": {
+            "type": "object",
+            "required": ["label", "world"],
+            "additionalProperties": false,
+            "properties": {
+              "label": { "type": "string", "minLength": 1 },
+              "world": { "type": "string", "minLength": 1, "description": "Target world id, used as ?world=<world>." }
+            }
+          }
         }
       }
     }

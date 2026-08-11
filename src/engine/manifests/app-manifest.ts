@@ -25,7 +25,14 @@ export interface AppManifest {
   favicon?: string;
   plugins?: Record<string, unknown>;
   systems?: { time?: boolean };
-  welcome?: { title: string; tagline: string; ctaLabel: string; heroImage?: string; itemNoun?: string };
+  welcome?: {
+    title: string;
+    tagline: string;
+    ctaLabel: string;
+    heroImage?: string;
+    itemNoun?: string;
+    links?: { label: string; world: string }[];
+  };
 }
 
 export function validateAppManifest(json: unknown): AppManifest {
@@ -102,6 +109,24 @@ export function validateAppManifest(json: unknown): AppManifest {
     }
     if (welcome.itemNoun !== undefined && typeof welcome.itemNoun !== 'string') {
       throw new Error(`App manifest "${obj.id}" "welcome.itemNoun" must be a string when present`);
+    }
+    if (welcome.links !== undefined) {
+      if (!Array.isArray(welcome.links)) {
+        throw new Error(`App manifest "${obj.id}" "welcome.links" must be an array when present`);
+      }
+      welcome.links.forEach((link: unknown, index: number) => {
+        const entry = link as Record<string, unknown>;
+        if (typeof entry?.label !== 'string' || entry.label.length === 0) {
+          throw new Error(
+            `App manifest "${obj.id}" "welcome.links[${index}].label" is required and must be a non-empty string`,
+          );
+        }
+        if (typeof entry?.world !== 'string' || entry.world.length === 0) {
+          throw new Error(
+            `App manifest "${obj.id}" "welcome.links[${index}].world" is required and must be a non-empty string`,
+          );
+        }
+      });
     }
   }
 

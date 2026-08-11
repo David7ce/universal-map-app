@@ -1,7 +1,7 @@
 {
   "$schema": "../../docs/schemas/world.schema.json",
   "id": "moon-map-photos",
-  "title": "Moon Photo Map",
+  "title": "Moon Photos Map",
   "map": { "center": [47, 2], "zoom": 5 },
   "baseLayers": [
     {
@@ -25,7 +25,7 @@
   "calendar": { "default": "2026-07-01", "min": "2026-07-01", "max": "2026-07-31" },
   "strings": "strings.json",
   "welcome": {
-    "title": "Moon Photo Map",
+    "title": "Moon Photos Map",
     "tagline": "Real moon photographs, mapped by where and when they were taken.",
     "ctaLabel": "View the photos",
     "itemNoun": "moon photos"

@@ -277,6 +277,70 @@
         "temporal": { "instant": "2026-12-05" }
       },
       "geometry": { "type": "Point", "coordinates": [-16.3158, 28.4881] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-019",
+      "properties": {
+        "name": "Reggaeton Beach Festival Tenerife",
+        "municipality": "Santa Cruz de Tenerife",
+        "venue": "Dársena de los Llanos, Puerto de Santa Cruz de Tenerife",
+        "category": "Música",
+        "description": "Estreno en Tenerife del mayor festival urbano de playa de Europa, con música reggaeton en directo junto al mar.",
+        "time": "16:00",
+        "price": "Desde 35 €",
+        "link": "https://reggaetonbeachfestival.com/",
+        "temporal": { "range": { "from": "2026-06-27", "to": "2026-06-28" } }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.236, 28.472] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-020",
+      "properties": {
+        "name": "Tenerife Cook Music Fest",
+        "municipality": "Santa Cruz de Tenerife",
+        "venue": "Explanada del Puerto de Santa Cruz de Tenerife",
+        "category": "Música",
+        "description": "Tres noches temáticas (urbana, latina y tropical) con artistas internacionales como Don Omar, Chayanne y Lola Índigo, en su 5º aniversario.",
+        "time": "20:00",
+        "price": "Desde 45 €",
+        "link": "https://cookmusicfest.es/",
+        "temporal": { "range": { "from": "2026-07-16", "to": "2026-07-18" } }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.2365, 28.4715] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-021",
+      "properties": {
+        "name": "Fiesta del Charco",
+        "municipality": "La Aldea de San Nicolás",
+        "venue": "Charco de La Aldea (desembocadura del barranco)",
+        "category": "Festival",
+        "description": "Fiesta de Interés Turístico Nacional que revive la pesca tradicional de lisas embarbascando el charco costero, precedida por la Bajada de la Rama y una gran romería.",
+        "time": "17:00",
+        "price": "Gratis",
+        "link": "https://www.festivalesdeespana.com/es/festival/fiesta-del-charco-la-aldea-de-san-nicolas",
+        "temporal": { "range": { "from": "2026-09-09", "to": "2026-09-11" } }
+      },
+      "geometry": { "type": "Point", "coordinates": [-15.7833, 28.01] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-022",
+      "properties": {
+        "name": "WOMAD Las Palmas de Gran Canaria",
+        "municipality": "Las Palmas de Gran Canaria",
+        "venue": "Parque Santa Catalina",
+        "category": "Cultura",
+        "description": "Festival internacional de música, artes y danza del mundo, con conciertos gratuitos al aire libre junto al puerto.",
+        "time": "19:00",
+        "price": "Gratis",
+        "link": "https://womadespana.com/womad-las-palmas-de-gran-canaria/",
+        "temporal": { "range": { "from": "2026-11-11", "to": "2026-11-14" } }
+      },
+      "geometry": { "type": "Point", "coordinates": [-15.4267, 28.1367] }
     }
   ]
 }

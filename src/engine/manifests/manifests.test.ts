@@ -225,4 +225,46 @@ describe('validateAppManifest', () => {
   it('rejects a "welcome" that is not a plain object', () => {
     expect(() => validateAppManifest({ ...valid, welcome: [] })).toThrow(/welcome/);
   });
+
+  it('accepts "welcome.links" with well-formed entries', () => {
+    const withLinks = {
+      ...valid,
+      welcome: {
+        title: 'Hi',
+        tagline: 'Tag',
+        ctaLabel: 'Go',
+        links: [{ label: 'Other World', world: 'other-world' }],
+      },
+    };
+    expect(validateAppManifest(withLinks)).toEqual(withLinks);
+  });
+
+  it('accepts a "welcome" with no "links" at all', () => {
+    const withWelcome = { ...valid, welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go' } };
+    expect(validateAppManifest(withWelcome)).toEqual(withWelcome);
+  });
+
+  it('rejects "welcome.links" that is not an array', () => {
+    expect(() =>
+      validateAppManifest({ ...valid, welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go', links: {} } }),
+    ).toThrow(/welcome\.links/);
+  });
+
+  it('rejects a "welcome.links" entry missing "label"', () => {
+    expect(() =>
+      validateAppManifest({
+        ...valid,
+        welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go', links: [{ world: 'x' }] },
+      }),
+    ).toThrow(/welcome\.links\[0\]\.label/);
+  });
+
+  it('rejects a "welcome.links" entry missing "world"', () => {
+    expect(() =>
+      validateAppManifest({
+        ...valid,
+        welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go', links: [{ label: 'x' }] },
+      }),
+    ).toThrow(/welcome\.links\[0\]\.world/);
+  });
 });

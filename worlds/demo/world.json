@@ -28,7 +28,12 @@
     "title": "Universal Map Demo",
     "tagline": "A spatio-temporal engine with a web interface — space, time, and data layers, driven entirely by declarative world packages.",
     "ctaLabel": "Explore the demo",
-    "itemNoun": "points of interest"
+    "itemNoun": "points of interest",
+    "links": [
+      { "label": "Paranormal Spain", "world": "paranormal-spain" },
+      { "label": "Canary Islands Events", "world": "events-canary-islands" },
+      { "label": "Moon Photos Map", "world": "moon-map-photos" }
+    ]
   },
   "plugins": {
     "participate": {

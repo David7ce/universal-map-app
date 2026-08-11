@@ -325,6 +325,138 @@
         "sources": ["Informativos Canarias - Lugares aterradores de Tenerife"]
       },
       "geometry": { "type": "Point", "coordinates": [-16.5244, 28.3891] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-9",
+      "properties": {
+        "name": "Casa Lercaro (Museo de Historia y Antropología de Tenerife)",
+        "municipality": "San Cristóbal de La Laguna",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canarias",
+        "category": "Apariciones",
+        "categories": ["Apariciones", "Tragedias"],
+        "description": "Palacio del siglo XVI en la calle San Agustín, hoy sede del Museo de Historia y Antropología de Tenerife. Es el origen de la leyenda de Catalina Lercaro, la joven que se habría arrojado a un pozo del patio trasero el mismo día de su boda forzada, y cuyo espíritu recorrería aún las salas del edificio.",
+        "phenomena": [
+          "Apariciones fantasmales",
+          "Ruidos y pasos sin explicación en salas cerradas",
+          "Sensación de presencia junto al pozo del patio"
+        ],
+        "tags": ["apariciones", "siglo XVI", "museo", "novia suicida", "patrimonio de la humanidad"],
+        "verificationLevel": "Leyenda Popular",
+        "popularity": 5,
+        "era": "Siglo XVI",
+        "activityHours": "Nocturno principalmente",
+        "dangerLevel": "Baja",
+        "accessibility": "Público - Museo con horario de visita",
+        "bestSeason": "Todo el año",
+        "fullHistory": "La leyenda sitúa en este palacio a Catalina Lercaro, obligada a casarse contra su voluntad, que se habría suicidado arrojándose a un pozo del patio el mismo día de la boda. Al ser un suicidio, la Iglesia se negó a darle sepultura cristiana, por lo que la tradición sostiene que su cuerpo quedó enterrado en una de las estancias de la casa. Una investigación de los gestores del museo en los libros parroquiales de enterramientos no halló constancia documental de que existiera una Catalina fallecida joven en el palacio, por lo que hoy se considera una leyenda urbana sin base histórica confirmada, aunque sigue siendo la más citada de La Laguna.",
+        "howToGetThere": "Calle San Agustín, 22, casco histórico de San Cristóbal de La Laguna",
+        "recommendations": "Visitar en horario de museo (L-S 9:00-19:00, domingos y festivos 10:00-17:00). Preguntar por la leyenda en la visita guiada.",
+        "sources": [
+          "Museos de Tenerife - Casa Lercaro",
+          "Naukas - El Museo de Historia y Antropología de Tenerife o cómo crear una casa encantada",
+          "Revista Fama Tenerife - El fantasma de Catalina Lercaro"
+        ]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.3166, 28.4885] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-10",
+      "properties": {
+        "name": "Convento de Santa Catalina de Siena",
+        "municipality": "San Cristóbal de La Laguna",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canarias",
+        "category": "Objetos Malditos",
+        "categories": ["Objetos Malditos", "Lugares de Poder"],
+        "description": "Monasterio de clausura fundado en 1611 en la Plaza del Adelantado, el más antiguo de la Orden de Predicadores en Canarias. En su interior se conserva el cuerpo incorrupto de María de Jesús de León y Delgado, conocida como 'La Siervita', exhumado en 1731 a petición del célebre corsario Amaro Rodríguez Felipe, 'Amaro Pargo'.",
+        "phenomena": [
+          "Cuerpo incorrupto conservado desde el siglo XVIII",
+          "Relatos de curaciones y favores atribuidos a la Siervita",
+          "Atmósfera de recogimiento descrita como 'cargada' por visitantes"
+        ],
+        "tags": ["objetos malditos", "cuerpo incorrupto", "siglo XVII", "convento de clausura", "amaro pargo"],
+        "verificationLevel": "Documentado",
+        "popularity": 3,
+        "era": "Siglo XVII-XVIII",
+        "activityHours": "Todo el día",
+        "dangerLevel": "Baja",
+        "accessibility": "Parcial - Convento de clausura, visitas limitadas",
+        "bestSeason": "Todo el año",
+        "fullHistory": "Fundado en 1600 por Juan de Cabrejas y María de Salas sobre las antiguas casas del adelantado Alonso Fernández de Lugo, el convento abrió en 1611 con cuatro religiosas llegadas de Sevilla y llegó a albergar un centenar de monjas. Su fama actual procede del cuerpo incorrupto de la monja María de Jesús de León y Delgado, fallecida en 1731 y exhumada tres años después a petición de Amaro Rodríguez Felipe, quien costeó un ataúd de madera para ella, algo inusual ya que las religiosas se enterraban directamente en tierra. El hallazgo del cuerpo sin descomponer alimentó su fama de santidad popular.",
+        "howToGetThere": "Plaza del Adelantado, casco histórico de San Cristóbal de La Laguna",
+        "recommendations": "Consultar horarios de visita del convento, que sigue habitado por religiosas de clausura.",
+        "sources": [
+          "Dominicos - Santa Catalina de Siena en San Cristóbal de La Laguna",
+          "Wikipedia - Convento de Santa Catalina de Siena (San Cristóbal de La Laguna)"
+        ]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.3162, 28.488] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-11",
+      "properties": {
+        "name": "Teatro Leal",
+        "municipality": "San Cristóbal de La Laguna",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canarias",
+        "category": "Apariciones",
+        "categories": ["Apariciones"],
+        "description": "Teatro construido en 1915 por encargo de Antonio Leal, en la calle Obispo Rey Redondo del casco histórico lagunero. Las rutas de misterio de la ciudad lo incluyen habitualmente junto al Palacio Lercaro como escenario de fenómenos paranormales reportados por personal técnico y artistas.",
+        "phenomena": [
+          "Ruidos y pasos en el escenario vacío",
+          "Sensación de presencias entre bambalinas",
+          "Fenómenos reportados durante ensayos nocturnos"
+        ],
+        "tags": ["apariciones", "teatro", "siglo XX", "casco histórico", "rutas de misterio"],
+        "verificationLevel": "Testimonios Múltiples",
+        "popularity": 2,
+        "era": "Siglo XX",
+        "activityHours": "Nocturno - Durante ensayos y funciones",
+        "dangerLevel": "Baja",
+        "accessibility": "Público - Programación cultural regular",
+        "bestSeason": "Todo el año",
+        "investigators": ["Rutas Misteriosas"],
+        "fullHistory": "Construido en 1915 según planos del arquitecto Antonio Pintor y reabierto tras una restauración en 2008, el Teatro Leal es uno de los escenarios históricos más activos de La Laguna. Las visitas guiadas de temática paranormal de la ciudad lo citan junto al Palacio Lercaro como punto donde el personal ha reportado fenómenos inexplicables, aunque a diferencia de este último no existe una leyenda concreta asociada, sino relatos sueltos de trabajadores y artistas.",
+        "howToGetThere": "Calle Obispo Rey Redondo, casco histórico de San Cristóbal de La Laguna",
+        "recommendations": "Asistir a una función y preguntar al personal técnico por sus experiencias.",
+        "sources": ["Rutas Misteriosas - La Laguna Paranormal"]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.3155, 28.487] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-12",
+      "properties": {
+        "name": "Plaza del Juego de los Bolos",
+        "municipality": "San Cristóbal de La Laguna",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canarias",
+        "category": "Apariciones",
+        "categories": ["Apariciones"],
+        "description": "Plaza histórica, también conocida como Plaza de la Junta Suprema de Canarias, escenario en la segunda mitad del siglo XIX de la célebre leyenda del 'Fantasma de la Plaza del Juego de los Bolos': una figura envuelta en sábanas y arrastrando cadenas que aterrorizaba a los serenos nocturnos junto a la fuente antes de desaparecer por el Callejón del Osario.",
+        "phenomena": [
+          "Figura envuelta en sábanas junto a la fuente",
+          "Ruido de cadenas arrastradas",
+          "Desaparición súbita en el Callejón del Osario"
+        ],
+        "tags": ["apariciones", "leyenda urbana", "siglo XIX", "sereno", "fantasma desenmascarado"],
+        "verificationLevel": "Documentado",
+        "popularity": 2,
+        "era": "Siglo XIX",
+        "activityHours": "Nocturno",
+        "dangerLevel": "Baja",
+        "accessibility": "Público - Plaza abierta",
+        "bestSeason": "Todo el año",
+        "fullHistory": "La noche del 2 de noviembre de 1865 los serenos de La Laguna comenzaron a reportar un fantasma junto a la fuente de la Plaza del Juego de los Bolos: una figura envuelta en sábanas que arrastraba cadenas y se desvanecía por el Callejón del Osario. La leyenda, muy popular durante meses, terminó por resolverse: tras la sábana se escondía un joven acomodado de apellido Gallardo que aprovechaba la superstición de los vecinos y el miedo de los serenos para citarse a escondidas con su amada, usando el disfraz de aparición para despejar la plaza sin levantar sospechas. Es uno de los pocos casos laguneros de leyenda paranormal con desenlace documentado y no sobrenatural.",
+        "howToGetThere": "Casco histórico de San Cristóbal de La Laguna, cerca del Lomo de la Concepción",
+        "recommendations": "Ideal para contrastar con el resto del recorrido: aquí el misterio tiene solución conocida.",
+        "sources": ["La Laguna Ahora - La leyenda del Fantasma de la lagunera Plaza del Juego de Los Bolos"]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.3175, 28.4863] }
     }
   ]
 }

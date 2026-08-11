@@ -63,13 +63,14 @@ GeoJSON data is always WGS84 lon/lat regardless of `map.crs` — Leaflet reproje
 
 ### `WelcomeConfig` (`welcome`)
 
-| Field       | Type     | Required | Description                                                                                                                                                                         |
-| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `title`     | `string` | yes      | Splash heading.                                                                                                                                                                     |
-| `tagline`   | `string` | yes      | One line under the title.                                                                                                                                                           |
-| `ctaLabel`  | `string` | yes      | Button text. Clicking it sets `view` to `'map'` — the only way out of the splash.                                                                                                   |
-| `heroImage` | `string` | no       | Relative path (inside the world's folder) to a hero image, e.g. `"assets/hero.jpg"`. No hero section when omitted.                                                                  |
-| `itemNoun`  | `string` | no       | Pairs with a live count of every loaded feature across all `dataLayers` (e.g. `"8"` + `"haunted places"` → "8 haunted places"). No count line when omitted, or when the count is 0. |
+| Field       | Type                 | Required | Description                                                                                                                                                                                                                       |
+| ----------- | -------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`     | `string`             | yes      | Splash heading.                                                                                                                                                                                                                   |
+| `tagline`   | `string`             | yes      | One line under the title.                                                                                                                                                                                                         |
+| `ctaLabel`  | `string`             | yes      | Button text. Clicking it sets `view` to `'map'` — the only way out of the splash.                                                                                                                                                 |
+| `heroImage` | `string`             | no       | Relative path (inside the world's folder) to a hero image, e.g. `"assets/hero.jpg"`. No hero section when omitted.                                                                                                                |
+| `itemNoun`  | `string`             | no       | Pairs with a live count of every loaded feature across all `dataLayers` (e.g. `"8"` + `"haunted places"` → "8 haunted places"). No count line when omitted, or when the count is 0.                                               |
+| `links`     | `{ label, world }[]` | no       | Plain links to other worlds (e.g. from a hub/demo world to real ones), rendered as `<a href="?world=<world>">`. A real navigation/reload — a different world is a different manifest/data set entirely, not a client-side switch. |
 
 ---
 

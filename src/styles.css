@@ -1567,6 +1567,21 @@ select:disabled {
 .welcome-view__cta:hover {
   background: var(--color-primary-dark, var(--color-primary));
 }
+.welcome-view__links {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1rem;
+}
+.welcome-view__link {
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+  text-decoration: underline;
+}
+.welcome-view__link:hover {
+  color: var(--color-text);
+}
 
 .calendar-view {
   display: none;

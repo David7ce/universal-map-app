@@ -31,6 +31,21 @@ export function mountWelcomeView(
     ? `<img class="welcome-view__hero" src="worlds/${appId}/${escapeHtml(welcome.heroImage)}" alt="">`
     : '';
 
+  // Plain <a href="?world=..."> links, not a click handler that calls
+  // resolveWorldId/re-bootstraps in place — a different world is a
+  // completely different manifest/data set, so this is a real navigation
+  // (full reload), same as typing the URL by hand.
+  const linksSection = welcome.links?.length
+    ? `<nav class="welcome-view__links">
+        ${welcome.links
+          .map(
+            (link) =>
+              `<a class="welcome-view__link" href="?world=${encodeURIComponent(link.world)}">${escapeHtml(link.label)}</a>`,
+          )
+          .join('')}
+      </nav>`
+    : '';
+
   container.innerHTML = `
     ${heroImage}
     <div class="welcome-view__content">
@@ -38,6 +53,7 @@ export function mountWelcomeView(
       <p class="welcome-view__tagline">${escapeHtml(welcome.tagline)}</p>
       ${countLine}
       <button type="button" class="welcome-view__cta">${escapeHtml(welcome.ctaLabel)}</button>
+      ${linksSection}
     </div>
   `;
 
