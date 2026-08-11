@@ -17,6 +17,7 @@ export interface AppManifest {
   dataLayers: string[];
   calendar: { system?: CalendarSystem; default: 'today' | string; min: string; max: string };
   strings?: string;
+  favicon?: string;
   plugins?: Record<string, unknown>;
   systems?: { time?: boolean };
 }
@@ -54,6 +55,10 @@ export function validateAppManifest(json: unknown): AppManifest {
 
   if (obj.strings !== undefined && typeof obj.strings !== 'string') {
     throw new Error(`App manifest "${obj.id}" "strings" must be a string path when present`);
+  }
+
+  if (obj.favicon !== undefined && typeof obj.favicon !== 'string') {
+    throw new Error(`App manifest "${obj.id}" "favicon" must be a string path when present`);
   }
 
   if (obj.plugins !== undefined) {

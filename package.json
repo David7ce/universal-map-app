@@ -9,6 +9,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "build": "tsc --noEmit && vite build",
+    "build:demo-only": "tsc --noEmit && vite build --mode demo --outDir builds/demo-only",
     "preview": "vite preview",
     "test": "vitest run"
   },

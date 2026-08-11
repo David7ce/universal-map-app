@@ -64,6 +64,10 @@
       "type": "string",
       "description": "Relative path (inside the app's folder) to its strings.json. If omitted, t() always falls back to the raw key."
     },
+    "favicon": {
+      "type": "string",
+      "description": "Relative path (inside the world's folder) to a favicon image. If omitted, the app's default favicon (set in index.html) is kept."
+    },
     "plugins": {
       "type": "object",
       "additionalProperties": false,

@@ -19,9 +19,13 @@ Open the printed local URL. No backend, no paid services — `pnpm build` produc
 2. Add a `world.json` (see `worlds/demo/world.json` for the shape).
 3. Add one `*.layer.json` per data layer under `worlds/<your-world-id>/layers/`, and the matching GeoJSON under `worlds/<your-world-id>/data/`.
 4. Optionally add `strings.json` for your own UI text, and a `plugins` block to activate `participate`.
-5. Load it with `?world=<your-world-id>` in the URL (e.g. `http://localhost:5173/?world=my-world`), or leave the query param off to get `worlds/demo/` by default. Full multi-world routing (a world switcher UI, per-world subdomains, etc.) is still intentionally out of scope for v1 (see the design spec's non-goals) — this is just a static id lookup, resolved once at page load.
+5. Load it with `?world=<your-world-id>` in the URL (e.g. `http://localhost:5173/?world=my-world`), or leave the query param off to get `worlds/demo/` by default. A world switcher UI is still intentionally out of scope for v1 (see the design spec's non-goals) — this is just a static id lookup, resolved once at page load. Per-domain deployment of a single world is in scope (see below), just not a UI for switching between worlds at runtime.
 
 No engine code under `src/engine/` needs to change to add a new world instance.
+
+### Build one world as its own standalone site
+
+`vite build --mode <world-id> --outDir dist/<world-id>` bundles only that world's data (not every world under `worlds/`) and makes it load by default with no `?world=` query param — suitable for deploying on its own domain. Add a `"build:<world-id>": "tsc --noEmit && vite build --mode <world-id> --outDir dist/<world-id>"` script to `package.json` per world you want to deploy this way. `world.json` can also set an optional `favicon` field (a path relative to that world's folder) to override the default favicon for that build.
 
 ## Isochrone (travel-time) layers
 

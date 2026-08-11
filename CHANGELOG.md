@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Isolated per-domain world builds, plus `favicon`
+
+`vite build --mode <world-id>` now makes that mode name double as the default world (`resolveWorldId`, `src/engine/manifests/resolve-world-id.ts` — `?world=` still overrides it) and scopes `copyWorldsDirPlugin`'s output to only that world's folder, so a domain-specific build (e.g. `npm run build:demo-only`) ships none of another world's data. Plain `npm run dev`/`npm run build` (modes `development`/`production`) are unaffected — still default to `demo` with every world present. `world.json` gains an optional `favicon` field (validated alongside the existing `strings` field in `validateAppManifest`); a new `applyBranding()` (`src/ui/branding.ts`) sets `document.title` from the manifest's existing `title` field and swaps the favicon at bootstrap, both previously unused/hardcoded.
+
 ## Full-screen Calendar view (day/week/month/year), separate from Map view
 
 The app now has two top-level, switchable views — Map (unchanged) and a new full-screen **Calendar view** (`src/ui/panels/CalendarView.ts`), toggled by a pill-shaped Map/Calendar control (`app-chrome.ts`, always visible). Calendar view has its own day/week/month/year granularity tabs: week/month reuse the existing `CalendarGrid.ts` grid, and year is new — all 12 months (13 for a Hebrew leap year) laid out at once, every day visible with event dots, via a new engine function `buildYearMonthCells` (`src/engine/time/calendar-grid.ts`). Picking any day switches to day view and shows an agenda of that day's events (new `getFeaturesOnDate`, `src/engine/time/day-agenda.ts`) with a "View on map" button per entry that selects the feature and switches back to Map view. `#map` isn't torn down when Calendar view is showing — `MapAdapter` gained `invalidateSize()` so Leaflet recalculates its container size correctly when the user switches back.
