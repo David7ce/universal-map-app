@@ -25,6 +25,14 @@ export function createStore<T>(initial: T): Store<T> {
   };
 }
 
+// The left panel (search) and right panel (filters) are both full-screen
+// drawers on mobile — the filters drawer sits above search in z-index, so
+// opening it while search is open would visually bury search with no
+// indication it's still open underneath. Only one may be open at a time.
+export function openPanel(store: Store<AppState>, which: 'left' | 'right'): void {
+  store.set({ panels: { left: which === 'left' ? 'open' : 'closed', right: which === 'right' ? 'open' : 'closed' } });
+}
+
 export interface AppState {
   selectedDate: string;
   activeFilters: Record<string, Set<string>>;

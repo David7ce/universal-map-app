@@ -89,7 +89,9 @@ async function bootstrap(): Promise<void> {
           ? (feature: GeoFeature) =>
               store.set({
                 selectedFeatureId: String(feature.id ?? ''),
-                panels: { ...store.get().panels, left: 'open' },
+                // Also closes the filters panel — see `openPanel`'s comment
+                // in `store.ts`: only one full-screen mobile drawer at a time.
+                panels: { left: 'open', right: 'closed' },
               })
           : undefined;
 

@@ -1,6 +1,7 @@
 import type { MapAdapter } from '../engine/space/map-adapter';
 import type { AppManifest } from '../engine/manifests/app-manifest';
 import type { AppState, Store } from '../engine/state/store';
+import { openPanel } from '../engine/state/store';
 import type { LoadedLayer } from '../engine/taxonomy/compute-dimensions';
 import { getPanelSlots, type PluginContext } from '../engine/plugins/registry';
 import { formatCalendarDate } from '../engine/time/calendar-conversion';
@@ -23,7 +24,8 @@ function mountRightPanel(store: Store<AppState>, strings: Record<string, string>
   panelRightClose.innerHTML = icons.close;
 
   function setRightPanelOpen(open: boolean): void {
-    store.set({ panels: { ...store.get().panels, right: open ? 'open' : 'closed' } });
+    if (open) openPanel(store, 'right');
+    else store.set({ panels: { ...store.get().panels, right: 'closed' } });
   }
   panelRightToggle.addEventListener('click', () => setRightPanelOpen(store.get().panels.right !== 'open'));
   panelRightClose.addEventListener('click', () => setRightPanelOpen(false));

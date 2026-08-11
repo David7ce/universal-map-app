@@ -1,4 +1,5 @@
 import type { Store, AppState } from '../../engine/state/store';
+import { openPanel } from '../../engine/state/store';
 import type { LoadedLayer } from '../../engine/taxonomy/compute-dimensions';
 import { featureMatchesFilters, readField } from '../../engine/taxonomy/compute-dimensions';
 import type { GeoFeature } from '../../engine/time/temporal-types';
@@ -76,7 +77,9 @@ export function mountSearchOverlay(
   }
 
   function selectFeature(featureId: string): void {
-    store.set({ selectedFeatureId: featureId, panels: { ...store.get().panels, left: 'open' } });
+    // Also closes the filters panel — see `openPanel`'s comment in
+    // `store.ts`: only one full-screen mobile drawer at a time.
+    store.set({ selectedFeatureId: featureId, panels: { left: 'open', right: 'closed' } });
   }
 
   function runSearch(): void {
@@ -136,7 +139,7 @@ export function mountSearchOverlay(
   }
 
   function open(): void {
-    store.set({ panels: { ...store.get().panels, left: 'open' } });
+    openPanel(store, 'left');
     searchInput.focus();
   }
   function close(): void {
