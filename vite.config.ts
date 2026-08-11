@@ -16,10 +16,16 @@ import { configDefaults } from 'vitest/config';
  * This plugin copies `worlds/` into the build output directory after the
  * bundle is written, without requiring a new dependency or moving `worlds/`
  * out of the documented folder structure.
+ *
+ * In an isolated per-world build (`vite build --mode <world-id>`, see
+ * `resolveWorldId`), only that one world's folder is copied — every other
+ * world's data is absent from `dist/`, so a domain built for one world
+ * never ships another world's content.
  */
 function copyWorldsDirPlugin(): Plugin {
   let rootDir = process.cwd();
   let outDir = 'dist';
+  let mode = 'production';
 
   return {
     name: 'copy-worlds-dir',
@@ -27,11 +33,13 @@ function copyWorldsDirPlugin(): Plugin {
     configResolved(resolvedConfig) {
       rootDir = resolvedConfig.root;
       outDir = resolvedConfig.build.outDir;
+      mode = resolvedConfig.mode;
     },
     async closeBundle() {
-      const srcDir = resolve(rootDir, 'worlds');
+      const isolatedWorld = mode === 'development' || mode === 'production' ? null : mode;
+      const srcDir = resolve(rootDir, 'worlds', ...(isolatedWorld ? [isolatedWorld] : []));
       if (!existsSync(srcDir)) return;
-      const destDir = resolve(rootDir, outDir, 'worlds');
+      const destDir = resolve(rootDir, outDir, 'worlds', ...(isolatedWorld ? [isolatedWorld] : []));
       await cp(srcDir, destDir, { recursive: true });
     },
   };
