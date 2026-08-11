@@ -33,6 +33,7 @@ async function bootstrap(): Promise<void> {
   const appId = resolveWorldId(new URLSearchParams(window.location.search), import.meta.env.MODE);
   const appManifest = validateAppManifest(await fetchJson(`worlds/${appId}/world.json`));
   applyBranding(appManifest, appId);
+  document.querySelector('#app')!.classList.toggle('no-time', appManifest.systems?.time === false);
 
   // Only islamic/hebrew calendars pull in @js-temporal/polyfill (a sizable
   // dependency); kick the load off now so it runs in parallel with the

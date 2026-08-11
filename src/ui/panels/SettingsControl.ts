@@ -49,17 +49,23 @@ export function mountSettingsControl(
     `<option value="Simple">${escapeHtml(t('settings.crs.simple', strings))}</option>` +
     (manifestCrsIsCustom ? `<option value="custom">${escapeHtml(t('settings.crs.custom', strings))}</option>` : '');
 
+  const timeEnabled = deps.appManifest.systems?.time !== false;
+
+  const calendarSection = timeEnabled
+    ? `<p class="settings-control-group__title">${t('settings.calendarSection', strings)}</p>
+      <label class="settings-control-row">
+        <span>${t('settings.calendarSystemLabel', strings)}</span>
+        <select data-role="calendar-system">${systemOptions}</select>
+      </label>`
+    : '';
+
   container.innerHTML = `
     <button type="button" class="settings-control-trigger" aria-expanded="false" aria-label="${t('settings.trigger', strings)}">
       ${icons.settings}
       <span class="settings-control-trigger__label">${t('settings.trigger', strings)}</span>
     </button>
     <section class="settings-control-popover" hidden>
-      <p class="settings-control-group__title">${t('settings.calendarSection', strings)}</p>
-      <label class="settings-control-row">
-        <span>${t('settings.calendarSystemLabel', strings)}</span>
-        <select data-role="calendar-system">${systemOptions}</select>
-      </label>
+      ${calendarSection}
       <p class="settings-control-group__title">${t('settings.mapSection', strings)}</p>
       <label class="settings-control-row">
         <span>${t('settings.projectionLabel', strings)}</span>
@@ -75,16 +81,18 @@ export function mountSettingsControl(
   const trigger = container.querySelector<HTMLButtonElement>('.settings-control-trigger')!;
   const popover = container.querySelector<HTMLElement>('.settings-control-popover')!;
   const gridToggle = container.querySelector<HTMLInputElement>('[data-role="grid-toggle"]')!;
-  const systemSelect = container.querySelector<HTMLSelectElement>('[data-role="calendar-system"]')!;
+  const systemSelect = container.querySelector<HTMLSelectElement>('[data-role="calendar-system"]');
   const projectionSelect = container.querySelector<HTMLSelectElement>('[data-role="projection"]')!;
 
-  systemSelect.value = store.get().calendarSystem;
-  systemSelect.addEventListener('change', () => {
-    const system = systemSelect.value as CalendarSystem;
-    ensureCalendarSystemLoaded(system)
-      .then(() => store.set({ calendarSystem: system }))
-      .catch((error: unknown) => console.error('Failed to load calendar system', system, error));
-  });
+  if (systemSelect) {
+    systemSelect.value = store.get().calendarSystem;
+    systemSelect.addEventListener('change', () => {
+      const system = systemSelect.value as CalendarSystem;
+      ensureCalendarSystemLoaded(system)
+        .then(() => store.set({ calendarSystem: system }))
+        .catch((error: unknown) => console.error('Failed to load calendar system', system, error));
+    });
+  }
 
   projectionSelect.value = crsOptionId(deps.appManifest.map.crs);
   projectionSelect.addEventListener('change', () => {
@@ -119,7 +127,7 @@ export function mountSettingsControl(
     const state = store.get();
     gridToggle.checked = state.showGrid;
     deps.mapAdapter.grid.setVisible(state.showGrid);
-    if (document.activeElement !== systemSelect) systemSelect.value = state.calendarSystem;
+    if (systemSelect && document.activeElement !== systemSelect) systemSelect.value = state.calendarSystem;
   }
   render();
   store.subscribe(render);

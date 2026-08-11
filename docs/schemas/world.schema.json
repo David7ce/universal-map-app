@@ -91,6 +91,16 @@
           }
         }
       }
+    },
+    "systems": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "time": {
+          "type": "boolean",
+          "description": "Set to false to hide all time/calendar UI (filters panel's Time section, the Map/Calendar view switcher, and Settings' calendar-system row) for a world with no temporal data. Defaults to true (time UI shown) when omitted."
+        }
+      }
     }
   },
   "definitions": {

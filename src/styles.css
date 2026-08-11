@@ -1416,6 +1416,21 @@ select:disabled {
 .map-app.view-calendar .leaflet-control-zoom {
   display: none;
 }
+/* `systems.time: false` in world.json (e.g. a world with no temporal data,
+   like paranormal-espana) hides the Time UI entirely — not just visually,
+   these become unreachable: with #view-switcher gone, AppState.view can
+   never become 'calendar' since no other code path sets it. */
+.map-app.no-time #view-switcher,
+.map-app.no-time #panel-right-time,
+.map-app.no-time #calendar-view {
+  display: none;
+}
+/* #panel-right-time is sandwiched between two .panel__section-separator
+   elements (filters section above, settings row below) — hide the one
+   immediately before it too, or a double-separator gap remains. */
+.map-app.no-time .panel__section-separator:has(+ #panel-right-time) {
+  display: none;
+}
 .calendar-view__header {
   display: flex;
   flex-wrap: wrap;
