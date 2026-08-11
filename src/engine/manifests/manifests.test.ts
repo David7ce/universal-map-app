@@ -134,6 +134,19 @@ describe('validateAppManifest', () => {
     expect(() => validateAppManifest({ ...valid, strings: 42 })).toThrow(/strings/);
   });
 
+  it('accepts a valid "favicon" path', () => {
+    const withFavicon = { ...valid, favicon: 'assets/favicon.png' };
+    expect(validateAppManifest(withFavicon)).toEqual(withFavicon);
+  });
+
+  it('rejects a non-string "favicon" path', () => {
+    expect(() => validateAppManifest({ ...valid, favicon: 42 })).toThrow(/favicon/);
+  });
+
+  it('accepts a manifest with no "favicon" field at all', () => {
+    expect(validateAppManifest(valid)).toEqual(valid);
+  });
+
   it('accepts an open plugins bag without inspecting its contents', () => {
     const withPlugins = {
       ...valid,
