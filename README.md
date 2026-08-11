@@ -37,6 +37,14 @@ There's no dedicated `kind` for isochrones — precompute the polygons with what
 - Multi-calendar display support for Gregorian, Julian, Islamic, and Hebrew calendars via `calendar.system` in `world.json`.
 - Multi-projection map display support for `EPSG:3857`, `EPSG:4326`, and custom CRS definitions via `map.crs`.
 - Calendar bar refinements with day/week/month/year granularity and a range slider, plus richer selection-card info rendering for links, images, and coordinates.
+- Isolated per-domain world builds (`vite build --mode <world-id>`, see above) ship only that world's data, plus per-world `favicon`.
+- `systems.time: false` hides all time/calendar UI for a world with no temporal data.
+- The calendar no longer caps navigation at "today" — `calendar.min`/`max` govern the real bounds, so future-dated content (e.g. upcoming events) is reachable, not just past/current dates.
+- A thematic `welcome` splash (declarative `welcome` object in `world.json`) as a world's initial view, with a live feature-count teaser, before its CTA drops you into the map.
+- A multi-image `infoField` (`type: "image"` resolving to more than one value) renders a thumbnail grid that opens a full-screen lightbox with prev/next, arrow-key navigation, and Escape-to-close.
+- Point-layer marker styling driven by any feature property, independent of `taxonomy`: `style.colorField`/`colorMap` (a colored circle behind the icon) and `style.badgeField`/`badgeMap` (a sparse corner badge).
+- Satellite base layers can show place labels via an optional `labelsUrl` second tile source layered on top.
+- `scripts/fetch-osm-boundary.mjs` pulls a real administrative boundary from OpenStreetMap (Overpass API) to use as a `regionRole: "boundary"` layer's source geojson, instead of hand-authoring one.
 
 ## Known v1 deviations from the design spec
 

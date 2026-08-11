@@ -1,12 +1,12 @@
 # Tree
 
-Excluye `dist`, `docs`, `node_modules`, `.git`.
+Excludes `dist`, `builds`, `docs`, `node_modules`, `.git`, `.claude`, `.superpowers`, `.playwright-mcp`. `worlds/moon-map-photos/assets/photos/` (96 real `.jpg` files + 96 thumbnails) is collapsed to a count below — listing every filename isn't useful here.
 
-## Comando PowerShell
+## PowerShell command
 
 ```powershell
 function Show-Tree {
-    param($Path = '.', $Prefix = '', $Exclude = @('dist','docs','node_modules','.git'))
+    param($Path = '.', $Prefix = '', $Exclude = @('dist','builds','docs','node_modules','.git','.claude','.superpowers','.playwright-mcp'))
     $items = Get-ChildItem -LiteralPath $Path -Force | Where-Object { $Exclude -notcontains $_.Name } | Sort-Object @{Expression='PSIsContainer';Descending=$true}, Name
     $count = $items.Count
     for ($i = 0; $i -lt $count; $i++) {
@@ -23,12 +23,12 @@ function Show-Tree {
 Show-Tree -Path .
 ```
 
-## Comando Bash
+## Bash command
 
 ```bash
 show_tree() {
   local path="${1:-.}" prefix="${2:-}"
-  local exclude=(dist docs node_modules .git)
+  local exclude=(dist builds docs node_modules .git .claude .superpowers .playwright-mcp)
   local dirs=() files=() name base skip e
   for name in "$path"/* "$path"/.[!.]*; do
     [ -e "$name" ] || continue
@@ -52,29 +52,21 @@ show_tree() {
 show_tree .
 ```
 
-## Resultado
+## Result
 
 ```
 |-- .github
 |   `-- workflows
 |       |-- ci.yml
 |       `-- deploy-pages.yml
-|-- apps
-|   `-- demo
-|       |-- data
-|       |   |-- poi.geojson
-|       |   `-- regions.geojson
-|       |-- layers
-|       |   |-- heatmap.layer.json
-|       |   |-- poi.layer.json
-|       |   `-- regions.layer.json
-|       |-- app-manifest.json
-|       `-- strings.json
 |-- plugins
 |   `-- participate
+|       |-- index.test.ts
 |       |-- index.ts
 |       |-- links.test.ts
 |       `-- links.ts
+|-- scripts
+|   `-- fetch-osm-boundary.mjs
 |-- src
 |   |-- engine
 |   |   |-- data
@@ -87,8 +79,12 @@ show_tree .
 |   |   |-- manifests
 |   |   |   |-- app-manifest.ts
 |   |   |   |-- layer-manifest.ts
-|   |   |   `-- manifests.test.ts
+|   |   |   |-- manifests.test.ts
+|   |   |   |-- resolve-world-id.test.ts
+|   |   |   `-- resolve-world-id.ts
 |   |   |-- plugins
+|   |   |   |-- activate.test.ts
+|   |   |   |-- activate.ts
 |   |   |   |-- registry.test.ts
 |   |   |   `-- registry.ts
 |   |   |-- region
@@ -117,7 +113,11 @@ show_tree .
 |   |   `-- time
 |   |       |-- calendar-conversion.test.ts
 |   |       |-- calendar-conversion.ts
+|   |       |-- calendar-grid.test.ts
+|   |       |-- calendar-grid.ts
 |   |       |-- calendar-systems.ts
+|   |       |-- day-agenda.test.ts
+|   |       |-- day-agenda.ts
 |   |       |-- is-active-on.test.ts
 |   |       |-- is-active-on.ts
 |   |       |-- julian-calendar.test.ts
@@ -131,17 +131,22 @@ show_tree .
 |   |   |-- panels
 |   |   |   |-- CalendarBar.test.ts
 |   |   |   |-- CalendarBar.ts
+|   |   |   |-- CalendarGrid.ts
+|   |   |   |-- CalendarView.ts
 |   |   |   |-- info-field-format.test.ts
 |   |   |   |-- info-field-format.ts
 |   |   |   |-- LayerControl.ts
+|   |   |   |-- Lightbox.ts
 |   |   |   |-- PanelRight.ts
 |   |   |   |-- search.test.ts
 |   |   |   |-- search.ts
 |   |   |   |-- SearchOverlay.ts
 |   |   |   |-- SettingsControl.ts
 |   |   |   |-- temporal-status.test.ts
-|   |   |   `-- temporal-status.ts
+|   |   |   |-- temporal-status.ts
+|   |   |   `-- WelcomeView.ts
 |   |   |-- app-chrome.ts
+|   |   |-- branding.ts
 |   |   |-- escape-html.test.ts
 |   |   |-- escape-html.ts
 |   |   |-- icons.ts
@@ -149,12 +154,56 @@ show_tree .
 |   |   `-- strings.ts
 |   |-- main.ts
 |   `-- styles.css
+|-- worlds
+|   |-- demo
+|   |   |-- data
+|   |   |   |-- poi.geojson
+|   |   |   `-- regions.geojson
+|   |   |-- layers
+|   |   |   |-- heatmap.layer.json
+|   |   |   |-- poi.layer.json
+|   |   |   `-- regions.layer.json
+|   |   |-- strings.json
+|   |   `-- world.json
+|   |-- events-canary-islands
+|   |   |-- data
+|   |   |   `-- events.geojson
+|   |   |-- layers
+|   |   |   `-- events.layer.json
+|   |   |-- strings.json
+|   |   `-- world.json
+|   |-- moon-map-photos
+|   |   |-- assets
+|   |   |   |-- moon
+|   |   |   |   `-- day-00.svg .. day-29.svg  (30 phase icons)
+|   |   |   `-- photos
+|   |   |       |-- thumbs/  (96 thumbnail .jpg files)
+|   |   |       `-- (96 full-size .jpg files)
+|   |   |-- data
+|   |   |   `-- photos.geojson
+|   |   |-- layers
+|   |   |   `-- photos.layer.json
+|   |   |-- strings.json
+|   |   `-- world.json
+|   `-- paranormal-spain
+|       |-- data
+|       |   |-- categories.json
+|       |   |-- lugares.geojson
+|       |   |-- regions.geojson
+|       |   `-- verification-levels.json
+|       |-- layers
+|       |   |-- lugares.layer.json
+|       |   `-- regions.layer.json
+|       |-- strings.json
+|       `-- world.json
 |-- .gitattributes
 |-- .gitignore
 |-- .prettierignore
 |-- .prettierrc.json
 |-- CHANGELOG.md
+|-- CONTEXT.md
 |-- eslint.config.js
+|-- feature-request-world-def.md
 |-- index.html
 |-- package.json
 |-- pnpm-lock.yaml
