@@ -1,6 +1,6 @@
 {
   "$schema": "../../docs/schemas/world.schema.json",
-  "id": "paranormal-espana",
+  "id": "paranormal-spain",
   "title": "Paranormal Spain",
   "map": { "center": [28.389, -16.5245], "zoom": 15 },
   "baseLayers": [

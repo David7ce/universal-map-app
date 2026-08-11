@@ -3,7 +3,7 @@
   "id": "moon-photos",
   "title": "Moon Photos",
   "kind": "point",
-  "source": { "type": "geojson", "url": "worlds/moon-img-map/data/photos.geojson" },
+  "source": { "type": "geojson", "url": "worlds/moon-map-photos/data/photos.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },
   "taxonomy": [
     {

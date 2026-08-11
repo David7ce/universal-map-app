@@ -3,7 +3,7 @@
   "id": "paranormal-places",
   "title": "Paranormal Places",
   "kind": "point",
-  "source": { "type": "geojson", "url": "worlds/paranormal-espana/data/lugares.geojson" },
+  "source": { "type": "geojson", "url": "worlds/paranormal-spain/data/lugares.geojson" },
   "taxonomy": [
     {
       "id": "category",

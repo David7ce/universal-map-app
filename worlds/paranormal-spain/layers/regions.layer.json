@@ -3,7 +3,7 @@
   "id": "regions",
   "title": "Municipios",
   "kind": "polygon",
-  "source": { "type": "geojson", "url": "worlds/paranormal-espana/data/regions.geojson" },
+  "source": { "type": "geojson", "url": "worlds/paranormal-spain/data/regions.geojson" },
   "taxonomy": [{ "id": "region", "label": "Municipio", "field": "properties.name" }],
   "regionRole": "boundary",
   "style": { "color": "#5a6472", "fillColor": "#5a6472", "fillOpacity": 0.08, "weight": 2 },

@@ -1,7 +1,7 @@
 {
   "$schema": "../../docs/schemas/world.schema.json",
-  "id": "calendar-events-tenerife",
-  "title": "Tenerife Events",
+  "id": "events-canary-islands",
+  "title": "Canary Islands Events",
   "map": { "center": [28.29, -16.62], "zoom": 10 },
   "baseLayers": [
     {

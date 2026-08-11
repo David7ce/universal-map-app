@@ -1,6 +1,6 @@
 {
   "$schema": "../../docs/schemas/world.schema.json",
-  "id": "moon-img-map",
+  "id": "moon-map-photos",
   "title": "Moon Photo Map",
   "map": { "center": [47, 2], "zoom": 5 },
   "baseLayers": [

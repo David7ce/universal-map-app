@@ -19,11 +19,11 @@ describe('resolveWorldId', () => {
   });
 
   it('falls back to the mode name in an isolated per-world build mode', () => {
-    expect(resolveWorldId(new URLSearchParams(''), 'paranormal-espana')).toBe('paranormal-espana');
+    expect(resolveWorldId(new URLSearchParams(''), 'paranormal-spain')).toBe('paranormal-spain');
   });
 
   it('query param still overrides an isolated build mode', () => {
-    expect(resolveWorldId(new URLSearchParams('world=demo'), 'paranormal-espana')).toBe('demo');
+    expect(resolveWorldId(new URLSearchParams('world=demo'), 'paranormal-spain')).toBe('demo');
   });
 });
 
@@ -37,6 +37,6 @@ describe('isIsolatedWorldMode', () => {
   });
 
   it('is true for an arbitrary world id used as a mode', () => {
-    expect(isIsolatedWorldMode('paranormal-espana')).toBe(true);
+    expect(isIsolatedWorldMode('paranormal-spain')).toBe(true);
   });
 });

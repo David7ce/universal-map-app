@@ -10,7 +10,9 @@
     "format:check": "prettier --check .",
     "build": "tsc --noEmit && vite build",
     "build:demo-only": "tsc --noEmit && vite build --mode demo --outDir builds/demo-only",
-    "build:paranormal-espana": "tsc --noEmit && vite build --mode paranormal-espana --outDir builds/paranormal-espana",
+    "build:paranormal-spain": "tsc --noEmit && vite build --mode paranormal-spain --outDir builds/paranormal-spain",
+    "build:events-canary-islands": "tsc --noEmit && vite build --mode events-canary-islands --outDir builds/events-canary-islands",
+    "build:moon-map-photos": "tsc --noEmit && vite build --mode moon-map-photos --outDir builds/moon-map-photos",
     "preview": "vite preview",
     "test": "vitest run"
   },

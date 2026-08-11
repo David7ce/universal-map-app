@@ -3,7 +3,7 @@
   "id": "events",
   "title": "Events",
   "kind": "point",
-  "source": { "type": "geojson", "url": "worlds/calendar-events-tenerife/data/events.geojson" },
+  "source": { "type": "geojson", "url": "worlds/events-canary-islands/data/events.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },
   "taxonomy": [
     {
