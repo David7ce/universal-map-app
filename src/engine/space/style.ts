@@ -31,6 +31,39 @@ export function resolveTaxonomyIcon(
   return defaultIcon ?? FALLBACK_ICON;
 }
 
+// Matches `value` against `map`, either exactly or (for a descriptive value
+// like "Media - Zona poco iluminada") against the part before the first
+// " - " — so an author writes one colorMap/badgeMap entry per short code,
+// not one per exact descriptive variant.
+function lookupByValueOrPrefix(map: Record<string, string>, value: string): string | undefined {
+  if (Object.prototype.hasOwnProperty.call(map, value)) return map[value];
+  const prefix = value.split(' - ')[0].trim();
+  return prefix !== value && Object.prototype.hasOwnProperty.call(map, prefix) ? map[prefix] : undefined;
+}
+
+// A marker's circular background color, driven by `style.colorField`'s
+// value on the feature (see data-layer-renderer.ts) — independent of the
+// taxonomy icon mechanism. No `colorMap` at all means no color anywhere
+// (existing bare-emoji marker look is unchanged for a layer that doesn't
+// configure this).
+export function resolveMarkerColor(
+  colorMap: Record<string, string> | undefined,
+  defaultColor: string | undefined,
+  value: unknown,
+): string | undefined {
+  if (!colorMap) return undefined;
+  if (typeof value !== 'string') return defaultColor;
+  return lookupByValueOrPrefix(colorMap, value) ?? defaultColor;
+}
+
+// A small corner badge on a marker, driven by `style.badgeField`'s value —
+// sparse by design: only values present in `badgeMap` get a badge, every
+// other value (the common case) gets none.
+export function resolveMarkerBadge(badgeMap: Record<string, string> | undefined, value: unknown): string | undefined {
+  if (!badgeMap || typeof value !== 'string') return undefined;
+  return lookupByValueOrPrefix(badgeMap, value);
+}
+
 export interface PolygonStyle {
   color: string;
   weight: number;

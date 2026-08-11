@@ -39,7 +39,13 @@
     }
   ],
   "regionRole": null,
-  "style": { "cluster": true, "icon": "marker" },
+  "style": {
+    "cluster": true,
+    "icon": "marker",
+    "colorField": "properties.dangerLevel",
+    "colorMap": { "Baja": "#4caf7d", "Media": "#e0a83e", "Alta": "#d9534f" },
+    "defaultColor": "#9aa3ad"
+  },
   "panel": {
     "showInSearch": true,
     "showInInfo": true,

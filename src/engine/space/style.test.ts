@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveMarkerStyle, resolvePolygonStyle, resolveTaxonomyIcon } from './style';
+import { resolveMarkerBadge, resolveMarkerColor, resolveMarkerStyle, resolvePolygonStyle, resolveTaxonomyIcon } from './style';
 import type { LayerManifest } from '../manifests/layer-manifest';
 
 function manifest(style?: Record<string, unknown>): LayerManifest {
@@ -42,6 +42,50 @@ describe('resolvePolygonStyle', () => {
       fillColor: '#e08a3e',
       fillOpacity: 0.18,
     });
+  });
+});
+
+describe('resolveMarkerColor', () => {
+  const colorMap = { Baja: 'green', Media: 'orange', Alta: 'red' };
+
+  it('returns undefined when no colorMap is configured', () => {
+    expect(resolveMarkerColor(undefined, 'gray', 'Baja')).toBeUndefined();
+  });
+
+  it('returns the exact-match color for a known value', () => {
+    expect(resolveMarkerColor(colorMap, 'gray', 'Baja')).toBe('green');
+  });
+
+  it('matches on the part before " - " for a descriptive value', () => {
+    expect(resolveMarkerColor(colorMap, 'gray', 'Media - Zona poco iluminada')).toBe('orange');
+  });
+
+  it('falls back to defaultColor for an unmatched value', () => {
+    expect(resolveMarkerColor(colorMap, 'gray', 'Desconocido')).toBe('gray');
+  });
+
+  it('falls back to defaultColor when the value is not a string', () => {
+    expect(resolveMarkerColor(colorMap, 'gray', undefined)).toBe('gray');
+  });
+});
+
+describe('resolveMarkerBadge', () => {
+  const badgeMap = { Gratis: '🆓' };
+
+  it('returns undefined when no badgeMap is configured', () => {
+    expect(resolveMarkerBadge(undefined, 'Gratis')).toBeUndefined();
+  });
+
+  it('returns the badge for a known value', () => {
+    expect(resolveMarkerBadge(badgeMap, 'Gratis')).toBe('🆓');
+  });
+
+  it('returns undefined for a value with no badge entry (most values)', () => {
+    expect(resolveMarkerBadge(badgeMap, '18 €')).toBeUndefined();
+  });
+
+  it('matches on the part before " - " for a descriptive value', () => {
+    expect(resolveMarkerBadge({ Media: '⚠️' }, 'Media - Zona poco iluminada')).toBe('⚠️');
   });
 });
 

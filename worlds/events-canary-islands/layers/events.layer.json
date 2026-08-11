@@ -22,7 +22,12 @@
     }
   ],
   "regionRole": null,
-  "style": { "cluster": true, "icon": "marker" },
+  "style": {
+    "cluster": true,
+    "icon": "marker",
+    "badgeField": "properties.price",
+    "badgeMap": { "Gratis": "🆓" }
+  },
   "panel": {
     "showInSearch": true,
     "showInInfo": true,

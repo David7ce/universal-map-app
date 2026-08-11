@@ -4,7 +4,7 @@ import 'leaflet.heat';
 import type { GeoFeature } from '../../time/temporal-types';
 import type { LayerManifest } from '../../manifests/layer-manifest';
 import { filterActiveFeatures, readField } from '../../taxonomy/compute-dimensions';
-import { resolveMarkerStyle, resolvePolygonStyle, resolveTaxonomyIcon } from '../style';
+import { resolveMarkerBadge, resolveMarkerColor, resolveMarkerStyle, resolvePolygonStyle, resolveTaxonomyIcon } from '../style';
 
 export function renderDataLayer(
   map: L.Map,
@@ -44,13 +44,48 @@ export function renderDataLayer(
   // dimension declares `icons` (see layer-manifest.ts) — a layer with no
   // such dimension falls back to Leaflet's plain default marker.
   const iconDimension = manifest.taxonomy?.find((dim) => dim.icons);
+
+  // Marker color/badge are independent of taxonomy — driven directly by
+  // style.colorField/colorMap/defaultColor and style.badgeField/badgeMap
+  // (see resolveMarkerColor/resolveMarkerBadge in ../style.ts). Untyped
+  // reads matching this file's existing style.cluster/style.icon
+  // convention (layer.json's `style` is a plain Record<string, unknown>,
+  // not individually validated).
+  const style = manifest.style ?? {};
+  const colorField = typeof style.colorField === 'string' ? style.colorField : undefined;
+  const colorMap =
+    typeof style.colorMap === 'object' && style.colorMap !== null
+      ? (style.colorMap as Record<string, string>)
+      : undefined;
+  const defaultColor = typeof style.defaultColor === 'string' ? style.defaultColor : undefined;
+  const badgeField = typeof style.badgeField === 'string' ? style.badgeField : undefined;
+  const badgeMap =
+    typeof style.badgeMap === 'object' && style.badgeMap !== null ? (style.badgeMap as Record<string, string>) : undefined;
+
   const pointToLayer =
-    manifest.kind === 'point' && iconDimension
+    manifest.kind === 'point' && (iconDimension || colorField || badgeField)
       ? (feature: GeoJSON.Feature, latlng: L.LatLng) => {
-          const value = readField(feature as GeoFeature, iconDimension.field)[0];
-          const icon = resolveTaxonomyIcon(iconDimension.icons, iconDimension.defaultIcon, value);
+          const icon = iconDimension
+            ? resolveTaxonomyIcon(
+                iconDimension.icons,
+                iconDimension.defaultIcon,
+                readField(feature as GeoFeature, iconDimension.field)[0],
+              )
+            : undefined;
+          const color = colorField
+            ? resolveMarkerColor(colorMap, defaultColor, readField(feature as GeoFeature, colorField)[0])
+            : undefined;
+          const badge = badgeField
+            ? resolveMarkerBadge(badgeMap, readField(feature as GeoFeature, badgeField)[0])
+            : undefined;
+
+          const circleStyle = color ? ` style="background-color:${color}"` : '';
+          const html =
+            `<span class="category-marker-icon__circle"${circleStyle}>${icon ?? ''}</span>` +
+            (badge ? `<span class="category-marker-icon__badge">${badge}</span>` : '');
+
           return L.marker(latlng, {
-            icon: L.divIcon({ html: icon ?? '', className: 'category-marker-icon', iconSize: [24, 24] }),
+            icon: L.divIcon({ html, className: 'category-marker-icon', iconSize: [24, 24] }),
           });
         }
       : undefined;
