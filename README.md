@@ -23,9 +23,36 @@ Open the printed local URL. No backend, no paid services — `pnpm build` produc
 
 No engine code under `src/engine/` needs to change to add a new world instance.
 
-### Build one world as its own standalone site
+### Open and deploy each world independently
 
-`vite build --mode <world-id> --outDir dist/<world-id>` bundles only that world's data (not every world under `worlds/`) and makes it load by default with no `?world=` query param — suitable for deploying on its own domain. Add a `"build:<world-id>": "tsc --noEmit && vite build --mode <world-id> --outDir dist/<world-id>"` script to `package.json` per world you want to deploy this way. `world.json` can also set an optional `favicon` field (a path relative to that world's folder) to override the default favicon for that build.
+Every world can be opened on its own during development, and built + deployed as its own standalone site on its own domain — no code changes needed either way, just the world's own `world.json`/`layers/`/`data/`.
+
+**Open one locally**, with the rest of the app unaffected — `pnpm dev`, then append `?world=<id>` to the printed URL:
+
+| World                   | URL (dev)                                            |
+|-------------------------|------------------------------------------------------|
+| `demo`                  | `http://localhost:5173/` (default, no param needed)  |
+| `paranormal-spain`      | `http://localhost:5173/?world=paranormal-spain`      |
+| `events-canary-islands` | `http://localhost:5173/?world=events-canary-islands` |
+| `moon-map-photos`       | `http://localhost:5173/?world=moon-map-photos`       |
+
+(Port may differ — use whatever `pnpm dev` actually prints.) A world switcher UI is intentionally out of scope for v1 — this is a static id lookup resolved once at page load, not a runtime menu.
+
+**Build one for its own domain** — `vite build --mode <world-id> --outDir builds/<world-id>` bundles *only* that world's data (not every world under `worlds/`) and makes it load by default with no `?world=` query param needed, so a visitor at that domain never sees `worlds/demo/` or any other world's content at all. Each of the 3 real worlds already has a matching `package.json` script:
+
+    pnpm run build:paranormal-spain       # -> builds/paranormal-spain/
+    pnpm run build:events-canary-islands  # -> builds/events-canary-islands/
+    pnpm run build:moon-map-photos        # -> builds/moon-map-photos/
+
+Adding a new world that should also deploy standalone means adding one matching line to `package.json`'s `"scripts"`:
+
+    "build:<your-world-id>": "tsc --noEmit && vite build --mode <your-world-id> --outDir builds/<your-world-id>"
+
+**Preview a build before deploying it** — the output is plain static files, so any static file server works, e.g.:
+
+    npx serve builds/paranormal-spain
+
+**Deploy** — upload the contents of `builds/<world-id>/` to any static host (Netlify, Vercel, Cloudflare Pages, GitHub Pages, an S3 bucket, etc.) and point your domain at it. `base: './'` in `vite.config.ts` means the build works whether it's served from a domain root or a subpath, unmodified. `world.json` can also set an optional `favicon` field (a path relative to that world's folder) to give that domain its own favicon, separate from the default one in `index.html`.
 
 ## Isochrone (travel-time) layers
 
