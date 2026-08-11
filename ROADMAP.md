@@ -4,7 +4,7 @@ Future work, none of this is implemented. See `CHANGELOG.md` for what's shipped 
 
 Open items below; everything else previously listed here has shipped (see `CHANGELOG.md`).
 
-- [Feature Request World Definition](feature-request-world-def.md)
+- [World Definition Package System — open items](feature-request-world-def.md): rule system, and a live API data-source loader. Both deferred as YAGNI, most of the original request already shipped (see `CHANGELOG.md`).
 
 - Border regions for paranormal-espana beyond La Orotava: resolved for the Tenerife-only scope — pulled from OpenStreetMap via `scripts/fetch-osm-boundary.mjs` (Overpass API, one relation per municipio) rather than hand-authored, since OSM already has accurate admin boundaries and no world needs live/editable ones yet. Still open: expanding coverage to all of Spain later just means running the script again per municipio/province — no new capability needed, just more `dataLayers` entries.
 
