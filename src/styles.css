@@ -1420,9 +1420,15 @@ select:disabled {
    like paranormal-espana) hides the Time UI entirely — not just visually,
    these become unreachable: with #view-switcher gone, AppState.view can
    never become 'calendar' since no other code path sets it. */
+/* Source order matters here: this must stay declared after the
+   .map-app.view-calendar rules above, since both target #calendar-view
+   with identical specificity — currently safe only because `view` can
+   never become 'calendar' when #view-switcher (which is the only thing
+   that sets it) is itself hidden by this same rule. */
 .map-app.no-time #view-switcher,
 .map-app.no-time #panel-right-time,
-.map-app.no-time #calendar-view {
+.map-app.no-time #calendar-view,
+.map-app.no-time .map-footer-legend .map-date-text {
   display: none;
 }
 /* #panel-right-time is sandwiched between two .panel__section-separator
@@ -1661,8 +1667,7 @@ select:disabled {
   white-space: nowrap;
 }
 .map-date-text:not(:empty)::after {
-  content: ' ·';
-  color: var(--color-border);
+  content: none;
 }
 /* Scale: a ruler-style bar (side + bottom borders, no top border) sized to
    a "nice" ground distance, plus its label e.g. "3 km" */
@@ -1715,6 +1720,9 @@ select:disabled {
   }
   .data-attribution {
     display: block;
+  }
+  .map-date-text:not(:empty)::after {
+    content: ' ·';
   }
 }
 
