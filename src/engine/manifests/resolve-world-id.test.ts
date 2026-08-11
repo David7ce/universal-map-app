@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveWorldId } from './resolve-world-id';
+import { isIsolatedWorldMode, resolveWorldId } from './resolve-world-id';
 
 describe('resolveWorldId', () => {
   it('uses the "world" query param when present and valid', () => {
@@ -24,5 +24,19 @@ describe('resolveWorldId', () => {
 
   it('query param still overrides an isolated build mode', () => {
     expect(resolveWorldId(new URLSearchParams('world=demo'), 'paranormal-espana')).toBe('demo');
+  });
+});
+
+describe('isIsolatedWorldMode', () => {
+  it('is false for "development"', () => {
+    expect(isIsolatedWorldMode('development')).toBe(false);
+  });
+
+  it('is false for "production"', () => {
+    expect(isIsolatedWorldMode('production')).toBe(false);
+  });
+
+  it('is true for an arbitrary world id used as a mode', () => {
+    expect(isIsolatedWorldMode('paranormal-espana')).toBe(true);
   });
 });

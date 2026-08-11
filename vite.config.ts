@@ -3,6 +3,7 @@ import { cp } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
 import { configDefaults } from 'vitest/config';
+import { isIsolatedWorldMode } from './src/engine/manifests/resolve-world-id';
 
 /**
  * `worlds/` (world manifests, layer manifests, strings, and .geojson data —
@@ -36,9 +37,14 @@ function copyWorldsDirPlugin(): Plugin {
       mode = resolvedConfig.mode;
     },
     async closeBundle() {
-      const isolatedWorld = mode === 'development' || mode === 'production' ? null : mode;
+      const isolatedWorld = isIsolatedWorldMode(mode) ? mode : null;
       const srcDir = resolve(rootDir, 'worlds', ...(isolatedWorld ? [isolatedWorld] : []));
-      if (!existsSync(srcDir)) return;
+      if (!existsSync(srcDir)) {
+        if (isolatedWorld) {
+          throw new Error(`copy-worlds-dir: no "worlds/${isolatedWorld}/" found for --mode ${mode}`);
+        }
+        return;
+      }
       const destDir = resolve(rootDir, outDir, 'worlds', ...(isolatedWorld ? [isolatedWorld] : []));
       await cp(srcDir, destDir, { recursive: true });
     },

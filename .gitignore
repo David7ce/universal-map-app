@@ -1,5 +1,6 @@
 node_modules/
 dist/
+builds/
 .worktrees/
 .claude/worktrees/
 *.log

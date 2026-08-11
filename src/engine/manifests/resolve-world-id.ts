@@ -9,5 +9,15 @@ export function resolveWorldId(searchParams: URLSearchParams, mode: string): str
   if (requested && /^[a-zA-Z0-9_-]+$/.test(requested)) {
     return requested;
   }
-  return mode === 'development' || mode === 'production' ? 'demo' : mode;
+  return isIsolatedWorldMode(mode) ? mode : 'demo';
+}
+
+// Whether `mode` (Vite's `--mode`) names an isolated per-world build rather
+// than the generic `development`/`production` modes. Shared by
+// `resolveWorldId` (runtime resolution) and `vite.config.ts`'s
+// `copyWorldsDirPlugin` (build-time world-data copying) so the two can't
+// silently drift apart — see that plugin's docstring for the failure mode
+// if they ever disagreed.
+export function isIsolatedWorldMode(mode: string): boolean {
+  return mode !== 'development' && mode !== 'production';
 }

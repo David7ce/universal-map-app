@@ -4,7 +4,7 @@ import type { AppManifest } from '../engine/manifests/app-manifest';
 // favicon. `doc` defaults to the global `document` — parameterized so this
 // stays testable without a DOM environment, matching the rest of `src/ui/`.
 export function applyBranding(manifest: AppManifest, appId: string, doc: Document = document): void {
-  doc.title = manifest.title;
+  doc.title = manifest.title ?? doc.title;
 
   if (!manifest.favicon) return;
 
@@ -15,5 +15,6 @@ export function applyBranding(manifest: AppManifest, appId: string, doc: Documen
     link.rel = 'icon';
     doc.head.appendChild(link);
   }
+  link.removeAttribute('type');
   link.href = href;
 }

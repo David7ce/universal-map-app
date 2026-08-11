@@ -89,6 +89,18 @@ For a `[lng, lat]` point, returns every feature from any layer with `regionRole:
 
 Both throw a descriptive `Error` on a structurally invalid manifest, otherwise return the parsed object typed as the manifest interface. Validation is intentionally shallow today — required top-level fields are checked, most optional fields' inner shapes aren't deep-validated. See `docs/json-reference.md` for the full field tables these validate against.
 
+### `resolveWorldId(searchParams: URLSearchParams, mode: string): string`
+
+`src/engine/manifests/resolve-world-id.ts`
+
+Which `worlds/<id>/` instance to load. `?world=<id>` wins when present and matches `/^[a-zA-Z0-9_-]+$/`; otherwise falls back to `mode` itself in an isolated per-world build (`isIsolatedWorldMode(mode)` is true), or `'demo'` in the generic `development`/`production` modes.
+
+### `isIsolatedWorldMode(mode: string): boolean`
+
+Same file.
+
+Whether `mode` (Vite's `--mode`) names an isolated per-world build (`vite build --mode <world-id>`) rather than the generic `development`/`production` modes. Shared by `resolveWorldId` and `vite.config.ts`'s `copyWorldsDirPlugin` so runtime world resolution and build-time world-data copying can't silently drift apart.
+
 ---
 
 ## `engine/state` — the reactive store
@@ -203,6 +215,16 @@ These are the testable, DOM-free building blocks the actual panel components (`S
 - `formatInfoFieldHtml(def, values): string` / `formatCoordinates(coords): { lat, lng }` / `isAllowedUrl(value): boolean` — `src/ui/panels/info-field-format.ts`. Rendering for `panel.infoFields` entries (see `docs/json-reference.md`) and the automatic lat/lng line; `isAllowedUrl` is the safety check restricting `link`/`image` fields to `http(s):`/`mailto:`.
 - `escapeHtml(value: string): string` — `src/ui/escape-html.ts`. The one HTML-escaping helper; every data-derived string interpolated into `innerHTML` anywhere in `src/ui/` goes through this (feature names, taxonomy values, region names — anything that ultimately comes from third-party GeoJSON, not from `t()`-resolved trusted UI copy).
 - `icons` — `src/ui/icons.ts`. A `Record<string, string>` of self-contained inline SVG markup strings (`search`, `close`, `filter`, `layers`, `chevron`, `pushpin`, `edit`). No external icon font, no CDN.
+
+---
+
+## `ui/branding` — page title and favicon
+
+### `applyBranding(manifest: AppManifest, appId: string, doc?: Document): void`
+
+`src/ui/branding.ts`
+
+Sets `document.title` from `manifest.title` (falling back to `index.html`'s existing static title if `title` is absent) and, if `manifest.favicon` is set, swaps the `<link rel="icon">` href to `worlds/<appId>/<favicon>` (removing any stale `type` attribute first, since the default favicon's `type="image/svg+xml"` would otherwise misdescribe a non-SVG replacement). `doc` defaults to the global `document`, parameterized for testability without a DOM environment. Called from `main.ts`'s `bootstrap()`.
 
 ---
 
