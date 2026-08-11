@@ -63,8 +63,7 @@ export function mountCalendarView(
   strings: Record<string, string>,
   layers: LoadedLayer[],
 ): void {
-  const todayIso = new Date().toISOString().slice(0, 10);
-  const maxIso = config.max > todayIso ? todayIso : config.max;
+  const maxIso = config.max;
 
   // Own granularity state, independent of CalendarBar.ts's — this view
   // defaults to 'month' (a typical calendar app's default), while the

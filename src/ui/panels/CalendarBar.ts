@@ -124,10 +124,7 @@ export function mountCalendarBar(
   config: CalendarConfig,
   strings: Record<string, string>,
 ): void {
-  // The calendar never shows the future — cap the manifest's configured
-  // max at today, whatever today actually is (not a fixed future date).
-  const todayIso = new Date().toISOString().slice(0, 10);
-  const maxIso = config.max > todayIso ? todayIso : config.max;
+  const maxIso = config.max;
 
   const totalDays = Math.max(daysBetween(config.min, maxIso), 1);
   // Gregorian year bounds only — a soft UI hint (real enforcement is
