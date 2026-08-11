@@ -1,0 +1,27 @@
+{
+  "Scientifically Studied": {
+    "icon": "🔬",
+    "level": 5,
+    "description": "Formal research, university studies or forensic analysis"
+  },
+  "Documented": {
+    "icon": "📰",
+    "level": 4,
+    "description": "Press reports, documentaries or official historical archives"
+  },
+  "Multiple Witnesses": {
+    "icon": "👁️",
+    "level": 3,
+    "description": "Several independent witnesses with consistent reports"
+  },
+  "Popular Legend": {
+    "icon": "📚",
+    "level": 2,
+    "description": "Oral tradition, local stories with no external verification"
+  },
+  "Unverified": {
+    "icon": "❓",
+    "level": 1,
+    "description": "Single reports, no additional witnesses, or anecdotal stories"
+  }
+}

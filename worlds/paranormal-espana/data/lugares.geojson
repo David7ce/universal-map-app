@@ -1,0 +1,330 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "pp-1",
+      "properties": {
+        "name": "Church of the Immaculate Conception",
+        "municipality": "La Orotava",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canary Islands",
+        "category": "Power Places",
+        "categories": ["Power Places", "Witchcraft"],
+        "description": "16th-century parish church with mysteries related to the symbolism of its architecture and decoration. The energetic power of this place is especially palpable near the altar. The columns show triangular figures (upright and inverted) as part of scenes such as Jacob's Dream. Outside, exhibitionist gargoyles stand out, recalling ancient pagan Celtic fertility idols (Sheela na Gigs).",
+        "phenomena": [
+          "Intense telluric energy",
+          "Hidden Masonic symbolism",
+          "Gargoyles with pagan symbolism",
+          "Energy power point"
+        ],
+        "tags": [
+          "places of power",
+          "16th century",
+          "church",
+          "visitable",
+          "telluric energy",
+          "masonic symbolism",
+          "sacred architecture"
+        ],
+        "verificationLevel": "Documented",
+        "popularity": 4,
+        "era": "16th century",
+        "activityHours": "Daytime - constant energy",
+        "dangerLevel": "Low",
+        "accessibility": "Public - during service hours",
+        "bestSeason": "Year-round",
+        "investigators": ["José Gregorio González", "Experts in Masonic architecture"],
+        "video": {
+          "title": "Free Tour: Mysteries of La Orotava",
+          "url": "https://www.civitatis.com/es/la-orotava/free-tour-misterios-leyendas-orotava/"
+        },
+        "fullHistory": "The Church of the Immaculate Conception is one of the most enigmatic temples in the Canary Islands. Its location was chosen according to telluric criteria, taking advantage of the terrain's natural energy lines. The architects incorporated Masonic and hermetic symbolism into its design, visible in the columns with inverted triangles representing esoteric concepts. The gargoyles at the rear are especially curious, as they depict exhibitionist figures similar to ancient Celtic fertility idols — highly unusual for a Catholic church.",
+        "howToGetThere": "Historic center of La Orotava, near Plaza de la Constitución",
+        "recommendations": "Visit during the day. Look closely at the altar's columns and search for the gargoyles at the back of the church.",
+        "sources": [
+          "Diario de Avisos - The 10 most mysterious places in Tenerife",
+          "Rutas Misteriosas - Mysterious La Orotava"
+        ]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.5245, 28.389] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-2",
+      "properties": {
+        "name": "Casa Lercaro",
+        "municipality": "La Orotava",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canary Islands",
+        "category": "Apparitions",
+        "categories": ["Apparitions", "Tragedies"],
+        "description": "Old mansion linked to the famous Casa Lercaro in La Laguna. According to local legend, after Catalina Lercaro's suicide in La Laguna, the family moved to the Orotava Valley, possibly fleeing the shame or Catalina's ghost. Ghostly apparitions and presences are reported at this location.",
+        "phenomena": [
+          "Ghostly apparitions",
+          "Invisible presences",
+          "Unexplained noises",
+          "Temperature changes"
+        ],
+        "tags": [
+          "apparitions",
+          "17th century",
+          "house",
+          "tragic history",
+          "very active",
+          "suicidal bride"
+        ],
+        "verificationLevel": "Popular Legend",
+        "popularity": 3,
+        "era": "17th-18th century",
+        "activityHours": "Mainly nocturnal",
+        "dangerLevel": "Low",
+        "accessibility": "Restricted access - private property",
+        "bestSeason": "Autumn-winter",
+        "fullHistory": "The Orotava connection to the tragedy of Catalina Lercaro is less well known than the main house in La Laguna, but no less unsettling. After Catalina's suicide — she threw herself into a well before her forced wedding — the Lercaro family abandoned their La Laguna residence and settled in the Orotava Valley. Some believe they were fleeing Catalina's ghost; others, simply the social shame. Local legends suggest that Catalina's spirit followed the family.",
+        "howToGetThere": "Old town of La Orotava",
+        "recommendations": "Respect private property. It can be observed from the outside.",
+        "sources": ["Princess Hotels - Scary stories of Tenerife"]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.525, 28.39] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-3",
+      "properties": {
+        "name": "Liceo de Taoro",
+        "municipality": "La Orotava",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canary Islands",
+        "category": "Apparitions",
+        "categories": ["Apparitions"],
+        "description": "Iconic cultural building in La Orotava where unexplained paranormal phenomena are reported. Witnesses describe presences and unexplained noises, and the phenomena have been the subject of investigation by paranormal experts.",
+        "phenomena": [
+          "Varied paranormal phenomena",
+          "Invisible presences",
+          "Unexplained noises",
+          "Nocturnal activity"
+        ],
+        "tags": [
+          "apparitions",
+          "historic building",
+          "19th century",
+          "sporadic activity",
+          "visitable"
+        ],
+        "verificationLevel": "Multiple Witnesses",
+        "popularity": 3,
+        "era": "19th-20th century",
+        "activityHours": "Nocturnal",
+        "dangerLevel": "Low",
+        "accessibility": "Public - during cultural events",
+        "bestSeason": "Year-round",
+        "investigators": ["Rutas Misteriosas"],
+        "video": {
+          "title": "Rutas Misteriosas - La Orotava",
+          "url": "https://rutasmisteriosas.es/reservar/la-orotava-misteriosa/"
+        },
+        "fullHistory": "The Liceo de Taoro is a major cultural center in La Orotava with more than a century of history. Over the years, workers and visitors have reported inexplicable experiences in the building, especially at night. Paranormal investigations have documented these phenomena, though some discretion is kept so as not to affect the center's cultural activities.",
+        "howToGetThere": "Center of La Orotava, iconic historic building",
+        "recommendations": "Visit during cultural events. Ask longtime staff about the stories.",
+        "sources": ["Rutas Misteriosas - Mysterious La Orotava"]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.524, 28.3895] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-4",
+      "properties": {
+        "name": "Teobaldo Power Auditorium",
+        "municipality": "La Orotava",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canary Islands",
+        "category": "Apparitions",
+        "categories": ["Apparitions"],
+        "description": "Municipal auditorium where inexplicable events have been reported, especially during night rehearsals and in little-used areas of the building. Some workers and performers have described paranormal experiences.",
+        "phenomena": [
+          "Noises in empty areas",
+          "Sense of presences",
+          "Phenomena during night rehearsals"
+        ],
+        "tags": [
+          "apparitions",
+          "modern building",
+          "20th century",
+          "sporadic activity",
+          "theater"
+        ],
+        "verificationLevel": "Multiple Witnesses",
+        "popularity": 2,
+        "era": "Contemporary",
+        "activityHours": "Nocturnal - during rehearsals",
+        "dangerLevel": "Low",
+        "accessibility": "Public - during events",
+        "bestSeason": "Year-round",
+        "fullHistory": "The Teobaldo Power Auditorium, despite being a relatively modern construction, has accumulated reports of inexplicable phenomena. The testimonies come mainly from technical staff and performers rehearsing at night. Unexplained noises are described, especially in the dressing rooms and technical areas.",
+        "howToGetThere": "Center of La Orotava",
+        "recommendations": "Attend cultural events. Staff may share their experiences.",
+        "sources": ["Rutas Misteriosas"]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.5235, 28.3885] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-5",
+      "properties": {
+        "name": "Placita Rosales - Green Shadow",
+        "municipality": "La Orotava",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canary Islands",
+        "category": "Apparitions",
+        "categories": ["Apparitions"],
+        "description": "Small square in the historic old town, known for the legend of the \"Green Shadow\" — a ghostly presence that manifests as a green-colored figure wandering the area, especially at dusk and during the night.",
+        "phenomena": [
+          "Appearance of a greenish figure",
+          "Shadow that moves",
+          "Sightings at dusk",
+          "Unsettling presence"
+        ],
+        "tags": [
+          "apparitions",
+          "green figure",
+          "nocturnal",
+          "square",
+          "local legend",
+          "very active"
+        ],
+        "verificationLevel": "Popular Legend",
+        "popularity": 3,
+        "era": "Undetermined",
+        "activityHours": "Dusk and night",
+        "dangerLevel": "Low",
+        "accessibility": "Public - open square",
+        "bestSeason": "Year-round",
+        "investigators": ["Rutas Misteriosas"],
+        "fullHistory": "The Green Shadow is one of the most persistent urban legends in La Orotava. For generations, neighbors of the area have reported sightings of a greenish figure that appears in the Placita Rosales, especially at sunset. The origin of this apparition is unknown, though some link it to old stories from the neighborhood.",
+        "howToGetThere": "Old town of La Orotava, near Calle San Francisco",
+        "recommendations": "Visit at dusk. Ask longtime neighbors of the area.",
+        "sources": ["Rutas Misteriosas - Mysterious La Orotava"]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.5248, 28.3892] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-6",
+      "properties": {
+        "name": "Cross of the Hanged",
+        "municipality": "La Orotava",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canary Islands",
+        "category": "Tragedies",
+        "categories": ["Tragedies", "Apparitions"],
+        "description": "Historic site marked by past executions. The cross marks the spot where public hangings once took place. Apparitions and phenomena linked to the souls of the executed are reported.",
+        "phenomena": [
+          "Apparitions of executed souls",
+          "Unsettling presences",
+          "Feelings of distress",
+          "Nocturnal phenomena"
+        ],
+        "tags": [
+          "tragedies",
+          "executions",
+          "dark history",
+          "cross",
+          "past centuries",
+          "very active"
+        ],
+        "verificationLevel": "Documented",
+        "popularity": 3,
+        "era": "16th-19th century",
+        "activityHours": "Nocturnal",
+        "dangerLevel": "Medium - poorly lit area",
+        "accessibility": "Public",
+        "bestSeason": "Year-round",
+        "investigators": ["Rutas Misteriosas"],
+        "fullHistory": "The Cross of the Hanged marks a site of sorrowful memory in La Orotava. For centuries, this was the spot where death sentences by hanging were carried out. According to tradition, the souls of the condemned remain bound to this place, manifesting especially at night.",
+        "howToGetThere": "Directions available on mystery tours",
+        "recommendations": "Visit in a group and with a guide. Poorly lit area at night.",
+        "sources": ["Rutas Misteriosas"]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.5242, 28.3888] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-7",
+      "properties": {
+        "name": "Barranco de Araujo",
+        "municipality": "La Orotava",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canary Islands",
+        "category": "Tragedies",
+        "categories": ["Tragedies", "Apparitions"],
+        "description": "A ravine that conceals a story linked to a tragic death. The site retains an unsettling atmosphere, and paranormal phenomena related to the event that took place there are reported.",
+        "phenomena": [
+          "Ghostly apparitions",
+          "Sense of tragedy",
+          "Presences",
+          "Unsettling atmosphere"
+        ],
+        "tags": [
+          "tragedies",
+          "ravine",
+          "tragic death",
+          "nature",
+          "local history"
+        ],
+        "verificationLevel": "Popular Legend",
+        "popularity": 2,
+        "era": "Undetermined",
+        "activityHours": "All day",
+        "dangerLevel": "Medium - uneven terrain",
+        "accessibility": "Restricted access - ravine",
+        "bestSeason": "Spring-summer",
+        "fullHistory": "Barranco de Araujo is known in La Orotava for a past tragedy whose specific details have blurred over time. Local mystery tours include this stop on their routes, recounting the story of the tragic death that marked the place.",
+        "howToGetThere": "From the historic center of La Orotava",
+        "recommendations": "Go with a local guide. Wear appropriate footwear for the ravine.",
+        "sources": ["Civitatis - Free Tour: Mysteries and Legends"]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.526, 28.388] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-8",
+      "properties": {
+        "name": "Casa de los Balcones",
+        "municipality": "La Orotava",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canary Islands",
+        "category": "Apparitions",
+        "categories": ["Apparitions"],
+        "description": "Beautiful 17th-century Canarian mansion, an architectural jewel of La Orotava. Paranormal phenomena are reported, such as apparitions of ghostly figures and a constant feeling of being watched by invisible presences. According to legend, the house was built over an old cemetery, and the spirits of the dead are said to still linger there.",
+        "phenomena": [
+          "Ghostly figures",
+          "Feeling of being watched",
+          "Invisible presences",
+          "Varied paranormal activity"
+        ],
+        "tags": [
+          "apparitions",
+          "17th century",
+          "mansion",
+          "very active",
+          "visitable",
+          "old cemetery",
+          "canarian architecture"
+        ],
+        "verificationLevel": "Multiple Witnesses",
+        "popularity": 4,
+        "era": "17th century",
+        "activityHours": "All day - more intense at night",
+        "dangerLevel": "Low",
+        "accessibility": "Public - museum and shop",
+        "bestSeason": "Year-round",
+        "fullHistory": "Casa de los Balcones is one of the most emblematic buildings in La Orotava and a major tourist attraction. This 17th-century mansion now houses a museum of Canarian crafts. But beneath its architectural beauty lies a darker history. According to local tradition, the building was constructed on land that was previously a cemetery. Visitors and staff have reported for years the appearance of ghostly figures in different parts of the house, as well as a constant feeling of being watched by invisible presences. Some witnesses describe sudden temperature changes and a particularly dense atmosphere in certain rooms.",
+        "howToGetThere": "Calle San Francisco, historic center of La Orotava. An easily recognizable landmark building.",
+        "recommendations": "Open to the public as a museum. Can be visited during business hours. Pay attention to the sensations in the upper-floor rooms.",
+        "sources": ["Informativos Canarias - Terrifying places of Tenerife"]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.5244, 28.3891] }
+    }
+  ]
+}

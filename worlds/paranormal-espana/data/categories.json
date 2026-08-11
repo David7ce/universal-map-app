@@ -1,0 +1,57 @@
+{
+  "Apparitions": {
+    "icon": "👻",
+    "color": "gray",
+    "description": "Ghosts, specters, souls in torment and phenomena related to the afterlife"
+  },
+  "UFOs": {
+    "icon": "🛸",
+    "color": "blue",
+    "description": "Unidentified flying objects and encounters with beings from other worlds"
+  },
+  "Curses": {
+    "icon": "🪦",
+    "color": "purple",
+    "description": "Cursed villages, excommunicated places and lands under ancestral curses"
+  },
+  "Witchcraft": {
+    "icon": "🔮",
+    "color": "indigo",
+    "description": "Covens, spells, historical witches and magic ceremonies"
+  },
+  "Mythical Creatures": {
+    "icon": "🐉",
+    "color": "green",
+    "description": "Dragons, legendary beasts, mythological animals and cryptozoology"
+  },
+  "Humanoid Monsters": {
+    "icon": "🧛",
+    "color": "red",
+    "description": "Werewolves, vampires and beings with human form but supernatural nature"
+  },
+  "Natural Disasters": {
+    "icon": "🌊",
+    "color": "cyan",
+    "description": "Earthquakes, tsunamis, eruptions and natural tragedies with or without a paranormal component"
+  },
+  "Tragedies": {
+    "icon": "🔪",
+    "color": "pink",
+    "description": "Historical murders, atrocious crimes and places of violent death"
+  },
+  "Portals": {
+    "icon": "🌀",
+    "color": "violet",
+    "description": "Dimensional portals, doorways to the underworld and energy vortexes"
+  },
+  "Cursed Objects": {
+    "icon": "🗿",
+    "color": "orange",
+    "description": "Paintings, dolls, relics and objects that bring misfortune"
+  },
+  "Power Places": {
+    "icon": "⚡",
+    "color": "yellow",
+    "description": "Strange energies, ley lines, magnetic points and sacred sites"
+  }
+}

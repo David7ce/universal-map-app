@@ -1,0 +1,65 @@
+{
+  "$schema": "../../../docs/schemas/layer.schema.json",
+  "id": "paranormal-places",
+  "title": "Paranormal Places",
+  "kind": "point",
+  "source": { "type": "geojson", "url": "worlds/paranormal-espana/data/lugares.geojson" },
+  "taxonomy": [
+    {
+      "id": "category",
+      "label": "Category",
+      "field": "properties.category",
+      "icons": {
+        "Apparitions": "👻",
+        "UFOs": "🛸",
+        "Curses": "🪦",
+        "Witchcraft": "🔮",
+        "Mythical Creatures": "🐉",
+        "Humanoid Monsters": "🧛",
+        "Natural Disasters": "🌊",
+        "Tragedies": "🔪",
+        "Portals": "🌀",
+        "Cursed Objects": "🗿",
+        "Power Places": "⚡"
+      },
+      "defaultIcon": "❓"
+    },
+    {
+      "id": "verification",
+      "label": "Verification Level",
+      "field": "properties.verificationLevel",
+      "icons": {
+        "Scientifically Studied": "🔬",
+        "Documented": "📰",
+        "Multiple Witnesses": "👁️",
+        "Popular Legend": "📚",
+        "Unverified": "❓"
+      },
+      "defaultIcon": "❓"
+    }
+  ],
+  "regionRole": null,
+  "style": { "cluster": true, "icon": "marker" },
+  "panel": {
+    "showInSearch": true,
+    "showInInfo": true,
+    "infoFields": [
+      { "field": "properties.category", "label": "Category" },
+      { "field": "properties.verificationLevel", "label": "Verification Level" },
+      { "field": "properties.era", "label": "Era" },
+      { "field": "properties.municipality", "label": "Municipality" },
+      { "field": "properties.phenomena", "label": "Phenomena" },
+      { "field": "properties.activityHours", "label": "Activity Hours" },
+      { "field": "properties.dangerLevel", "label": "Danger Level" },
+      { "field": "properties.accessibility", "label": "Accessibility" },
+      { "field": "properties.bestSeason", "label": "Best Season" },
+      { "field": "properties.investigators", "label": "Investigators" },
+      { "field": "properties.howToGetThere", "label": "How to Get There" },
+      { "field": "properties.recommendations", "label": "Recommendations" },
+      { "field": "properties.fullHistory", "label": "Full History" },
+      { "field": "properties.video.title", "label": "Video" },
+      { "field": "properties.video.url", "label": "Watch Video", "type": "link" },
+      { "field": "properties.sources", "label": "Sources" }
+    ]
+  }
+}
