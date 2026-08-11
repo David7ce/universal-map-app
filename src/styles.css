@@ -464,6 +464,13 @@ select:disabled {
     display: revert;
     right: var(--panel-right-width);
   }
+  /* Trim to date-only while the filters drawer is open — same reduction
+     the footer gets on mobile by default, so it doesn't compete with the
+     drawer's own content for attention. */
+  .map-app.panel-right-open .map-footer-legend .map-scale,
+  .map-app.panel-right-open .map-footer-legend .data-attribution {
+    display: none;
+  }
 }
 
 /* Same pattern, mirrored for the left (search/info) panel: the Layers
