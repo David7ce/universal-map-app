@@ -41,7 +41,9 @@ const raw = await response.json();
 
 const relation = raw.elements.find((el) => el.type === 'relation');
 if (!relation) {
-  throw new Error(`No relation found for name="${name}" admin_level="${adminLevel}" — check the name/level match OSM's tags.`);
+  throw new Error(
+    `No relation found for name="${name}" admin_level="${adminLevel}" — check the name/level match OSM's tags.`,
+  );
 }
 
 const ways = relation.members
@@ -111,4 +113,6 @@ const feature = {
 
 const { writeFileSync } = await import('node:fs');
 writeFileSync(outputPath, JSON.stringify({ type: 'FeatureCollection', features: [feature] }, null, 2) + '\n');
-console.error(`Wrote "${feature.properties.name}" (${outerRing.length} ring points, OSM relation ${relation.id}) to ${outputPath}`);
+console.error(
+  `Wrote "${feature.properties.name}" (${outerRing.length} ring points, OSM relation ${relation.id}) to ${outputPath}`,
+);

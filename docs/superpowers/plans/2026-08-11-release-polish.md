@@ -21,6 +21,7 @@
 ### Task 1: Mobile footer legend — date only below 48rem
 
 **Files:**
+
 - Modify: `src/styles.css` (`.map-scale` block, currently starting at line 1654; `.data-attribution` block, currently starting at line 1678; the `@media (min-width: 48rem)` block starting at line 1693)
 
 **Interfaces:** None — pure CSS, no other task depends on this one.
@@ -70,12 +71,12 @@ Find the existing `@media (min-width: 48rem)` block that currently only sets `--
 Add two new rules inside this same media block (after the existing `:root` rule, still inside the same `@media` block):
 
 ```css
-  .map-scale {
-    display: flex;
-  }
-  .data-attribution {
-    display: block;
-  }
+.map-scale {
+  display: flex;
+}
+.data-attribution {
+  display: block;
+}
 ```
 
 The full block becomes:
@@ -122,6 +123,7 @@ git commit -m "fix: shrink footer legend to date-only on mobile"
 ### Task 2: `systems.time: false` gating
 
 **Files:**
+
 - Modify: `src/main.ts` (`bootstrap()`, right after `appManifest` validates — currently lines 34-35)
 - Modify: `src/styles.css` (new rules, anywhere in the file's relevant section — suggest near the existing `.map-app.view-calendar` rules around line 1409, or near `.panel--right`'s section)
 - Modify: `src/ui/panels/SettingsControl.ts` (the whole file — template string and `render()`)
@@ -130,6 +132,7 @@ git commit -m "fix: shrink footer legend to date-only on mobile"
 - Modify: `docs/json-reference.md`
 
 **Interfaces:**
+
 - Consumes: nothing from Task 1 (independent).
 - Produces: nothing consumed by a later task — this plan has no Task 3 code dependency (Task 3 only edits `ROADMAP.md` prose).
 
@@ -138,13 +141,13 @@ git commit -m "fix: shrink footer legend to date-only on mobile"
 In `src/main.ts`, immediately after the existing line
 
 ```typescript
-  applyBranding(appManifest, appId);
+applyBranding(appManifest, appId);
 ```
 
 (inside `bootstrap()`, currently line 35) add:
 
 ```typescript
-  document.querySelector('#app')!.classList.toggle('no-time', appManifest.systems?.time === false);
+document.querySelector('#app')!.classList.toggle('no-time', appManifest.systems?.time === false);
 ```
 
 - [ ] **Step 2: Add the CSS that hides the three regions**
@@ -176,7 +179,7 @@ Read the current file first — `src/ui/panels/SettingsControl.ts`. Add a `timeE
 Replace:
 
 ```typescript
-  container.innerHTML = `
+container.innerHTML = `
     <button type="button" class="settings-control-trigger" aria-expanded="false" aria-label="${t('settings.trigger', strings)}">
       ${icons.settings}
       <span class="settings-control-trigger__label">${t('settings.trigger', strings)}</span>
@@ -203,17 +206,17 @@ Replace:
 with:
 
 ```typescript
-  const timeEnabled = deps.appManifest.systems?.time !== false;
+const timeEnabled = deps.appManifest.systems?.time !== false;
 
-  const calendarSection = timeEnabled
-    ? `<p class="settings-control-group__title">${t('settings.calendarSection', strings)}</p>
+const calendarSection = timeEnabled
+  ? `<p class="settings-control-group__title">${t('settings.calendarSection', strings)}</p>
       <label class="settings-control-row">
         <span>${t('settings.calendarSystemLabel', strings)}</span>
         <select data-role="calendar-system">${systemOptions}</select>
       </label>`
-    : '';
+  : '';
 
-  container.innerHTML = `
+container.innerHTML = `
     <button type="button" class="settings-control-trigger" aria-expanded="false" aria-label="${t('settings.trigger', strings)}">
       ${icons.settings}
       <span class="settings-control-trigger__label">${t('settings.trigger', strings)}</span>
@@ -236,18 +239,31 @@ with:
 Next, find:
 
 ```typescript
-  const systemSelect = container.querySelector<HTMLSelectElement>('[data-role="calendar-system"]')!;
+const systemSelect = container.querySelector<HTMLSelectElement>('[data-role="calendar-system"]')!;
 ```
 
 Change the `!` non-null assertion to allow `null` (since the element won't exist when `timeEnabled` is `false`):
 
 ```typescript
-  const systemSelect = container.querySelector<HTMLSelectElement>('[data-role="calendar-system"]');
+const systemSelect = container.querySelector<HTMLSelectElement>('[data-role="calendar-system"]');
 ```
 
 Find the block that wires it up:
 
 ```typescript
+systemSelect.value = store.get().calendarSystem;
+systemSelect.addEventListener('change', () => {
+  const system = systemSelect.value as CalendarSystem;
+  ensureCalendarSystemLoaded(system)
+    .then(() => store.set({ calendarSystem: system }))
+    .catch((error: unknown) => console.error('Failed to load calendar system', system, error));
+});
+```
+
+Wrap it in an `if (systemSelect)` guard:
+
+```typescript
+if (systemSelect) {
   systemSelect.value = store.get().calendarSystem;
   systemSelect.addEventListener('change', () => {
     const system = systemSelect.value as CalendarSystem;
@@ -255,32 +271,19 @@ Find the block that wires it up:
       .then(() => store.set({ calendarSystem: system }))
       .catch((error: unknown) => console.error('Failed to load calendar system', system, error));
   });
-```
-
-Wrap it in an `if (systemSelect)` guard:
-
-```typescript
-  if (systemSelect) {
-    systemSelect.value = store.get().calendarSystem;
-    systemSelect.addEventListener('change', () => {
-      const system = systemSelect.value as CalendarSystem;
-      ensureCalendarSystemLoaded(system)
-        .then(() => store.set({ calendarSystem: system }))
-        .catch((error: unknown) => console.error('Failed to load calendar system', system, error));
-    });
-  }
+}
 ```
 
 Finally, find this line inside `render()`:
 
 ```typescript
-    if (document.activeElement !== systemSelect) systemSelect.value = state.calendarSystem;
+if (document.activeElement !== systemSelect) systemSelect.value = state.calendarSystem;
 ```
 
 Replace with:
 
 ```typescript
-    if (systemSelect && document.activeElement !== systemSelect) systemSelect.value = state.calendarSystem;
+if (systemSelect && document.activeElement !== systemSelect) systemSelect.value = state.calendarSystem;
 ```
 
 - [ ] **Step 4: Set `paranormal-espana/world.json`'s `systems.time` to `false`**
@@ -324,7 +327,7 @@ In `docs/schemas/world.schema.json`, find the `"plugins"` property block (it's t
 In `docs/json-reference.md`, find the `world.json` field table (it currently ends with the `plugins.participate` row, right before the `### BaseLayerConfig` heading). Add a new row right after the `plugins.participate` row:
 
 ```markdown
-| `systems.time`                  | `boolean`                                          | no                                                                 | `false` hides all time/calendar UI (filters panel's Time section, the Map/Calendar view switcher, Settings' calendar-system row) — for a world with no temporal data. Defaults to `true` (shown) when omitted.                                                                                                                                              |
+| `systems.time` | `boolean` | no | `false` hides all time/calendar UI (filters panel's Time section, the Map/Calendar view switcher, Settings' calendar-system row) — for a world with no temporal data. Defaults to `true` (shown) when omitted. |
 ```
 
 - [ ] **Step 7: Verify `demo` world is unaffected (dev server + Playwright)**
@@ -334,6 +337,7 @@ Run `npm run dev`. Navigate to the default URL (no `?world=` — loads `demo`). 
 - [ ] **Step 8: Verify `paranormal-espana` has the Time UI hidden (dev server + Playwright)**
 
 Navigate to `?world=paranormal-espana`. Confirm:
+
 - The filters panel (funnel icon) has no "Time" section — only the taxonomy filter checkboxes, Settings button, and Participate button (if configured) are visible in it.
 - No Map/Calendar view switcher pill appears at the top of the screen.
 - Settings popover (gear icon inside the filters panel) shows only "Map" section content (projection selector, grid toggle) — no "Calendar" section, no calendar-system `<select>`.
@@ -357,6 +361,7 @@ git commit -m "feat: wire up systems.time to hide Time UI for worlds with no tem
 ### Task 3: `ROADMAP.md` cleanup
 
 **Files:**
+
 - Modify: `ROADMAP.md`
 
 **Interfaces:** None.

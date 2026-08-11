@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { resolveMarkerBadge, resolveMarkerColor, resolveMarkerStyle, resolvePolygonStyle, resolveTaxonomyIcon } from './style';
+import {
+  resolveMarkerBadge,
+  resolveMarkerColor,
+  resolveMarkerStyle,
+  resolvePolygonStyle,
+  resolveTaxonomyIcon,
+} from './style';
 import type { LayerManifest } from '../manifests/layer-manifest';
 
 function manifest(style?: Record<string, unknown>): LayerManifest {

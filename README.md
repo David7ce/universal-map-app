@@ -30,7 +30,7 @@ Every world can be opened on its own during development, and built + deployed as
 **Open one locally**, with the rest of the app unaffected — `pnpm dev`, then append `?world=<id>` to the printed URL:
 
 | World                   | URL (dev)                                            |
-|-------------------------|------------------------------------------------------|
+| ----------------------- | ---------------------------------------------------- |
 | `demo`                  | `http://localhost:5173/` (default, no param needed)  |
 | `paranormal-spain`      | `http://localhost:5173/?world=paranormal-spain`      |
 | `events-canary-islands` | `http://localhost:5173/?world=events-canary-islands` |
@@ -38,7 +38,7 @@ Every world can be opened on its own during development, and built + deployed as
 
 (Port may differ — use whatever `pnpm dev` actually prints.) A world switcher UI is intentionally out of scope for v1 — this is a static id lookup resolved once at page load, not a runtime menu.
 
-**Build one for its own domain** — `vite build --mode <world-id> --outDir builds/<world-id>` bundles *only* that world's data (not every world under `worlds/`) and makes it load by default with no `?world=` query param needed, so a visitor at that domain never sees `worlds/demo/` or any other world's content at all. Each of the 3 real worlds already has a matching `package.json` script:
+**Build one for its own domain** — `vite build --mode <world-id> --outDir builds/<world-id>` bundles _only_ that world's data (not every world under `worlds/`) and makes it load by default with no `?world=` query param needed, so a visitor at that domain never sees `worlds/demo/` or any other world's content at all. Each of the 3 real worlds already has a matching `package.json` script:
 
     pnpm run build:paranormal-spain       # -> builds/paranormal-spain/
     pnpm run build:events-canary-islands  # -> builds/events-canary-islands/

@@ -4,7 +4,13 @@ import 'leaflet.heat';
 import type { GeoFeature } from '../../time/temporal-types';
 import type { LayerManifest } from '../../manifests/layer-manifest';
 import { filterActiveFeatures, readField } from '../../taxonomy/compute-dimensions';
-import { resolveMarkerBadge, resolveMarkerColor, resolveMarkerStyle, resolvePolygonStyle, resolveTaxonomyIcon } from '../style';
+import {
+  resolveMarkerBadge,
+  resolveMarkerColor,
+  resolveMarkerStyle,
+  resolvePolygonStyle,
+  resolveTaxonomyIcon,
+} from '../style';
 
 export function renderDataLayer(
   map: L.Map,
@@ -60,7 +66,9 @@ export function renderDataLayer(
   const defaultColor = typeof style.defaultColor === 'string' ? style.defaultColor : undefined;
   const badgeField = typeof style.badgeField === 'string' ? style.badgeField : undefined;
   const badgeMap =
-    typeof style.badgeMap === 'object' && style.badgeMap !== null ? (style.badgeMap as Record<string, string>) : undefined;
+    typeof style.badgeMap === 'object' && style.badgeMap !== null
+      ? (style.badgeMap as Record<string, string>)
+      : undefined;
 
   const pointToLayer =
     manifest.kind === 'point' && (iconDimension || colorField || badgeField)

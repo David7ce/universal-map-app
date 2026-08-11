@@ -21,11 +21,13 @@
 ### Task 1: `resolveWorldId` — extract and test the mode-fallback selector
 
 **Files:**
+
 - Create: `src/engine/manifests/resolve-world-id.ts`
 - Create: `src/engine/manifests/resolve-world-id.test.ts`
 - Modify: `src/main.ts:30-36` (replace inline `resolveAppId` with the new import)
 
 **Interfaces:**
+
 - Produces: `resolveWorldId(searchParams: URLSearchParams, mode: string): string` — used by `src/main.ts`'s `bootstrap()`.
 
 - [ ] **Step 1: Write the failing test**
@@ -125,10 +127,12 @@ git commit -m "refactor: extract resolveWorldId, fall back to build mode for iso
 ### Task 2: `copyWorldsDirPlugin` — scope the copy to one world in isolated modes
 
 **Files:**
+
 - Modify: `vite.config.ts:20-38`
 - Modify: `package.json` (add one build script)
 
 **Interfaces:**
+
 - Consumes: nothing from Task 1 (independent).
 - Produces: `dist/worlds/` containing only `worlds/<mode>/` when built with an isolated `--mode <world-id>`; unchanged (full `worlds/` tree) when built with `development`/`production` mode.
 
@@ -190,6 +194,7 @@ Expected: succeeds, `dist/worlds/demo/world.json` exists (full `worlds/` tree co
 - [ ] **Step 4: Verify isolated build only copies one world**
 
 Run:
+
 ```bash
 npm run build:demo-only
 ```
@@ -215,12 +220,14 @@ git commit -m "feat: scope copy-worlds-dir plugin to one world in isolated build
 ### Task 3: `favicon` field on `world.json`
 
 **Files:**
+
 - Modify: `src/engine/manifests/app-manifest.ts:12-22` (interface), `:55-57` area (validation)
 - Modify: `src/engine/manifests/manifests.test.ts` (add cases to the existing `describe('validateAppManifest', ...)` block)
 - Modify: `docs/schemas/world.schema.json`
 - Modify: `docs/json-reference.md`
 
 **Interfaces:**
+
 - Consumes: nothing from Tasks 1-2 (independent).
 - Produces: `AppManifest.favicon?: string`, used by Task 4's `applyBranding`.
 
@@ -229,24 +236,24 @@ git commit -m "feat: scope copy-worlds-dir plugin to one world in isolated build
 Add to the `describe('validateAppManifest', ...)` block in `src/engine/manifests/manifests.test.ts` (after the existing `strings` tests around line 135):
 
 ```typescript
-  it('accepts a valid "favicon" path', () => {
-    const withFavicon = { ...valid, favicon: 'assets/favicon.png' };
-    expect(validateAppManifest(withFavicon)).toEqual(withFavicon);
-  });
+it('accepts a valid "favicon" path', () => {
+  const withFavicon = { ...valid, favicon: 'assets/favicon.png' };
+  expect(validateAppManifest(withFavicon)).toEqual(withFavicon);
+});
 
-  it('rejects a non-string "favicon" path', () => {
-    expect(() => validateAppManifest({ ...valid, favicon: 42 })).toThrow(/favicon/);
-  });
+it('rejects a non-string "favicon" path', () => {
+  expect(() => validateAppManifest({ ...valid, favicon: 42 })).toThrow(/favicon/);
+});
 
-  it('accepts a manifest with no "favicon" field at all', () => {
-    expect(validateAppManifest(valid)).toEqual(valid);
-  });
+it('accepts a manifest with no "favicon" field at all', () => {
+  expect(validateAppManifest(valid)).toEqual(valid);
+});
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run src/engine/manifests/manifests.test.ts`
-Expected: FAIL — "accepts a valid favicon path" fails because `validateAppManifest` currently returns the object unchanged and doesn't reject it either, so the *rejects* test is the one that actually fails first (no error thrown for `favicon: 42`).
+Expected: FAIL — "accepts a valid favicon path" fails because `validateAppManifest` currently returns the object unchanged and doesn't reject it either, so the _rejects_ test is the one that actually fails first (no error thrown for `favicon: 42`).
 
 - [ ] **Step 3: Add the field to the interface and validation**
 
@@ -259,9 +266,9 @@ In `src/engine/manifests/app-manifest.ts`, add to the `AppManifest` interface (a
 Add validation, right after the existing `strings` check (currently lines 55-57):
 
 ```typescript
-  if (obj.favicon !== undefined && typeof obj.favicon !== 'string') {
-    throw new Error(`App manifest "${obj.id}" "favicon" must be a string path when present`);
-  }
+if (obj.favicon !== undefined && typeof obj.favicon !== 'string') {
+  throw new Error(`App manifest "${obj.id}" "favicon" must be a string path when present`);
+}
 ```
 
 - [ ] **Step 4: Run test to verify it passes**
@@ -285,7 +292,7 @@ Add a new property inside `"properties"`, after the existing `"strings"` entry (
 Add a row to the `world.json` field table (after the `strings` row, currently line 27):
 
 ```markdown
-| `favicon`                       | `string`                                           | no                                                                | Relative path (inside the world's folder) to a favicon image, e.g. `"assets/favicon.png"`. If omitted, the default favicon (set in `index.html`) is kept.                                                                                                                                |
+| `favicon` | `string` | no | Relative path (inside the world's folder) to a favicon image, e.g. `"assets/favicon.png"`. If omitted, the default favicon (set in `index.html`) is kept. |
 ```
 
 - [ ] **Step 7: Run full test suite and type-check**
@@ -305,10 +312,12 @@ git commit -m "feat: add optional favicon field to world.json"
 ### Task 4: Apply branding (title + favicon) at bootstrap
 
 **Files:**
+
 - Create: `src/ui/branding.ts`
 - Modify: `src/main.ts` (call the new function in `bootstrap()`)
 
 **Interfaces:**
+
 - Consumes: `AppManifest` from Task 3 (`favicon?: string`, and the already-existing `title: string`), `appId: string` from Task 1's `resolveWorldId` result (already available in `bootstrap()` as the existing `appId` local).
 - Produces: `applyBranding(manifest: AppManifest, appId: string, doc?: Document): void`.
 
@@ -385,6 +394,7 @@ git commit -m "feat: apply page title and favicon from world.json at bootstrap"
 ### Task 5: Changelog entry
 
 **Files:**
+
 - Modify: `CHANGELOG.md`
 
 - [ ] **Step 1: Add a new entry at the top of `CHANGELOG.md`**
