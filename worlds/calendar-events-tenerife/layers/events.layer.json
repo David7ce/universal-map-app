@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../docs/schemas/layer.schema.json",
+  "id": "events",
+  "title": "Events",
+  "kind": "point",
+  "source": { "type": "geojson", "url": "worlds/calendar-events-tenerife/data/events.geojson" },
+  "temporal": { "defaultVisibility": "time-filtered" },
+  "taxonomy": [
+    {
+      "id": "category",
+      "label": "Category",
+      "field": "properties.category",
+      "icons": {
+        "Música": "🎵",
+        "Festival": "🎉",
+        "Mercado": "🛍️",
+        "Deporte": "🏃",
+        "Familia": "👨‍👩‍👧",
+        "Cultura": "🎭"
+      },
+      "defaultIcon": "📍"
+    }
+  ],
+  "regionRole": null,
+  "style": { "cluster": true, "icon": "marker" },
+  "panel": {
+    "showInSearch": true,
+    "showInInfo": true,
+    "infoFields": [
+      { "field": "properties.description", "label": "Description" },
+      { "field": "properties.category", "label": "Category" },
+      { "field": "properties.municipality", "label": "Municipality" },
+      { "field": "properties.venue", "label": "Venue" },
+      { "field": "properties.time", "label": "Time" },
+      { "field": "properties.price", "label": "Price" },
+      { "field": "properties.link", "label": "More info", "type": "link" }
+    ]
+  }
+}

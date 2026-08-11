@@ -1,0 +1,282 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "evt-001",
+      "properties": {
+        "name": "Noches de Jazz de Canarias",
+        "municipality": "Santa Cruz de Tenerife",
+        "venue": "Auditorio de Tenerife",
+        "category": "Música",
+        "description": "Una noche de jazz bajo las estrellas en el icónico Auditorio.",
+        "time": "21:00",
+        "price": "18 €",
+        "link": "https://www.auditoriodetenerife.com",
+        "temporal": { "instant": "2026-08-02" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.2466, 28.4586] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-002",
+      "properties": {
+        "name": "Romería de San Roque",
+        "municipality": "San Cristóbal de La Laguna",
+        "venue": "Casco Histórico",
+        "category": "Festival",
+        "description": "Romería tradicional con carros de bueyes, trajes típicos y productos locales.",
+        "time": "19:00",
+        "price": "Gratis",
+        "temporal": { "instant": "2026-08-16" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.3159, 28.4874] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-003",
+      "properties": {
+        "name": "Mercado de Antigüedades y Artesanía",
+        "municipality": "Puerto de la Cruz",
+        "venue": "Plaza del Charco",
+        "category": "Mercado",
+        "description": "Objetos vintage y artesanía hecha a mano junto a la plaza frente al mar.",
+        "time": "10:00",
+        "price": "Gratis",
+        "temporal": { "instant": "2026-08-09" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.5473, 28.4136] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-004",
+      "properties": {
+        "name": "Carrera de Trail Costa de Tenerife",
+        "municipality": "Adeje",
+        "venue": "Sendero costero de Costa Adeje",
+        "category": "Deporte",
+        "description": "Carrera de trail costera con distancias de 10K y 21K.",
+        "time": "08:00",
+        "price": "25 €",
+        "link": "https://www.adeje.es",
+        "temporal": { "instant": "2026-09-06" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.7397, 28.0921] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-005",
+      "properties": {
+        "name": "Fiestas del Cristo",
+        "municipality": "San Cristóbal de La Laguna",
+        "venue": "Calle Herradores",
+        "category": "Festival",
+        "description": "Fiestas en la calle, música en directo y procesiones tradicionales.",
+        "time": "20:00",
+        "price": "Gratis",
+        "temporal": { "instant": "2026-09-14" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.317, 28.487] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-006",
+      "properties": {
+        "name": "Día Infantil en Loro Parque",
+        "municipality": "Puerto de la Cruz",
+        "venue": "Loro Parque",
+        "category": "Familia",
+        "description": "Actividades especiales y espectáculos de animales para niños.",
+        "time": "11:00",
+        "price": "39 €",
+        "link": "https://www.loroparque.com",
+        "temporal": { "instant": "2026-08-20" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.5714, 28.4083] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-007",
+      "properties": {
+        "name": "Ciclo de Conciertos al Atardecer",
+        "municipality": "Arona",
+        "venue": "Paseo marítimo de Playa de las Américas",
+        "category": "Música",
+        "description": "Sesiones acústicas en directo mientras el sol se pone sobre el Atlántico.",
+        "time": "19:30",
+        "price": "Gratis",
+        "temporal": { "instant": "2026-08-23" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.7362, 28.0578] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-008",
+      "properties": {
+        "name": "Mercadillo Artesanal de Garachico",
+        "municipality": "Garachico",
+        "venue": "Plaza de la Libertad",
+        "category": "Mercado",
+        "description": "Artesanos locales venden cerámica, textiles y conservas.",
+        "time": "09:00",
+        "price": "Gratis",
+        "temporal": { "instant": "2026-08-30" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.7639, 28.3702] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-009",
+      "properties": {
+        "name": "Fiestas en Honor a la Virgen de Candelaria",
+        "municipality": "Candelaria",
+        "venue": "Basílica de Candelaria",
+        "category": "Festival",
+        "description": "La gran fiesta religiosa de la isla con procesiones y fuegos artificiales.",
+        "time": "18:00",
+        "price": "Gratis",
+        "link": "https://www.candelaria.es",
+        "temporal": { "range": { "from": "2026-08-14", "to": "2026-08-15" } }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.3636, 28.3569] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-010",
+      "properties": {
+        "name": "Campeonato Abierto de Surf de Tenerife",
+        "municipality": "Arona",
+        "venue": "Playa de Los Cristianos",
+        "category": "Deporte",
+        "description": "Surfistas locales e internacionales compiten en la costa sur.",
+        "time": "09:00",
+        "price": "10 €",
+        "temporal": { "instant": "2026-09-12" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.7186, 28.0522] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-011",
+      "properties": {
+        "name": "Noche Blanca Cultural",
+        "municipality": "Icod de los Vinos",
+        "venue": "Centro Histórico",
+        "category": "Cultura",
+        "description": "Museos, galerías y edificios históricos abren hasta tarde con entrada gratuita.",
+        "time": "19:00",
+        "price": "Gratis",
+        "temporal": { "instant": "2026-09-19" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.7256, 28.3706] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-012",
+      "properties": {
+        "name": "Ciclo de Música de Cámara",
+        "municipality": "Santa Cruz de Tenerife",
+        "venue": "Auditorio de Tenerife",
+        "category": "Música",
+        "description": "Conjuntos de música de cámara clásica actúan en la sala de conciertos.",
+        "time": "20:30",
+        "price": "22 €",
+        "link": "https://www.auditoriodetenerife.com",
+        "temporal": { "instant": "2026-10-03" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.2466, 28.4586] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-013",
+      "properties": {
+        "name": "Feria de Otoño Infantil",
+        "municipality": "Los Realejos",
+        "venue": "Parque Municipal",
+        "category": "Familia",
+        "description": "Juegos, talleres y espectáculos de marionetas para toda la familia.",
+        "time": "11:00",
+        "price": "Gratis",
+        "temporal": { "instant": "2026-10-10" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.5833, 28.3789] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-014",
+      "properties": {
+        "name": "Edición Especial de Otoño del Mercado",
+        "municipality": "Santa Cruz de Tenerife",
+        "venue": "Mercado Nuestra Señora de África",
+        "category": "Mercado",
+        "description": "Puestos ampliados con productos de temporada y gastronomía local.",
+        "time": "08:00",
+        "price": "Gratis",
+        "link": "https://www.santacruzdetenerife.es",
+        "temporal": { "instant": "2026-10-17" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.2546, 28.4682] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-015",
+      "properties": {
+        "name": "Fiestas del Valle",
+        "municipality": "La Orotava",
+        "venue": "Casco Histórico",
+        "category": "Festival",
+        "description": "Tres días de conciertos, gastronomía y fuegos artificiales en el centro histórico.",
+        "time": "18:00",
+        "price": "Gratis",
+        "temporal": { "range": { "from": "2026-10-24", "to": "2026-10-26" } }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.5225, 28.3897] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-016",
+      "properties": {
+        "name": "Media Maratón de Tenerife",
+        "municipality": "Adeje",
+        "venue": "Costa Adeje",
+        "category": "Deporte",
+        "description": "Media maratón costera que finaliza en el paseo marítimo.",
+        "time": "08:30",
+        "price": "30 €",
+        "link": "https://www.adeje.es",
+        "temporal": { "instant": "2026-11-01" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.7397, 28.0921] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-017",
+      "properties": {
+        "name": "Semana Internacional de Cine",
+        "municipality": "Puerto de la Cruz",
+        "venue": "Teatro Timanfaya",
+        "category": "Cultura",
+        "description": "Una semana de proyecciones de cine independiente e internacional.",
+        "time": "19:00",
+        "price": "8 €",
+        "temporal": { "range": { "from": "2026-11-07", "to": "2026-11-13" } }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.5464, 28.4127] }
+    },
+    {
+      "type": "Feature",
+      "id": "evt-018",
+      "properties": {
+        "name": "Concierto de Invierno del Coro Universitario",
+        "municipality": "San Cristóbal de La Laguna",
+        "venue": "Iglesia de la Concepción",
+        "category": "Música",
+        "description": "El coro de la Universidad de La Laguna interpreta obras corales de temporada.",
+        "time": "20:00",
+        "price": "Gratis",
+        "temporal": { "instant": "2026-12-05" }
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.3158, 28.4881] }
+    }
+  ]
+}
