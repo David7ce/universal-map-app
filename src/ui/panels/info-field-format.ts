@@ -6,13 +6,17 @@ const ALLOWED_URL_SCHEMES = ['http:', 'https:', 'mailto:'];
 /**
  * `link`/`image` types interpolate a data-derived value into an `href`/`src`
  * attribute — restrict to schemes that can't execute script (blocks
- * `javascript:` URLs planted in feature properties).
+ * `javascript:` URLs planted in feature properties). A value with no scheme
+ * at all (no `:`) can't be a `javascript:`/`data:` URI either — accept it as
+ * a same-origin relative path, e.g. a bundled world asset like
+ * `assets/photos/thumbs/x.jpg`, as long as it doesn't contain whitespace
+ * (a clear sign it's not a path/URL at all, just arbitrary text).
  */
 export function isAllowedUrl(value: string): boolean {
   try {
     return ALLOWED_URL_SCHEMES.includes(new URL(value).protocol);
   } catch {
-    return false;
+    return !value.includes(':') && !/\s/.test(value) && value.length > 0;
   }
 }
 

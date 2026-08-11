@@ -12,6 +12,15 @@ describe('isAllowedUrl', () => {
     expect(isAllowedUrl('javascript:alert(1)')).toBe(false);
     expect(isAllowedUrl('not a url')).toBe(false);
   });
+
+  it('accepts a same-origin relative path (e.g. a bundled world asset)', () => {
+    expect(isAllowedUrl('assets/photos/thumbs/x.jpg')).toBe(true);
+    expect(isAllowedUrl('/assets/photos/thumbs/x.jpg')).toBe(true);
+  });
+
+  it('rejects a relative-looking value with whitespace', () => {
+    expect(isAllowedUrl('not a url')).toBe(false);
+  });
 });
 
 describe('formatInfoFieldHtml', () => {
