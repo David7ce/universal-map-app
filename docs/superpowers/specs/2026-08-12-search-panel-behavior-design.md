@@ -22,11 +22,13 @@ Out of scope (separate specs): date-range filter, region/price/type filter dimen
 `store.panels.left` semantics are unchanged (`'open' | 'closed'`); what changes is which breakpoints respect it.
 
 Opens on:
+
 - Click the search toggle icon (existing — the only way to reach the input at all once desktop's forced-visibility override is gone, since the input lives inside the now-actually-hidden `.map-search`).
 - Select a search result or click a map feature (existing — `selectFeature` already sets `panels: { left: 'open', ... }`).
 - **New:** pick a day in `CalendarBar.ts`'s month/year grid (`selectDay`) — calls `openPanel(store, 'left')` alongside the existing `store.set({ selectedDate })`.
 
 Content shown when open, in priority order (unchanged from current logic, just now actually reachable/hideable):
+
 1. A feature is selected → info view.
 2. Search query non-empty → results view.
 3. Otherwise → day agenda for `state.selectedDate`.
@@ -36,6 +38,7 @@ Closes on: toggle icon (acts as close while open, existing `[aria-expanded='true
 ## CSS changes
 
 `styles.css`'s desktop media query (`@media (min-width: 64rem)`, currently lines ~362-405):
+
 - Remove: `.control-btn--search { display: none; }`, `.map-search[hidden] { display: block; }`, `.map-search__close { display: none; }` — these three are what force permanent visibility and hide the controls that would otherwise manage it.
 - Keep: the docked-top-left positioning, no-backdrop, dropdown-style absolute-positioned results — desktop's distinct chrome is a visual choice independent of open/closed timing, and stays.
 - Net effect: desktop gets the same toggle-icon-in-top-left / click-to-open-a-dropdown pattern mobile already has as a full-screen-modal variant, just styled as a compact anchored panel instead of a full-screen overlay.

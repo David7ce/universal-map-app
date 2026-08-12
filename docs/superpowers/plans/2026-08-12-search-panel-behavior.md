@@ -21,9 +21,11 @@
 ### Task 1: Wire day-pick in the right panel to open the left panel
 
 **Files:**
+
 - Modify: `src/ui/panels/CalendarBar.ts:1` (imports), `src/ui/panels/CalendarBar.ts:177-179` (`selectDay`)
 
 **Interfaces:**
+
 - Consumes: `openPanel(store: Store<AppState>, which: 'left' | 'right'): void` — already exported from `src/engine/state/store.ts:31`, already imported and used in `src/ui/panels/SearchOverlay.ts:2`.
 - Produces: nothing new consumed by later tasks — this task is self-contained.
 
@@ -47,21 +49,21 @@ import { openPanel } from '../../engine/state/store';
 Current (`src/ui/panels/CalendarBar.ts:177-179`):
 
 ```ts
-  function selectDay(iso: string): void {
-    store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
-  }
+function selectDay(iso: string): void {
+  store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
+}
 ```
 
 Replace with:
 
 ```ts
-  function selectDay(iso: string): void {
-    store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
-    // Picking a day here should actually surface its agenda, not just
-    // update a panel the user may not have open — SearchOverlay.ts's day
-    // agenda is the only place a day's events render.
-    openPanel(store, 'left');
-  }
+function selectDay(iso: string): void {
+  store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
+  // Picking a day here should actually surface its agenda, not just
+  // update a panel the user may not have open — SearchOverlay.ts's day
+  // agenda is the only place a day's events render.
+  openPanel(store, 'left');
+}
 ```
 
 - [ ] **Step 3: Typecheck**
@@ -81,9 +83,11 @@ git commit -m "feat: picking a day in the right panel opens the left panel's day
 ### Task 2: Unify left panel open/closed behavior across breakpoints
 
 **Files:**
+
 - Modify: `src/styles.css:362-405` (the `@media (min-width: 64rem)` block)
 
 **Interfaces:**
+
 - Consumes: existing `.map-search[hidden]` base rule (`display: none`, already present earlier in the file, unmodified), existing `.control-btn--search[aria-expanded='true'] { display: none; }` rule (unmodified) — both currently overridden by this media block, both correct once the override is gone.
 - Produces: nothing consumed by later tasks (CSS-only; Task 3's Escape-handler cleanup depends on this behavior change being in place first, so do this task before Task 3).
 
@@ -92,28 +96,28 @@ git commit -m "feat: picking a day in the right panel opens the left panel's day
 In `src/styles.css`, inside the `@media (min-width: 64rem) { ... }` block that starts at line 362, delete these three rule blocks (keep everything else in the block — positioning, backdrop removal, search-field/results styling):
 
 ```css
-  /* Desktop: the search field is always visible, docked top-left — no
+/* Desktop: the search field is always visible, docked top-left — no
      circular toggle button, and no `hidden` state to fight with. */
-  .control-btn--search {
-    display: none;
-  }
-  .map-search[hidden] {
-    display: block;
-  }
+.control-btn--search {
+  display: none;
+}
+.map-search[hidden] {
+  display: block;
+}
 ```
 
 and
 
 ```css
-  .map-search__close {
-    display: none;
-  }
+.map-search__close {
+  display: none;
+}
 ```
 
 Replace the removed comment with one that reflects the new reality — the block immediately after (`.map-search { position: fixed; ... }`) should now be preceded by:
 
 ```css
-  /* Desktop: same open/closed behavior as mobile (driven by
+/* Desktop: same open/closed behavior as mobile (driven by
      store.panels.left, see SearchOverlay.ts), just docked top-left as a
      compact anchored panel instead of a full-screen modal — no backdrop,
      no toggle-button hiding, no forced-visible override. */
@@ -184,9 +188,11 @@ git commit -m "fix: left panel collapses by default on desktop too, not just mob
 ### Task 3: Remove the now-dead Escape-handler branch
 
 **Files:**
+
 - Modify: `src/ui/panels/SearchOverlay.ts:230-245`
 
 **Interfaces:**
+
 - Consumes: Task 2's behavior change (the `else if` branch below was only ever reachable when the desktop override kept the panel visible with `panels.left` still `'closed'` — that state no longer exists after Task 2, so the branch is provably dead, not just unused).
 - Produces: nothing consumed by later tasks.
 
@@ -195,38 +201,38 @@ git commit -m "fix: left panel collapses by default on desktop too, not just mob
 Current (`src/ui/panels/SearchOverlay.ts:230-245`):
 
 ```ts
-  // Escape: if the overlay is open (mobile modal), close it and return focus
-  // to the toggle. If the search field has text (desktop always-visible mode),
-  // clear it. At desktop, `panels.left` stays 'closed' so only the else
-  // branch fires.
-  document.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape') return;
-    if (store.get().panels.left === 'open') {
-      event.preventDefault();
-      close();
-      toggleButton.focus();
-    } else if (document.activeElement === searchInput && searchInput.value && store.get().selectedFeatureId === null) {
-      event.preventDefault();
-      searchInput.value = '';
-      runSearch();
-    }
-  });
+// Escape: if the overlay is open (mobile modal), close it and return focus
+// to the toggle. If the search field has text (desktop always-visible mode),
+// clear it. At desktop, `panels.left` stays 'closed' so only the else
+// branch fires.
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape') return;
+  if (store.get().panels.left === 'open') {
+    event.preventDefault();
+    close();
+    toggleButton.focus();
+  } else if (document.activeElement === searchInput && searchInput.value && store.get().selectedFeatureId === null) {
+    event.preventDefault();
+    searchInput.value = '';
+    runSearch();
+  }
+});
 ```
 
 Replace with:
 
 ```ts
-  // Escape closes the panel and returns focus to the toggle — same
-  // behavior at every breakpoint now that desktop no longer forces the
-  // panel permanently open (the input is only reachable while open, so
-  // there's no longer a "closed but focused and has text" state to handle
-  // separately).
-  document.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape' || store.get().panels.left !== 'open') return;
-    event.preventDefault();
-    close();
-    toggleButton.focus();
-  });
+// Escape closes the panel and returns focus to the toggle — same
+// behavior at every breakpoint now that desktop no longer forces the
+// panel permanently open (the input is only reachable while open, so
+// there's no longer a "closed but focused and has text" state to handle
+// separately).
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape' || store.get().panels.left !== 'open') return;
+  event.preventDefault();
+  close();
+  toggleButton.focus();
+});
 ```
 
 - [ ] **Step 2: Typecheck**
@@ -246,10 +252,12 @@ git commit -m "refactor: drop dead Escape-handler branch from the old desktop-al
 ### Task 4: Add a result count line to the search results state
 
 **Files:**
+
 - Modify: `src/ui/panels/SearchOverlay.ts:91-118` (`runSearch`)
 - Modify: `worlds/demo/strings.json:9`, `worlds/events-canary-islands/strings.json:9`, `worlds/moon-map-photos/strings.json:9`, `worlds/paranormal-spain/strings.json:9` (each has `"search.noResults": "No results",` at line 9 — insert the new key right after it)
 
 **Interfaces:**
+
 - Consumes: `t(key: string, strings: Record<string,string>, params?: Record<string,string>): string` (`src/ui/strings.ts`) — single-brace placeholder syntax.
 - Produces: nothing consumed by later tasks.
 
@@ -273,72 +281,72 @@ to:
 Current (`src/ui/panels/SearchOverlay.ts:91-118`):
 
 ```ts
-  function runSearch(): void {
-    const query = searchInput.value.trim();
-    syncClearButton();
-    if (!query) {
-      matches = [];
-      resultsEl.innerHTML = '';
-      resultsEl.hidden = true;
-      return;
-    }
+function runSearch(): void {
+  const query = searchInput.value.trim();
+  syncClearButton();
+  if (!query) {
+    matches = [];
+    resultsEl.innerHTML = '';
+    resultsEl.hidden = true;
+    return;
+  }
 
-    matches = searchFeatures(searchableFeatures(), query, ['name', 'title']);
-    resultsEl.hidden = false;
-    resultsEl.innerHTML = matches.length
+  matches = searchFeatures(searchableFeatures(), query, ['name', 'title']);
+  resultsEl.hidden = false;
+  resultsEl.innerHTML = matches.length
+    ? matches
+        .map(
+          (feature, index) =>
+            `<button type="button" class="search-result-item" data-result-index="${index}"><span class="search-result-item__name">${escapeHtml(featureLabel(feature, strings))}</span></button>`,
+        )
+        .join('')
+    : `<p class="search-results__empty">${t('search.noResults', strings)}</p>`;
+
+  resultsEl.querySelectorAll<HTMLButtonElement>('[data-result-index]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const feature = matches[Number(button.dataset.resultIndex)];
+      selectFeature(String(feature.id ?? ''));
+    });
+  });
+}
+```
+
+Replace with:
+
+```ts
+function runSearch(): void {
+  const query = searchInput.value.trim();
+  syncClearButton();
+  if (!query) {
+    matches = [];
+    resultsEl.innerHTML = '';
+    resultsEl.hidden = true;
+    return;
+  }
+
+  matches = searchFeatures(searchableFeatures(), query, ['name', 'title']);
+  resultsEl.hidden = false;
+  const countLine = matches.length
+    ? `<p class="search-results__count">${escapeHtml(t('search.resultCount', strings, { count: String(matches.length) }))}</p>`
+    : '';
+  resultsEl.innerHTML =
+    countLine +
+    (matches.length
       ? matches
           .map(
             (feature, index) =>
               `<button type="button" class="search-result-item" data-result-index="${index}"><span class="search-result-item__name">${escapeHtml(featureLabel(feature, strings))}</span></button>`,
           )
           .join('')
-      : `<p class="search-results__empty">${t('search.noResults', strings)}</p>`;
+      : `<p class="search-results__empty">${t('search.noResults', strings)}</p>`);
 
-    resultsEl.querySelectorAll<HTMLButtonElement>('[data-result-index]').forEach((button) => {
-      button.addEventListener('click', () => {
-        const feature = matches[Number(button.dataset.resultIndex)];
-        selectFeature(String(feature.id ?? ''));
-      });
+  resultsEl.querySelectorAll<HTMLButtonElement>('[data-result-index]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const feature = matches[Number(button.dataset.resultIndex)];
+      selectFeature(String(feature.id ?? ''));
     });
-  }
-```
-
-Replace with:
-
-```ts
-  function runSearch(): void {
-    const query = searchInput.value.trim();
-    syncClearButton();
-    if (!query) {
-      matches = [];
-      resultsEl.innerHTML = '';
-      resultsEl.hidden = true;
-      return;
-    }
-
-    matches = searchFeatures(searchableFeatures(), query, ['name', 'title']);
-    resultsEl.hidden = false;
-    const countLine = matches.length
-      ? `<p class="search-results__count">${escapeHtml(t('search.resultCount', strings, { count: String(matches.length) }))}</p>`
-      : '';
-    resultsEl.innerHTML =
-      countLine +
-      (matches.length
-        ? matches
-            .map(
-              (feature, index) =>
-                `<button type="button" class="search-result-item" data-result-index="${index}"><span class="search-result-item__name">${escapeHtml(featureLabel(feature, strings))}</span></button>`,
-            )
-            .join('')
-        : `<p class="search-results__empty">${t('search.noResults', strings)}</p>`);
-
-    resultsEl.querySelectorAll<HTMLButtonElement>('[data-result-index]').forEach((button) => {
-      button.addEventListener('click', () => {
-        const feature = matches[Number(button.dataset.resultIndex)];
-        selectFeature(String(feature.id ?? ''));
-      });
-    });
-  }
+  });
+}
 ```
 
 - [ ] **Step 3: Add CSS for the count line**
@@ -371,9 +379,11 @@ git commit -m "feat: show a result count above search results"
 ### Task 5: Make the day agenda list visually match the search results list
 
 **Files:**
+
 - Modify: `src/styles.css:1054-1105` (the `SEARCH DAY AGENDA` block)
 
 **Interfaces:**
+
 - Consumes: nothing from earlier tasks.
 - Produces: nothing consumed by later tasks.
 
@@ -521,12 +531,14 @@ git commit -m "style: make the day agenda list match the search results list sty
 **Files:** none (verification only)
 
 **Interfaces:**
+
 - Consumes: all of Tasks 1-5.
 - Produces: nothing (terminal task).
 
 - [ ] **Step 1: Run the full automated gate**
 
 Run, in order:
+
 - `npx vitest run` — expect all tests pass (no test changes in this plan, so the count should match whatever it was before this plan started).
 - `npx tsc --noEmit` — expect no errors.
 - `npx eslint .` — expect no errors.
