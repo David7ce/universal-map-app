@@ -4,6 +4,8 @@ import type { LoadedLayer } from '../../engine/taxonomy/compute-dimensions';
 import { featureMatchesFilters, readField } from '../../engine/taxonomy/compute-dimensions';
 import type { GeoFeature } from '../../engine/time/temporal-types';
 import type { LayerManifest } from '../../engine/manifests/layer-manifest';
+import { getFeaturesOnDate } from '../../engine/time/day-agenda';
+import { formatCalendarDate } from '../../engine/time/calendar-conversion';
 import { searchFeatures } from './search';
 import { describeTemporalStatus } from './temporal-status';
 import { findContainingRegions } from '../../engine/region/spatial-join';
@@ -40,6 +42,7 @@ export function mountSearchOverlay(
         </div>
         <div class="search-results" data-role="results" aria-live="polite" aria-atomic="false" hidden></div>
         <div class="search-info" data-role="info" hidden></div>
+        <div class="search-day-agenda" data-role="day-agenda" hidden></div>
       </div>
     </section>
   `;
@@ -52,6 +55,7 @@ export function mountSearchOverlay(
   const closeButton = container.querySelector<HTMLButtonElement>('[data-action="close"]')!;
   const resultsEl = container.querySelector<HTMLDivElement>('[data-role="results"]')!;
   const infoEl = container.querySelector<HTMLDivElement>('[data-role="info"]')!;
+  const dayAgendaEl = container.querySelector<HTMLDivElement>('[data-role="day-agenda"]')!;
   const appEl = document.querySelector<HTMLElement>('#app')!;
 
   // Every feature (across all layers, search-opt-out or not) — needed to look
@@ -151,6 +155,38 @@ export function mountSearchOverlay(
     });
   }
 
+  // Idle state (no search query, nothing selected): lists the selected
+  // date's events right in this panel instead of leaving it blank — the
+  // compact Time widget (CalendarBar.ts) and the full Calendar view's List
+  // tab both only pick/browse dates now, so this is the one place a day's
+  // events actually render without switching views. Reactive: re-runs from
+  // the shared render() below on every store change (selectedDate,
+  // activeFilters, hiddenLayerIds).
+  function renderDayAgenda(): void {
+    const state = store.get();
+    const visibleLayers = layers.filter((layer) => !state.hiddenLayerIds.has(layer.manifest.id));
+    const entries = getFeaturesOnDate(visibleLayers, state.activeFilters, state.selectedDate);
+    const dateLabel = formatCalendarDate(state.selectedDate, state.calendarSystem);
+
+    const listHtml = entries.length
+      ? `<ul class="search-day-agenda__list">${entries
+          .map(
+            (entry) => `<li class="search-day-agenda__item">
+              <button type="button" class="search-day-agenda__item-btn" data-feature-id="${escapeHtml(String(entry.feature.id ?? ''))}">
+                <span class="search-day-agenda__item-layer">${escapeHtml(entry.layerTitle)}</span>
+                <span class="search-day-agenda__item-name">${escapeHtml(featureLabel(entry.feature, strings))}</span>
+              </button>
+            </li>`,
+          )
+          .join('')}</ul>`
+      : `<p class="search-day-agenda__empty">${escapeHtml(t('calendarView.noEvents', strings))}</p>`;
+
+    dayAgendaEl.innerHTML = `<p class="search-day-agenda__date">${escapeHtml(dateLabel)}</p>${listHtml}`;
+    dayAgendaEl.querySelectorAll<HTMLButtonElement>('[data-feature-id]').forEach((button) => {
+      button.addEventListener('click', () => selectFeature(button.dataset.featureId!));
+    });
+  }
+
   function open(): void {
     openPanel(store, 'left');
     searchInput.focus();
@@ -174,7 +210,10 @@ export function mountSearchOverlay(
       // without this it would stay stuck 'open' with nothing to show.
       store.set({ selectedFeatureId: null, panels: { ...store.get().panels, left: 'closed' } });
     } else {
-      runSearch();
+      // Not just runSearch() — clearing back to an empty query also needs
+      // to re-show the day agenda (render() syncs dayAgendaEl's hidden
+      // state, runSearch() alone doesn't touch it).
+      render();
     }
     searchInput.focus();
   });
@@ -182,7 +221,10 @@ export function mountSearchOverlay(
     // Typing again after a selection means the user wants to search anew —
     // drop the stale selection instead of leaving it shown alongside results.
     if (store.get().selectedFeatureId !== null) store.set({ selectedFeatureId: null });
-    else runSearch();
+    // Same reasoning as the clear button above: render(), not runSearch()
+    // directly, so the day agenda hides/reappears as the query goes
+    // non-empty/empty.
+    else render();
   });
 
   // Escape: if the overlay is open (mobile modal), close it and return focus
@@ -223,6 +265,7 @@ export function mountSearchOverlay(
       searchInput.value = featureLabel(selected.feature, strings);
       syncClearButton();
       resultsEl.hidden = true;
+      dayAgendaEl.hidden = true;
       infoEl.hidden = false;
       renderInfo(selected);
     } else {
@@ -230,6 +273,9 @@ export function mountSearchOverlay(
       // Always kept fresh: on mobile this only matters while `hidden` is
       // false, but on desktop the panel is always visible (CSS overrides the
       // `hidden` attribute at that breakpoint) regardless of `panels.left`.
+      const hasQuery = searchInput.value.trim() !== '';
+      dayAgendaEl.hidden = hasQuery;
+      if (!hasQuery) renderDayAgenda();
       runSearch();
     }
 

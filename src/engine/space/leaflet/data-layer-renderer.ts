@@ -93,7 +93,7 @@ export function renderDataLayer(
             (badge ? `<span class="category-marker-icon__badge">${badge}</span>` : '');
 
           return L.marker(latlng, {
-            icon: L.divIcon({ html, className: 'category-marker-icon', iconSize: [24, 24] }),
+            icon: L.divIcon({ html, className: 'category-marker-icon', iconSize: [36, 36] }),
           });
         }
       : undefined;

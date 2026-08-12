@@ -1046,6 +1046,64 @@ select:disabled {
   display: block;
 }
 
+/* ========================================
+   SEARCH DAY AGENDA (idle state — no query, nothing selected — lists
+   store.selectedDate's events right in this panel; replaces search-results
+   in that state, same as search-info does when a feature is selected)
+   ======================================== */
+.search-day-agenda {
+  overflow-y: auto;
+  min-height: 0;
+  padding: 0.75rem 0.9rem;
+}
+.search-day-agenda[hidden] {
+  display: none;
+}
+.search-day-agenda__date {
+  margin: 0 0 0.5rem;
+  font-weight: var(--font-weight-semibold);
+}
+.search-day-agenda__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.search-day-agenda__item-btn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  cursor: pointer;
+  font: inherit;
+}
+.search-day-agenda__item-btn:hover {
+  background-color: var(--color-bg-alt);
+}
+.search-day-agenda__item-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+.search-day-agenda__item-layer {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+  text-transform: uppercase;
+}
+.search-day-agenda__item-name {
+  font-weight: var(--font-weight-medium);
+}
+.search-day-agenda__empty {
+  color: var(--color-text-light);
+}
+
 /* Multi-image info field — a grid of thumbnails, each opening the shared
    lightbox (Lightbox.ts) at its own index. */
 .search-info__gallery {
@@ -1626,14 +1684,10 @@ select:disabled {
 }
 
 /* ========================================
-   CALENDAR GRID (week/month/year day lists inside the compact Time editor)
+   CALENDAR GRID (month/year day lists inside the compact Time editor)
    ======================================== */
 .calendar-bar__grid {
   margin-top: 0.5rem;
-}
-/* Day granularity: a single cell, not a full 7-column row */
-.calendar-grid--day {
-  grid-template-columns: max-content;
 }
 /* Year granularity: every month stacked in one column (narrow filter
    panel, unlike the full-screen Calendar view's multi-column layout) */
@@ -1856,7 +1910,7 @@ select:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 26px;
   line-height: 1;
   text-align: center;
 }
@@ -1867,8 +1921,8 @@ select:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   box-shadow: var(--shadow-md);
 }
@@ -1876,8 +1930,8 @@ select:disabled {
    render no badge at all. */
 .category-marker-icon__badge {
   position: absolute;
-  top: -4px;
-  right: -6px;
-  font-size: 11px;
+  top: -5px;
+  right: -7px;
+  font-size: 13px;
   line-height: 1;
 }

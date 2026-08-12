@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { ensureCalendarSystemLoaded } from '../../engine/time/calendar-conversion';
-import { getVisibleGranularityOptions, nextSelectedDate } from './CalendarBar';
+import { nextSelectedDate } from './CalendarBar';
 
 beforeAll(async () => {
   await ensureCalendarSystemLoaded('islamic');
@@ -24,12 +24,5 @@ describe('nextSelectedDate', () => {
 
   it('steps by a calendar-aware month when system is non-gregorian', () => {
     expect(nextSelectedDate('2026-07-29', 'month', 1, 'islamic')).toBe('2026-08-27');
-  });
-});
-
-describe('getVisibleGranularityOptions', () => {
-  it('offers day/week/month/year for every calendar system', () => {
-    expect(getVisibleGranularityOptions('gregorian')).toEqual(['day', 'week', 'month', 'year']);
-    expect(getVisibleGranularityOptions('islamic')).toEqual(['day', 'week', 'month', 'year']);
   });
 });

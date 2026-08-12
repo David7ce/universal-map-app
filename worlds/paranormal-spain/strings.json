@@ -25,8 +25,6 @@
   "layerControl.time": "Time",
   "calendar.inputPlaceholder": "DD-MM-YYYY",
   "calendar.expandLabel": "Show date controls",
-  "calendar.granularity.day": "Day",
-  "calendar.granularity.week": "Week",
   "calendar.granularity.month": "Month",
   "calendar.granularity.year": "Year",
   "calendar.granularity.list": "List",
