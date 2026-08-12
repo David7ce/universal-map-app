@@ -360,14 +360,10 @@ select:disabled {
 }
 
 @media (min-width: 64rem) {
-  /* Desktop: the search field is always visible, docked top-left — no
-     circular toggle button, and no `hidden` state to fight with. */
-  .control-btn--search {
-    display: none;
-  }
-  .map-search[hidden] {
-    display: block;
-  }
+  /* Desktop: same open/closed behavior as mobile (driven by
+     store.panels.left, see SearchOverlay.ts), just docked top-left as a
+     compact anchored panel instead of a full-screen modal — no backdrop,
+     no toggle-button hiding, no forced-visible override. */
   .map-search {
     position: fixed;
     inset: auto;
@@ -391,15 +387,16 @@ select:disabled {
     background-color: var(--color-white);
     box-shadow: var(--shadow-md);
   }
-  .map-search__close {
-    display: none;
-  }
-  .search-results {
+  .search-results,
+  .search-info,
+  .search-day-agenda {
     position: absolute;
     top: calc(100% + 0.5rem);
     left: 0;
     right: 0;
     max-height: calc(100vh - 8rem);
+    background: var(--color-white);
+    border-radius: var(--radius-md);
     box-shadow: var(--shadow-lg);
   }
 }
