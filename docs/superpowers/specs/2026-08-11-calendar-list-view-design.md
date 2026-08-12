@@ -25,7 +25,7 @@ export function getFeaturesInRange(
   activeFilters: Record<string, Set<string>>,
   fromIso: string,
   toIso: string,
-): DayAgendaGroup[]
+): DayAgendaGroup[];
 ```
 
 - Day-by-day loop from `fromIso` to `toIso` (inclusive), reusing the same per-day/per-feature `isActiveOn` check `getFeaturesOnDate` already does — same algorithmic shape as `calendar-grid.ts`'s existing per-day loops (`buildWeekCells`/`buildMonthCells`). No RRULE occurrence-enumeration added; realistic `calendar.max` ranges (all current worlds are single-digit years wide) keep a day-by-day scan cheap.

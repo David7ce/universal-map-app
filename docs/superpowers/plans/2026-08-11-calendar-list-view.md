@@ -20,14 +20,16 @@
 ### Task 1: `getFeaturesInRange` engine function
 
 **Files:**
+
 - Modify: `src/engine/time/day-agenda.ts`
 - Test: `src/engine/time/day-agenda.test.ts`
 
 **Interfaces:**
+
 - Consumes: existing `getFeaturesOnDate(layers, activeFilters, iso)` (same file), `LoadedLayer` (`src/engine/taxonomy/compute-dimensions.ts`).
 - Produces: `export interface DayAgendaGroup { iso: string; entries: DayAgendaEntry[] }` and `export function getFeaturesInRange(layers: LoadedLayer[], activeFilters: Record<string, Set<string>>, fromIso: string, toIso: string): DayAgendaGroup[]` — Task 2 imports both.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Add to `src/engine/time/day-agenda.test.ts` (reuses the existing `layerWithEventOn` helper already defined in that file):
 
@@ -98,12 +100,12 @@ describe('getFeaturesInRange', () => {
 
 `LayerManifest` and `LoadedLayer` are already imported at the top of this test file for the existing tests — no new imports needed for those two types.
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run src/engine/time/day-agenda.test.ts`
 Expected: FAIL — `getFeaturesInRange is not a function` (or a TS error that the export doesn't exist).
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 In `src/engine/time/day-agenda.ts`, add below the existing `DayAgendaEntry` interface and above `getFeaturesOnDate`:
 
@@ -147,12 +149,12 @@ export function getFeaturesInRange(
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run src/engine/time/day-agenda.test.ts`
 Expected: PASS, all tests including the pre-existing ones for `getFeaturesOnDate`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/engine/time/day-agenda.ts src/engine/time/day-agenda.test.ts
@@ -164,16 +166,18 @@ git commit -m "feat: add getFeaturesInRange for calendar list/agenda view"
 ### Task 2: List tab in `CalendarView.ts` + strings + CSS
 
 **Files:**
+
 - Modify: `src/ui/panels/CalendarBar.ts` (Granularity type only)
 - Modify: `src/ui/panels/CalendarView.ts`
 - Modify: `src/styles.css`
 - Modify: `worlds/demo/strings.json`, `worlds/events-canary-islands/strings.json`, `worlds/moon-map-photos/strings.json`, `worlds/paranormal-spain/strings.json`
 
 **Interfaces:**
+
 - Consumes: `getFeaturesInRange`, `DayAgendaGroup` from Task 1 (`src/engine/time/day-agenda.ts`).
 - Produces: nothing consumed by later tasks — this is the last task in this plan.
 
-- [ ] **Step 1: Widen the `Granularity` type**
+- [x] **Step 1: Widen the `Granularity` type**
 
 In `src/ui/panels/CalendarBar.ts`, change:
 
@@ -189,15 +193,16 @@ export type Granularity = 'day' | 'week' | 'month' | 'year' | 'list';
 
 Leave `getVisibleGranularityOptions` exactly as-is (still returns only the 4 base values) — it's shared with `mountCalendarBar`'s own compact date-stepper, which has no step behavior for `'list'` and must not offer it. `nextSelectedDate`'s `switch (granularity)` has no `'list'` case and no `default`; this is intentional and harmless (returns the date unchanged), since Task 2's Step 4 hides the step buttons entirely whenever `granularity === 'list'`.
 
-- [ ] **Step 2: Add strings**
+- [x] **Step 2: Add strings**
 
 Add `"calendar.granularity.list": "List",` to each of these 4 files, alongside the existing `calendar.granularity.day/week/month/year` keys:
+
 - `worlds/demo/strings.json`
 - `worlds/events-canary-islands/strings.json`
 - `worlds/moon-map-photos/strings.json`
 - `worlds/paranormal-spain/strings.json`
 
-- [ ] **Step 3: Add CSS for the list view's date headings**
+- [x] **Step 3: Add CSS for the list view's date headings**
 
 In `src/styles.css`, immediately after the existing `.calendar-view__agenda-empty` rule (currently the last `.calendar-view__*` rule before the `CALENDAR GRID` section comment), add:
 
@@ -211,7 +216,7 @@ In `src/styles.css`, immediately after the existing `.calendar-view__agenda-empt
 }
 ```
 
-- [ ] **Step 4: Wire the list tab into `CalendarView.ts`**
+- [x] **Step 4: Wire the list tab into `CalendarView.ts`**
 
 In `src/ui/panels/CalendarView.ts`:
 
@@ -226,7 +231,10 @@ import { getFeaturesOnDate, getFeaturesInRange } from '../../engine/time/day-age
 ```ts
 // Shared by the day view's single-day agenda and the list view's per-date
 // groups — same calendar-view__agenda/-item markup either way.
-function renderAgendaList(entries: import('../../engine/time/day-agenda').DayAgendaEntry[], strings: Record<string, string>): string {
+function renderAgendaList(
+  entries: import('../../engine/time/day-agenda').DayAgendaEntry[],
+  strings: Record<string, string>,
+): string {
   return `<ul class="calendar-view__agenda">${entries
     .map(
       (entry) => `<li class="calendar-view__agenda-item">
@@ -307,7 +315,7 @@ const tabsHtml = tabOptions
 5. Hide the prev/period/next nav row entirely when `granularity === 'list'` (it has no fixed "current period" to page through — the list is anchored by `state.selectedDate`, changed from elsewhere). Replace the `container.innerHTML` template's nav block. Currently:
 
 ```ts
-    container.innerHTML = `
+container.innerHTML = `
       <div class="calendar-view__header">
         <div class="calendar-view__tabs">${tabsHtml}</div>
         <div class="calendar-view__nav">
@@ -319,29 +327,29 @@ const tabsHtml = tabOptions
       <div class="calendar-view__body">${bodyHtml}</div>
     `;
 
-    container.querySelectorAll<HTMLButtonElement>('[data-granularity]').forEach((button) => {
-      button.addEventListener('click', () => {
-        granularity = button.dataset.granularity as Granularity;
-        render();
-      });
-    });
-    container.querySelector('[data-action="prev"]')!.addEventListener('click', () => step(-1));
-    container.querySelector('[data-action="next"]')!.addEventListener('click', () => step(1));
+container.querySelectorAll<HTMLButtonElement>('[data-granularity]').forEach((button) => {
+  button.addEventListener('click', () => {
+    granularity = button.dataset.granularity as Granularity;
+    render();
+  });
+});
+container.querySelector('[data-action="prev"]')!.addEventListener('click', () => step(-1));
+container.querySelector('[data-action="next"]')!.addEventListener('click', () => step(1));
 ```
 
 Replace with:
 
 ```ts
-    const navHtml =
-      granularity === 'list'
-        ? ''
-        : `<div class="calendar-view__nav">
+const navHtml =
+  granularity === 'list'
+    ? ''
+    : `<div class="calendar-view__nav">
           <button type="button" class="calendar-bar__step-btn" data-action="prev" aria-label="Step back">‹</button>
           <span class="calendar-view__period">${escapeHtml(periodLabel(state.selectedDate, system))}</span>
           <button type="button" class="calendar-bar__step-btn" data-action="next" aria-label="Step forward">›</button>
         </div>`;
 
-    container.innerHTML = `
+container.innerHTML = `
       <div class="calendar-view__header">
         <div class="calendar-view__tabs">${tabsHtml}</div>
         ${navHtml}
@@ -349,14 +357,14 @@ Replace with:
       <div class="calendar-view__body">${bodyHtml}</div>
     `;
 
-    container.querySelectorAll<HTMLButtonElement>('[data-granularity]').forEach((button) => {
-      button.addEventListener('click', () => {
-        granularity = button.dataset.granularity as Granularity;
-        render();
-      });
-    });
-    container.querySelector('[data-action="prev"]')?.addEventListener('click', () => step(-1));
-    container.querySelector('[data-action="next"]')?.addEventListener('click', () => step(1));
+container.querySelectorAll<HTMLButtonElement>('[data-granularity]').forEach((button) => {
+  button.addEventListener('click', () => {
+    granularity = button.dataset.granularity as Granularity;
+    render();
+  });
+});
+container.querySelector('[data-action="prev"]')?.addEventListener('click', () => step(-1));
+container.querySelector('[data-action="next"]')?.addEventListener('click', () => step(1));
 ```
 
 (Note the `?.` on the last two listeners — the nav buttons don't exist in the DOM when `granularity === 'list'`, so the previous `!.` non-null assertion would throw.)
@@ -377,17 +385,19 @@ with:
 
 (the rest of that block is unchanged).
 
-- [ ] **Step 5: Run full verification**
+- [x] **Step 5: Run full verification**
 
 Run, in order:
+
 - `npx vitest run` — expect all tests pass (including Task 1's new tests).
 - `npx tsc --noEmit` — expect no errors.
 - `npx eslint .` — expect no errors.
 - `npx prettier --check .` — expect clean; if it flags files, run `npx prettier --write .` and re-check.
 
-- [ ] **Step 6: Manual verification via dev server**
+- [x] **Step 6: Manual verification via dev server**
 
 Start `npx vite --port 5201` (or any free port), then use the Playwright tools:
+
 1. Navigate to `http://localhost:5201/?world=events-canary-islands` (has real dated events).
 2. Open the Calendar view, click the "List" tab.
 3. Confirm date headings + agenda entries render, grouped and in ascending date order from the currently selected date onward.
@@ -398,7 +408,7 @@ Start `npx vite --port 5201` (or any free port), then use the Playwright tools:
 8. Take one screenshot for your own confirmation, then delete it — do not leave scratch screenshots in the repo.
 9. Stop the dev server.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/ui/panels/CalendarBar.ts src/ui/panels/CalendarView.ts src/styles.css worlds/demo/strings.json worlds/events-canary-islands/strings.json worlds/moon-map-photos/strings.json worlds/paranormal-spain/strings.json
