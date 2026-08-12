@@ -177,6 +177,17 @@ select:disabled {
 .control-btn--search[aria-expanded='true'] {
   display: none;
 }
+/* Below 64rem (the search overlay's own desktop breakpoint), the open
+   search modal is a full-screen card with its own close button anchored
+   near the top-right corner — the same corner the filters toggle button
+   floats in. Hide the filters toggle for as long as search is open so the
+   two controls stop overlapping; at 64rem+ search docks as a small
+   top-left dropdown with room to spare, so this doesn't apply there. */
+@media (max-width: 63.99rem) {
+  #search-overlay:has(.map-search:not([hidden])) ~ .panel-toggle-btn {
+    display: none;
+  }
+}
 
 /* ========================================
    SEARCH OVERLAY
@@ -500,8 +511,17 @@ select:disabled {
   background-color: transparent;
   z-index: var(--z-modal-backdrop);
 }
-.panel-overlay.is-visible {
-  display: block;
+/* Click-to-close only matters below 48rem, where the filters panel is a
+   full-width modal-style drawer over the map. At 48rem+ it's a persistent
+   docked sidebar (--panel-right-width goes from 100vw to a fixed px value
+   right there) — the map must stay fully interactive (pannable, clickable)
+   while it's open, so the overlay never covers it there. Without this
+   scoping, a click-and-drag pan gesture on the map registered as a click on
+   this full-viewport transparent overlay and closed the panel mid-pan. */
+@media (max-width: 47.99rem) {
+  .panel-overlay.is-visible {
+    display: block;
+  }
 }
 
 /* ========================================
