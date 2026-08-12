@@ -28,6 +28,11 @@
     "title": "Canary Islands Events",
     "tagline": "Concerts, festivals, markets and more happening across the islands.",
     "ctaLabel": "See what's on",
-    "itemNoun": "events"
+    "itemNoun": "events",
+    "links": [
+      { "label": "Universal Map Demo", "world": "demo" },
+      { "label": "Paranormal Spain", "world": "paranormal-spain" },
+      { "label": "Moon Photos Map", "world": "moon-map-photos" }
+    ]
   }
 }

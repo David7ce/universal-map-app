@@ -29,6 +29,11 @@
     "title": "Paranormal Spain",
     "tagline": "Ghosts, tragedies and legends at real locations across the Canary Islands.",
     "ctaLabel": "Explore the map",
-    "itemNoun": "haunted places"
+    "itemNoun": "haunted places",
+    "links": [
+      { "label": "Universal Map Demo", "world": "demo" },
+      { "label": "Canary Islands Events", "world": "events-canary-islands" },
+      { "label": "Moon Photos Map", "world": "moon-map-photos" }
+    ]
   }
 }
