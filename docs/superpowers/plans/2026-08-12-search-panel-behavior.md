@@ -29,7 +29,7 @@
 - Consumes: `openPanel(store: Store<AppState>, which: 'left' | 'right'): void` — already exported from `src/engine/state/store.ts:31`, already imported and used in `src/ui/panels/SearchOverlay.ts:2`.
 - Produces: nothing new consumed by later tasks — this task is self-contained.
 
-- [ ] **Step 1: Add the import**
+- [x] **Step 1: Add the import**
 
 In `src/ui/panels/CalendarBar.ts`, current line 1:
 
@@ -44,7 +44,7 @@ import type { Store, AppState } from '../../engine/state/store';
 import { openPanel } from '../../engine/state/store';
 ```
 
-- [ ] **Step 2: Call `openPanel` from `selectDay`**
+- [x] **Step 2: Call `openPanel` from `selectDay`**
 
 Current (`src/ui/panels/CalendarBar.ts:177-179`):
 
@@ -66,12 +66,12 @@ function selectDay(iso: string): void {
 }
 ```
 
-- [ ] **Step 3: Typecheck**
+- [x] **Step 3: Typecheck**
 
 Run: `npx tsc --noEmit`
 Expected: no errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/ui/panels/CalendarBar.ts
@@ -91,7 +91,7 @@ git commit -m "feat: picking a day in the right panel opens the left panel's day
 - Consumes: existing `.map-search[hidden]` base rule (`display: none`, already present earlier in the file, unmodified), existing `.control-btn--search[aria-expanded='true'] { display: none; }` rule (unmodified) — both currently overridden by this media block, both correct once the override is gone.
 - Produces: nothing consumed by later tasks (CSS-only; Task 3's Escape-handler cleanup depends on this behavior change being in place first, so do this task before Task 3).
 
-- [ ] **Step 1: Delete the three overriding rules**
+- [x] **Step 1: Delete the three overriding rules**
 
 In `src/styles.css`, inside the `@media (min-width: 64rem) { ... }` block that starts at line 362, delete these three rule blocks (keep everything else in the block — positioning, backdrop removal, search-field/results styling):
 
@@ -171,12 +171,12 @@ The block should read, in full, after this change:
 
 (The last rule replaces the old `.search-results { ... }`-only block — `.search-info`/`.search-day-agenda` need the exact same floating-card treatment now that `.map-search__panel` is transparent at this breakpoint. Before this change they had no background of their own at desktop, so the info/day-agenda states would have rendered as unstyled text floating directly over the map — a pre-existing bug that never showed up because the day agenda didn't exist yet and the info state's transparent look went unnoticed. `search-info`/`search-day-agenda`'s own base rules already set `overflow-y: auto` and padding — the desktop-only `max-height` here still applies as expected since it's a separate property.)
 
-- [ ] **Step 2: Verify CSS is well-formed**
+- [x] **Step 2: Verify CSS is well-formed**
 
 Run: `npx prettier --check src/styles.css`
 Expected: clean (or run `npx prettier --write src/styles.css` if it flags formatting, then re-check).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/styles.css
@@ -196,7 +196,7 @@ git commit -m "fix: left panel collapses by default on desktop too, not just mob
 - Consumes: Task 2's behavior change (the `else if` branch below was only ever reachable when the desktop override kept the panel visible with `panels.left` still `'closed'` — that state no longer exists after Task 2, so the branch is provably dead, not just unused).
 - Produces: nothing consumed by later tasks.
 
-- [ ] **Step 1: Simplify the handler**
+- [x] **Step 1: Simplify the handler**
 
 Current (`src/ui/panels/SearchOverlay.ts:230-245`):
 
@@ -235,12 +235,12 @@ document.addEventListener('keydown', (event) => {
 });
 ```
 
-- [ ] **Step 2: Typecheck**
+- [x] **Step 2: Typecheck**
 
 Run: `npx tsc --noEmit`
 Expected: no errors. (`runSearch` stays used elsewhere in the file — `render()`'s else-branch still calls it — so no unused-function warning.)
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/ui/panels/SearchOverlay.ts
@@ -261,7 +261,7 @@ git commit -m "refactor: drop dead Escape-handler branch from the old desktop-al
 - Consumes: `t(key: string, strings: Record<string,string>, params?: Record<string,string>): string` (`src/ui/strings.ts`) — single-brace placeholder syntax.
 - Produces: nothing consumed by later tasks.
 
-- [ ] **Step 1: Add the string key to all 4 worlds**
+- [x] **Step 1: Add the string key to all 4 worlds**
 
 In each of `worlds/demo/strings.json`, `worlds/events-canary-islands/strings.json`, `worlds/moon-map-photos/strings.json`, `worlds/paranormal-spain/strings.json`, change:
 
@@ -276,7 +276,7 @@ to:
   "search.resultCount": "{count} results",
 ```
 
-- [ ] **Step 2: Render the count in `runSearch`**
+- [x] **Step 2: Render the count in `runSearch`**
 
 Current (`src/ui/panels/SearchOverlay.ts:91-118`):
 
@@ -349,7 +349,7 @@ function runSearch(): void {
 }
 ```
 
-- [ ] **Step 3: Add CSS for the count line**
+- [x] **Step 3: Add CSS for the count line**
 
 In `src/styles.css`, immediately after the existing `.search-results__empty` rule (currently right after `.search-result-item__name`, before the `@media (min-width: 64rem)` block), add:
 
@@ -362,12 +362,12 @@ In `src/styles.css`, immediately after the existing `.search-results__empty` rul
 }
 ```
 
-- [ ] **Step 4: Typecheck and format check**
+- [x] **Step 4: Typecheck and format check**
 
 Run: `npx tsc --noEmit && npx prettier --check src/ui/panels/SearchOverlay.ts src/styles.css worlds/demo/strings.json worlds/events-canary-islands/strings.json worlds/moon-map-photos/strings.json worlds/paranormal-spain/strings.json`
 Expected: no errors; prettier clean (run with `--write` on any flagged file, then re-check).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/ui/panels/SearchOverlay.ts src/styles.css worlds/demo/strings.json worlds/events-canary-islands/strings.json worlds/moon-map-photos/strings.json worlds/paranormal-spain/strings.json
@@ -387,7 +387,7 @@ git commit -m "feat: show a result count above search results"
 - Consumes: nothing from earlier tasks.
 - Produces: nothing consumed by later tasks.
 
-- [ ] **Step 1: Restyle the list as one bordered/divided container, matching `.search-results__list`/`.search-result-item`**
+- [x] **Step 1: Restyle the list as one bordered/divided container, matching `.search-results__list`/`.search-result-item`**
 
 Current (`src/styles.css:1054-1105`):
 
@@ -512,12 +512,12 @@ Replace with (same class names, same markup in `SearchOverlay.ts` — no TS chan
 }
 ```
 
-- [ ] **Step 2: Format check**
+- [x] **Step 2: Format check**
 
 Run: `npx prettier --check src/styles.css`
 Expected: clean.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/styles.css
@@ -535,7 +535,7 @@ git commit -m "style: make the day agenda list match the search results list sty
 - Consumes: all of Tasks 1-5.
 - Produces: nothing (terminal task).
 
-- [ ] **Step 1: Run the full automated gate**
+- [x] **Step 1: Run the full automated gate**
 
 Run, in order:
 
@@ -544,7 +544,7 @@ Run, in order:
 - `npx eslint .` — expect no errors.
 - `npx prettier --check .` — expect clean; if it flags files, run `npx prettier --write .` and re-check.
 
-- [ ] **Step 2: Manual verification via dev server (desktop viewport)**
+- [x] **Step 2: Manual verification via dev server (desktop viewport)**
 
 Start `npx vite --port 5210` (or any free port), then use the Playwright tools against `http://localhost:5210/?world=events-canary-islands` (has real dated events and no `systems.time: false`):
 
@@ -558,14 +558,14 @@ Start `npx vite --port 5210` (or any free port), then use the Playwright tools a
 8. Check `browser_console_messages` (level "error") after each step above — expect zero.
 9. Take one screenshot for your own confirmation, then delete it from `.playwright-mcp/` — do not leave scratch screenshots in the repo.
 
-- [ ] **Step 3: Manual verification via dev server (mobile viewport)**
+- [x] **Step 3: Manual verification via dev server (mobile viewport)**
 
 Using the same running dev server, resize the Playwright browser to a mobile width (e.g. `browser_resize` to 390x844 if available, or navigate with a mobile user-agent context) and repeat steps 1-6 above. Confirm the panel now renders as the existing full-screen modal with backdrop (unchanged mobile behavior) rather than the desktop docked dropdown, and that open/closed timing matches desktop (collapsed by default, opens on the same triggers). Zero console errors.
 
-- [ ] **Step 4: Stop the dev server**
+- [x] **Step 4: Stop the dev server**
 
 Find its PID (`netstat -ano | grep ":5210 " | grep LISTENING` on Windows via the Bash tool) and stop it (`powershell -Command "Stop-Process -Id <pid> -Force"`).
 
-- [ ] **Step 5: Final commit if any cleanup was needed**
+- [x] **Step 5: Final commit if any cleanup was needed**
 
 If Step 1's `prettier --write` or any fix during manual verification touched files, stage and commit them with a message describing what was fixed. If nothing needed fixing, this step is a no-op — the plan is done.
