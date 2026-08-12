@@ -358,6 +358,12 @@ select:disabled {
   font-size: var(--font-size-sm);
   margin: 0;
 }
+.search-results__count {
+  padding: 0.5rem 0.75rem 0;
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+}
 
 @media (min-width: 64rem) {
   /* Desktop: same open/closed behavior as mobile (driven by

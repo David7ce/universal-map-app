@@ -100,14 +100,19 @@ export function mountSearchOverlay(
 
     matches = searchFeatures(searchableFeatures(), query, ['name', 'title']);
     resultsEl.hidden = false;
-    resultsEl.innerHTML = matches.length
-      ? matches
-          .map(
-            (feature, index) =>
-              `<button type="button" class="search-result-item" data-result-index="${index}"><span class="search-result-item__name">${escapeHtml(featureLabel(feature, strings))}</span></button>`,
-          )
-          .join('')
-      : `<p class="search-results__empty">${t('search.noResults', strings)}</p>`;
+    const countLine = matches.length
+      ? `<p class="search-results__count">${escapeHtml(t('search.resultCount', strings, { count: String(matches.length) }))}</p>`
+      : '';
+    resultsEl.innerHTML =
+      countLine +
+      (matches.length
+        ? matches
+            .map(
+              (feature, index) =>
+                `<button type="button" class="search-result-item" data-result-index="${index}"><span class="search-result-item__name">${escapeHtml(featureLabel(feature, strings))}</span></button>`,
+            )
+            .join('')
+        : `<p class="search-results__empty">${t('search.noResults', strings)}</p>`);
 
     resultsEl.querySelectorAll<HTMLButtonElement>('[data-result-index]').forEach((button) => {
       button.addEventListener('click', () => {
