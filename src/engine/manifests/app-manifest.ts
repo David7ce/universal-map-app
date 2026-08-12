@@ -23,6 +23,7 @@ export interface AppManifest {
   calendar: { system?: CalendarSystem; default: 'today' | string; min: string; max: string };
   strings?: string;
   favicon?: string;
+  theme?: { primary: string };
   plugins?: Record<string, unknown>;
   systems?: { time?: boolean };
   welcome?: {
@@ -72,6 +73,16 @@ export function validateAppManifest(json: unknown): AppManifest {
 
   if (obj.favicon !== undefined && typeof obj.favicon !== 'string') {
     throw new Error(`App manifest "${obj.id}" "favicon" must be a string path when present`);
+  }
+
+  if (obj.theme !== undefined) {
+    if (typeof obj.theme !== 'object' || obj.theme === null || Array.isArray(obj.theme)) {
+      throw new Error(`App manifest "${obj.id}" "theme" must be a plain object`);
+    }
+    const theme = obj.theme as Record<string, unknown>;
+    if (typeof theme.primary !== 'string' || !/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(theme.primary)) {
+      throw new Error(`App manifest "${obj.id}" "theme.primary" must be a #rgb or #rrggbb hex color string`);
+    }
   }
 
   if (obj.plugins !== undefined) {

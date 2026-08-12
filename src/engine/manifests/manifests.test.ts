@@ -147,6 +147,24 @@ describe('validateAppManifest', () => {
     expect(validateAppManifest(valid)).toEqual(valid);
   });
 
+  it('accepts a valid "theme.primary" hex color', () => {
+    const withTheme = { ...valid, theme: { primary: '#7a1f3d' } };
+    expect(validateAppManifest(withTheme)).toEqual(withTheme);
+  });
+
+  it('accepts a 3-digit shorthand "theme.primary" hex color', () => {
+    const withTheme = { ...valid, theme: { primary: '#26a' } };
+    expect(validateAppManifest(withTheme)).toEqual(withTheme);
+  });
+
+  it('rejects a "theme.primary" that is not a hex color', () => {
+    expect(() => validateAppManifest({ ...valid, theme: { primary: 'blue' } })).toThrow(/theme\.primary/);
+  });
+
+  it('rejects a "theme" that is not a plain object', () => {
+    expect(() => validateAppManifest({ ...valid, theme: '#266a8b' })).toThrow(/"theme" must be a plain object/);
+  });
+
   it('accepts an open plugins bag without inspecting its contents', () => {
     const withPlugins = {
       ...valid,

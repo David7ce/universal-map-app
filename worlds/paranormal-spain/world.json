@@ -24,6 +24,7 @@
   "dataLayers": ["layers/regions.layer.json", "layers/lugares.layer.json"],
   "calendar": { "default": "today", "min": "1500-01-01", "max": "2030-12-31" },
   "strings": "strings.json",
+  "theme": { "primary": "#4a2265" },
   "systems": { "time": false },
   "welcome": {
     "title": "Paranormal Spain",

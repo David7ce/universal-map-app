@@ -24,6 +24,7 @@
   "dataLayers": ["layers/events.layer.json"],
   "calendar": { "default": "today", "min": "2026-01-01", "max": "2026-12-31" },
   "strings": "strings.json",
+  "theme": { "primary": "#c2571f" },
   "welcome": {
     "title": "Canary Islands Events",
     "tagline": "Concerts, festivals, markets and more happening across the islands.",

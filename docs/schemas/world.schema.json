@@ -68,6 +68,18 @@
       "type": "string",
       "description": "Relative path (inside the world's folder) to a favicon image. If omitted, the app's default favicon (set in index.html) is kept."
     },
+    "theme": {
+      "type": "object",
+      "required": ["primary"],
+      "additionalProperties": false,
+      "properties": {
+        "primary": {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+          "description": "Base accent color (#rgb or #rrggbb). The darker/lighter shades used throughout the UI (--color-primary-dark/-light) are derived from it automatically (src/ui/theme.ts). If omitted, the default blue accent (styles.css) is kept."
+        }
+      }
+    },
     "plugins": {
       "type": "object",
       "additionalProperties": false,

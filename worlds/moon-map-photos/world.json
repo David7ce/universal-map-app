@@ -24,6 +24,7 @@
   "dataLayers": ["layers/photos.layer.json"],
   "calendar": { "default": "2026-07-01", "min": "2026-07-01", "max": "2026-07-31" },
   "strings": "strings.json",
+  "theme": { "primary": "#2c3e6b" },
   "welcome": {
     "title": "Moon Photos Map",
     "tagline": "Real moon photographs, mapped by where and when they were taken.",
