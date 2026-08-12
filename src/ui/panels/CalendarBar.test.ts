@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { ensureCalendarSystemLoaded } from '../../engine/time/calendar-conversion';
-import { calendarSystemLabel, getVisibleGranularityOptions, nextSelectedDate, stepDatePart } from './CalendarBar';
+import { getVisibleGranularityOptions, nextSelectedDate } from './CalendarBar';
 
 beforeAll(async () => {
   await ensureCalendarSystemLoaded('islamic');
@@ -31,23 +31,5 @@ describe('getVisibleGranularityOptions', () => {
   it('offers day/week/month/year for every calendar system', () => {
     expect(getVisibleGranularityOptions('gregorian')).toEqual(['day', 'week', 'month', 'year']);
     expect(getVisibleGranularityOptions('islamic')).toEqual(['day', 'week', 'month', 'year']);
-  });
-});
-
-describe('stepDatePart', () => {
-  it('steps day, month, and year values within the allowed range', () => {
-    expect(stepDatePart('2026-07-29', 'day', 1, '2026-01-01', '2026-12-31')).toBe('2026-07-30');
-    expect(stepDatePart('2026-07-29', 'month', 1, '2026-01-01', '2026-12-31')).toBe('2026-08-29');
-    expect(stepDatePart('2026-07-29', 'year', -1, '2024-01-01', '2028-12-31')).toBe('2025-07-29');
-  });
-});
-
-describe('calendarSystemLabel', () => {
-  it('is empty for gregorian (the native input already shows it)', () => {
-    expect(calendarSystemLabel('2026-07-29', 'gregorian')).toBe('');
-  });
-
-  it('formats the date in the target system otherwise', () => {
-    expect(calendarSystemLabel('2026-07-29', 'islamic')).toBe('Safar 15, 1448 AH');
   });
 });

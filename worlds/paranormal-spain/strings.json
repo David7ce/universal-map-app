@@ -24,7 +24,6 @@
   "layerControl.closeLabel": "Close layers",
   "layerControl.time": "Time",
   "calendar.inputPlaceholder": "DD-MM-YYYY",
-  "calendar.editLabel": "Edit date",
   "calendar.expandLabel": "Show date controls",
   "calendar.granularity.day": "Day",
   "calendar.granularity.week": "Week",

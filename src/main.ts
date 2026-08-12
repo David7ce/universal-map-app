@@ -123,7 +123,7 @@ async function bootstrap(): Promise<void> {
   });
   // Time editor and map-settings button both live inline inside the
   // filters panel now, not as standalone floating controls.
-  mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings);
+  mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings, loadedLayers);
   mountCalendarView(document.querySelector('#calendar-view')!, store, appManifest.calendar, strings, loadedLayers);
   mountSettingsControl(document.querySelector('#panel-right-map-settings')!, store, strings, {
     appManifest,
