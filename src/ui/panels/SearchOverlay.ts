@@ -227,21 +227,16 @@ export function mountSearchOverlay(
     else render();
   });
 
-  // Escape: if the overlay is open (mobile modal), close it and return focus
-  // to the toggle. If the search field has text (desktop always-visible mode),
-  // clear it. At desktop, `panels.left` stays 'closed' so only the else
-  // branch fires.
+  // Escape closes the panel and returns focus to the toggle — same
+  // behavior at every breakpoint now that desktop no longer forces the
+  // panel permanently open (the input is only reachable while open, so
+  // there's no longer a "closed but focused and has text" state to handle
+  // separately).
   document.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape') return;
-    if (store.get().panels.left === 'open') {
-      event.preventDefault();
-      close();
-      toggleButton.focus();
-    } else if (document.activeElement === searchInput && searchInput.value && store.get().selectedFeatureId === null) {
-      event.preventDefault();
-      searchInput.value = '';
-      runSearch();
-    }
+    if (event.key !== 'Escape' || store.get().panels.left !== 'open') return;
+    event.preventDefault();
+    close();
+    toggleButton.focus();
   });
 
   function render(): void {
