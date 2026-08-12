@@ -28,6 +28,7 @@
     "title": "Moon Photos Map",
     "tagline": "Real moon photographs, mapped by where and when they were taken.",
     "ctaLabel": "View the photos",
-    "itemNoun": "moon photos"
+    "itemNoun": "moon photos",
+    "heroImage": "assets/photos/2026-07-02T2227-b106dc.jpg"
   }
 }
