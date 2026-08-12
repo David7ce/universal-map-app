@@ -53,7 +53,7 @@ src/
 engine/
     data/
     manifests/
-    plugins/
+    plugins/       (registry + activation only — see plugins/ below for implementations)
     region/
     space/
     state/
@@ -61,9 +61,15 @@ engine/
     time/
 
 ui/
-    panels/
-    components/
-    application shell/
+    app-chrome.ts  (application shell: Map/Calendar switcher, layer control, settings, search)
+    panels/        (Calendar view, filter panel, search overlay, lightbox, ...)
+
+plugins/
+    <plugin-id>/   (e.g. participate/ — registered via engine/plugins, not hardcoded in main.ts)
+
+worlds/
+    <world-id>/    (world.json manifest + layers/*.layer.json + data/*.geojson — the declarative
+                    packages the engine renders; see Data Philosophy below)
 ```
 
 ## Engine Responsibilities
@@ -124,12 +130,15 @@ The system should support concepts such as:
 - Recurring events
 - Cultural representations of time
 
-Possible future systems:
+Shipped calendar systems (`CalendarSystem`, `src/engine/time/calendar-systems.ts`):
 
 - Gregorian
 - Julian
 - Islamic
 - Hebrew
+
+Possible future systems:
+
 - Persian
 - Chinese
 - Other cultural calendars
@@ -161,6 +170,8 @@ New capabilities should ideally be introduced through:
 - data layers
 - extensions
 
+Concretely: `plugins/<plugin-id>/index.ts` exports `register(config, strings)`; `src/engine/plugins/activate.ts` looks it up by id from `world.json`'s `plugins` map via `import.meta.glob` — no `main.ts`/manifest-validator edits needed to add a second plugin. `participate/` (email/WhatsApp/Telegram report links) is the only one shipped so far.
+
 ---
 
 # Data Philosophy
@@ -182,6 +193,8 @@ Visualization
 ```
 
 Avoid coupling features directly to code when configuration is enough.
+
+Concretely, this is `worlds/<world-id>/`: a `world.json` manifest (validated by `validateAppManifest`, `src/engine/manifests/app-manifest.ts`) plus `layers/*.layer.json` (validated by `validateLayerManifest`) referencing `data/*.geojson`. A new world is data-only — no code changes — as long as it fits the existing taxonomy/temporal/panel field vocabulary; see `docs/json-reference.md` and `docs/schemas/*.schema.json`.
 
 ---
 
