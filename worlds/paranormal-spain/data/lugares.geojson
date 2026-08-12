@@ -457,6 +457,102 @@
         "sources": ["La Laguna Ahora - La leyenda del Fantasma de la lagunera Plaza del Juego de Los Bolos"]
       },
       "geometry": { "type": "Point", "coordinates": [-16.3175, 28.4863] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-13",
+      "properties": {
+        "name": "Teatro Guimerá",
+        "municipality": "Santa Cruz de Tenerife",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canarias",
+        "category": "Apariciones",
+        "categories": ["Apariciones", "Tragedias"],
+        "description": "Inaugurado en 1851, el teatro más antiguo de Canarias, en la Plaza Isla de La Madera. Las rutas de misterio de la capital citan entre su personal y artistas el relato recurrente de una mujer despechada que habría muerto durante una función, cuya figura seguiría apareciéndose entre bambalinas y palcos en las noches sin espectáculo.",
+        "phenomena": [
+          "Figura femenina entre bambalinas",
+          "Ruidos y pasos en palcos vacíos",
+          "Sensación de ser observado desde el gallinero"
+        ],
+        "tags": ["apariciones", "teatro", "siglo XIX", "casco histórico", "santa cruz tenebrosa"],
+        "verificationLevel": "Testimonios Múltiples",
+        "popularity": 3,
+        "era": "Siglo XIX",
+        "activityHours": "Nocturno - Fuera de función",
+        "dangerLevel": "Baja",
+        "accessibility": "Público - Programación cultural regular",
+        "bestSeason": "Todo el año",
+        "investigators": ["Rutas Misteriosas"],
+        "fullHistory": "El Teatro Guimerá, inaugurado el 25 de julio de 1851, es el teatro más antiguo de las Islas Canarias y sigue en activo como sala de programación regular. La leyenda más repetida por el personal técnico y las rutas nocturnas de la ciudad habla de una mujer despechada que habría muerto durante una representación y cuyo espíritu continuaría rondando el edificio, especialmente los palcos y el espacio tras el escenario, en las noches en que no hay función.",
+        "howToGetThere": "Plaza Isla de La Madera, s/n, 38003 Santa Cruz de Tenerife",
+        "recommendations": "Asistir a una función y preguntar al personal técnico por sus experiencias entre bambalinas.",
+        "sources": ["Rutas Misteriosas - Santa Cruz Tenebrosa", "Los Mitos y Leyendas - Mitos y Leyendas de Santa Cruz de Tenerife"]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.2508, 28.4667] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-14",
+      "properties": {
+        "name": "Parque García Sanabria",
+        "municipality": "Santa Cruz de Tenerife",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canarias",
+        "category": "Apariciones",
+        "categories": ["Apariciones", "Lugares de Poder"],
+        "description": "El principal parque urbano de Santa Cruz, inaugurado en los años 20, esconde tras su trazado ajardinado varias leyendas nocturnas: la aparición de la 'mujer del velo', simbología masónica oculta en algunas de sus esculturas y relatos de fenómenos inexplicables en las viviendas colindantes.",
+        "phenomena": [
+          "Aparición de una figura femenina con velo",
+          "Simbología esotérica en las esculturas del parque",
+          "Fenómenos reportados en casas vecinas al parque"
+        ],
+        "tags": ["apariciones", "parque urbano", "siglo XX", "mujer del velo", "simbolismo masónico"],
+        "verificationLevel": "Leyenda Popular",
+        "popularity": 3,
+        "era": "Siglo XX",
+        "activityHours": "Nocturno",
+        "dangerLevel": "Baja",
+        "accessibility": "Público - Parque abierto",
+        "bestSeason": "Todo el año",
+        "investigators": ["Rutas Misteriosas"],
+        "fullHistory": "El Parque García Sanabria, corazón verde de Santa Cruz de Tenerife desde su remodelación en los años 20, es descrito por las rutas de misterio locales como un lugar que 'de noche se convierte en otro': un espacio mágico y tenebroso donde se cuenta la leyenda de la 'mujer del velo', una presencia femenina que se aparece entre los senderos y estanques tras el anochecer. A ello se suma la lectura esotérica de parte de su estatuaria, con simbología que algunos guías relacionan con sociedades secretas, y testimonios sueltos de fenómenos extraños en viviendas colindantes al parque.",
+        "howToGetThere": "Entre las calles Méndez Núñez y Pilar, centro de Santa Cruz de Tenerife",
+        "recommendations": "Recorrer el parque al anochecer, cuando se sitúa la aparición según la leyenda.",
+        "sources": ["Rutas Misteriosas - Parque García Sanabria Misterioso"]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.2539, 28.4732] }
+    },
+    {
+      "type": "Feature",
+      "id": "pp-15",
+      "properties": {
+        "name": "Plaza del Príncipe",
+        "municipality": "Santa Cruz de Tenerife",
+        "province": "Santa Cruz de Tenerife",
+        "autonomousCommunity": "Canarias",
+        "category": "Apariciones",
+        "categories": ["Apariciones"],
+        "description": "Plaza romántica de 1855, construida sobre el antiguo huerto del convento franciscano, con laureles de Indias centenarios. Es uno de los puntos citados por las rutas nocturnas de la capital, con apariciones espectrales reportadas junto a sucesos inexplicables asociados a una casa histórica cercana a la plaza.",
+        "phenomena": [
+          "Apariciones espectrales bajo los laureles",
+          "Sucesos inexplicables en una casa histórica próxima",
+          "Sensación de presencias al anochecer"
+        ],
+        "tags": ["apariciones", "plaza histórica", "siglo XIX", "convento franciscano", "santa cruz tenebrosa"],
+        "verificationLevel": "Testimonios Múltiples",
+        "popularity": 2,
+        "era": "Siglo XIX",
+        "activityHours": "Nocturno",
+        "dangerLevel": "Baja",
+        "accessibility": "Público - Plaza abierta",
+        "bestSeason": "Todo el año",
+        "investigators": ["Rutas Misteriosas"],
+        "fullHistory": "Levantada en 1855 sobre el antiguo huerto del convento de San Francisco y bautizada coincidiendo con el nacimiento de Alfonso XII, la Plaza del Príncipe es uno de los rincones más fotografiados de Santa Cruz por sus laureles de Indias centenarios. Las rutas de misterio de la ciudad la incluyen en sus recorridos citando apariciones espectrales en la propia plaza y sucesos inexplicables ligados a una vivienda histórica de la zona, sin que exista una única leyenda consolidada como en otros puntos de la ruta.",
+        "howToGetThere": "Plaza del Príncipe, centro histórico de Santa Cruz de Tenerife, junto a la calle Villalba Hervás",
+        "recommendations": "Visitar al anochecer; combinar con el resto de la ruta 'Santa Cruz Tenebrosa'.",
+        "sources": ["Rutas Misteriosas - Santa Cruz Tenebrosa"]
+      },
+      "geometry": { "type": "Point", "coordinates": [-16.2516, 28.465] }
     }
   ]
 }
