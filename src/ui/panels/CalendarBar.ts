@@ -1,4 +1,5 @@
 import type { Store, AppState } from '../../engine/state/store';
+import { openPanel } from '../../engine/state/store';
 import type { CalendarSystem } from '../../engine/time/calendar-systems';
 import type { LoadedLayer } from '../../engine/taxonomy/compute-dimensions';
 import { addCalendarUnit, toCalendarParts } from '../../engine/time/calendar-conversion';
@@ -176,6 +177,10 @@ export function mountCalendarBar(
 
   function selectDay(iso: string): void {
     store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
+    // Picking a day here should actually surface its agenda, not just
+    // update a panel the user may not have open — SearchOverlay.ts's day
+    // agenda is the only place a day's events render.
+    openPanel(store, 'left');
   }
 
   function render(): void {
