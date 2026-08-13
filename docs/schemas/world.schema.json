@@ -140,7 +140,11 @@
             "additionalProperties": false,
             "properties": {
               "label": { "type": "string", "minLength": 1 },
-              "world": { "type": "string", "minLength": 1, "description": "Target world id, used as ?world=<world> when \"domain\" is absent." },
+              "world": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Target world id, used as ?world=<world> when \"domain\" is absent."
+              },
               "domain": {
                 "type": "string",
                 "minLength": 1,

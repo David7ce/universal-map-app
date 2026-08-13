@@ -138,7 +138,14 @@ async function bootstrap(): Promise<void> {
   mountAppChrome(store, strings, appManifest, mapAdapter, loadedLayers);
 
   if (appManifest.welcome) {
-    mountWelcomeView(document.querySelector('#welcome-view')!, store, appId, appManifest.welcome, loadedLayers, strings);
+    mountWelcomeView(
+      document.querySelector('#welcome-view')!,
+      store,
+      appId,
+      appManifest.welcome,
+      loadedLayers,
+      strings,
+    );
   }
 
   document.getElementById('loading-overlay')?.remove();
