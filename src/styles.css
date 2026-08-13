@@ -380,18 +380,23 @@ select:disabled {
   /* Desktop: same open/closed behavior as mobile (driven by
      store.panels.left, see SearchOverlay.ts), just docked top-left as a
      compact anchored panel instead of a full-screen modal — no backdrop,
-     no toggle-button hiding, no forced-visible override. */
-  .map-search {
+     no toggle-button hiding, no forced-visible override.
+     Scoped to `:not(.is-info)` — once a feature is selected, the 48rem
+     `.map-search.is-info` rules below take over with their own docked
+     full-height panel layout; without this scoping these absolute-dropdown
+     rules fought that layout and pushed the info panel's content off past
+     the bottom of the viewport (looked like a blank panel). */
+  .map-search:not(.is-info) {
     position: fixed;
     inset: auto;
     top: var(--control-btn-offset);
     left: var(--control-btn-offset);
     width: min(22rem, calc(100vw - 2 * var(--control-btn-offset)));
   }
-  .map-search__backdrop {
+  .map-search:not(.is-info) .map-search__backdrop {
     display: none;
   }
-  .map-search__panel {
+  .map-search:not(.is-info) .map-search__panel {
     margin: 0;
     padding: 0;
     max-height: none;
@@ -400,13 +405,13 @@ select:disabled {
     background: transparent;
     box-shadow: none;
   }
-  .search-field {
+  .map-search:not(.is-info) .search-field {
     background-color: var(--color-white);
     box-shadow: var(--shadow-md);
   }
-  .search-results,
-  .search-info,
-  .search-day-agenda {
+  .map-search:not(.is-info) .search-results,
+  .map-search:not(.is-info) .search-info,
+  .map-search:not(.is-info) .search-day-agenda {
     position: absolute;
     top: calc(100% + 0.5rem);
     left: 0;
@@ -1336,6 +1341,18 @@ select:disabled {
   color: var(--color-text);
   flex: 1;
 }
+/* Month/year direct-jump selects — only shown in month granularity. */
+.calendar-bar__row--jump select {
+  font: inherit;
+  font-size: var(--font-size-sm);
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  color: var(--color-text);
+  flex: 1;
+  min-width: 0;
+}
 .calendar-bar__step-btn {
   width: 1.9rem;
   height: 1.9rem;
@@ -1495,12 +1512,19 @@ select:disabled {
   background: var(--color-bg);
   padding: 2rem 1.5rem;
 }
+.welcome-view__header {
+  max-width: 32rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
 .welcome-view__hero {
   max-width: min(90vw, 480px);
   max-height: 40vh;
   object-fit: cover;
   border-radius: var(--radius-md);
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 .welcome-view__content {
   max-width: 32rem;
@@ -1538,8 +1562,12 @@ select:disabled {
 .welcome-view__cta:hover {
   background: var(--color-primary-dark, var(--color-primary));
 }
+.welcome-view__footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
 .welcome-view__links {
-  margin-top: 1.5rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -1551,6 +1579,19 @@ select:disabled {
   text-decoration: underline;
 }
 .welcome-view__link:hover {
+  color: var(--color-text);
+}
+.welcome-view__legal {
+  margin: 1.5rem 0 0;
+  color: var(--color-text-light);
+  font-size: var(--font-size-xs, 0.75rem);
+}
+.welcome-view__legal-link {
+  margin-left: 0.75rem;
+  color: var(--color-text-light);
+  text-decoration: underline;
+}
+.welcome-view__legal-link:hover {
   color: var(--color-text);
 }
 
@@ -1942,20 +1983,22 @@ select:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: 30px;
   line-height: 1;
   text-align: center;
 }
-/* Only gets a background when style.colorField/colorMap resolve a color
-   for this feature (data-layer-renderer.ts) — otherwise transparent, so a
-   layer with no color config renders the exact bare-emoji look as before. */
+/* Always gets a white circle background for contrast against busy map
+   tiles, at a fixed size across every world/layer — style.colorField's
+   inline `background-color` (data-layer-renderer.ts) overrides this default
+   when a layer configures per-feature color. */
 .category-marker-icon__circle {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
+  background-color: var(--color-white);
   box-shadow: var(--shadow-md);
 }
 /* style.badgeField/badgeMap's small corner overlay — sparse, most features

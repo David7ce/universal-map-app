@@ -32,7 +32,7 @@ export interface AppManifest {
     ctaLabel: string;
     heroImage?: string;
     itemNoun?: string;
-    links?: { label: string; world: string }[];
+    links?: { label: string; world: string; domain?: string }[];
   };
 }
 
@@ -135,6 +135,11 @@ export function validateAppManifest(json: unknown): AppManifest {
         if (typeof entry?.world !== 'string' || entry.world.length === 0) {
           throw new Error(
             `App manifest "${obj.id}" "welcome.links[${index}].world" is required and must be a non-empty string`,
+          );
+        }
+        if (entry.domain !== undefined && (typeof entry.domain !== 'string' || entry.domain.length === 0)) {
+          throw new Error(
+            `App manifest "${obj.id}" "welcome.links[${index}].domain" must be a non-empty string when present`,
           );
         }
       });

@@ -93,7 +93,8 @@ export function renderDataLayer(
             (badge ? `<span class="category-marker-icon__badge">${badge}</span>` : '');
 
           return L.marker(latlng, {
-            icon: L.divIcon({ html, className: 'category-marker-icon', iconSize: [36, 36] }),
+            // Matches .category-marker-icon__circle's fixed size (styles.css).
+            icon: L.divIcon({ html, className: 'category-marker-icon', iconSize: [44, 44] }),
           });
         }
       : undefined;

@@ -285,4 +285,26 @@ describe('validateAppManifest', () => {
       }),
     ).toThrow(/welcome\.links\[0\]\.world/);
   });
+
+  it('accepts a "welcome.links" entry with a "domain"', () => {
+    const withDomain = {
+      ...valid,
+      welcome: {
+        title: 'Hi',
+        tagline: 'Tag',
+        ctaLabel: 'Go',
+        links: [{ label: 'Other World', world: 'other-world', domain: 'other-world.com' }],
+      },
+    };
+    expect(validateAppManifest(withDomain)).toEqual(withDomain);
+  });
+
+  it('rejects a "welcome.links" entry with a non-string "domain"', () => {
+    expect(() =>
+      validateAppManifest({
+        ...valid,
+        welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go', links: [{ label: 'x', world: 'y', domain: 42 }] },
+      }),
+    ).toThrow(/welcome\.links\[0\]\.domain/);
+  });
 });

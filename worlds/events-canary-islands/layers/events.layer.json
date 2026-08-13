@@ -1,14 +1,14 @@
 {
   "$schema": "../../../docs/schemas/layer.schema.json",
   "id": "events",
-  "title": "Events",
+  "title": "Eventos",
   "kind": "point",
   "source": { "type": "geojson", "url": "worlds/events-canary-islands/data/events.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },
   "taxonomy": [
     {
       "id": "category",
-      "label": "Category",
+      "label": "Categoría",
       "field": "properties.category",
       "icons": {
         "Música": "🎵",
@@ -32,13 +32,13 @@
     "showInSearch": true,
     "showInInfo": true,
     "infoFields": [
-      { "field": "properties.description", "label": "Description" },
-      { "field": "properties.category", "label": "Category" },
-      { "field": "properties.municipality", "label": "Municipality" },
-      { "field": "properties.venue", "label": "Venue" },
-      { "field": "properties.time", "label": "Time" },
-      { "field": "properties.price", "label": "Price" },
-      { "field": "properties.link", "label": "More info", "type": "link" }
+      { "field": "properties.description", "label": "Descripción" },
+      { "field": "properties.category", "label": "Categoría" },
+      { "field": "properties.municipality", "label": "Municipio" },
+      { "field": "properties.venue", "label": "Lugar" },
+      { "field": "properties.time", "label": "Hora" },
+      { "field": "properties.price", "label": "Precio" },
+      { "field": "properties.link", "label": "Más información", "type": "link" }
     ]
   }
 }

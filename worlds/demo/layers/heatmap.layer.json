@@ -1,7 +1,7 @@
 {
   "$schema": "../../../docs/schemas/layer.schema.json",
   "id": "poi-heatmap",
-  "title": "POI Density",
+  "title": "Densidad de POI",
   "kind": "heatmap",
   "source": { "type": "geojson", "url": "worlds/demo/data/poi.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },

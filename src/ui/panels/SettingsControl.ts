@@ -4,9 +4,12 @@ import type { MapAdapter } from '../../engine/space/map-adapter';
 import type { MapCrsConfig } from '../../engine/space/map-crs';
 import { CALENDAR_SYSTEMS, type CalendarSystem } from '../../engine/time/calendar-systems';
 import { ensureCalendarSystemLoaded } from '../../engine/time/calendar-conversion';
+import { detectDefaultLanguage, getStoredLanguage, setStoredLanguage, type Language } from '../language';
 import { t } from '../strings';
 import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
+
+const LANGUAGES: readonly Language[] = ['en', 'es'];
 
 export interface SettingsControlDeps {
   appManifest: AppManifest;
@@ -49,6 +52,10 @@ export function mountSettingsControl(
     `<option value="Simple">${escapeHtml(t('settings.crs.simple', strings))}</option>` +
     (manifestCrsIsCustom ? `<option value="custom">${escapeHtml(t('settings.crs.custom', strings))}</option>` : '');
 
+  const languageOptions = LANGUAGES.map(
+    (lang) => `<option value="${lang}">${escapeHtml(t(`settings.language.${lang}`, strings))}</option>`,
+  ).join('');
+
   const timeEnabled = deps.appManifest.systems?.time !== false;
 
   const calendarSection = timeEnabled
@@ -65,6 +72,10 @@ export function mountSettingsControl(
       <span class="settings-control-trigger__label">${t('settings.trigger', strings)}</span>
     </button>
     <section class="settings-control-popover" hidden>
+      <label class="settings-control-row">
+        <span>${t('settings.languageLabel', strings)}</span>
+        <select data-role="language">${languageOptions}</select>
+      </label>
       ${calendarSection}
       <p class="settings-control-group__title">${t('settings.mapSection', strings)}</p>
       <label class="settings-control-row">
@@ -83,6 +94,18 @@ export function mountSettingsControl(
   const gridToggle = container.querySelector<HTMLInputElement>('[data-role="grid-toggle"]')!;
   const systemSelect = container.querySelector<HTMLSelectElement>('[data-role="calendar-system"]');
   const projectionSelect = container.querySelector<HTMLSelectElement>('[data-role="projection"]')!;
+  const languageSelect = container.querySelector<HTMLSelectElement>('[data-role="language"]')!;
+
+  languageSelect.value = getStoredLanguage() ?? detectDefaultLanguage(navigator.language);
+  languageSelect.addEventListener('change', () => {
+    // Strings are read once at bootstrap and passed down as a plain object,
+    // not re-fetched reactively anywhere in this codebase (see
+    // src/ui/strings.ts) — a full reload is the simplest way to actually
+    // apply the new language everywhere, matching the welcome view's
+    // cross-world links (also plain navigations, not in-place swaps).
+    setStoredLanguage(languageSelect.value as Language);
+    location.reload();
+  });
 
   if (systemSelect) {
     systemSelect.value = store.get().calendarSystem;

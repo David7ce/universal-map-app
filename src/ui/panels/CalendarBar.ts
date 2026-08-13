@@ -2,7 +2,13 @@ import type { Store, AppState } from '../../engine/state/store';
 import { openPanel } from '../../engine/state/store';
 import type { CalendarSystem } from '../../engine/time/calendar-systems';
 import type { LoadedLayer } from '../../engine/taxonomy/compute-dimensions';
-import { addCalendarUnit, toCalendarParts } from '../../engine/time/calendar-conversion';
+import {
+  addCalendarUnit,
+  toCalendarParts,
+  calendarPartsToIso,
+  daysInCalendarMonth,
+  monthsInCalendarYear,
+} from '../../engine/time/calendar-conversion';
 import { buildYearMonthCells } from '../../engine/time/calendar-grid';
 import { renderCalendarGrid } from './CalendarGrid';
 import { t } from '../strings';
@@ -146,12 +152,19 @@ export function mountCalendarBar(
         <select data-role="granularity">${granularityOptions}</select>
         <button type="button" class="calendar-bar__step-btn" data-action="step-next" aria-label="Step forward">›</button>
       </div>
+      <div class="calendar-bar__row calendar-bar__row--jump" data-role="jump-row" hidden>
+        <select data-role="month-jump"></select>
+        <select data-role="year-jump"></select>
+      </div>
       <div class="calendar-bar__grid" data-role="grid"></div>
     </div>
   `;
 
   const gridEl = container.querySelector<HTMLElement>('[data-role="grid"]')!;
   const granularitySelect = container.querySelector<HTMLSelectElement>('[data-role="granularity"]')!;
+  const jumpRowEl = container.querySelector<HTMLElement>('[data-role="jump-row"]')!;
+  const monthJumpSelect = container.querySelector<HTMLSelectElement>('[data-role="month-jump"]')!;
+  const yearJumpSelect = container.querySelector<HTMLSelectElement>('[data-role="year-jump"]')!;
 
   // UI-only, doesn't need to survive a reload or be shared with other
   // panels — kept in this closure the same way PanelRight.ts keeps its
@@ -183,10 +196,61 @@ export function mountCalendarBar(
     openPanel(store, 'left');
   }
 
+  // Jumps straight to a given year/month (day kept where it was, clamped to
+  // that month's length) — lets events-canary-islands' full-year 2026 range
+  // be browsed by picking a month directly instead of stepping through
+  // every one of the 11 months in between.
+  function jumpTo(year: number, month: number): void {
+    const state = store.get();
+    const system = state.calendarSystem;
+    const day = Math.min(toCalendarParts(state.selectedDate, system).day, daysInCalendarMonth(year, month, system));
+    const iso = calendarPartsToIso({ year, month, day }, system);
+    store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
+  }
+  monthJumpSelect.addEventListener('change', () => {
+    const year = Number(yearJumpSelect.value);
+    jumpTo(year, Number(monthJumpSelect.value));
+  });
+  yearJumpSelect.addEventListener('change', () => {
+    const year = Number(yearJumpSelect.value);
+    const month = Math.min(Number(monthJumpSelect.value), monthsInCalendarYear(year, store.get().calendarSystem));
+    jumpTo(year, month);
+  });
+
+  // Populates the month/year jump selects for the currently selected
+  // year — month names/count depend on the year (Hebrew leap years add a
+  // 13th month) and on the calendar system, so this re-derives them on
+  // every render rather than building them once.
+  function renderJumpRow(selectedIso: string, system: CalendarSystem): void {
+    const { year: selectedYear, month: selectedMonth } = toCalendarParts(selectedIso, system);
+    const minYear = toCalendarParts(config.min, system).year;
+    const maxYear = toCalendarParts(maxIso, system).year;
+
+    const yearOptions: string[] = [];
+    for (let year = minYear; year <= maxYear; year++) {
+      yearOptions.push(`<option value="${year}">${year}</option>`);
+    }
+    yearJumpSelect.innerHTML = yearOptions.join('');
+    yearJumpSelect.value = String(selectedYear);
+
+    const monthOptions: string[] = [];
+    const monthCount = monthsInCalendarYear(selectedYear, system);
+    for (let month = 1; month <= monthCount; month++) {
+      const monthIso = calendarPartsToIso({ year: selectedYear, month, day: 1 }, system);
+      const monthName = toCalendarParts(monthIso, system).monthName;
+      monthOptions.push(`<option value="${month}">${escapeHtml(monthName)}</option>`);
+    }
+    monthJumpSelect.innerHTML = monthOptions.join('');
+    monthJumpSelect.value = String(selectedMonth);
+  }
+
   function render(): void {
     const state = store.get();
     const system = state.calendarSystem;
     const visibleLayers = layers.filter((layer) => !state.hiddenLayerIds.has(layer.manifest.id));
+
+    jumpRowEl.hidden = granularity !== 'month';
+    if (granularity === 'month') renderJumpRow(state.selectedDate, system);
 
     if (granularity === 'year') {
       const groups = buildYearMonthCells(state.selectedDate, system, visibleLayers, state.activeFilters);

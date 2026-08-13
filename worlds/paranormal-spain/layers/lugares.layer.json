@@ -1,13 +1,13 @@
 {
   "$schema": "../../../docs/schemas/layer.schema.json",
   "id": "paranormal-places",
-  "title": "Paranormal Places",
+  "title": "Lugares Paranormales",
   "kind": "point",
   "source": { "type": "geojson", "url": "worlds/paranormal-spain/data/lugares.geojson" },
   "taxonomy": [
     {
       "id": "category",
-      "label": "Category",
+      "label": "Categoría",
       "field": "properties.category",
       "icons": {
         "Apariciones": "👻",
@@ -26,7 +26,7 @@
     },
     {
       "id": "verification",
-      "label": "Verification Level",
+      "label": "Nivel de Verificación",
       "field": "properties.verificationLevel",
       "icons": {
         "Científicamente Estudiado": "🔬",
@@ -50,22 +50,22 @@
     "showInSearch": true,
     "showInInfo": true,
     "infoFields": [
-      { "field": "properties.category", "label": "Category" },
-      { "field": "properties.verificationLevel", "label": "Verification Level" },
-      { "field": "properties.era", "label": "Era" },
-      { "field": "properties.municipality", "label": "Municipality" },
-      { "field": "properties.phenomena", "label": "Phenomena" },
-      { "field": "properties.activityHours", "label": "Activity Hours" },
-      { "field": "properties.dangerLevel", "label": "Danger Level" },
-      { "field": "properties.accessibility", "label": "Accessibility" },
-      { "field": "properties.bestSeason", "label": "Best Season" },
-      { "field": "properties.investigators", "label": "Investigators" },
-      { "field": "properties.howToGetThere", "label": "How to Get There" },
-      { "field": "properties.recommendations", "label": "Recommendations" },
-      { "field": "properties.fullHistory", "label": "Full History" },
+      { "field": "properties.category", "label": "Categoría" },
+      { "field": "properties.verificationLevel", "label": "Nivel de Verificación" },
+      { "field": "properties.era", "label": "Época" },
+      { "field": "properties.municipality", "label": "Municipio" },
+      { "field": "properties.phenomena", "label": "Fenómenos" },
+      { "field": "properties.activityHours", "label": "Horario de Actividad" },
+      { "field": "properties.dangerLevel", "label": "Nivel de Peligro" },
+      { "field": "properties.accessibility", "label": "Accesibilidad" },
+      { "field": "properties.bestSeason", "label": "Mejor Temporada" },
+      { "field": "properties.investigators", "label": "Investigadores" },
+      { "field": "properties.howToGetThere", "label": "Cómo Llegar" },
+      { "field": "properties.recommendations", "label": "Recomendaciones" },
+      { "field": "properties.fullHistory", "label": "Historia Completa" },
       { "field": "properties.video.title", "label": "Video" },
-      { "field": "properties.video.url", "label": "Watch Video", "type": "link" },
-      { "field": "properties.sources", "label": "Sources" }
+      { "field": "properties.video.url", "label": "Ver Video", "type": "link" },
+      { "field": "properties.sources", "label": "Fuentes" }
     ]
   }
 }

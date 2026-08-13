@@ -2,6 +2,7 @@ import type { Store, AppState } from '../../engine/state/store';
 import type { AppManifest } from '../../engine/manifests/app-manifest';
 import type { LoadedLayer } from '../../engine/taxonomy/compute-dimensions';
 import { escapeHtml } from '../escape-html';
+import { t } from '../strings';
 
 // One-way thematic splash shown only as the initial view, only when the
 // manifest declares `welcome` (see app-manifest.ts) — main.ts seeds
@@ -14,6 +15,7 @@ export function mountWelcomeView(
   appId: string,
   welcome: NonNullable<AppManifest['welcome']>,
   loadedLayers: LoadedLayer[],
+  strings: Record<string, string>,
 ): void {
   // Only layers whose features are real, user-facing content — the same
   // flag that excludes them from search (e.g. a heatmap re-visualizing
@@ -31,30 +33,49 @@ export function mountWelcomeView(
     ? `<img class="welcome-view__hero" src="worlds/${appId}/${escapeHtml(welcome.heroImage)}" alt="">`
     : '';
 
-  // Plain <a href="?world=..."> links, not a click handler that calls
+  // Plain <a href> links, not a click handler that calls
   // resolveWorldId/re-bootstraps in place — a different world is a
   // completely different manifest/data set, so this is a real navigation
-  // (full reload), same as typing the URL by hand.
-  const linksSection = welcome.links?.length
+  // (full reload), same as typing the URL by hand. A link with its own
+  // "domain" navigates straight to that world's standalone site; without
+  // one it falls back to the shared-build `?world=` override.
+  const worldLinks = welcome.links?.length
     ? `<nav class="welcome-view__links">
         ${welcome.links
-          .map(
-            (link) =>
-              `<a class="welcome-view__link" href="?world=${encodeURIComponent(link.world)}">${escapeHtml(link.label)}</a>`,
-          )
+          .map((link) => {
+            const href = link.domain
+              ? `https://${encodeURIComponent(link.domain)}`
+              : `?world=${encodeURIComponent(link.world)}`;
+            return `<a class="welcome-view__link" href="${href}">${escapeHtml(link.label)}</a>`;
+          })
           .join('')}
       </nav>`
     : '';
 
+  // Static pages under public/ (see public/privacy.html etc.) — shared
+  // boilerplate across every world, not part of any world.json.
+  const legalRow = `
+    <p class="welcome-view__legal">
+      ${escapeHtml(t('welcome.legal.rights', strings, { year: String(new Date().getFullYear()), title: welcome.title }))}
+      <a class="welcome-view__legal-link" href="privacy.html">${escapeHtml(t('welcome.legal.privacy', strings))}</a>
+      <a class="welcome-view__legal-link" href="cookies.html">${escapeHtml(t('welcome.legal.cookies', strings))}</a>
+      <a class="welcome-view__legal-link" href="terms.html">${escapeHtml(t('welcome.legal.terms', strings))}</a>
+    </p>`;
+
   container.innerHTML = `
-    ${heroImage}
-    <div class="welcome-view__content">
+    <header class="welcome-view__header">
+      ${heroImage}
       <h1 class="welcome-view__title">${escapeHtml(welcome.title)}</h1>
       <p class="welcome-view__tagline">${escapeHtml(welcome.tagline)}</p>
+    </header>
+    <main class="welcome-view__content">
       ${countLine}
       <button type="button" class="welcome-view__cta">${escapeHtml(welcome.ctaLabel)}</button>
-      ${linksSection}
-    </div>
+    </main>
+    <footer class="welcome-view__footer">
+      ${worldLinks}
+      ${legalRow}
+    </footer>
   `;
 
   container.querySelector<HTMLButtonElement>('.welcome-view__cta')!.addEventListener('click', () => {

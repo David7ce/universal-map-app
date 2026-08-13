@@ -1,14 +1,14 @@
 {
   "$schema": "../../../docs/schemas/layer.schema.json",
   "id": "poi",
-  "title": "Points of Interest",
+  "title": "Puntos de Interés",
   "kind": "point",
   "source": { "type": "geojson", "url": "worlds/demo/data/poi.geojson" },
   "temporal": { "defaultVisibility": "time-filtered" },
   "taxonomy": [
     {
       "id": "category",
-      "label": "Categories",
+      "label": "Categorías",
       "field": "properties.category",
       "icons": { "park": "🌳", "restaurant": "🍴", "theatre": "🎭" },
       "defaultIcon": "📍"
@@ -19,6 +19,6 @@
   "panel": {
     "showInSearch": true,
     "showInInfo": true,
-    "infoFields": [{ "field": "properties.category", "label": "Category" }]
+    "infoFields": [{ "field": "properties.category", "label": "Categoría" }]
   }
 }

@@ -2,8 +2,8 @@
   "views.map": "Map",
   "views.calendar": "Calendar",
   "calendarView.viewOnMap": "View on map",
-  "calendarView.noEvents": "No photos on this day",
-  "search.placeholder": "Search moon photos...",
+  "calendarView.noEvents": "No events on this day",
+  "search.placeholder": "Search haunted places...",
   "search.openLabel": "Open search",
   "search.clearLabel": "Clear search",
   "search.noResults": "No results",
@@ -62,7 +62,10 @@
   "settings.gridLabel": "Show coordinate grid",
   "settings.calendarSection": "Calendar",
   "settings.calendarSystemLabel": "Calendar system",
-  "participate.button": "Submit a photo",
+  "settings.languageLabel": "Language",
+  "settings.language.en": "English",
+  "settings.language.es": "Español",
+  "participate.button": "Report a place",
   "info.containingRegion": "Region: {regions}",
   "info.coordinates": "Coordinates: {lat}, {lng}",
   "temporalStatus.alwaysActive": "Always active",
@@ -74,5 +77,9 @@
   "temporalStatus.active": "Active",
   "temporalStatus.notActive": "Not active",
   "temporalStatus.since": "since {date}",
-  "temporalStatus.until": "until {date}"
+  "temporalStatus.until": "until {date}",
+  "welcome.legal.rights": "© {year} {title}. All rights reserved.",
+  "welcome.legal.privacy": "Privacy",
+  "welcome.legal.cookies": "Cookies",
+  "welcome.legal.terms": "Terms"
 }

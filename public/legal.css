@@ -1,0 +1,38 @@
+body {
+  margin: 0;
+  padding: 2.5rem 1.5rem 4rem;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  color: #1c1c1c;
+  background: #fafafa;
+  line-height: 1.6;
+}
+main {
+  max-width: 42rem;
+  margin: 0 auto;
+}
+h1 {
+  font-size: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+.legal-updated {
+  color: #666;
+  font-size: 0.85rem;
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+h2 {
+  font-size: 1.15rem;
+  margin-top: 2rem;
+}
+a {
+  color: #266a8b;
+}
+.legal-back {
+  display: inline-block;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+}

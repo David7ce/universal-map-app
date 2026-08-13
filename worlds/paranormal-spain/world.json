@@ -1,7 +1,7 @@
 {
   "$schema": "../../docs/schemas/world.schema.json",
   "id": "paranormal-spain",
-  "title": "Paranormal Spain",
+  "title": "Paranormal España",
   "map": { "center": [28.389, -16.5245], "zoom": 15 },
   "baseLayers": [
     {
@@ -9,7 +9,7 @@
       "title": "Map",
       "type": "raster-tile",
       "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-      "attribution": "© OpenStreetMap contributors"
+      "attribution": "© OSM"
     },
     {
       "id": "satellite",
@@ -23,18 +23,19 @@
   ],
   "dataLayers": ["layers/regions.layer.json", "layers/lugares.layer.json"],
   "calendar": { "default": "today", "min": "1500-01-01", "max": "2030-12-31" },
-  "strings": "strings.json",
+  "strings": "strings.en.json",
   "theme": { "primary": "#4a2265" },
   "systems": { "time": false },
   "welcome": {
-    "title": "Paranormal Spain",
-    "tagline": "Ghosts, tragedies and legends at real locations across the Canary Islands.",
-    "ctaLabel": "Explore the map",
-    "itemNoun": "haunted places",
+    "title": "Paranormal España",
+    "tagline": "Fantasmas, tragedias y leyendas en lugares reales de las Islas Canarias.",
+    "ctaLabel": "Explorar el mapa",
+    "heroImage": "assets/hero.svg",
+    "itemNoun": "lugares encantados",
     "links": [
-      { "label": "Universal Map Demo", "world": "demo" },
-      { "label": "Canary Islands Events", "world": "events-canary-islands" },
-      { "label": "Moon Photos Map", "world": "moon-map-photos" }
+      { "label": "Demo de Mapa Universal", "world": "demo" },
+      { "label": "Eventos de Canarias", "world": "events-canary-islands" },
+      { "label": "Fotos de la Luna", "world": "moon-map-photos" }
     ]
   }
 }

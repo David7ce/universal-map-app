@@ -62,6 +62,9 @@
   "settings.gridLabel": "Show coordinate grid",
   "settings.calendarSection": "Calendar",
   "settings.calendarSystemLabel": "Calendar system",
+  "settings.languageLabel": "Language",
+  "settings.language.en": "English",
+  "settings.language.es": "Español",
   "participate.button": "Participate",
   "info.containingRegion": "Region: {regions}",
   "info.coordinates": "Coordinates: {lat}, {lng}",
@@ -74,5 +77,9 @@
   "temporalStatus.active": "Active",
   "temporalStatus.notActive": "Not active",
   "temporalStatus.since": "since {date}",
-  "temporalStatus.until": "until {date}"
+  "temporalStatus.until": "until {date}",
+  "welcome.legal.rights": "© {year} {title}. All rights reserved.",
+  "welcome.legal.privacy": "Privacy",
+  "welcome.legal.cookies": "Cookies",
+  "welcome.legal.terms": "Terms"
 }

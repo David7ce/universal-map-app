@@ -1,7 +1,7 @@
 {
   "$schema": "../../docs/schemas/world.schema.json",
   "id": "moon-map-photos",
-  "title": "Moon Photos Map",
+  "title": "Fotos de la Luna",
   "map": { "center": [47, 2], "zoom": 5 },
   "baseLayers": [
     {
@@ -9,7 +9,7 @@
       "title": "Map",
       "type": "raster-tile",
       "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-      "attribution": "© OpenStreetMap contributors"
+      "attribution": "© OSM"
     },
     {
       "id": "satellite",
@@ -23,18 +23,18 @@
   ],
   "dataLayers": ["layers/photos.layer.json"],
   "calendar": { "default": "2026-07-01", "min": "2026-07-01", "max": "2026-07-31" },
-  "strings": "strings.json",
+  "strings": "strings.en.json",
   "theme": { "primary": "#2c3e6b" },
   "welcome": {
-    "title": "Moon Photos Map",
-    "tagline": "Real moon photographs, mapped by where and when they were taken.",
-    "ctaLabel": "View the photos",
-    "itemNoun": "moon photos",
+    "title": "Fotos de la Luna",
+    "tagline": "Fotografías reales de la luna, ubicadas según dónde y cuándo fueron tomadas.",
+    "ctaLabel": "Ver las fotos",
+    "itemNoun": "fotos de la luna",
     "heroImage": "assets/photos/2026-07-02T2227-b106dc.jpg",
     "links": [
-      { "label": "Universal Map Demo", "world": "demo" },
-      { "label": "Paranormal Spain", "world": "paranormal-spain" },
-      { "label": "Canary Islands Events", "world": "events-canary-islands" }
+      { "label": "Demo de Mapa Universal", "world": "demo" },
+      { "label": "Paranormal España", "world": "paranormal-spain" },
+      { "label": "Eventos de Canarias", "world": "events-canary-islands" }
     ]
   }
 }

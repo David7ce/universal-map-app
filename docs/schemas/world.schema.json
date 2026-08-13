@@ -133,14 +133,19 @@
         },
         "links": {
           "type": "array",
-          "description": "Plain links to other worlds (e.g. from a hub/demo world to real ones), rendered as <a href=\"?world=<world>\">. A real navigation/reload, not a client-side switch.",
+          "description": "Plain links to other worlds (e.g. from a hub/demo world to real ones), rendered as <a href>. A real navigation/reload, not a client-side switch.",
           "items": {
             "type": "object",
             "required": ["label", "world"],
             "additionalProperties": false,
             "properties": {
               "label": { "type": "string", "minLength": 1 },
-              "world": { "type": "string", "minLength": 1, "description": "Target world id, used as ?world=<world>." }
+              "world": { "type": "string", "minLength": 1, "description": "Target world id, used as ?world=<world> when \"domain\" is absent." },
+              "domain": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Target world's own standalone domain (e.g. \"paranormal-spain.com\"), if it's deployed on one. When present, the link goes to https://<domain> instead of ?world=<world>."
+              }
             }
           }
         }

@@ -1,7 +1,7 @@
 {
   "$schema": "../../docs/schemas/world.schema.json",
   "id": "demo",
-  "title": "Universal Map Demo",
+  "title": "Demo de Mapa Universal",
   "map": { "center": [28.29, -16.62], "zoom": 12 },
   "baseLayers": [
     {
@@ -9,7 +9,7 @@
       "title": "Map",
       "type": "raster-tile",
       "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-      "attribution": "© OpenStreetMap contributors"
+      "attribution": "© OSM"
     },
     {
       "id": "satellite",
@@ -23,23 +23,24 @@
   ],
   "dataLayers": ["layers/regions.layer.json", "layers/poi.layer.json", "layers/heatmap.layer.json"],
   "calendar": { "default": "today", "min": "2015-01-01", "max": "2030-12-31" },
-  "strings": "strings.json",
+  "strings": "strings.en.json",
   "welcome": {
-    "title": "Universal Map Demo",
-    "tagline": "A spatio-temporal engine with a web interface — space, time, and data layers, driven entirely by declarative world packages.",
-    "ctaLabel": "Explore the demo",
-    "itemNoun": "points of interest",
+    "title": "Demo de Mapa Universal",
+    "tagline": "Motor espacio-temporal con interfaz web — espacio, tiempo y capas de datos, todo a partir de paquetes de mundos declarativos.",
+    "ctaLabel": "Explorar la demo",
+    "heroImage": "assets/hero.svg",
+    "itemNoun": "puntos de interés",
     "links": [
-      { "label": "Paranormal Spain", "world": "paranormal-spain" },
-      { "label": "Canary Islands Events", "world": "events-canary-islands" },
-      { "label": "Moon Photos Map", "world": "moon-map-photos" }
+      { "label": "Paranormal España", "world": "paranormal-spain" },
+      { "label": "Eventos de Canarias", "world": "events-canary-islands" },
+      { "label": "Fotos de la Luna", "world": "moon-map-photos" }
     ]
   },
   "plugins": {
     "participate": {
       "channel": "email",
       "target": "demo@example.org",
-      "messageTemplate": "I want to report something on the map (viewing date: {{date}})"
+      "messageTemplate": "Quiero informar sobre algo en el mapa (fecha de visualización: {{date}})"
     }
   }
 }
