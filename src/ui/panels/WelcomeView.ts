@@ -2,13 +2,13 @@ import type { Store, AppState } from '../../engine/state/store';
 import type { AppManifest } from '../../engine/manifests/app-manifest';
 import type { LoadedLayer } from '../../engine/taxonomy/compute-dimensions';
 import { escapeHtml } from '../escape-html';
-import { t } from '../strings';
+import { renderLegalFooter } from './legal-footer';
 
-// One-way thematic splash shown only as the initial view, only when the
-// manifest declares `welcome` (see app-manifest.ts) — main.ts seeds
-// AppState.view to 'welcome' in exactly that case, 'map' otherwise, so a
-// world with no `welcome` field never mounts anything here differently
-// than before this feature existed.
+// Thematic splash, only mounted when the manifest declares `welcome` (see
+// app-manifest.ts) — main.ts seeds AppState.view to 'welcome' in exactly
+// that case, 'map' otherwise, so a world with no `welcome` field never
+// mounts anything here differently than before this feature existed. The
+// header's Home link (app-chrome.ts) can always navigate back to it.
 export function mountWelcomeView(
   container: HTMLElement,
   store: Store<AppState>,
@@ -52,15 +52,7 @@ export function mountWelcomeView(
       </nav>`
     : '';
 
-  // Static pages under public/ (see public/privacy.html etc.) — shared
-  // boilerplate across every world, not part of any world.json.
-  const legalRow = `
-    <p class="welcome-view__legal">
-      ${escapeHtml(t('welcome.legal.rights', strings, { year: String(new Date().getFullYear()), title: welcome.title }))}
-      <a class="welcome-view__legal-link" href="privacy.html">${escapeHtml(t('welcome.legal.privacy', strings))}</a>
-      <a class="welcome-view__legal-link" href="cookies.html">${escapeHtml(t('welcome.legal.cookies', strings))}</a>
-      <a class="welcome-view__legal-link" href="terms.html">${escapeHtml(t('welcome.legal.terms', strings))}</a>
-    </p>`;
+  const legalRow = renderLegalFooter(welcome.title, strings);
 
   container.innerHTML = `
     <header class="welcome-view__header">

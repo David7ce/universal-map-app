@@ -2,6 +2,14 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Persistent header nav (Home/Map/Calendar/About), About Us view, and category chip bar
+
+The floating Map/Calendar pill (`#view-switcher`) is now a full-width, always-visible header (`#app-header`, `mountHeader()` in `app-chrome.ts`) showing the world's title plus nav links — Home (only when `welcome` is declared; routes back to the splash, which is no longer strictly one-way), Map, Calendar, and a new About link (only when a new optional `about` manifest field is declared). `about: { title, body: string[], links?: {label,url}[] }` is validated the same way `welcome` is (`app-manifest.ts`, `docs/schemas/world.schema.json`, `docs/json-reference.md`) and rendered by a new `AboutView.ts`, mounted the same conditional way `WelcomeView.ts` is. A shared `renderLegalFooter()` (`src/ui/panels/legal-footer.ts`) factors out the privacy/cookies/terms row previously duplicated only in `WelcomeView.ts`, now reused by `AboutView.ts` too. `systems.time: false` now only hides the header's Calendar link specifically (`[data-view="calendar"]`), not the whole header — Home/Map/About stay reachable.
+
+New always-visible category chip bar (`CategoryNav.ts`, shown under the header on Map view) surfaces each world's icon-bearing taxonomy dimension(s) (e.g. `events-canary-islands`' "category", `moon-map-photos`' "moonPhase") as clickable chips, toggling the exact same `activeFilters` state the filters drawer (`PanelRight.ts`) already owns — a faster path onto an existing dimension, not a new filtering concept. Boundary-region dimensions (`regionRole: "boundary"`) are excluded automatically since they're never given icons.
+
+Piloted with a real `about` block on `events-canary-islands`; the other three worlds get the header/category-nav automatically (declarative, no engine changes) but have no `about` content yet.
+
 ## Fix: opening filters no longer buries an open search panel on mobile
 
 The search overlay (`panels.left`) and filters drawer (`panels.right`) are both full-screen mobile drawers with the filters drawer stacked above search in z-index; nothing previously closed one when the other opened, so opening filters while search was open visually covered it with no indication it was still open underneath. New `openPanel()` (`src/engine/state/store.ts`) enforces mutual exclusion — every call site that opens a panel (filters toggle, search open, search result selection, map marker click) now goes through it or an equivalent single-patch `store.set()`.

@@ -1,6 +1,8 @@
 {
   "views.map": "Mapa",
   "views.calendar": "Calendario",
+  "nav.home": "Inicio",
+  "nav.about": "Sobre nosotros",
   "calendarView.viewOnMap": "Ver en el mapa",
   "calendarView.noEvents": "Sin eventos este día",
   "search.placeholder": "Buscar eventos...",

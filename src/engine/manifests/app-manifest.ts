@@ -34,6 +34,11 @@ export interface AppManifest {
     itemNoun?: string;
     links?: { label: string; world: string; domain?: string }[];
   };
+  about?: {
+    title: string;
+    body: string[];
+    links?: { label: string; url: string }[];
+  };
 }
 
 export function validateAppManifest(json: unknown): AppManifest {
@@ -140,6 +145,37 @@ export function validateAppManifest(json: unknown): AppManifest {
         if (entry.domain !== undefined && (typeof entry.domain !== 'string' || entry.domain.length === 0)) {
           throw new Error(
             `App manifest "${obj.id}" "welcome.links[${index}].domain" must be a non-empty string when present`,
+          );
+        }
+      });
+    }
+  }
+
+  if (obj.about !== undefined) {
+    if (typeof obj.about !== 'object' || obj.about === null || Array.isArray(obj.about)) {
+      throw new Error(`App manifest "${obj.id}" "about" must be a plain object`);
+    }
+    const about = obj.about as Record<string, unknown>;
+    if (typeof about.title !== 'string' || about.title.length === 0) {
+      throw new Error(`App manifest "${obj.id}" "about.title" is required and must be a non-empty string`);
+    }
+    if (!Array.isArray(about.body) || about.body.some((p) => typeof p !== 'string' || p.length === 0)) {
+      throw new Error(`App manifest "${obj.id}" "about.body" is required and must be an array of non-empty strings`);
+    }
+    if (about.links !== undefined) {
+      if (!Array.isArray(about.links)) {
+        throw new Error(`App manifest "${obj.id}" "about.links" must be an array when present`);
+      }
+      about.links.forEach((link: unknown, index: number) => {
+        const entry = link as Record<string, unknown>;
+        if (typeof entry?.label !== 'string' || entry.label.length === 0) {
+          throw new Error(
+            `App manifest "${obj.id}" "about.links[${index}].label" is required and must be a non-empty string`,
+          );
+        }
+        if (typeof entry?.url !== 'string' || entry.url.length === 0) {
+          throw new Error(
+            `App manifest "${obj.id}" "about.links[${index}].url" is required and must be a non-empty string`,
           );
         }
       });

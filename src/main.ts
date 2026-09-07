@@ -17,6 +17,8 @@ import { mountLayerControl } from './ui/panels/LayerControl';
 import { mountCalendarBar } from './ui/panels/CalendarBar';
 import { mountCalendarView } from './ui/panels/CalendarView';
 import { mountWelcomeView } from './ui/panels/WelcomeView';
+import { mountAboutView } from './ui/panels/AboutView';
+import { mountCategoryNav } from './ui/panels/CategoryNav';
 import { mountSettingsControl } from './ui/panels/SettingsControl';
 import { mountAppChrome } from './ui/app-chrome';
 import { ensureCalendarSystemLoaded } from './engine/time/calendar-conversion';
@@ -136,6 +138,7 @@ async function bootstrap(): Promise<void> {
   });
 
   mountAppChrome(store, strings, appManifest, mapAdapter, loadedLayers);
+  mountCategoryNav(document.querySelector('#category-nav')!, store, loadedLayers);
 
   if (appManifest.welcome) {
     mountWelcomeView(
@@ -146,6 +149,10 @@ async function bootstrap(): Promise<void> {
       loadedLayers,
       strings,
     );
+  }
+
+  if (appManifest.about) {
+    mountAboutView(document.querySelector('#about-view')!, store, appManifest.title, appManifest.about, strings);
   }
 
   document.getElementById('loading-overlay')?.remove();

@@ -55,19 +55,38 @@ function mountRightPanel(store: Store<AppState>, strings: Record<string, string>
   });
 }
 
-// Always-visible top-center Map/Calendar toggle. `#map` isn't torn down
-// when hidden (same as the filters panel not being destroyed on close) —
-// switching back doesn't re-fetch tiles or re-render layers, it just needs
-// mapAdapter.invalidateSize() once Leaflet's container is visible again.
-function mountViewSwitcher(store: Store<AppState>, strings: Record<string, string>, mapAdapter: MapAdapter): void {
+// Persistent header: world title/branding plus Home / Map / Calendar / About
+// nav links. Home only renders when the manifest declares `welcome` (that's
+// the only view it can route back to); About only when it declares `about`.
+// `#map` isn't torn down when hidden (same as the filters panel not being
+// destroyed on close) — switching back doesn't re-fetch tiles or re-render
+// layers, it just needs mapAdapter.invalidateSize() once Leaflet's container
+// is visible again.
+function mountHeader(
+  store: Store<AppState>,
+  strings: Record<string, string>,
+  appManifest: AppManifest,
+  mapAdapter: MapAdapter,
+): void {
   const appEl = document.querySelector<HTMLElement>('#app')!;
-  const switcherEl = document.querySelector<HTMLElement>('#view-switcher')!;
+  const brandEl = document.querySelector<HTMLElement>('#app-header-brand')!;
+  const navEl = document.querySelector<HTMLElement>('#app-header-nav')!;
 
-  switcherEl.innerHTML = `
-    <button type="button" class="view-switcher__btn" data-view="map">${icons.pushpin}<span>${t('views.map', strings)}</span></button>
-    <button type="button" class="view-switcher__btn" data-view="calendar">${icons.calendar}<span>${t('views.calendar', strings)}</span></button>
-  `;
-  const buttons = switcherEl.querySelectorAll<HTMLButtonElement>('[data-view]');
+  brandEl.textContent = appManifest.title;
+
+  const navButtons: { view: AppState['view']; icon: string; label: string }[] = [
+    ...(appManifest.welcome ? [{ view: 'welcome' as const, icon: icons.home, label: t('nav.home', strings) }] : []),
+    { view: 'map', icon: icons.pushpin, label: t('views.map', strings) },
+    { view: 'calendar', icon: icons.calendar, label: t('views.calendar', strings) },
+    ...(appManifest.about ? [{ view: 'about' as const, icon: icons.info, label: t('nav.about', strings) }] : []),
+  ];
+  navEl.innerHTML = navButtons
+    .map(
+      (btn) =>
+        `<button type="button" class="app-header__nav-btn" data-view="${btn.view}">${btn.icon}<span>${btn.label}</span></button>`,
+    )
+    .join('');
+  const buttons = navEl.querySelectorAll<HTMLButtonElement>('[data-view]');
   buttons.forEach((button) => {
     button.addEventListener('click', () => store.set({ view: button.dataset.view as AppState['view'] }));
   });
@@ -82,6 +101,7 @@ function mountViewSwitcher(store: Store<AppState>, strings: Record<string, strin
     });
     appEl.classList.toggle('view-calendar', state.view === 'calendar');
     appEl.classList.toggle('view-welcome', state.view === 'welcome');
+    appEl.classList.toggle('view-about', state.view === 'about');
     if (previousView !== state.view && state.view === 'map') mapAdapter.invalidateSize();
     previousView = state.view;
   }
@@ -168,8 +188,8 @@ function mountPluginSlots(store: Store<AppState>, loadedLayers: LoadedLayer[]): 
 }
 
 // Wires up all the "chrome" around the map and the mounted panels: the
-// filters drawer toggle/backdrop/Escape-key handling, footer attribution,
-// the scale indicator, and plugin panel slots.
+// filters drawer toggle/backdrop/Escape-key handling, the persistent header
+// nav, footer attribution, the scale indicator, and plugin panel slots.
 export function mountAppChrome(
   store: Store<AppState>,
   strings: Record<string, string>,
@@ -178,7 +198,7 @@ export function mountAppChrome(
   loadedLayers: LoadedLayer[],
 ): void {
   mountRightPanel(store, strings);
-  mountViewSwitcher(store, strings, mapAdapter);
+  mountHeader(store, strings, appManifest, mapAdapter);
   mountDateText(store);
   mountAttribution(store, appManifest);
   mountScaleIndicator(mapAdapter);

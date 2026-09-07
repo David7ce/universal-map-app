@@ -1,6 +1,8 @@
 {
   "views.map": "Map",
   "views.calendar": "Calendar",
+  "nav.home": "Home",
+  "nav.about": "About Us",
   "calendarView.viewOnMap": "View on map",
   "calendarView.noEvents": "No events on this day",
   "search.placeholder": "Search haunted places...",

@@ -36,5 +36,13 @@
       { "label": "Paranormal España", "world": "paranormal-spain" },
       { "label": "Fotos de la Luna", "world": "moon-map-photos" }
     ]
+  },
+  "about": {
+    "title": "Sobre Eventos de Canarias",
+    "body": [
+      "Eventos de Canarias reúne en un solo mapa los conciertos, festivales, mercados y actividades familiares que suceden en las Islas Canarias, para que sea fácil encontrar algo que hacer cerca de ti en cualquier fecha.",
+      "Cada evento incluye lugar, hora, precio y un enlace con más información. Usa el mapa o la vista de calendario para explorar por fecha, y los filtros de categoría para encontrar justo el tipo de plan que buscas.",
+      "¿Conoces un evento que no está en el mapa? Puedes proponerlo con el botón \"Enviar un evento\" del panel de filtros."
+    ]
   }
 }

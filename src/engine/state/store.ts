@@ -50,9 +50,9 @@ export interface AppState {
   calendarSystem: CalendarSystem;
   // Whether the lat/lng coordinate grid overlay is shown on the map.
   showGrid: boolean;
-  // Which top-level screen is showing: a thematic splash (only reachable as
-  // the initial state, only when the manifest declares `welcome` — one-way,
-  // nothing ever sets it back), the full-screen map, or the full-screen
-  // Calendar view (day/week/month/year + day agenda).
-  view: 'welcome' | 'map' | 'calendar';
+  // Which top-level screen is showing: a thematic splash (only when the
+  // manifest declares `welcome`; the header's Home link returns here), the
+  // full-screen map, the full-screen Calendar view (day/week/month/year +
+  // day agenda), or the About view (only when the manifest declares `about`).
+  view: 'welcome' | 'map' | 'calendar' | 'about';
 }

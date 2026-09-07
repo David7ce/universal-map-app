@@ -50,6 +50,7 @@
   --panel-right-width: 100vw;
   --panel-left-width: min(22rem, calc(50vw - var(--control-btn-offset)));
   --footer-bar-height: 1.5rem; /* thin bottom strip: scale + attribution */
+  --app-header-height: 3.25rem; /* persistent top nav bar */
   /* Clearance above the footer strip for floating controls (Layers, zoom, calendar pill) */
   --bottom-clearance: calc(var(--footer-bar-height) + var(--controls-gap) + 1.25rem);
 }
@@ -167,7 +168,7 @@ select:disabled {
 
 .control-btn--search {
   position: fixed;
-  top: var(--control-btn-offset);
+  top: calc(var(--app-header-height) + var(--control-btn-offset));
   left: var(--control-btn-offset);
   z-index: var(--z-search);
 }
@@ -389,7 +390,7 @@ select:disabled {
   .map-search:not(.is-info) {
     position: fixed;
     inset: auto;
-    top: var(--control-btn-offset);
+    top: calc(var(--app-header-height) + var(--control-btn-offset));
     left: var(--control-btn-offset);
     width: min(22rem, calc(100vw - 2 * var(--control-btn-offset)));
   }
@@ -428,7 +429,7 @@ select:disabled {
    ======================================== */
 .panel-toggle-btn {
   position: fixed;
-  top: var(--control-btn-offset);
+  top: calc(var(--app-header-height) + var(--control-btn-offset));
   right: var(--control-btn-offset);
   /* Must be above the modal overlay so the button stays clickable
      when the filter panel (and its backdrop) are open. */
@@ -1283,7 +1284,7 @@ select:disabled {
     /* Same top as the plain search bar (not below it) — this panel IS the
        search bar's own container now that they're merged, not a separate
        element stacked underneath it. */
-    top: var(--control-btn-offset);
+    top: calc(var(--app-header-height) + var(--control-btn-offset));
     bottom: var(--bottom-clearance);
     left: var(--control-btn-offset);
     right: auto;
@@ -1458,23 +1459,41 @@ select:disabled {
 }
 
 /* ========================================
-   VIEW SWITCHER (Map / Calendar)
+   APP HEADER — persistent top bar: world title/brand on the left, Home /
+   Map / Calendar / About nav on the right. Visible across every view
+   (welcome/about included) so navigation never dead-ends.
    ======================================== */
-.view-switcher {
+.app-header {
   position: absolute;
-  top: var(--control-btn-offset);
-  left: 50%;
-  transform: translateX(-50%);
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: var(--z-fixed);
   display: flex;
-  gap: 0.25rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
   background: var(--color-white);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
-  padding: 0.25rem;
+  border-bottom: 1px solid var(--color-border);
   box-shadow: var(--shadow-md);
 }
-.view-switcher__btn {
+.app-header__brand {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.app-header__nav {
+  display: flex;
+  gap: 0.25rem;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-full);
+  padding: 0.25rem;
+}
+.app-header__nav-btn {
   display: flex;
   align-items: center;
   gap: 0.35rem;
@@ -1488,12 +1507,62 @@ select:disabled {
   color: var(--color-text-light);
   transition: background-color var(--transition-fast);
 }
-.view-switcher__btn svg {
+.app-header__nav-btn svg {
   width: 18px;
   height: 18px;
 }
-.view-switcher__btn.is-active {
+.app-header__nav-btn.is-active {
   background: var(--color-primary);
+  color: var(--color-white);
+}
+.app-header__nav-btn span {
+  display: none;
+}
+@media (min-width: 48rem) {
+  .app-header__nav-btn span {
+    display: inline;
+  }
+}
+
+/* ========================================
+   CATEGORY NAV — always-visible chip bar (Map view only) surfacing each
+   world's icon-bearing taxonomy dimension(s), a fast path onto the same
+   activeFilters state the filters drawer (PanelRight.ts) owns.
+   ======================================== */
+.category-nav {
+  position: absolute;
+  top: calc(var(--app-header-height) + 0.75rem);
+  left: 0;
+  right: 0;
+  z-index: var(--z-fixed);
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 0.5rem;
+  padding: 0 1rem;
+}
+.category-nav:empty {
+  display: none;
+}
+.category-nav__chip {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.8rem;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  color: var(--color-text);
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+}
+.category-nav__chip.is-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: var(--color-white);
 }
 /* ========================================
@@ -1510,7 +1579,7 @@ select:disabled {
   overflow-y: auto;
   text-align: center;
   background: var(--color-bg);
-  padding: 2rem 1.5rem;
+  padding: calc(var(--app-header-height) + 1.5rem) 1.5rem 2rem;
 }
 .welcome-view__header {
   max-width: 32rem;
@@ -1581,18 +1650,62 @@ select:disabled {
 .welcome-view__link:hover {
   color: var(--color-text);
 }
-.welcome-view__legal {
+.legal-footer {
   margin: 1.5rem 0 0;
   color: var(--color-text-light);
   font-size: var(--font-size-xs, 0.75rem);
 }
-.welcome-view__legal-link {
+.legal-footer__link {
   margin-left: 0.75rem;
   color: var(--color-text-light);
   text-decoration: underline;
 }
-.welcome-view__legal-link:hover {
+.legal-footer__link:hover {
   color: var(--color-text);
+}
+
+/* ========================================
+   ABOUT VIEW — full-screen, reached via the header's About nav link, only
+   when the manifest declares `about` (main.ts, AboutView.ts).
+   ======================================== */
+.about-view {
+  display: none;
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  background: var(--color-bg);
+  padding: calc(var(--app-header-height) + 1.5rem) 1.5rem 2rem;
+}
+.about-view__content {
+  max-width: 40rem;
+  margin: 0 auto;
+}
+.about-view__title {
+  margin: 0 0 1rem;
+  font-size: var(--font-size-xl, 1.75rem);
+  color: var(--color-text);
+}
+.about-view__paragraph {
+  margin: 0 0 1rem;
+  color: var(--color-text);
+  line-height: 1.6;
+}
+.about-view__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 1.5rem;
+}
+.about-view__link {
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  text-decoration: underline;
+}
+.about-view__footer {
+  max-width: 40rem;
+  margin: 2rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
 }
 
 .calendar-view {
@@ -1601,7 +1714,7 @@ select:disabled {
   inset: 0;
   overflow-y: auto;
   background: var(--color-bg);
-  padding: calc(var(--control-btn-size) + var(--control-btn-offset) * 2) 1rem 1.5rem;
+  padding: calc(var(--app-header-height) + 0.75rem) 1rem 1.5rem;
 }
 .map-app.view-calendar #calendar-view {
   display: block;
@@ -1610,35 +1723,42 @@ select:disabled {
 .map-app.view-calendar #search-overlay,
 .map-app.view-calendar .bottom-left-controls,
 .map-app.view-calendar .map-footer-legend,
+.map-app.view-calendar .category-nav,
 .map-app.view-calendar .leaflet-control-zoom {
   display: none;
 }
-/* Welcome splash (only reachable as the initial view — see store.ts's
-   AppState.view comment) hides every other piece of chrome, including the
-   Map/Calendar switcher itself: there's nothing to switch between until
-   its own CTA button sets view to 'map'. */
+/* Welcome splash and About both stay reachable/leavable via the persistent
+   header (#app-header) — only the map-specific chrome (search, filters
+   toggle, category chips, floating controls) is irrelevant on them. */
 .map-app.view-welcome #welcome-view {
   display: flex;
 }
 .map-app.view-welcome #map,
-.map-app.view-welcome #view-switcher,
 .map-app.view-welcome #search-overlay,
 .map-app.view-welcome #panel-right-toggle,
 .map-app.view-welcome .bottom-left-controls,
 .map-app.view-welcome .map-footer-legend,
+.map-app.view-welcome .category-nav,
 .map-app.view-welcome .leaflet-control-zoom {
+  display: none;
+}
+.map-app.view-about #about-view {
+  display: block;
+}
+.map-app.view-about #map,
+.map-app.view-about #search-overlay,
+.map-app.view-about #panel-right-toggle,
+.map-app.view-about .bottom-left-controls,
+.map-app.view-about .map-footer-legend,
+.map-app.view-about .category-nav,
+.map-app.view-about .leaflet-control-zoom {
   display: none;
 }
 /* `systems.time: false` in world.json (e.g. a world with no temporal data,
    like paranormal-espana) hides the Time UI entirely — not just visually,
-   these become unreachable: with #view-switcher gone, AppState.view can
-   never become 'calendar' since no other code path sets it. */
-/* Source order matters here: this must stay declared after the
-   .map-app.view-calendar rules above, since both target #calendar-view
-   with identical specificity — currently safe only because `view` can
-   never become 'calendar' when #view-switcher (which is the only thing
-   that sets it) is itself hidden by this same rule. */
-.map-app.no-time #view-switcher,
+   the Calendar nav button becomes unreachable so `view` can never become
+   'calendar' via any other code path. Home/Map/About stay reachable. */
+.map-app.no-time #app-header-nav [data-view='calendar'],
 .map-app.no-time #panel-right-time,
 .map-app.no-time #calendar-view,
 .map-app.no-time .map-footer-legend .map-date-text {

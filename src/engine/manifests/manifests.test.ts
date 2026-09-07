@@ -307,4 +307,63 @@ describe('validateAppManifest', () => {
       }),
     ).toThrow(/welcome\.links\[0\]\.domain/);
   });
+
+  it('accepts a manifest with no "about" field at all', () => {
+    expect(validateAppManifest(valid)).toEqual(valid);
+  });
+
+  it('accepts a well-formed "about"', () => {
+    const withAbout = { ...valid, about: { title: 'About Us', body: ['Paragraph one.', 'Paragraph two.'] } };
+    expect(validateAppManifest(withAbout)).toEqual(withAbout);
+  });
+
+  it('rejects an "about" missing "title"', () => {
+    expect(() => validateAppManifest({ ...valid, about: { body: ['Hi'] } })).toThrow(/about\.title/);
+  });
+
+  it('rejects an "about" missing "body"', () => {
+    expect(() => validateAppManifest({ ...valid, about: { title: 'About Us' } })).toThrow(/about\.body/);
+  });
+
+  it('rejects an "about.body" that is not an array', () => {
+    expect(() => validateAppManifest({ ...valid, about: { title: 'About Us', body: 'not an array' } })).toThrow(
+      /about\.body/,
+    );
+  });
+
+  it('rejects an "about.body" containing a non-string entry', () => {
+    expect(() => validateAppManifest({ ...valid, about: { title: 'About Us', body: ['ok', 42] } })).toThrow(
+      /about\.body/,
+    );
+  });
+
+  it('rejects an "about" that is not a plain object', () => {
+    expect(() => validateAppManifest({ ...valid, about: [] })).toThrow(/about/);
+  });
+
+  it('accepts "about.links" with well-formed entries', () => {
+    const withLinks = {
+      ...valid,
+      about: { title: 'About Us', body: ['Hi'], links: [{ label: 'Contact', url: 'https://example.org' }] },
+    };
+    expect(validateAppManifest(withLinks)).toEqual(withLinks);
+  });
+
+  it('rejects "about.links" that is not an array', () => {
+    expect(() =>
+      validateAppManifest({ ...valid, about: { title: 'About Us', body: ['Hi'], links: {} } }),
+    ).toThrow(/about\.links/);
+  });
+
+  it('rejects an "about.links" entry missing "label"', () => {
+    expect(() =>
+      validateAppManifest({ ...valid, about: { title: 'About Us', body: ['Hi'], links: [{ url: 'x' }] } }),
+    ).toThrow(/about\.links\[0\]\.label/);
+  });
+
+  it('rejects an "about.links" entry missing "url"', () => {
+    expect(() =>
+      validateAppManifest({ ...valid, about: { title: 'About Us', body: ['Hi'], links: [{ label: 'x' }] } }),
+    ).toThrow(/about\.links\[0\]\.url/);
+  });
 });

@@ -110,7 +110,7 @@
       "properties": {
         "time": {
           "type": "boolean",
-          "description": "Set to false to hide all time/calendar UI (filters panel's Time section, the Map/Calendar view switcher, and Settings' calendar-system row) for a world with no temporal data. Defaults to true (time UI shown) when omitted."
+          "description": "Set to false to hide all time/calendar UI (filters panel's Time section, the header's Calendar nav link, and Settings' calendar-system row) for a world with no temporal data. Defaults to true (time UI shown) when omitted."
         }
       }
     },
@@ -150,6 +150,28 @@
                 "minLength": 1,
                 "description": "Target world's own standalone domain (e.g. \"paranormal-spain.com\"), if it's deployed on one. When present, the link goes to https://<domain> instead of ?world=<world>."
               }
+            }
+          }
+        }
+      }
+    },
+    "about": {
+      "type": "object",
+      "required": ["title", "body"],
+      "additionalProperties": false,
+      "description": "If present, adds an \"About\" link to the persistent header nav, opening a full-screen About view.",
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "body": { "type": "array", "items": { "type": "string", "minLength": 1 }, "description": "One or more paragraphs." },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["label", "url"],
+            "additionalProperties": false,
+            "properties": {
+              "label": { "type": "string", "minLength": 1 },
+              "url": { "type": "string", "minLength": 1 }
             }
           }
         }
