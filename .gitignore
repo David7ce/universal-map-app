@@ -1,4 +1,5 @@
 node_modules/
+.claude/
 dist/
 builds/
 .worktrees/
@@ -6,3 +7,4 @@ builds/
 *.log
 .playwright-mcp/
 *.png
+.agent/
