@@ -7,4 +7,8 @@ builds/
 *.log
 .playwright-mcp/
 *.png
+# ...except world portrait assets, which are legitimately .png (e.g. an
+# official portrait only published as PNG) and must ship with the world.
+!worlds/*/assets/portraits/*.png
 .agent/
+.vscode/

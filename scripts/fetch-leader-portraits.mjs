@@ -64,7 +64,10 @@ async function main() {
   const failures = [];
 
   for (const feature of geojson.features) {
-    const leader = feature.properties.leader ?? feature.properties.name;
+    // `wikiTitle` lets a feature name the exact Wikipedia article when the
+    // display name is ambiguous or a redirect (e.g. "Carlos III" ->
+    // "Carlos III del Reino Unido").
+    const leader = feature.properties.wikiTitle ?? feature.properties.leader ?? feature.properties.name;
     const thumbUrl = await resolveThumbnailUrl(leader);
     if (!thumbUrl) {
       failures.push(`${feature.id} (${leader}): no thumbnail found`);

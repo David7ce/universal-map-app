@@ -12,7 +12,7 @@ Piloted with a real `about` block on `events-canary-islands`; the other three wo
 
 ## World Leaders Portraits World & Custom Image Markers
 
-Implemented the roadmap item for a **World Leaders Portraits layer** as a dedicated world package (`worlds/world-leaders/`), featuring heads of state and government from major countries (Spain, France, Germany, UK, US, Canada, Italy, Japan, India, Brazil, Mexico, Australia, South Africa, Argentina, Portugal, Chile, Poland, South Korea, Sweden, Norway).
+Implemented the roadmap item for a **World Leaders Portraits layer** as a dedicated world package (`worlds/world-leaders/`), featuring 43 heads of state, heads of government, and reigning monarchs from major countries (Spain, France, Germany, UK, US, Canada, Italy, Japan, India, Brazil, Mexico, Australia, South Africa, Argentina, Portugal, Chile, Poland, South Korea, Sweden, Norway, Russia, El Salvador, Morocco, Israel, Saudi Arabia, Switzerland, Greece, Ukraine, Colombia, New Zealand, China, Netherlands, Belgium, Denmark, Thailand, Jordan). Monarchs are distinguished by a `Monarca`/`Emperador` role with a 👑 icon, alongside the existing presidential/prime-ministerial roles.
 
 Key additions:
 

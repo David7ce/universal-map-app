@@ -480,6 +480,559 @@
           59.9139
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ru",
+      "properties": {
+        "name": "Vladímir Putin",
+        "leader": "Vladímir Putin",
+        "country": "Rusia",
+        "role": "Presidente",
+        "continent": "Europa",
+        "party": "Rusia Unida",
+        "flag": "🇷🇺",
+        "inOfficeSince": "2012-05-07",
+        "portrait": "worlds/world-leaders/assets/portraits/ru.jpg",
+        "bio": "Político y exagente de inteligencia ruso, presidente de la Federación de Rusia desde 2012 (y anteriormente entre 2000 y 2008).",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Vlad%C3%ADmir_Putin"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          37.6173,
+          55.7558
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-sv",
+      "properties": {
+        "name": "Nayib Bukele",
+        "leader": "Nayib Bukele",
+        "country": "El Salvador",
+        "role": "Presidente",
+        "continent": "América",
+        "party": "Nuevas Ideas",
+        "flag": "🇸🇻",
+        "inOfficeSince": "2019-06-01",
+        "portrait": "worlds/world-leaders/assets/portraits/sv.jpg",
+        "bio": "Empresario y político salvadoreño, presidente de la República de El Salvador desde junio de 2019.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Nayib_Bukele"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.2182,
+          13.6929
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ma",
+      "properties": {
+        "name": "Aziz Akhannouch",
+        "leader": "Aziz Akhannouch",
+        "country": "Marruecos",
+        "role": "Primer Ministro",
+        "continent": "África",
+        "party": "Agrupación Nacional de Independientes",
+        "flag": "🇲🇦",
+        "inOfficeSince": "2021-10-07",
+        "portrait": "worlds/world-leaders/assets/portraits/ma.jpg",
+        "bio": "Empresario y político marroquí, jefe del Gobierno del Reino de Marruecos desde octubre de 2021.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Aziz_Akhannouch"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.8498,
+          33.9716
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-il",
+      "properties": {
+        "name": "Benjamin Netanyahu",
+        "leader": "Benjamin Netanyahu",
+        "country": "Israel",
+        "role": "Primer Ministro",
+        "continent": "Asia",
+        "party": "Likud",
+        "flag": "🇮🇱",
+        "inOfficeSince": "2022-12-29",
+        "portrait": "worlds/world-leaders/assets/portraits/il.jpg",
+        "bio": "Político israelí, primer ministro del Estado de Israel desde diciembre de 2022, cargo que ya ocupó entre 1996-1999 y 2009-2021.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Benjam%C3%ADn_Netanyahu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.2137,
+          31.7683
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-sa",
+      "properties": {
+        "name": "Mohammed bin Salman",
+        "leader": "Mohammed bin Salman",
+        "country": "Arabia Saudí",
+        "role": "Primer Ministro",
+        "continent": "Asia",
+        "party": "Casa de Saud",
+        "flag": "🇸🇦",
+        "inOfficeSince": "2022-09-27",
+        "portrait": "worlds/world-leaders/assets/portraits/sa.jpg",
+        "bio": "Príncipe heredero y primer ministro del Reino de Arabia Saudí desde septiembre de 2022, impulsor del plan de reformas Visión 2030.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Mohamed_bin_Salm%C3%A1n"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          46.6753,
+          24.7136
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ch",
+      "properties": {
+        "name": "Guy Parmelin",
+        "leader": "Guy Parmelin",
+        "country": "Suiza",
+        "role": "Presidente",
+        "continent": "Europa",
+        "party": "Unión Democrática de Centro",
+        "flag": "🇨🇭",
+        "inOfficeSince": "2026-01-01",
+        "portrait": "worlds/world-leaders/assets/portraits/ch.jpg",
+        "bio": "Político suizo y miembro del Consejo Federal, presidente de la Confederación Suiza para el año 2026 (cargo anual y rotatorio).",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Guy_Parmelin"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.4474,
+          46.948
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-gr",
+      "properties": {
+        "name": "Kyriakos Mitsotakis",
+        "leader": "Kyriakos Mitsotakis",
+        "country": "Grecia",
+        "role": "Primer Ministro",
+        "continent": "Europa",
+        "party": "Nueva Democracia",
+        "flag": "🇬🇷",
+        "inOfficeSince": "2019-07-08",
+        "portrait": "worlds/world-leaders/assets/portraits/gr.jpg",
+        "bio": "Político griego, primer ministro de la República Helénica desde julio de 2019.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Kyriakos_Mitsotakis"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.7275,
+          37.9838
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ua",
+      "properties": {
+        "name": "Volodímir Zelenski",
+        "leader": "Volodímir Zelenski",
+        "country": "Ucrania",
+        "role": "Presidente",
+        "continent": "Europa",
+        "party": "Servidor del Pueblo",
+        "flag": "🇺🇦",
+        "inOfficeSince": "2019-05-20",
+        "portrait": "worlds/world-leaders/assets/portraits/ua.jpg",
+        "bio": "Actor, guionista y político ucraniano, presidente de Ucrania desde mayo de 2019.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Volod%C3%ADmir_Zelenski"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.5234,
+          50.4501
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-co",
+      "properties": {
+        "name": "Gustavo Petro",
+        "leader": "Gustavo Petro",
+        "country": "Colombia",
+        "role": "Presidente",
+        "continent": "América",
+        "party": "Pacto Histórico",
+        "flag": "🇨🇴",
+        "inOfficeSince": "2022-08-07",
+        "portrait": "worlds/world-leaders/assets/portraits/co.jpg",
+        "bio": "Economista y político colombiano, presidente de la República de Colombia desde agosto de 2022.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Gustavo_Petro"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0721,
+          4.711
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-nz",
+      "properties": {
+        "name": "Christopher Luxon",
+        "leader": "Christopher Luxon",
+        "country": "Nueva Zelanda",
+        "role": "Primer Ministro",
+        "continent": "Oceanía",
+        "party": "Partido Nacional",
+        "flag": "🇳🇿",
+        "inOfficeSince": "2023-11-27",
+        "portrait": "worlds/world-leaders/assets/portraits/nz.png",
+        "bio": "Empresario y político neozelandés, primer ministro de Nueva Zelanda desde noviembre de 2023.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Christopher_Luxon"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.7762,
+          -41.2865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-cn",
+      "properties": {
+        "name": "Xi Jinping",
+        "leader": "Xi Jinping",
+        "country": "China",
+        "role": "Presidente",
+        "continent": "Asia",
+        "party": "Partido Comunista de China",
+        "flag": "🇨🇳",
+        "inOfficeSince": "2013-03-14",
+        "portrait": "worlds/world-leaders/assets/portraits/cn.jpg",
+        "bio": "Político chino, presidente de la República Popular China y secretario general del Partido Comunista de China desde 2012-2013.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Xi_Jinping"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.4074,
+          39.9042
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-gb",
+      "properties": {
+        "name": "Carlos III",
+        "leader": "Carlos III",
+        "wikiTitle": "Carlos III del Reino Unido",
+        "country": "Reino Unido",
+        "role": "Monarca",
+        "continent": "Europa",
+        "party": "Monarquía",
+        "flag": "🇬🇧",
+        "inOfficeSince": "2022-09-08",
+        "portrait": "worlds/world-leaders/assets/portraits/gb.jpg",
+        "bio": "Rey del Reino Unido y de otros catorce reinos de la Mancomunidad de Naciones desde septiembre de 2022.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Carlos_III_del_Reino_Unido"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.1276,
+          51.5074
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-jp-emperor",
+      "properties": {
+        "name": "Naruhito",
+        "leader": "Naruhito",
+        "country": "Japón",
+        "role": "Emperador",
+        "continent": "Asia",
+        "party": "Monarquía",
+        "flag": "🇯🇵",
+        "inOfficeSince": "2019-05-01",
+        "portrait": "worlds/world-leaders/assets/portraits/jp-emperor.jpg",
+        "bio": "126.º emperador de Japón desde mayo de 2019, tras la abdicación de su padre Akihito.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Naruhito"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.6917,
+          35.6895
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-es-king",
+      "properties": {
+        "name": "Felipe VI",
+        "leader": "Felipe VI",
+        "country": "España",
+        "role": "Monarca",
+        "continent": "Europa",
+        "party": "Monarquía",
+        "flag": "🇪🇸",
+        "inOfficeSince": "2014-06-19",
+        "portrait": "worlds/world-leaders/assets/portraits/es-king.jpg",
+        "bio": "Rey de España desde junio de 2014, tras la abdicación de su padre Juan Carlos I.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Felipe_VI_de_Espa%C3%B1a"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.7038,
+          40.4168
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-se-king",
+      "properties": {
+        "name": "Carlos XVI Gustavo",
+        "leader": "Carlos XVI Gustavo",
+        "country": "Suecia",
+        "role": "Monarca",
+        "continent": "Europa",
+        "party": "Monarquía",
+        "flag": "🇸🇪",
+        "inOfficeSince": "1973-09-15",
+        "portrait": "worlds/world-leaders/assets/portraits/se-king.jpg",
+        "bio": "Rey de Suecia desde septiembre de 1973, el monarca con más años en el trono de la historia sueca.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Carlos_XVI_Gustavo_de_Suecia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.0686,
+          59.3293
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-no-king",
+      "properties": {
+        "name": "Harald V",
+        "leader": "Harald V",
+        "country": "Noruega",
+        "role": "Monarca",
+        "continent": "Europa",
+        "party": "Monarquía",
+        "flag": "🇳🇴",
+        "inOfficeSince": "1991-01-17",
+        "portrait": "worlds/world-leaders/assets/portraits/no-king.jpg",
+        "bio": "Rey de Noruega desde enero de 1991.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Harald_V_de_Noruega"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.7522,
+          59.9139
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ma-king",
+      "properties": {
+        "name": "Mohamed VI",
+        "leader": "Mohamed VI",
+        "country": "Marruecos",
+        "role": "Monarca",
+        "continent": "África",
+        "party": "Monarquía",
+        "flag": "🇲🇦",
+        "inOfficeSince": "1999-07-23",
+        "portrait": "worlds/world-leaders/assets/portraits/ma-king.jpg",
+        "bio": "Rey de Marruecos desde julio de 1999, tras el fallecimiento de su padre Hasán II.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Mohamed_VI_de_Marruecos"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.8498,
+          33.9716
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-sa-king",
+      "properties": {
+        "name": "Salman bin Abdulaziz",
+        "leader": "Salman bin Abdulaziz",
+        "country": "Arabia Saudí",
+        "role": "Monarca",
+        "continent": "Asia",
+        "party": "Monarquía",
+        "flag": "🇸🇦",
+        "inOfficeSince": "2015-01-23",
+        "portrait": "worlds/world-leaders/assets/portraits/sa-king.jpg",
+        "bio": "Rey de Arabia Saudí y Custodio de las Dos Sagradas Mezquitas desde enero de 2015.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Salm%C3%A1n_bin_Abdulaziz"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          46.6753,
+          24.7136
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-nl",
+      "properties": {
+        "name": "Guillermo Alejandro",
+        "leader": "Guillermo Alejandro",
+        "country": "Países Bajos",
+        "role": "Monarca",
+        "continent": "Europa",
+        "party": "Monarquía",
+        "flag": "🇳🇱",
+        "inOfficeSince": "2013-04-30",
+        "portrait": "worlds/world-leaders/assets/portraits/nl.jpg",
+        "bio": "Rey de los Países Bajos desde abril de 2013, tras la abdicación de su madre Beatriz.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Guillermo_Alejandro_de_los_Pa%C3%ADses_Bajos"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.9041,
+          52.3676
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-be",
+      "properties": {
+        "name": "Felipe de Bélgica",
+        "leader": "Felipe de Bélgica",
+        "country": "Bélgica",
+        "role": "Monarca",
+        "continent": "Europa",
+        "party": "Monarquía",
+        "flag": "🇧🇪",
+        "inOfficeSince": "2013-07-21",
+        "portrait": "worlds/world-leaders/assets/portraits/be.jpg",
+        "bio": "Rey de los belgas desde julio de 2013, tras la abdicación de su padre Alberto II.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Felipe_de_B%C3%A9lgica"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.3517,
+          50.8503
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-dk",
+      "properties": {
+        "name": "Federico X",
+        "leader": "Federico X",
+        "country": "Dinamarca",
+        "role": "Monarca",
+        "continent": "Europa",
+        "party": "Monarquía",
+        "flag": "🇩🇰",
+        "inOfficeSince": "2024-01-14",
+        "portrait": "worlds/world-leaders/assets/portraits/dk.jpg",
+        "bio": "Rey de Dinamarca desde enero de 2024, tras la abdicación de su madre Margarita II.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Federico_X_de_Dinamarca"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.5683,
+          55.6761
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-th",
+      "properties": {
+        "name": "Maha Vajiralongkorn",
+        "leader": "Maha Vajiralongkorn",
+        "country": "Tailandia",
+        "role": "Monarca",
+        "continent": "Asia",
+        "party": "Monarquía",
+        "flag": "🇹🇭",
+        "inOfficeSince": "2016-10-13",
+        "portrait": "worlds/world-leaders/assets/portraits/th.png",
+        "bio": "Rey de Tailandia (Rama X) desde octubre de 2016, tras el fallecimiento de su padre Bhumibol Adulyadej.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Maha_Vajiralongkorn"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.5018,
+          13.7563
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-jo",
+      "properties": {
+        "name": "Abdullah II",
+        "leader": "Abdullah II",
+        "country": "Jordania",
+        "role": "Monarca",
+        "continent": "Asia",
+        "party": "Monarquía",
+        "flag": "🇯🇴",
+        "inOfficeSince": "1999-02-07",
+        "portrait": "worlds/world-leaders/assets/portraits/jo.jpg",
+        "bio": "Rey de Jordania desde febrero de 1999, tras el fallecimiento de su padre Hussein I.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Abdullah_II_de_Jordania"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.9106,
+          31.9539
+        ]
+      }
     }
   ]
 }
