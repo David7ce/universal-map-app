@@ -64,6 +64,26 @@ export function resolveMarkerBadge(badgeMap: Record<string, string> | undefined,
   return lookupByValueOrPrefix(badgeMap, value);
 }
 
+// Resolves an image URL for portrait/image markers, driven by
+// `style.imageField` or an image URL placed in an icon field.
+export function resolveMarkerImage(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  if (
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('data:image/') ||
+    trimmed.startsWith('assets/') ||
+    trimmed.startsWith('worlds/') ||
+    trimmed.startsWith('/') ||
+    trimmed.startsWith('./') ||
+    /\.(jpe?g|png|webp|svg|gif)(\?.*)?$/i.test(trimmed)
+  ) {
+    return trimmed;
+  }
+  return undefined;
+}
+
 export interface PolygonStyle {
   color: string;
   weight: number;

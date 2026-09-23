@@ -11,6 +11,14 @@ import { icons } from '../icons';
 
 const LANGUAGES: readonly Language[] = ['en', 'es'];
 
+const AVAILABLE_WORLDS = [
+  { id: 'demo', label: 'Demo' },
+  { id: 'world-leaders', label: 'Líderes del Mundo' },
+  { id: 'paranormal-spain', label: 'Paranormal España' },
+  { id: 'events-canary-islands', label: 'Eventos de Canarias' },
+  { id: 'moon-map-photos', label: 'Fotos de la Luna' },
+] as const;
+
 export interface SettingsControlDeps {
   appManifest: AppManifest;
   mapAdapter: MapAdapter;
@@ -29,16 +37,16 @@ function crsOptionId(config: MapCrsConfig | undefined): CrsOptionId {
 }
 
 // A single button (grouping the calendar-system select, map projection
-// selector, and coordinate-grid toggle) that lives inline inside the
-// filters panel, opening a small popover — unlike LayerControl's popover
-// this one auto-closes on click-outside, since it's a lightweight,
-// infrequently-used control.
+// selector, coordinate-grid toggle, and world selector) that lives inline inside
+// the filters panel, opening a small popover.
 export function mountSettingsControl(
   container: HTMLElement,
   store: Store<AppState>,
   strings: Record<string, string>,
   deps: SettingsControlDeps,
 ): void {
+  const worldOptions = AVAILABLE_WORLDS.map((w) => `<option value="${w.id}">${escapeHtml(w.label)}</option>`).join('');
+
   const systemOptions = CALENDAR_SYSTEMS.map(
     (system) => `<option value="${system}">${escapeHtml(t(`calendar.system.${system}`, strings))}</option>`,
   ).join('');
@@ -73,6 +81,10 @@ export function mountSettingsControl(
     </button>
     <section class="settings-control-popover" hidden>
       <label class="settings-control-row">
+        <span>${t('settings.worldLabel', strings)}</span>
+        <select data-role="world">${worldOptions}</select>
+      </label>
+      <label class="settings-control-row">
         <span>${t('settings.languageLabel', strings)}</span>
         <select data-role="language">${languageOptions}</select>
       </label>
@@ -95,6 +107,16 @@ export function mountSettingsControl(
   const systemSelect = container.querySelector<HTMLSelectElement>('[data-role="calendar-system"]');
   const projectionSelect = container.querySelector<HTMLSelectElement>('[data-role="projection"]')!;
   const languageSelect = container.querySelector<HTMLSelectElement>('[data-role="language"]')!;
+  const worldSelect = container.querySelector<HTMLSelectElement>('[data-role="world"]')!;
+
+  worldSelect.value = deps.appManifest.id;
+  worldSelect.addEventListener('change', () => {
+    if (worldSelect.value !== deps.appManifest.id) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('world', worldSelect.value);
+      window.location.href = url.toString();
+    }
+  });
 
   languageSelect.value = getStoredLanguage() ?? detectDefaultLanguage(navigator.language);
   languageSelect.addEventListener('change', () => {

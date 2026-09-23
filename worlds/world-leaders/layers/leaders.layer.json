@@ -1,0 +1,88 @@
+{
+  "$schema": "../../../docs/schemas/layer.schema.json",
+  "id": "leaders",
+  "title": "Líderes del Mundo",
+  "kind": "point",
+  "source": { "type": "geojson", "url": "worlds/world-leaders/data/leaders.geojson" },
+  "taxonomy": [
+    {
+      "id": "role",
+      "label": "Cargo",
+      "field": "properties.role",
+      "icons": {
+        "Presidente": "🏛️",
+        "Presidenta": "🏛️",
+        "Presidente del Gobierno": "🏛️",
+        "Primer Ministro": "👔",
+        "Primera Ministra": "👔",
+        "Canciller": "🏛️"
+      },
+      "defaultIcon": "👤"
+    },
+    {
+      "id": "continent",
+      "label": "Continente",
+      "field": "properties.continent",
+      "icons": {
+        "Europa": "🌍",
+        "América": "🌎",
+        "Asia": "🌏",
+        "África": "🌍",
+        "Oceanía": "🌏"
+      },
+      "defaultIcon": "🌐"
+    }
+  ],
+  "regionRole": null,
+  "style": {
+    "cluster": true,
+    "icon": "marker",
+    "imageField": "properties.portrait",
+    "badgeField": "properties.flag",
+    "badgeMap": {
+      "🇪🇸": "🇪🇸",
+      "🇫🇷": "🇫🇷",
+      "🇩🇪": "🇩🇪",
+      "🇬🇧": "🇬🇧",
+      "🇺🇸": "🇺🇸",
+      "🇨🇦": "🇨🇦",
+      "🇮🇹": "🇮🇹",
+      "🇯🇵": "🇯🇵",
+      "🇮🇳": "🇮🇳",
+      "🇧🇷": "🇧🇷",
+      "🇲🇽": "🇲🇽",
+      "🇦🇺": "🇦🇺",
+      "🇿🇦": "🇿🇦",
+      "🇦🇷": "🇦🇷",
+      "🇵🇹": "🇵🇹",
+      "🇨🇱": "🇨🇱",
+      "🇵🇱": "🇵🇱",
+      "🇰🇷": "🇰🇷",
+      "🇸🇪": "🇸🇪",
+      "🇳🇴": "🇳🇴"
+    },
+    "colorField": "properties.continent",
+    "colorMap": {
+      "Europa": "#2563eb",
+      "América": "#059669",
+      "Asia": "#d97706",
+      "África": "#dc2626",
+      "Oceanía": "#7c3aed"
+    },
+    "defaultColor": "#4b5563"
+  },
+  "panel": {
+    "showInSearch": true,
+    "showInInfo": true,
+    "infoFields": [
+      { "field": "properties.portrait", "label": "Retrato", "type": "image" },
+      { "field": "properties.leader", "label": "Líder" },
+      { "field": "properties.country", "label": "País" },
+      { "field": "properties.role", "label": "Cargo" },
+      { "field": "properties.party", "label": "Partido" },
+      { "field": "properties.inOfficeSince", "label": "En el cargo desde" },
+      { "field": "properties.bio", "label": "Biografía" },
+      { "field": "properties.wikiUrl", "label": "Wikipedia", "type": "link" }
+    ]
+  }
+}

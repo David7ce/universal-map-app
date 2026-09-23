@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   resolveMarkerBadge,
   resolveMarkerColor,
+  resolveMarkerImage,
   resolveMarkerStyle,
   resolvePolygonStyle,
   resolveTaxonomyIcon,
@@ -112,5 +113,34 @@ describe('resolveTaxonomyIcon', () => {
 
   it('falls back to a built-in default when no defaultIcon is set either', () => {
     expect(resolveTaxonomyIcon(icons, undefined, 'theatre')).toBe('📍');
+  });
+});
+
+describe('resolveMarkerImage', () => {
+  it('returns undefined when value is not a string', () => {
+    expect(resolveMarkerImage(undefined)).toBeUndefined();
+    expect(resolveMarkerImage(123)).toBeUndefined();
+    expect(resolveMarkerImage(null)).toBeUndefined();
+  });
+
+  it('recognizes absolute http/https URLs', () => {
+    expect(resolveMarkerImage('https://example.com/portrait.jpg')).toBe('https://example.com/portrait.jpg');
+    expect(resolveMarkerImage('http://example.com/photo.png')).toBe('http://example.com/photo.png');
+  });
+
+  it('recognizes relative assets or worlds paths', () => {
+    expect(resolveMarkerImage('assets/leaders/pm.jpg')).toBe('assets/leaders/pm.jpg');
+    expect(resolveMarkerImage('worlds/world-leaders/assets/pm.webp')).toBe('worlds/world-leaders/assets/pm.webp');
+  });
+
+  it('recognizes files by image extension', () => {
+    expect(resolveMarkerImage('some/path/photo.svg')).toBe('some/path/photo.svg');
+    expect(resolveMarkerImage('image.png?size=thumb')).toBe('image.png?size=thumb');
+  });
+
+  it('returns undefined for non-image strings', () => {
+    expect(resolveMarkerImage('plain text')).toBeUndefined();
+    expect(resolveMarkerImage('President')).toBeUndefined();
+    expect(resolveMarkerImage('🏛️')).toBeUndefined();
   });
 });

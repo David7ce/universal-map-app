@@ -4,7 +4,7 @@ import tseslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default tseslint.config(
-  { ignores: ['dist/**', 'node_modules/**'] },
+  { ignores: ['dist/**', 'builds/**', 'node_modules/**'] },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -19,7 +19,7 @@ export default tseslint.config(
     // `globals` package for four names.
     files: ['scripts/**/*.mjs'],
     languageOptions: {
-      globals: { process: 'readonly', console: 'readonly', fetch: 'readonly' },
+      globals: { process: 'readonly', console: 'readonly', fetch: 'readonly', setTimeout: 'readonly', Buffer: 'readonly' },
     },
   },
   eslintConfigPrettier,

@@ -10,6 +10,35 @@ New always-visible category chip bar (`CategoryNav.ts`, shown under the header o
 
 Piloted with a real `about` block on `events-canary-islands`; the other three worlds get the header/category-nav automatically (declarative, no engine changes) but have no `about` content yet.
 
+## World Leaders Portraits World & Custom Image Markers
+
+Implemented the roadmap item for a **World Leaders Portraits layer** as a dedicated world package (`worlds/world-leaders/`), featuring heads of state and government from major countries (Spain, France, Germany, UK, US, Canada, Italy, Japan, India, Brazil, Mexico, Australia, South Africa, Argentina, Portugal, Chile, Poland, South Korea, Sweden, Norway).
+
+Key additions:
+
+- **Engine image marker support**: `resolveMarkerImage()` (`src/engine/space/style.ts`) and `data-layer-renderer.ts` render circular avatar portrait markers (`.category-marker-icon__image` in `src/styles.css`) driven by `style.imageField` or icon image URLs, with country flag badges (`style.badgeField`).
+- **Rich info cards**: High-resolution official portraits, leadership positions, terms in office, biographies, and Wikipedia links.
+- **Dedicated build target**: `pnpm run build:world-leaders` producing an isolated production bundle.
+
+## Paranormal Spain Nationwide Expansion
+
+Expanded `worlds/paranormal-spain/` beyond the initial Tenerife scope into a true national map of mysteries and historical legends across Spain:
+
+- Added 15 iconic mainland locations: Pueblo Viejo de Belchite (Zaragoza), Cortijo Jurado (Málaga), Preventorio de Aguas de Busot (Alicante), Pueblo Maldito de Ochate (Burgos), Palacio de Linares (Madrid), Hospital del Tórax (Terrassa/Barcelona), Pueblo Fantasma de La Mussara (Tarragona), Cueva de Zugarramurdi (Navarra), Las Caras de Bélmez (Jaén), Castillo y Parador de Cardona (Barcelona), Sanatorio de la Alfaguara (Granada), Sanatorio de Santo Ángel de la Guarda (Navacerrada/Madrid), Dolmen de Guadalperal (Cáceres), Monasterio del Diablo (Carmona/Sevilla), and the legendary Isla de San Borondón (Canarias).
+- Added regional boundary polygons for Autonomous Communities (Madrid, Cataluña, Andalucía, Aragón, Comunidad Valenciana, Castilla y León, Navarra, Extremadura, Canarias).
+- Updated map center/zoom to show Spain at large (`[40.0, -3.7]`, zoom 6).
+
+## Canary Islands Events Archipelago Expansion
+
+Enriched `worlds/events-canary-islands/`:
+
+- Added flagship cultural festivals, sports, and traditional celebrations across Gran Canaria, Lanzarote, Fuerteventura, and La Palma (Carnaval de Las Palmas, Fiesta del Pino, Festival Internacional Canarias Jazz & Más, Fiestas de Los Dolores, Ironman Lanzarote, Mercadillo de Teguise, Festival de Cometas de Corralejo, Romería de la Peña, Transvulcania Ultramarathon, Festival de Senderismo de La Palma).
+- Adjusted initial camera framing to encompass the full Canary archipelago (`[28.35, -15.6]`, zoom 8).
+
+## In-App World Switcher
+
+Added an interactive **World Switcher** dropdown directly inside the Settings popover (`SettingsControl.ts`), allowing users on desktop and mobile to seamlessly jump between all installed worlds (`demo`, `world-leaders`, `paranormal-spain`, `events-canary-islands`, `moon-map-photos`) without manually modifying URL parameters. Also updated cross-world links on all welcome splash views.
+
 ## Fix: opening filters no longer buries an open search panel on mobile
 
 The search overlay (`panels.left`) and filters drawer (`panels.right`) are both full-screen mobile drawers with the filters drawer stacked above search in z-index; nothing previously closed one when the other opened, so opening filters while search was open visually covered it with no indication it was still open underneath. New `openPanel()` (`src/engine/state/store.ts`) enforces mutual exclusion — every call site that opens a panel (filters toggle, search open, search result selection, map marker click) now goes through it or an equivalent single-patch `store.set()`.

@@ -345,6 +345,9 @@ select:disabled {
   background: transparent;
   cursor: pointer;
   font: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 .search-result-item:last-child {
   border-bottom: none;
@@ -362,6 +365,13 @@ select:disabled {
 .search-result-item__name {
   font-weight: var(--font-weight-semibold);
   color: var(--color-text);
+}
+.search-result-item__thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 .search-results__empty {
   padding: 0.75rem;
@@ -1070,9 +1080,15 @@ select:disabled {
   color: var(--color-text);
 }
 .search-info__image {
-  max-width: 100%;
-  border-radius: var(--radius-md);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
   display: block;
+  flex-shrink: 0;
+  background: var(--color-bg-alt);
+  box-shadow: var(--shadow-md);
+  margin: 0.25rem 0;
 }
 
 /* ========================================
@@ -2107,6 +2123,10 @@ select:disabled {
   line-height: 1;
   text-align: center;
 }
+/* Portrait variant: larger marker for image-based leaders/portraits. */
+.category-marker-icon--portrait {
+  font-size: 0;
+}
 /* Always gets a white circle background for contrast against busy map
    tiles, at a fixed size across every world/layer — style.colorField's
    inline `background-color` (data-layer-renderer.ts) overrides this default
@@ -2120,6 +2140,18 @@ select:disabled {
   border-radius: 50%;
   background-color: var(--color-white);
   box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.category-marker-icon--portrait .category-marker-icon__circle {
+  width: 72px;
+  height: 72px;
+}
+.category-marker-icon__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
 }
 /* style.badgeField/badgeMap's small corner overlay — sparse, most features
    render no badge at all. */

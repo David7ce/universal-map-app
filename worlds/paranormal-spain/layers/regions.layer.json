@@ -1,10 +1,10 @@
 {
   "$schema": "../../../docs/schemas/layer.schema.json",
   "id": "regions",
-  "title": "Municipios",
+  "title": "Regiones y Municipios",
   "kind": "polygon",
   "source": { "type": "geojson", "url": "worlds/paranormal-spain/data/regions.geojson" },
-  "taxonomy": [{ "id": "region", "label": "Municipio", "field": "properties.name" }],
+  "taxonomy": [{ "id": "region", "label": "Región", "field": "properties.name" }],
   "regionRole": "boundary",
   "style": { "color": "#5a6472", "fillColor": "#5a6472", "fillOpacity": 0.08, "weight": 2 },
   "panel": { "showInSearch": false, "showInInfo": true, "showByDefault": false }

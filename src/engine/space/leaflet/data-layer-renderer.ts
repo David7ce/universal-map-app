@@ -7,6 +7,7 @@ import { filterActiveFeatures, readField } from '../../taxonomy/compute-dimensio
 import {
   resolveMarkerBadge,
   resolveMarkerColor,
+  resolveMarkerImage,
   resolveMarkerStyle,
   resolvePolygonStyle,
   resolveTaxonomyIcon,
@@ -58,6 +59,7 @@ export function renderDataLayer(
   // convention (layer.json's `style` is a plain Record<string, unknown>,
   // not individually validated).
   const style = manifest.style ?? {};
+  const imageField = typeof style.imageField === 'string' ? style.imageField : undefined;
   const colorField = typeof style.colorField === 'string' ? style.colorField : undefined;
   const colorMap =
     typeof style.colorMap === 'object' && style.colorMap !== null
@@ -70,8 +72,11 @@ export function renderDataLayer(
       ? (style.badgeMap as Record<string, string>)
       : undefined;
 
+  const escapeAttr = (val: string): string =>
+    val.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] || c);
+
   const pointToLayer =
-    manifest.kind === 'point' && (iconDimension || colorField || badgeField)
+    manifest.kind === 'point' && (iconDimension || colorField || badgeField || imageField)
       ? (feature: GeoJSON.Feature, latlng: L.LatLng) => {
           const icon = iconDimension
             ? resolveTaxonomyIcon(
@@ -80,6 +85,9 @@ export function renderDataLayer(
                 readField(feature as GeoFeature, iconDimension.field)[0],
               )
             : undefined;
+          const imageUrl = imageField
+            ? resolveMarkerImage(readField(feature as GeoFeature, imageField)[0])
+            : resolveMarkerImage(icon);
           const color = colorField
             ? resolveMarkerColor(colorMap, defaultColor, readField(feature as GeoFeature, colorField)[0])
             : undefined;
@@ -88,13 +96,21 @@ export function renderDataLayer(
             : undefined;
 
           const circleStyle = color ? ` style="background-color:${color}"` : '';
+          const name = typeof feature.properties?.name === 'string' ? feature.properties.name : '';
+          const content = imageUrl
+            ? `<img class="category-marker-icon__image" src="${escapeAttr(imageUrl)}" alt="${escapeAttr(name)}" loading="lazy" />`
+            : (icon ?? '');
+
+          const hasImage = Boolean(imageUrl);
+          const markerClass = hasImage ? 'category-marker-icon category-marker-icon--portrait' : 'category-marker-icon';
+          const iconSize: L.PointTuple = hasImage ? [72, 72] : [44, 44];
+
           const html =
-            `<span class="category-marker-icon__circle"${circleStyle}>${icon ?? ''}</span>` +
+            `<span class="category-marker-icon__circle"${circleStyle}>${content}</span>` +
             (badge ? `<span class="category-marker-icon__badge">${badge}</span>` : '');
 
           return L.marker(latlng, {
-            // Matches .category-marker-icon__circle's fixed size (styles.css).
-            icon: L.divIcon({ html, className: 'category-marker-icon', iconSize: [44, 44] }),
+            icon: L.divIcon({ html, className: markerClass, iconSize }),
           });
         }
       : undefined;

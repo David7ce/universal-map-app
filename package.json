@@ -13,6 +13,7 @@
     "build:paranormal-spain": "tsc --noEmit && vite build --mode paranormal-spain --outDir builds/paranormal-spain",
     "build:events-canary-islands": "tsc --noEmit && vite build --mode events-canary-islands --outDir builds/events-canary-islands",
     "build:moon-map-photos": "tsc --noEmit && vite build --mode moon-map-photos --outDir builds/moon-map-photos",
+    "build:world-leaders": "tsc --noEmit && vite build --mode world-leaders --outDir builds/world-leaders",
     "preview": "vite preview",
     "test": "vitest run"
   },
@@ -38,5 +39,6 @@
     "typescript-eslint": "^8.65.0",
     "vite": "^5.4.10",
     "vitest": "^2.1.4"
-  }
+  },
+  "packageManager": "pnpm@12.6.0+sha512.3ef68f951cb111ac204b4a5a16f0b2ddf0da56a96e0413e81d855d9f0b55ef926714709028e1cd00c405c2c5fb7b9e8ec4dc46777c805d0373c2f2ff00fd20ec"
 }

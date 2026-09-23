@@ -55,6 +55,7 @@
   "calendar.system.islamic": "Islámico",
   "calendar.system.hebrew": "Hebreo",
   "settings.trigger": "Ajustes",
+  "settings.worldLabel": "Mundo",
   "settings.mapSection": "Mapa",
   "settings.projectionLabel": "Proyección",
   "settings.crs.epsg3857": "Mercator (EPSG:3857)",

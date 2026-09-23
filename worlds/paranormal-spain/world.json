@@ -2,7 +2,7 @@
   "$schema": "../../docs/schemas/world.schema.json",
   "id": "paranormal-spain",
   "title": "Paranormal España",
-  "map": { "center": [28.389, -16.5245], "zoom": 15 },
+  "map": { "center": [40.0, -3.7], "zoom": 6 },
   "baseLayers": [
     {
       "id": "osm",
@@ -28,12 +28,13 @@
   "systems": { "time": false },
   "welcome": {
     "title": "Paranormal España",
-    "tagline": "Fantasmas, tragedias y leyendas en lugares reales de las Islas Canarias.",
+    "tagline": "Fantasmas, tragedias, brujería y misterios en lugares reales de toda España.",
     "ctaLabel": "Explorar el mapa",
     "heroImage": "assets/hero.svg",
     "itemNoun": "lugares encantados",
     "links": [
       { "label": "Demo de Mapa Universal", "world": "demo" },
+      { "label": "Líderes del Mundo", "world": "world-leaders" },
       { "label": "Eventos de Canarias", "world": "events-canary-islands" },
       { "label": "Fotos de la Luna", "world": "moon-map-photos" }
     ]

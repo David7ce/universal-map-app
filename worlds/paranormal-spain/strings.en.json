@@ -55,6 +55,7 @@
   "calendar.system.islamic": "Islamic",
   "calendar.system.hebrew": "Hebrew",
   "settings.trigger": "Settings",
+  "settings.worldLabel": "World",
   "settings.mapSection": "Map",
   "settings.projectionLabel": "Projection",
   "settings.crs.epsg3857": "Web Mercator (EPSG:3857)",

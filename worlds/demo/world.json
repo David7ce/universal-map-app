@@ -31,6 +31,7 @@
     "heroImage": "assets/hero.svg",
     "itemNoun": "puntos de interés",
     "links": [
+      { "label": "Líderes del Mundo", "world": "world-leaders" },
       { "label": "Paranormal España", "world": "paranormal-spain" },
       { "label": "Eventos de Canarias", "world": "events-canary-islands" },
       { "label": "Fotos de la Luna", "world": "moon-map-photos" }

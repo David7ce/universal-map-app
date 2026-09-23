@@ -367,3 +367,25 @@ describe('validateAppManifest', () => {
     ).toThrow(/about\.links\[0\]\.url/);
   });
 });
+
+describe('Validate all worlds in repository', () => {
+  const worldIds = ['demo', 'events-canary-islands', 'moon-map-photos', 'paranormal-spain', 'world-leaders'];
+
+  for (const worldId of worldIds) {
+    it(`validates world "${worldId}" manifests and layers`, async () => {
+      const { readFileSync } = await import('node:fs');
+      const { resolve } = await import('node:path');
+      const worldPath = resolve(process.cwd(), `worlds/${worldId}/world.json`);
+      const worldJson = JSON.parse(readFileSync(worldPath, 'utf8'));
+      const appManifest = validateAppManifest(worldJson);
+      expect(appManifest.id).toBe(worldId);
+
+      for (const layerPath of appManifest.dataLayers) {
+        const fullLayerPath = resolve(process.cwd(), `worlds/${worldId}/${layerPath}`);
+        const layerJson = JSON.parse(readFileSync(fullLayerPath, 'utf8'));
+        const layerManifest = validateLayerManifest(layerJson);
+        expect(layerManifest.id).toBeDefined();
+      }
+    });
+  }
+});

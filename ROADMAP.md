@@ -6,7 +6,9 @@ Open items below; everything else previously listed here has shipped (see `CHANG
 
 - [World Definition Package System — open items](feature-request-world-def.md): rule system, and a live API data-source loader. Both deferred as YAGNI, most of the original request already shipped (see `CHANGELOG.md`).
 
-- Border regions for paranormal-spain beyond La Orotava: resolved for the Tenerife-only scope — pulled from OpenStreetMap via `scripts/fetch-osm-boundary.mjs` (Overpass API, one relation per municipio) rather than hand-authored, since OSM already has accurate admin boundaries and no world needs live/editable ones yet. La Laguna and Santa Cruz de Tenerife added the same way (3 municipios total). Still open: expanding coverage to the rest of Tenerife and eventually all of Spain later just means running the script again per municipio/province — no new capability needed, just more `dataLayers` entries.
+- World leaders portraits layer: **Shipped** (see `CHANGELOG.md` and `worlds/world-leaders/`). Image-based portrait markers on the map, country flags, leadership taxonomies, and rich info cards.
+
+- Paranormal Spain nationwide expansion: **Shipped** (see `CHANGELOG.md` and `worlds/paranormal-spain/`). Coverage extended from Tenerife to prominent historical and legendary mystery sites across mainland Spain and the Canary Islands (Belchite, Ochate, Cortijo Jurado, Aguas de Busot, Palacio de Linares, Hospital del Tórax, Zugarramurdi, Bélmez, Cardona, etc.), with regional boundaries.
 
 ## For future massive refactor to own Map Server and PostgreSQL
 

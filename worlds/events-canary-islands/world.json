@@ -2,7 +2,7 @@
   "$schema": "../../docs/schemas/world.schema.json",
   "id": "events-canary-islands",
   "title": "Eventos de Canarias",
-  "map": { "center": [28.29, -16.62], "zoom": 10 },
+  "map": { "center": [28.35, -15.6], "zoom": 8 },
   "baseLayers": [
     {
       "id": "osm",
@@ -33,6 +33,7 @@
     "itemNoun": "eventos",
     "links": [
       { "label": "Demo de Mapa Universal", "world": "demo" },
+      { "label": "Líderes del Mundo", "world": "world-leaders" },
       { "label": "Paranormal España", "world": "paranormal-spain" },
       { "label": "Fotos de la Luna", "world": "moon-map-photos" }
     ]

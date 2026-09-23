@@ -1,8 +1,8 @@
 {
   "$schema": "../../docs/schemas/world.schema.json",
-  "id": "moon-map-photos",
-  "title": "Fotos de la Luna",
-  "map": { "center": [47, 2], "zoom": 5 },
+  "id": "world-leaders",
+  "title": "Líderes del Mundo",
+  "map": { "center": [25, 10], "zoom": 3 },
   "baseLayers": [
     {
       "id": "osm",
@@ -21,21 +21,22 @@
       "labelsAttribution": "Tiles © Esri — Source: Esri, Garmin, HERE, and other contributors"
     }
   ],
-  "dataLayers": ["layers/photos.layer.json"],
-  "calendar": { "default": "2026-07-01", "min": "2026-07-01", "max": "2026-07-31" },
+  "dataLayers": ["layers/leaders.layer.json"],
+  "calendar": { "default": "today", "min": "2010-01-01", "max": "2030-12-31" },
   "strings": "strings.en.json",
-  "theme": { "primary": "#2c3e6b" },
+  "theme": { "primary": "#1b3b6f" },
+  "systems": { "time": false },
   "welcome": {
-    "title": "Fotos de la Luna",
-    "tagline": "Fotografías reales de la luna, ubicadas según dónde y cuándo fueron tomadas.",
-    "ctaLabel": "Ver las fotos",
-    "itemNoun": "fotos de la luna",
-    "heroImage": "assets/photos/2026-07-02T2227-b106dc.jpg",
+    "title": "Líderes del Mundo",
+    "tagline": "Retratos e información de los jefes de estado y gobierno de las principales naciones del planeta.",
+    "ctaLabel": "Explorar mapa",
+    "heroImage": "assets/hero.svg",
+    "itemNoun": "líderes mundiales",
     "links": [
       { "label": "Demo de Mapa Universal", "world": "demo" },
-      { "label": "Líderes del Mundo", "world": "world-leaders" },
       { "label": "Paranormal España", "world": "paranormal-spain" },
-      { "label": "Eventos de Canarias", "world": "events-canary-islands" }
+      { "label": "Eventos de Canarias", "world": "events-canary-islands" },
+      { "label": "Fotos de la Luna", "world": "moon-map-photos" }
     ]
   }
 }
