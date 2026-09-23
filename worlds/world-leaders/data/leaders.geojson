@@ -1033,6 +1033,919 @@
           31.9539
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-id",
+      "properties": {
+        "name": "Prabowo Subianto",
+        "leader": "Prabowo Subianto",
+        "country": "Indonesia",
+        "role": "Presidente",
+        "continent": "Asia",
+        "party": "Gerindra",
+        "flag": "🇮🇩",
+        "inOfficeSince": "2024-10-20",
+        "portrait": "worlds/world-leaders/assets/portraits/id.jpg",
+        "bio": "Militar y político indonesio, presidente de la República de Indonesia desde octubre de 2024.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Prabowo_Subianto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8456,
+          -6.2088
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-pk",
+      "properties": {
+        "name": "Shehbaz Sharif",
+        "leader": "Shehbaz Sharif",
+        "country": "Pakistán",
+        "role": "Primer Ministro",
+        "continent": "Asia",
+        "party": "Liga Musulmana de Pakistán (N)",
+        "flag": "🇵🇰",
+        "inOfficeSince": "2024-03-04",
+        "portrait": "worlds/world-leaders/assets/portraits/pk.jpg",
+        "bio": "Político pakistaní, primer ministro de la República Islámica de Pakistán desde marzo de 2024.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Shehbaz_Sharif"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          73.0479,
+          33.6844
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-tr",
+      "properties": {
+        "name": "Recep Tayyip Erdoğan",
+        "leader": "Recep Tayyip Erdoğan",
+        "country": "Turquía",
+        "role": "Presidente",
+        "continent": "Asia",
+        "party": "Partido de la Justicia y el Desarrollo",
+        "flag": "🇹🇷",
+        "inOfficeSince": "2014-08-28",
+        "portrait": "worlds/world-leaders/assets/portraits/tr.jpg",
+        "bio": "Político turco, presidente de la República de Turquía desde agosto de 2014, tras ejercer como primer ministro entre 2003 y 2014.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Recep_Tayyip_Erdo%C4%9Fan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.8597,
+          39.9334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ir",
+      "properties": {
+        "name": "Masoud Pezeshkian",
+        "leader": "Masoud Pezeshkian",
+        "country": "Irán",
+        "role": "Presidente",
+        "continent": "Asia",
+        "party": "Independiente (reformista)",
+        "flag": "🇮🇷",
+        "inOfficeSince": "2024-07-28",
+        "portrait": "worlds/world-leaders/assets/portraits/ir.jpg",
+        "bio": "Médico y político iraní, presidente de la República Islámica de Irán desde julio de 2024.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Masoud_Pezeshkian"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          51.389,
+          35.6892
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-vn",
+      "properties": {
+        "name": "Tô Lâm",
+        "leader": "Tô Lâm",
+        "country": "Vietnam",
+        "role": "Presidente",
+        "continent": "Asia",
+        "party": "Partido Comunista de Vietnam",
+        "flag": "🇻🇳",
+        "inOfficeSince": "2024-08-03",
+        "portrait": "worlds/world-leaders/assets/portraits/vn.jpg",
+        "bio": "Político y exministro de Seguridad Pública vietnamita, secretario general del Partido Comunista de Vietnam desde agosto de 2024.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/T%C3%B4_L%C3%A2m"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.8342,
+          21.0278
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ph",
+      "properties": {
+        "name": "Ferdinand Marcos Jr.",
+        "leader": "Ferdinand Marcos Jr.",
+        "country": "Filipinas",
+        "role": "Presidente",
+        "continent": "Asia",
+        "party": "Partido Federal de Filipinas",
+        "flag": "🇵🇭",
+        "inOfficeSince": "2022-06-30",
+        "portrait": "worlds/world-leaders/assets/portraits/ph.jpg",
+        "bio": "Político filipino, 17.º presidente de la República de Filipinas desde junio de 2022.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Bongbong_Marcos"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.9842,
+          14.5995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-my",
+      "properties": {
+        "name": "Anwar Ibrahim",
+        "leader": "Anwar Ibrahim",
+        "country": "Malasia",
+        "role": "Primer Ministro",
+        "continent": "Asia",
+        "party": "Partido de la Justicia Popular",
+        "flag": "🇲🇾",
+        "inOfficeSince": "2022-11-24",
+        "portrait": "worlds/world-leaders/assets/portraits/my.jpg",
+        "bio": "Político malasio, primer ministro de Malasia desde noviembre de 2022.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Anwar_Ibrahim"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.6869,
+          3.139
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-sg",
+      "properties": {
+        "name": "Lawrence Wong",
+        "leader": "Lawrence Wong",
+        "country": "Singapur",
+        "role": "Primer Ministro",
+        "continent": "Asia",
+        "party": "Partido de Acción Popular",
+        "flag": "🇸🇬",
+        "inOfficeSince": "2024-05-15",
+        "portrait": "worlds/world-leaders/assets/portraits/sg.jpg",
+        "bio": "Economista y político singapurense, primer ministro de Singapur desde mayo de 2024.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Lawrence_Wong"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8198,
+          1.3521
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-qa",
+      "properties": {
+        "name": "Tamim bin Hamad Al Thani",
+        "leader": "Tamim bin Hamad Al Thani",
+        "country": "Catar",
+        "role": "Monarca",
+        "continent": "Asia",
+        "party": "Monarquía",
+        "flag": "🇶🇦",
+        "inOfficeSince": "2013-06-25",
+        "portrait": "worlds/world-leaders/assets/portraits/qa.jpg",
+        "bio": "Emir de Catar desde junio de 2013, tras la abdicación de su padre Hamad bin Jalifa.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Tamim_bin_Hamad_Al_Thani"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          51.531,
+          25.2854
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ae",
+      "properties": {
+        "name": "Mohamed bin Zayed Al Nahyan",
+        "leader": "Mohamed bin Zayed Al Nahyan",
+        "country": "Emiratos Árabes Unidos",
+        "role": "Presidente",
+        "continent": "Asia",
+        "party": "Monarquía",
+        "flag": "🇦🇪",
+        "inOfficeSince": "2022-05-14",
+        "portrait": "worlds/world-leaders/assets/portraits/ae.jpg",
+        "bio": "Presidente de los Emiratos Árabes Unidos y emir de Abu Dabi desde mayo de 2022.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Mohamed_bin_Zayed_Al_Nahyan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          54.3773,
+          24.4539
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-kp",
+      "properties": {
+        "name": "Kim Jong-un",
+        "leader": "Kim Jong-un",
+        "country": "Corea del Norte",
+        "role": "Presidente",
+        "continent": "Asia",
+        "party": "Partido del Trabajo de Corea",
+        "flag": "🇰🇵",
+        "inOfficeSince": "2011-12-17",
+        "portrait": "worlds/world-leaders/assets/portraits/kp.jpg",
+        "bio": "Líder supremo de la República Popular Democrática de Corea desde diciembre de 2011, secretario general del Partido del Trabajo de Corea.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Kim_Jong-un"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          125.7547,
+          39.0392
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ie",
+      "properties": {
+        "name": "Michael D. Higgins",
+        "leader": "Michael D. Higgins",
+        "country": "Irlanda",
+        "role": "Presidente",
+        "continent": "Europa",
+        "party": "Independiente",
+        "flag": "🇮🇪",
+        "inOfficeSince": "2011-11-11",
+        "portrait": "worlds/world-leaders/assets/portraits/ie.jpg",
+        "bio": "Poeta, sociólogo y político irlandés, presidente de Irlanda desde noviembre de 2011.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Michael_D._Higgins"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2603,
+          53.3498
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-at",
+      "properties": {
+        "name": "Alexander Van der Bellen",
+        "leader": "Alexander Van der Bellen",
+        "country": "Austria",
+        "role": "Presidente",
+        "continent": "Europa",
+        "party": "Los Verdes",
+        "flag": "🇦🇹",
+        "inOfficeSince": "2017-01-26",
+        "portrait": "worlds/world-leaders/assets/portraits/at.jpg",
+        "bio": "Economista y político austriaco, presidente federal de Austria desde enero de 2017.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Alexander_Van_der_Bellen"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.3738,
+          48.2082
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-fi",
+      "properties": {
+        "name": "Alexander Stubb",
+        "leader": "Alexander Stubb",
+        "country": "Finlandia",
+        "role": "Presidente",
+        "continent": "Europa",
+        "party": "Partido de la Coalición Nacional",
+        "flag": "🇫🇮",
+        "inOfficeSince": "2024-03-01",
+        "portrait": "worlds/world-leaders/assets/portraits/fi.jpg",
+        "bio": "Político finlandés, presidente de la República de Finlandia desde marzo de 2024.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Alexander_Stubb"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.9384,
+          60.1699
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-cz",
+      "properties": {
+        "name": "Petr Pavel",
+        "leader": "Petr Pavel",
+        "country": "República Checa",
+        "role": "Presidente",
+        "continent": "Europa",
+        "party": "Independiente",
+        "flag": "🇨🇿",
+        "inOfficeSince": "2023-03-09",
+        "portrait": "worlds/world-leaders/assets/portraits/cz.jpg",
+        "bio": "Militar retirado y político checo, presidente de la República Checa desde marzo de 2023.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Petr_Pavel"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.4378,
+          50.0755
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-hu",
+      "properties": {
+        "name": "Viktor Orbán",
+        "leader": "Viktor Orbán",
+        "country": "Hungría",
+        "role": "Primer Ministro",
+        "continent": "Europa",
+        "party": "Fidesz",
+        "flag": "🇭🇺",
+        "inOfficeSince": "2010-05-29",
+        "portrait": "worlds/world-leaders/assets/portraits/hu.jpg",
+        "bio": "Político húngaro, primer ministro de Hungría desde mayo de 2010, cargo que ya ocupó entre 1998 y 2002.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Viktor_Orb%C3%A1n"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.0402,
+          47.4979
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-rs",
+      "properties": {
+        "name": "Aleksandar Vučić",
+        "leader": "Aleksandar Vučić",
+        "country": "Serbia",
+        "role": "Presidente",
+        "continent": "Europa",
+        "party": "Partido Progresista Serbio",
+        "flag": "🇷🇸",
+        "inOfficeSince": "2017-05-31",
+        "portrait": "worlds/world-leaders/assets/portraits/rs.jpg",
+        "bio": "Político serbio, presidente de Serbia desde mayo de 2017, tras ejercer como primer ministro entre 2014 y 2017.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Aleksandar_Vu%C4%8Di%C4%87"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.4489,
+          44.7866
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ro",
+      "properties": {
+        "name": "Nicușor Dan",
+        "leader": "Nicușor Dan",
+        "country": "Rumanía",
+        "role": "Presidente",
+        "continent": "Europa",
+        "party": "Independiente",
+        "flag": "🇷🇴",
+        "inOfficeSince": "2025-05-26",
+        "portrait": "worlds/world-leaders/assets/portraits/ro.jpg",
+        "bio": "Matemático y político rumano, presidente de Rumanía desde mayo de 2025.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Nicu%C8%99or_Dan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.1025,
+          44.4268
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-bg",
+      "properties": {
+        "name": "Rumen Radev",
+        "leader": "Rumen Radev",
+        "country": "Bulgaria",
+        "role": "Presidente",
+        "continent": "Europa",
+        "party": "Independiente",
+        "flag": "🇧🇬",
+        "inOfficeSince": "2017-01-22",
+        "portrait": "worlds/world-leaders/assets/portraits/bg.jpg",
+        "bio": "General y político búlgaro, presidente de Bulgaria desde enero de 2017.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Rumen_Radev"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.3219,
+          42.6977
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-hr",
+      "properties": {
+        "name": "Zoran Milanović",
+        "leader": "Zoran Milanović",
+        "country": "Croacia",
+        "role": "Presidente",
+        "continent": "Europa",
+        "party": "Partido Socialdemócrata",
+        "flag": "🇭🇷",
+        "inOfficeSince": "2020-02-19",
+        "portrait": "worlds/world-leaders/assets/portraits/hr.jpg",
+        "bio": "Político croata, presidente de Croacia desde febrero de 2020.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Zoran_Milanovi%C4%87"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.9819,
+          45.815
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-is",
+      "properties": {
+        "name": "Halla Tómasdóttir",
+        "leader": "Halla Tómasdóttir",
+        "country": "Islandia",
+        "role": "Presidenta",
+        "continent": "Europa",
+        "party": "Independiente",
+        "flag": "🇮🇸",
+        "inOfficeSince": "2024-08-01",
+        "portrait": "worlds/world-leaders/assets/portraits/is.jpg",
+        "bio": "Empresaria y política islandesa, presidenta de Islandia desde agosto de 2024.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Halla_T%C3%B3masd%C3%B3ttir"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -21.8277,
+          64.1466
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-by",
+      "properties": {
+        "name": "Aleksandr Lukashenko",
+        "leader": "Aleksandr Lukashenko",
+        "country": "Bielorrusia",
+        "role": "Presidente",
+        "continent": "Europa",
+        "party": "Independiente",
+        "flag": "🇧🇾",
+        "inOfficeSince": "1994-07-20",
+        "portrait": "worlds/world-leaders/assets/portraits/by.jpg",
+        "bio": "Político bielorruso, presidente de Bielorrusia desde julio de 1994.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Aleksandr_Lukashenko"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.5615,
+          53.9045
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-pe",
+      "properties": {
+        "name": "Dina Boluarte",
+        "leader": "Dina Boluarte",
+        "country": "Perú",
+        "role": "Presidenta",
+        "continent": "América",
+        "party": "Independiente",
+        "flag": "🇵🇪",
+        "inOfficeSince": "2022-12-07",
+        "portrait": "worlds/world-leaders/assets/portraits/pe.jpg",
+        "bio": "Abogada y política peruana, presidenta de la República del Perú desde diciembre de 2022.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Dina_Boluarte"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.0428,
+          -12.0464
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ve",
+      "properties": {
+        "name": "Nicolás Maduro",
+        "leader": "Nicolás Maduro",
+        "country": "Venezuela",
+        "role": "Presidente",
+        "continent": "América",
+        "party": "Partido Socialista Unido de Venezuela",
+        "flag": "🇻🇪",
+        "inOfficeSince": "2013-04-19",
+        "portrait": "worlds/world-leaders/assets/portraits/ve.jpg",
+        "bio": "Político venezolano, presidente de la República Bolivariana de Venezuela desde abril de 2013.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Nicol%C3%A1s_Maduro"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9036,
+          10.4806
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ec",
+      "properties": {
+        "name": "Daniel Noboa",
+        "leader": "Daniel Noboa",
+        "country": "Ecuador",
+        "role": "Presidente",
+        "continent": "América",
+        "party": "Acción Democrática Nacional",
+        "flag": "🇪🇨",
+        "inOfficeSince": "2023-11-23",
+        "portrait": "worlds/world-leaders/assets/portraits/ec.jpg",
+        "bio": "Empresario y político ecuatoriano, presidente de la República del Ecuador desde noviembre de 2023.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Daniel_Noboa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.4678,
+          -0.1807
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-bo",
+      "properties": {
+        "name": "Luis Arce",
+        "leader": "Luis Arce",
+        "country": "Bolivia",
+        "role": "Presidente",
+        "continent": "América",
+        "party": "Movimiento al Socialismo",
+        "flag": "🇧🇴",
+        "inOfficeSince": "2020-11-08",
+        "portrait": "worlds/world-leaders/assets/portraits/bo.png",
+        "bio": "Economista y político boliviano, presidente del Estado Plurinacional de Bolivia desde noviembre de 2020.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Luis_Arce"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -68.1193,
+          -16.4897
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-py",
+      "properties": {
+        "name": "Santiago Peña",
+        "leader": "Santiago Peña",
+        "country": "Paraguay",
+        "role": "Presidente",
+        "continent": "América",
+        "party": "Partido Colorado",
+        "flag": "🇵🇾",
+        "inOfficeSince": "2023-08-15",
+        "portrait": "worlds/world-leaders/assets/portraits/py.jpg",
+        "bio": "Economista y político paraguayo, presidente de la República del Paraguay desde agosto de 2023.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Santiago_Pe%C3%B1a"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -57.5759,
+          -25.2637
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-uy",
+      "properties": {
+        "name": "Yamandú Orsi",
+        "leader": "Yamandú Orsi",
+        "country": "Uruguay",
+        "role": "Presidente",
+        "continent": "América",
+        "party": "Frente Amplio",
+        "flag": "🇺🇾",
+        "inOfficeSince": "2025-03-01",
+        "portrait": "worlds/world-leaders/assets/portraits/uy.jpg",
+        "bio": "Profesor y político uruguayo, presidente de la República Oriental del Uruguay desde marzo de 2025.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Yamand%C3%BA_Orsi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -56.1645,
+          -34.9011
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-cu",
+      "properties": {
+        "name": "Miguel Díaz-Canel",
+        "leader": "Miguel Díaz-Canel",
+        "country": "Cuba",
+        "role": "Presidente",
+        "continent": "América",
+        "party": "Partido Comunista de Cuba",
+        "flag": "🇨🇺",
+        "inOfficeSince": "2019-10-10",
+        "portrait": "worlds/world-leaders/assets/portraits/cu.jpg",
+        "bio": "Ingeniero y político cubano, presidente de la República de Cuba desde octubre de 2019 y primer secretario del Partido Comunista desde 2021.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Miguel_D%C3%ADaz-Canel"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.3666,
+          23.1136
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-gt",
+      "properties": {
+        "name": "Bernardo Arévalo",
+        "leader": "Bernardo Arévalo",
+        "country": "Guatemala",
+        "role": "Presidente",
+        "continent": "América",
+        "party": "Movimiento Semilla",
+        "flag": "🇬🇹",
+        "inOfficeSince": "2024-01-15",
+        "portrait": "worlds/world-leaders/assets/portraits/gt.jpg",
+        "bio": "Diplomático, sociólogo y político guatemalteco, presidente de Guatemala desde enero de 2024.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Bernardo_Ar%C3%A9valo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -90.5069,
+          14.6349
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ng",
+      "properties": {
+        "name": "Bola Tinubu",
+        "leader": "Bola Tinubu",
+        "country": "Nigeria",
+        "role": "Presidente",
+        "continent": "África",
+        "party": "Congreso de Todos los Progresistas",
+        "flag": "🇳🇬",
+        "inOfficeSince": "2023-05-29",
+        "portrait": "worlds/world-leaders/assets/portraits/ng.jpg",
+        "bio": "Político nigeriano, presidente de la República Federal de Nigeria desde mayo de 2023.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Bola_Tinubu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.3986,
+          9.0765
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-eg",
+      "properties": {
+        "name": "Abdelfatah al-Sisi",
+        "leader": "Abdelfatah al-Sisi",
+        "wikiTitle": "Abdelfatah Al-Sisi",
+        "country": "Egipto",
+        "role": "Presidente",
+        "continent": "África",
+        "party": "Independiente",
+        "flag": "🇪🇬",
+        "inOfficeSince": "2014-06-08",
+        "portrait": "worlds/world-leaders/assets/portraits/eg.jpg",
+        "bio": "Militar y político egipcio, presidente de la República Árabe de Egipto desde junio de 2014.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Abdelfatah_Al-Sisi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.2357,
+          30.0444
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-ke",
+      "properties": {
+        "name": "William Ruto",
+        "leader": "William Ruto",
+        "country": "Kenia",
+        "role": "Presidente",
+        "continent": "África",
+        "party": "Alianza Democrática Unida",
+        "flag": "🇰🇪",
+        "inOfficeSince": "2022-09-13",
+        "portrait": "worlds/world-leaders/assets/portraits/ke.jpg",
+        "bio": "Político keniano, presidente de la República de Kenia desde septiembre de 2022.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/William_Ruto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          36.8219,
+          -1.2921
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-et",
+      "properties": {
+        "name": "Abiy Ahmed",
+        "leader": "Abiy Ahmed",
+        "country": "Etiopía",
+        "role": "Primer Ministro",
+        "continent": "África",
+        "party": "Prosperidad",
+        "flag": "🇪🇹",
+        "inOfficeSince": "2018-04-02",
+        "portrait": "worlds/world-leaders/assets/portraits/et.jpg",
+        "bio": "Político etíope, primer ministro de la República Democrática Federal de Etiopía desde abril de 2018 y premio Nobel de la Paz 2019.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Abiy_Ahmed"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          38.7578,
+          9.032
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-dz",
+      "properties": {
+        "name": "Abdelmadjid Tebboune",
+        "leader": "Abdelmadjid Tebboune",
+        "country": "Argelia",
+        "role": "Presidente",
+        "continent": "África",
+        "party": "Frente de Liberación Nacional",
+        "flag": "🇩🇿",
+        "inOfficeSince": "2019-12-19",
+        "portrait": "worlds/world-leaders/assets/portraits/dz.jpg",
+        "bio": "Político argelino, presidente de la República Argelina Democrática y Popular desde diciembre de 2019.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Abdelmadjid_Tebboune"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0588,
+          36.7538
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-sn",
+      "properties": {
+        "name": "Bassirou Diomaye Faye",
+        "leader": "Bassirou Diomaye Faye",
+        "country": "Senegal",
+        "role": "Presidente",
+        "continent": "África",
+        "party": "PASTEF",
+        "flag": "🇸🇳",
+        "inOfficeSince": "2024-04-02",
+        "portrait": "worlds/world-leaders/assets/portraits/sn.jpg",
+        "bio": "Inspector de Hacienda y político senegalés, presidente de la República de Senegal desde abril de 2024.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Bassirou_Diomaye_Faye"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -17.4677,
+          14.7167
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-fj",
+      "properties": {
+        "name": "Sitiveni Rabuka",
+        "leader": "Sitiveni Rabuka",
+        "country": "Fiyi",
+        "role": "Primer Ministro",
+        "continent": "Oceanía",
+        "party": "Alianza Popular",
+        "flag": "🇫🇯",
+        "inOfficeSince": "2022-12-24",
+        "portrait": "worlds/world-leaders/assets/portraits/fj.jpg",
+        "bio": "Militar retirado y político fiyiano, primer ministro de la República de Fiyi desde diciembre de 2022.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/Sitiveni_Rabuka"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          178.4419,
+          -18.1416
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "leader-pg",
+      "properties": {
+        "name": "James Marape",
+        "leader": "James Marape",
+        "country": "Papúa Nueva Guinea",
+        "role": "Primer Ministro",
+        "continent": "Oceanía",
+        "party": "Pangu Pati",
+        "flag": "🇵🇬",
+        "inOfficeSince": "2019-05-30",
+        "portrait": "worlds/world-leaders/assets/portraits/pg.jpg",
+        "bio": "Político papú, primer ministro del Estado Independiente de Papúa Nueva Guinea desde mayo de 2019.",
+        "wikiUrl": "https://es.wikipedia.org/wiki/James_Marape"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          147.1509,
+          -9.4438
+        ]
+      }
     }
   ]
 }
