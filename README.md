@@ -16,10 +16,10 @@ Open the printed local URL. No backend, no paid services — `pnpm build` produc
 ## Add a new world instance
 
 1. Create a new folder under `worlds/<your-world-id>/`.
-2. Add a `world.json` (see `worlds/demo/world.json` for the shape).
+2. Add a `world.json` (see `worlds/world-leaders/world.json` for the shape).
 3. Add one `*.layer.json` per data layer under `worlds/<your-world-id>/layers/`, and the matching GeoJSON under `worlds/<your-world-id>/data/`.
 4. Optionally add `strings.json` for your own UI text, a `plugins` block to activate `participate`, a `welcome` splash, and/or an `about` block (adds an "About Us" link to the persistent header) — see `docs/json-reference.md`.
-5. Load it with `?world=<your-world-id>` in the URL (e.g. `http://localhost:5173/?world=my-world`), or leave the query param off to get `worlds/demo/` by default. A world switcher UI is still intentionally out of scope for v1 (see the design spec's non-goals) — this is just a static id lookup, resolved once at page load. Per-domain deployment of a single world is in scope (see below), just not a UI for switching between worlds at runtime.
+5. Load it at `/my-world/` (e.g. `http://localhost:5173/my-world/`), or open `/` to get the default world (`world-leaders`). `?world=<id>` still works as an override. A world switcher UI is still intentionally out of scope for v1 (see the design spec's non-goals) — this is just a static id lookup, resolved once at page load. Per-domain deployment of a single world is in scope (see below), just not a UI for switching between worlds at runtime.
 
 No engine code under `src/engine/` needs to change to add a new world instance.
 
@@ -27,16 +27,16 @@ No engine code under `src/engine/` needs to change to add a new world instance.
 
 Every world can be opened on its own during development, and built + deployed as its own standalone site on its own domain — no code changes needed either way, just the world's own `world.json`/`layers/`/`data/`.
 
-**Open one locally**, with the rest of the app unaffected — `pnpm dev`, then append `?world=<id>` to the printed URL:
+**Open one locally**, with the rest of the app unaffected — `pnpm dev`, then open the world's path:
 
 | World                   | URL (dev)                                            |
 | ----------------------- | ---------------------------------------------------- |
-| `demo`                  | `http://localhost:5173/` (default, no param needed)  |
-| `paranormal-spain`      | `http://localhost:5173/?world=paranormal-spain`      |
-| `events-canary-islands` | `http://localhost:5173/?world=events-canary-islands` |
-| `moon-map-photos`       | `http://localhost:5173/?world=moon-map-photos`       |
+| `world-leaders`         | `http://localhost:5173/` (default)                   |
+| `paranormal-spain`      | `http://localhost:5173/paranormal-spain/`            |
+| `events-canary-islands` | `http://localhost:5173/events-canary-islands/`       |
+| `moon-map-photos`       | `http://localhost:5173/moon-map-photos/`             |
 
-(Port may differ — use whatever `pnpm dev` actually prints.) A world switcher UI is intentionally out of scope for v1 — this is a static id lookup resolved once at page load, not a runtime menu.
+(`?world=<id>` also still works, e.g. `http://localhost:5173/?world=paranormal-spain`.) A world switcher UI is intentionally out of scope for v1 — this is a static id lookup resolved once at page load, not a runtime menu.
 
 **Build one for its own domain** — `vite build --mode <world-id> --outDir builds/<world-id>` bundles _only_ that world's data (not every world under `worlds/`) and makes it load by default with no `?world=` query param needed, so a visitor at that domain never sees `worlds/demo/` or any other world's content at all. Each of the 3 real worlds already has a matching `package.json` script:
 

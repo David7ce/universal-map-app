@@ -15,10 +15,8 @@ import { mountLightbox } from './ui/panels/Lightbox';
 import { mountPanelRight } from './ui/panels/PanelRight';
 import { mountLayerControl } from './ui/panels/LayerControl';
 import { mountCalendarBar } from './ui/panels/CalendarBar';
-import { mountCalendarView } from './ui/panels/CalendarView';
-import { mountWelcomeView } from './ui/panels/WelcomeView';
-import { mountAboutView } from './ui/panels/AboutView';
-import { mountCategoryNav } from './ui/panels/CategoryNav';
+import { mountHomeView } from './ui/panels/HomeView';
+import { mountFilterPills } from './ui/panels/FilterPills';
 import { mountSettingsControl } from './ui/panels/SettingsControl';
 import { mountAppChrome } from './ui/app-chrome';
 import { ensureCalendarSystemLoaded } from './engine/time/calendar-conversion';
@@ -35,7 +33,12 @@ async function fetchJson(url: string): Promise<unknown> {
 }
 
 async function bootstrap(): Promise<void> {
-  const appId = resolveWorldId(new URLSearchParams(window.location.search), import.meta.env.MODE);
+  const appId = resolveWorldId(
+    new URLSearchParams(window.location.search),
+    import.meta.env.MODE,
+    window.location.pathname,
+    import.meta.env.BASE_URL,
+  );
   const appManifest = validateAppManifest(await fetchJson(`worlds/${appId}/world.json`));
   applyBranding(appManifest, appId);
   document.querySelector('#app')!.classList.toggle('no-time', appManifest.systems?.time === false);
@@ -76,7 +79,7 @@ async function bootstrap(): Promise<void> {
     hiddenLayerIds: new Set(detailLayers.map((l) => l.manifest.id)),
     calendarSystem: appManifest.calendar.system ?? 'gregorian',
     showGrid: false,
-    view: appManifest.welcome ? 'welcome' : 'map',
+    view: appManifest.welcome ? 'home' : 'map',
   });
 
   const mapContainer = document.querySelector<HTMLDivElement>('#map')!;
@@ -128,31 +131,18 @@ async function bootstrap(): Promise<void> {
     baseLayerConfigs: appManifest.baseLayers,
     detailLayers: detailLayers.map((l) => ({ id: l.manifest.id, title: l.manifest.title })),
   });
-  // Time editor and map-settings button both live inline inside the
-  // filters panel now, not as standalone floating controls.
+  // The calendar and map-settings both live inline inside the right panel.
   mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings, loadedLayers);
-  mountCalendarView(document.querySelector('#calendar-view')!, store, appManifest.calendar, strings, loadedLayers);
-  mountSettingsControl(document.querySelector('#panel-right-map-settings')!, store, strings, {
+  mountSettingsControl(document.querySelector('#panel-right-settings')!, store, strings, {
     appManifest,
     mapAdapter,
   });
 
   mountAppChrome(store, strings, appManifest, mapAdapter, loadedLayers);
-  mountCategoryNav(document.querySelector('#category-nav')!, store, loadedLayers);
+  mountFilterPills(document.querySelector('#filter-pills')!, store, loadedLayers, strings);
 
   if (appManifest.welcome) {
-    mountWelcomeView(
-      document.querySelector('#welcome-view')!,
-      store,
-      appId,
-      appManifest.welcome,
-      loadedLayers,
-      strings,
-    );
-  }
-
-  if (appManifest.about) {
-    mountAboutView(document.querySelector('#about-view')!, store, appManifest.title, appManifest.about, strings);
+    mountHomeView(document.querySelector('#home-view')!, store, appId, strings);
   }
 
   document.getElementById('loading-overlay')?.remove();

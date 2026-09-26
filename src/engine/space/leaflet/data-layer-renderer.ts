@@ -36,6 +36,24 @@ export function renderDataLayer(
     return heatLayer;
   }
 
+  // Opt-in (`style.dedupeMarkers: true`): collapse point features that share
+  // the exact same coordinate into a single marker, so e.g. several moon
+  // photos taken from one spot don't stack into an unreadable pile. The
+  // first feature wins for the marker's own look; the info panel still
+  // surfaces every feature at that coordinate (see SearchOverlay.ts).
+  // Off by default — two distinct places can legitimately share a
+  // coordinate (e.g. two world leaders based in the same capital).
+  const style = manifest.style ?? {};
+  const dedupeMarkers = style.dedupeMarkers === true;
+  const rendered =
+    dedupeMarkers && manifest.kind === 'point'
+      ? active.filter((feature, index) => {
+          if (feature.geometry.type !== 'Point') return true;
+          const key = feature.geometry.coordinates.join(',');
+          return active.findIndex((f) => f.geometry.type === 'Point' && f.geometry.coordinates.join(',') === key) === index;
+        })
+      : active;
+
   const onEachFeature = onFeatureClick
     ? (geoFeature: GeoJSON.Feature, layer: L.Layer) => {
         layer.on('click', () => onFeatureClick(geoFeature as GeoFeature));
@@ -58,7 +76,6 @@ export function renderDataLayer(
   // reads matching this file's existing style.cluster/style.icon
   // convention (layer.json's `style` is a plain Record<string, unknown>,
   // not individually validated).
-  const style = manifest.style ?? {};
   const imageField = typeof style.imageField === 'string' ? style.imageField : undefined;
   const colorField = typeof style.colorField === 'string' ? style.colorField : undefined;
   const colorMap =
@@ -102,7 +119,16 @@ export function renderDataLayer(
             : (icon ?? '');
 
           const hasImage = Boolean(imageUrl);
-          const markerClass = hasImage ? 'category-marker-icon category-marker-icon--portrait' : 'category-marker-icon';
+          // `style.imageVariant: 'phase'` renders the image as a bare glyph
+          // (no white circle behind it) — for a transparent shape like a moon
+          // phase SVG, where a filled disc would hide the very shape it's
+          // meant to show.
+          const isPhase = hasImage && style.imageVariant === 'phase';
+          const markerClass = isPhase
+            ? 'category-marker-icon category-marker-icon--phase'
+            : hasImage
+              ? 'category-marker-icon category-marker-icon--portrait'
+              : 'category-marker-icon';
           const iconSize: L.PointTuple = hasImage ? [72, 72] : [44, 44];
 
           const html =
@@ -115,7 +141,7 @@ export function renderDataLayer(
         }
       : undefined;
 
-  const geoJsonLayer = L.geoJSON(active as GeoJSON.Feature[], {
+  const geoJsonLayer = L.geoJSON(rendered as GeoJSON.Feature[], {
     ...(needsPolygonStyle ? { style: resolvePolygonStyle(manifest) } : {}),
     ...(onEachFeature ? { onEachFeature } : {}),
     ...(pointToLayer ? { pointToLayer } : {}),

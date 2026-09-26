@@ -50,9 +50,9 @@
   --panel-right-width: 100vw;
   --panel-left-width: min(22rem, calc(50vw - var(--control-btn-offset)));
   --footer-bar-height: 1.5rem; /* thin bottom strip: scale + attribution */
-  --app-header-height: 3.25rem; /* persistent top nav bar */
-  /* Clearance above the footer strip for floating controls (Layers, zoom, calendar pill) */
-  --bottom-clearance: calc(var(--footer-bar-height) + var(--controls-gap) + 1.25rem);
+  /* Clearance above the footer strip for floating controls (Layers, zoom) —
+     just enough to sit clear of the strip, not a full extra row. */
+  --bottom-clearance: calc(var(--footer-bar-height) + 0.4rem);
 }
 
 * {
@@ -168,7 +168,7 @@ select:disabled {
 
 .control-btn--search {
   position: fixed;
-  top: calc(var(--app-header-height) + var(--control-btn-offset));
+  top: var(--control-btn-offset);
   left: var(--control-btn-offset);
   z-index: var(--z-search);
 }
@@ -400,7 +400,7 @@ select:disabled {
   .map-search:not(.is-info) {
     position: fixed;
     inset: auto;
-    top: calc(var(--app-header-height) + var(--control-btn-offset));
+    top: var(--control-btn-offset);
     left: var(--control-btn-offset);
     width: min(22rem, calc(100vw - 2 * var(--control-btn-offset)));
   }
@@ -439,7 +439,7 @@ select:disabled {
    ======================================== */
 .panel-toggle-btn {
   position: fixed;
-  top: calc(var(--app-header-height) + var(--control-btn-offset));
+  top: var(--control-btn-offset);
   right: var(--control-btn-offset);
   /* Must be above the modal overlay so the button stays clickable
      when the filter panel (and its backdrop) are open. */
@@ -579,6 +579,8 @@ select:disabled {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  /* Anchors the settings popover (SettingsControl.ts) to the header. */
+  position: relative;
 }
 /* On mobile the toggle button is hidden when the panel is open (the close
    button inside the header takes over — see below), so no extra padding is
@@ -1082,7 +1084,7 @@ select:disabled {
 .search-info__image {
   width: 120px;
   height: 120px;
-  border-radius: 50%;
+  border-radius: var(--radius-md);
   object-fit: cover;
   display: block;
   flex-shrink: 0;
@@ -1158,8 +1160,8 @@ select:disabled {
   color: var(--color-text-light);
 }
 
-/* Multi-image info field — a grid of thumbnails, each opening the shared
-   lightbox (Lightbox.ts) at its own index. */
+/* Multi-image info field — a grid of square thumbnails, each opening the
+   shared lightbox (Lightbox.ts) at its own index. */
 .search-info__gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1300,7 +1302,7 @@ select:disabled {
     /* Same top as the plain search bar (not below it) — this panel IS the
        search bar's own container now that they're merged, not a separate
        element stacked underneath it. */
-    top: calc(var(--app-header-height) + var(--control-btn-offset));
+    top: var(--control-btn-offset);
     bottom: var(--bottom-clearance);
     left: var(--control-btn-offset);
     right: auto;
@@ -1403,16 +1405,15 @@ select:disabled {
 .settings-control-trigger {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.85rem;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
   background-color: var(--color-white);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
+  border-radius: 50%;
   cursor: pointer;
-  font: inherit;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text);
+  color: var(--color-text-light);
   transition: all var(--transition-fast);
 }
 .settings-control-trigger:hover {
@@ -1475,100 +1476,59 @@ select:disabled {
 }
 
 /* ========================================
-   APP HEADER — persistent top bar: world title/brand on the left, Home /
-   Map / Calendar / About nav on the right. Visible across every view
-   (welcome/about included) so navigation never dead-ends.
+   FILTER PILLS — top-of-map, horizontally scrollable rows of taxonomy
+   value pills. Replaces the old right-hand filters drawer (PanelRight.ts).
    ======================================== */
-.app-header {
+.filter-pills {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  /* Same top offset and height as the search / panel-toggle circular
+     buttons, and inset past them on both sides, so the pill rows sit
+     vertically centered in the same band as those two icons. */
+  top: var(--control-btn-offset);
+  left: calc(var(--control-btn-offset) + var(--control-btn-size) + var(--controls-gap));
+  right: calc(var(--control-btn-offset) + var(--control-btn-size) + var(--controls-gap));
   z-index: var(--z-fixed);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.6rem 1rem;
-  background: var(--color-white);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: var(--control-btn-size);
+  pointer-events: none;
 }
-.app-header__brand {
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--font-size-base);
-  color: var(--color-text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.filter-pills:empty {
+  display: none;
 }
-.app-header__nav {
+.filter-pills__scroll {
+  min-width: 0;
   display: flex;
-  gap: 0.25rem;
-  background: var(--color-bg-alt);
-  border-radius: var(--radius-full);
-  padding: 0.25rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  overflow-x: auto;
+  pointer-events: auto;
 }
-.app-header__nav-btn {
+.filter-pills__group {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  border: none;
-  background: transparent;
-  border-radius: var(--radius-full);
-  padding: 0.4rem 0.9rem;
-  font: inherit;
-  font-size: var(--font-size-sm);
-  cursor: pointer;
+}
+.filter-pills__label {
+  flex-shrink: 0;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   color: var(--color-text-light);
-  transition: background-color var(--transition-fast);
+  text-shadow: 0 1px 2px var(--color-white);
 }
-.app-header__nav-btn svg {
-  width: 18px;
-  height: 18px;
-}
-.app-header__nav-btn.is-active {
-  background: var(--color-primary);
-  color: var(--color-white);
-}
-.app-header__nav-btn span {
-  display: none;
-}
-@media (min-width: 48rem) {
-  .app-header__nav-btn span {
-    display: inline;
-  }
-}
-
-/* ========================================
-   CATEGORY NAV — always-visible chip bar (Map view only) surfacing each
-   world's icon-bearing taxonomy dimension(s), a fast path onto the same
-   activeFilters state the filters drawer (PanelRight.ts) owns.
-   ======================================== */
-.category-nav {
-  position: absolute;
-  top: calc(var(--app-header-height) + 0.75rem);
-  left: 0;
-  right: 0;
-  z-index: var(--z-fixed);
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  gap: 0.5rem;
-  padding: 0 1rem;
-}
-.category-nav:empty {
-  display: none;
-}
-.category-nav__chip {
+.filter-pill {
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.3rem;
   border: 1px solid var(--color-border);
   background: var(--color-white);
   border-radius: var(--radius-full);
-  padding: 0.35rem 0.8rem;
+  padding: 0.3rem 0.7rem;
   font: inherit;
   font-size: var(--font-size-sm);
   cursor: pointer;
@@ -1576,16 +1536,31 @@ select:disabled {
   box-shadow: var(--shadow-md);
   white-space: nowrap;
 }
-.category-nav__chip.is-active {
+.filter-pill.is-active {
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: var(--color-white);
 }
+.filter-pills__clear {
+  flex-shrink: 0;
+  pointer-events: auto;
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  border-radius: var(--radius-full);
+  padding: 0.3rem 0.7rem;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  color: var(--color-text);
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+}
+
 /* ========================================
-   WELCOME VIEW — one-way thematic splash, only reachable as the initial
-   view (see store.ts's AppState.view comment, WelcomeView.ts).
+   HOME VIEW — the single shared landing page listing every world. Replaces
+   the per-world `welcome` splash (WelcomeView.ts).
    ======================================== */
-.welcome-view {
+.home-view {
   display: none;
   position: absolute;
   inset: 0;
@@ -1595,46 +1570,113 @@ select:disabled {
   overflow-y: auto;
   text-align: center;
   background: var(--color-bg);
-  padding: calc(var(--app-header-height) + 1.5rem) 1.5rem 2rem;
+  padding: 2rem 1.5rem;
 }
-.welcome-view__header {
-  max-width: 32rem;
+.map-app.view-home #home-view {
+  display: flex;
+}
+.map-app.view-home #map,
+.map-app.view-home #search-overlay,
+.map-app.view-home #panel-right-toggle,
+.map-app.view-home .bottom-left-controls,
+.map-app.view-home .map-footer-legend,
+.map-app.view-home .filter-pills,
+.map-app.view-home .world-title,
+.map-app.view-home .leaflet-control-zoom {
+  display: none;
+}
+.home-view__header {
+  max-width: 36rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
-.welcome-view__hero {
-  max-width: min(90vw, 480px);
-  max-height: 40vh;
-  object-fit: cover;
-  border-radius: var(--radius-md);
-  margin-bottom: 0.75rem;
-}
-.welcome-view__content {
-  max-width: 32rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-}
-.welcome-view__title {
+.home-view__title {
   margin: 0;
   font-size: var(--font-size-xl, 1.75rem);
   color: var(--color-text);
 }
-.welcome-view__tagline {
+.home-view__tagline {
   margin: 0;
   color: var(--color-text-light);
   font-size: var(--font-size-base);
 }
-.welcome-view__count {
-  margin: 0;
-  color: var(--color-text-light);
-  font-size: var(--font-size-sm);
+.home-view__content {
+  max-width: 48rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
 }
-.welcome-view__cta {
-  margin-top: 0.75rem;
+.home-view__intro {
+  margin: 0;
+  max-width: 40rem;
+  color: var(--color-text-light);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+}
+.home-view__worlds-title {
+  margin: 0.5rem 0 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-light);
+}
+.home-view__grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+.home-view__card {
+  flex: 0 1 18rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  text-align: left;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  text-decoration: none;
+  color: var(--color-text);
+  box-shadow: var(--shadow-md);
+  transition:
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+.home-view__card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+.home-view__card.is-current {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+.home-view__card-icon {
+  flex-shrink: 0;
+  font-size: 1.75rem;
+  line-height: 1;
+}
+.home-view__card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.home-view__card-title {
+  font-weight: var(--font-weight-semibold);
+}
+.home-view__card-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+}
+.home-view__cta {
   padding: 0.7rem 1.6rem;
   border: none;
   border-radius: var(--radius-full);
@@ -1644,27 +1686,13 @@ select:disabled {
   font-weight: var(--font-weight-medium);
   cursor: pointer;
 }
-.welcome-view__cta:hover {
+.home-view__cta:hover {
   background: var(--color-primary-dark, var(--color-primary));
 }
-.welcome-view__footer {
+.home-view__footer {
   margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
-}
-.welcome-view__links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem 1rem;
-}
-.welcome-view__link {
-  color: var(--color-text-light);
-  font-size: var(--font-size-sm);
-  text-decoration: underline;
-}
-.welcome-view__link:hover {
-  color: var(--color-text);
 }
 .legal-footer {
   margin: 1.5rem 0 0;
@@ -1681,220 +1709,106 @@ select:disabled {
 }
 
 /* ========================================
-   ABOUT VIEW — full-screen, reached via the header's About nav link, only
-   when the manifest declares `about` (main.ts, AboutView.ts).
+   WORLD TITLE — bottom-centered world name, the only always-visible
+   branding now that the top header is gone.
    ======================================== */
-.about-view {
-  display: none;
+.world-title {
   position: absolute;
-  inset: 0;
-  overflow-y: auto;
-  background: var(--color-bg);
-  padding: calc(var(--app-header-height) + 1.5rem) 1.5rem 2rem;
-}
-.about-view__content {
-  max-width: 40rem;
-  margin: 0 auto;
-}
-.about-view__title {
-  margin: 0 0 1rem;
-  font-size: var(--font-size-xl, 1.75rem);
-  color: var(--color-text);
-}
-.about-view__paragraph {
-  margin: 0 0 1rem;
-  color: var(--color-text);
-  line-height: 1.6;
-}
-.about-view__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  margin-top: 1.5rem;
-}
-.about-view__link {
-  color: var(--color-primary);
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-fixed);
+  padding: 0.3rem 0.9rem;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-white) 85%, transparent);
+  box-shadow: var(--shadow-md);
   font-size: var(--font-size-sm);
-  text-decoration: underline;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  white-space: nowrap;
+  pointer-events: none;
 }
-.about-view__footer {
-  max-width: 40rem;
-  margin: 2rem auto 0;
-  padding-top: 1.5rem;
-  border-top: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
-}
-
-.calendar-view {
-  display: none;
-  position: absolute;
-  inset: 0;
-  overflow-y: auto;
-  background: var(--color-bg);
-  padding: calc(var(--app-header-height) + 0.75rem) 1rem 1.5rem;
-}
-.map-app.view-calendar #calendar-view {
-  display: block;
-}
-.map-app.view-calendar #map,
-.map-app.view-calendar #search-overlay,
-.map-app.view-calendar .bottom-left-controls,
-.map-app.view-calendar .map-footer-legend,
-.map-app.view-calendar .category-nav,
-.map-app.view-calendar .leaflet-control-zoom {
-  display: none;
-}
-/* Welcome splash and About both stay reachable/leavable via the persistent
-   header (#app-header) — only the map-specific chrome (search, filters
-   toggle, category chips, floating controls) is irrelevant on them. */
-.map-app.view-welcome #welcome-view {
-  display: flex;
-}
-.map-app.view-welcome #map,
-.map-app.view-welcome #search-overlay,
-.map-app.view-welcome #panel-right-toggle,
-.map-app.view-welcome .bottom-left-controls,
-.map-app.view-welcome .map-footer-legend,
-.map-app.view-welcome .category-nav,
-.map-app.view-welcome .leaflet-control-zoom {
-  display: none;
-}
-.map-app.view-about #about-view {
-  display: block;
-}
-.map-app.view-about #map,
-.map-app.view-about #search-overlay,
-.map-app.view-about #panel-right-toggle,
-.map-app.view-about .bottom-left-controls,
-.map-app.view-about .map-footer-legend,
-.map-app.view-about .category-nav,
-.map-app.view-about .leaflet-control-zoom {
-  display: none;
-}
-/* `systems.time: false` in world.json (e.g. a world with no temporal data,
-   like paranormal-espana) hides the Time UI entirely — not just visually,
-   the Calendar nav button becomes unreachable so `view` can never become
-   'calendar' via any other code path. Home/Map/About stay reachable. */
-.map-app.no-time #app-header-nav [data-view='calendar'],
+/* `systems.time: false` in world.json (e.g. a world with no temporal data)
+   hides the Time UI entirely. */
 .map-app.no-time #panel-right-time,
-.map-app.no-time #calendar-view,
 .map-app.no-time .map-footer-legend .map-date-text {
   display: none;
 }
 /* #panel-right-time is sandwiched between two .panel__section-separator
-   elements (filters section above, settings row below) — hide the one
-   immediately before it too, or a double-separator gap remains. */
-.map-app.no-time .panel__section-separator:has(+ #panel-right-time) {
+   elements (settings row below) — hide the one immediately after it too, or
+   a double-separator gap remains. */
+.map-app.no-time .panel__section-separator:has(+ #panel-right-map-settings) {
   display: none;
-}
-.calendar-view__header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-.calendar-view__tabs {
-  display: flex;
-  gap: 0.25rem;
-}
-.calendar-view__tab {
-  border: 1px solid var(--color-border);
-  background: var(--color-white);
-  border-radius: var(--radius-full);
-  padding: 0.35rem 0.9rem;
-  font: inherit;
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-}
-.calendar-view__tab.is-active {
-  background: var(--color-primary);
-  color: var(--color-white);
-  border-color: var(--color-primary);
-}
-.calendar-view__nav {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.calendar-view__period {
-  font-weight: var(--font-weight-semibold);
-  min-width: 8rem;
-  text-align: center;
-}
-/* renderCalendarGrid() (CalendarGrid.ts) fully overwrites its container's
-   className to "calendar-bar__grid calendar-grid calendar-grid--<granularity>"
-   — the "calendar-view__grid" class on the wrapper div in the template below
-   gets wiped the instant renderCalendarGrid runs, so this targets the class
-   that actually survives (.calendar-grid, which renderCalendarGrid sets)
-   scoped under .calendar-view__body instead of relying on a class of our own. */
-.calendar-view__body > .calendar-grid {
-  max-width: 28rem;
-}
-.calendar-view__year {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
-  gap: 1.5rem;
-}
-.calendar-view__year-month-title {
-  font-weight: var(--font-weight-semibold);
-  margin: 0 0 0.4rem;
-}
-.calendar-view__agenda {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  max-width: 32rem;
-}
-.calendar-view__agenda-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 0.6rem 0.8rem;
-}
-.calendar-view__agenda-layer {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-light);
-  text-transform: uppercase;
-}
-.calendar-view__agenda-name {
-  flex: 1;
-  font-weight: var(--font-weight-medium);
-}
-.calendar-view__agenda-view-btn {
-  border: 1px solid var(--color-primary);
-  background: var(--color-white);
-  color: var(--color-primary);
-  border-radius: var(--radius-full);
-  padding: 0.3rem 0.75rem;
-  font: inherit;
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-}
-.calendar-view__agenda-view-btn:hover {
-  background: var(--color-primary-light);
-}
-.calendar-view__agenda-empty {
-  color: var(--color-text-light);
-}
-
-.calendar-view__list-date {
-  font-weight: var(--font-weight-semibold);
-  margin: 1rem 0 0.4rem;
-}
-.calendar-view__list-date:first-child {
-  margin-top: 0;
 }
 
 /* ========================================
-   CALENDAR GRID (month/year day lists inside the compact Time editor)
+   CALENDAR GRID (month day list inside the right panel's Time section)
    ======================================== */
+.calendar-bar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem;
+  margin-bottom: 0.4rem;
+}
+.calendar-bar__nav-btn {
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  width: 1.75rem;
+  height: 1.75rem;
+  font: inherit;
+  font-size: var(--font-size-base);
+  line-height: 1;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+.calendar-bar__nav-btn:hover {
+  background: var(--color-bg-alt);
+}
+.calendar-bar__title-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.5rem;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+.calendar-bar__title-btn:hover {
+  background: var(--color-bg-alt);
+}
+/* Month/year pick grids (the zoomed-out levels of the drill-down). */
+.calendar-bar__picks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.3rem;
+}
+.calendar-bar__pick {
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.25rem;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+.calendar-bar__pick:hover {
+  background: var(--color-primary-light);
+}
+.calendar-bar__pick.is-selected {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-white);
+  font-weight: var(--font-weight-semibold);
+}
 .calendar-bar__grid {
   margin-top: 0.5rem;
 }
@@ -1942,6 +1856,14 @@ select:disabled {
 .calendar-grid__cell--muted {
   color: var(--color-text-light);
   opacity: 0.4;
+}
+/* Dates past the world's `calendar.max` — softer than a normal day, and
+   not selectable (no data exists beyond that point). `button.` prefix beats
+   the global `button:disabled { opacity: 0.55 }` rule. */
+button.calendar-grid__cell--future {
+  color: var(--color-text-light);
+  opacity: 0.3;
+  font-style: italic;
 }
 .calendar-grid__cell--selected {
   background: var(--color-primary);
@@ -2152,6 +2074,19 @@ select:disabled {
   object-fit: cover;
   border-radius: 50%;
   display: block;
+}
+/* `style.imageVariant: 'phase'` — a transparent shape (e.g. a moon phase
+   SVG) rendered as a bare glyph: no white disc behind it, so the shape
+   itself reads. */
+.category-marker-icon--phase .category-marker-icon__circle {
+  background-color: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+.category-marker-icon--phase .category-marker-icon__image {
+  object-fit: contain;
+  border-radius: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 }
 /* style.badgeField/badgeMap's small corner overlay — sparse, most features
    render no badge at all. */

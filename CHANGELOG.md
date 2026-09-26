@@ -2,6 +2,48 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Home is about the project, not the loaded world
+
+The Home page previously used the loaded world's `title` as its heading, which read as if the world were the site. It now uses a project-level `SITE_TITLE` (`'Universal Calendar Map'`, `src/ui/worlds.ts`) for the heading and the legal footer, with a "Worlds" section heading above the cards. A world's own title appears only as its card label — clicking a card is what enters that world. The document title follows the view too: `SITE_TITLE` on Home, the world's title on the map (`mountWorldTitle`, `app-chrome.ts`). The legal pages' brand and `index.html`'s default title were renamed to match.
+
+## Demo world removed; Home cards centered
+
+- **`worlds/demo/` is gone** (and its `build:demo-only` script). The default world is now `world-leaders`, exported as `DEFAULT_WORLD_ID` (`resolve-world-id.ts`) and kept in sync with the first entry of `AVAILABLE_WORLDS` (`src/ui/worlds.ts`). Tests and docs that used `demo` as a fixture/reference now use a neutral `example-world` fixture or `world-leaders`.
+- **Home cards are centered**: the grid is now a centered `flex-wrap` layout, so a row with a single card (e.g. an odd number of worlds) centers that card instead of leaving it left-aligned.
+
+## Path-based world URLs, richer Home page, shared header/footer with the legal pages
+
+- **Worlds now live at real paths**: `/world-leaders/` instead of `/?world=world-leaders`. `resolveWorldId` reads the first path segment (after stripping Vite's `base`), with `?world=` still honored as an override. New `worldRoutesPlugin` (`vite.config.ts`) makes this work on a static host: it emits a nested `index.html` per world folder at build time, and rewrites a `/world-leaders/` request to `index.html` in dev. `index.html` gained a `<base href="./">` tag — the nested copies get it rewritten to `../`, which fixes the built asset refs, the runtime `worlds/...` fetches, and image paths in world data all at once.
+- **Home page** is now a proper landing page: a tagline, an intro paragraph explaining the project, and one card per world with an emoji icon, title, and description — clicking a card opens that world directly (the current world's card switches in place; others navigate). `WorldEntry` gained an `icon` field.
+- **Shared header/footer**: the legal pages (`privacy.html`, `cookies.html`, `terms.html`) now carry the same `.site-header`/`.site-footer` markup and styling as the app, with links between Home and the three legal pages, so the whole site reads as one.
+
+## Filter pills aligned with the top icons, place-only search, moon-phase markers, softer future dates
+
+- **Filter pills** now sit in the same top band as the search and panel-toggle circular buttons (same `--control-btn-offset`/`--control-btn-size`, inset past them on both sides, vertically centered) instead of a separate row below.
+- **`panel.searchFields`** (new, optional): which feature properties a search query matches against. Defaults to `['name', 'title']`. `moon-map-photos` sets `["title", "tags"]`, so search matches places only — not camera/user/date metadata.
+- **Search result dedupe** (`dedupeSearchResults`, `search.ts`): results that read as the same entry (e.g. many photos from one place) collapse to one row, keyed by the first searchable field with a value.
+- **Moon-phase markers**: new `style.imageVariant: 'phase'` renders an image marker as a bare glyph (no white disc behind it, `object-fit: contain`, drop-shadow) — for a transparent shape like a moon phase SVG, where a filled circle would hide the shape. `moon-map-photos` uses `imageField: properties.moonPhaseIcon` with this variant, so each marker shows the actual lunar phase.
+- **Future dates** (past `calendar.max`) get a `calendar-grid__cell--future` class: softer color, lower opacity, italic, and `disabled` — not selectable, since no data exists beyond that point.
+
+## Home cards open the map, deduped markers, photo galleries, settings in the panel header
+
+- **Home view**: the "Enter map" button is gone — clicking a world card opens it. The current world's card switches to the map in place; any other card is a real navigation.
+- **Marker dedupe** (`style.dedupeMarkers: true`, opt-in): point features sharing the exact same coordinate collapse to a single marker, so several moon photos from one spot don't stack. Off by default (two distinct places can legitimately share a coordinate). Used by `moon-map-photos`.
+- **Sibling photo gallery**: when several features share a coordinate and day, the info panel collects their image field into one square-thumbnail gallery (with the shared lightbox's prev/next arrows), instead of showing only the clicked feature's photo. The single-image info field is skipped when the gallery already covers it.
+- **Square thumbnails**: `.search-info__image` and gallery thumbs are now square (`border-radius: var(--radius-md)` / `aspect-ratio: 1`) rather than circular.
+- **Settings moved into the panel header**: the settings control is now a compact icon button next to the panel title, opening its popover over the panel (anchored to the header) instead of a full-width row at the bottom of the panel content.
+
+## UI simplification: shared Home, top filter pills, calendar-only right panel, no header
+
+A deliberate reduction of the interface to its essentials:
+
+- **Top header removed.** The persistent `#app-header` (world title + Home/Map/Calendar/About nav) is gone. The world's title now sits **bottom-centered** (`#world-title`, `mountWorldTitle()` in `app-chrome.ts`) as the only always-visible branding.
+- **One shared Home view.** The per-world `welcome` splash (`WelcomeView.ts`) and the `about` view (`AboutView.ts`) are removed. `welcome` is now a plain **boolean** in `world.json` meaning "start on the shared Home view"; the Home view itself (`HomeView.ts`) is shared across every world and lists all worlds in the build (`src/ui/worlds.ts` is the single source of truth, also used by the Settings world switcher). The `about` manifest field is removed entirely.
+- **Calendar view removed; calendar lives in the right panel.** The full-screen `CalendarView.ts` is gone. The right panel's Time section (`CalendarBar.ts`) is now a **Windows-Calendar-style drill-down**: a month grid whose header shows "September 2026" with prev/next arrows. Clicking the header zooms out to a 12-month grid (header "2026"); clicking again zooms out to a decade of years (header "2020–2029"). Picking a month zooms back in to that month; picking a year zooms in to its months. Arrows step by whatever level is showing. `renderCalendarGrid` gained an `anchorIso` option so the grid can render a browsed month distinct from the selected date.
+- **Filters are top pills — but only when few.** The right-hand filters drawer (`PanelRight.ts`) is restored as the full filter UI (every dimension, every value, counts, select-all). A top-of-map pill bar (`FilterPills.ts`) is now only a *shortcut*: it renders only when the whole filter set is small (≤2 dimensions and ≤8 values total), and stays empty otherwise — so a world with many filters (e.g. demo's 31 municipios) shows no top bar at all and relies on the panel. `CategoryNav.ts` remains removed (superseded by the pills/panel).
+
+`AppState.view` is now `'home' | 'map'` (was `'welcome' | 'map' | 'calendar' | 'about'`). `systems.time: false` still hides the Time section and the date readout.
+
 ## Persistent header nav (Home/Map/Calendar/About), About Us view, and category chip bar
 
 The floating Map/Calendar pill (`#view-switcher`) is now a full-width, always-visible header (`#app-header`, `mountHeader()` in `app-chrome.ts`) showing the world's title plus nav links — Home (only when `welcome` is declared; routes back to the splash, which is no longer strictly one-way), Map, Calendar, and a new About link (only when a new optional `about` manifest field is declared). `about: { title, body: string[], links?: {label,url}[] }` is validated the same way `welcome` is (`app-manifest.ts`, `docs/schemas/world.schema.json`, `docs/json-reference.md`) and rendered by a new `AboutView.ts`, mounted the same conditional way `WelcomeView.ts` is. A shared `renderLegalFooter()` (`src/ui/panels/legal-footer.ts`) factors out the privacy/cookies/terms row previously duplicated only in `WelcomeView.ts`, now reused by `AboutView.ts` too. `systems.time: false` now only hides the header's Calendar link specifically (`[data-view="calendar"]`), not the whole header — Home/Map/About stay reachable.

@@ -17,17 +17,22 @@ export interface CalendarGridDeps {
   max: string; // ISO date — cells after this are shown disabled/muted
   // Clicking a day cell. Only selects — never changes granularity.
   onSelectDay: (iso: string) => void;
+  // Which month/week to render, when it differs from `selectedIso`'s own
+  // (e.g. the drill-down calendar browsing a month the user hasn't picked a
+  // day in yet). Defaults to `selectedIso`.
+  anchorIso?: string;
 }
 
 // Rebuilds innerHTML from scratch on every call — same pattern as
 // PanelRight.ts/CalendarBar.ts, no DOM diffing anywhere in this codebase.
 export function renderCalendarGrid(container: HTMLElement, deps: CalendarGridDeps): void {
   const { granularity, selectedIso, system, layers, activeFilters, strings, min, max } = deps;
+  const anchorIso = deps.anchorIso ?? selectedIso;
 
   const cells =
     granularity === 'week'
-      ? buildWeekCells(selectedIso, system, layers, activeFilters)
-      : buildMonthCells(selectedIso, system, layers, activeFilters);
+      ? buildWeekCells(anchorIso, system, layers, activeFilters)
+      : buildMonthCells(anchorIso, system, layers, activeFilters);
 
   const weekdayHeader = WEEKDAY_KEYS.map(
     (key) => `<span class="calendar-grid__weekday">${escapeHtml(t(`calendar.weekday.${key}`, strings))}</span>`,
@@ -41,6 +46,9 @@ export function renderCalendarGrid(container: HTMLElement, deps: CalendarGridDep
       const muted = !cell.inCurrentPeriod || outOfRange;
       const classes = ['calendar-grid__cell'];
       if (muted) classes.push('calendar-grid__cell--muted');
+      // Dates after the world's `calendar.max` are shown in a softer tone
+      // and are not selectable — there's no data beyond that point.
+      if (cell.iso > max) classes.push('calendar-grid__cell--future');
       if (cell.iso === selectedIso) classes.push('calendar-grid__cell--selected');
       if (cell.hasEvents) classes.push('calendar-grid__cell--has-events');
       const disabled = muted ? 'disabled' : '';

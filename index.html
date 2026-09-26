@@ -3,7 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Universal Map</title>
+    <title>Universal Calendar Map</title>
+    <!-- Resolves every relative URL (the `worlds/...` fetches, image paths in
+         world data, built asset refs) against the app root rather than the
+         current page. A world page lives one level deep (`/world-leaders/`),
+         so `vite.config.ts`'s `worldRoutesPlugin` rewrites this to `../` in
+         the nested copies it emits. -->
+    <base href="./" />
     <link
       rel="icon"
       type="image/svg+xml"
@@ -16,20 +22,11 @@
         <div class="loading-overlay__spinner"></div>
       </div>
 
-      <div id="welcome-view" class="welcome-view"></div>
-
-      <div id="about-view" class="about-view"></div>
+      <div id="home-view" class="home-view"></div>
 
       <div id="map" class="map"></div>
 
-      <header id="app-header" class="app-header">
-        <div id="app-header-brand" class="app-header__brand"></div>
-        <nav id="app-header-nav" class="app-header__nav"></nav>
-      </header>
-
-      <div id="category-nav" class="category-nav"></div>
-
-      <div id="calendar-view" class="calendar-view"></div>
+      <div id="filter-pills" class="filter-pills"></div>
 
       <div id="search-overlay"></div>
 
@@ -45,14 +42,13 @@
       <aside id="panel-right" class="panel panel--right" aria-hidden="true">
         <header class="panel__header">
           <div class="panel__title" data-role="filters-title"></div>
-          <button type="button" id="panel-right-close" class="panel__close-btn" aria-label="Close filters"></button>
+          <div id="panel-right-settings" class="settings-control"></div>
+          <button type="button" id="panel-right-close" class="panel__close-btn" aria-label="Close panel"></button>
         </header>
         <div class="panel__content">
           <div id="panel-right-filters"></div>
           <div class="panel__section-separator"></div>
           <div id="panel-right-time" class="calendar-bar"></div>
-          <div class="panel__section-separator"></div>
-          <div id="panel-right-map-settings" class="settings-control"></div>
           <div class="panel__section-separator"></div>
           <div id="panel-right-actions"></div>
         </div>
@@ -72,6 +68,8 @@
         </div>
         <span class="data-attribution" id="map-attribution"></span>
       </div>
+
+      <div id="world-title" class="world-title"></div>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

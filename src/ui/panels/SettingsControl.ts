@@ -8,16 +8,9 @@ import { detectDefaultLanguage, getStoredLanguage, setStoredLanguage, type Langu
 import { t } from '../strings';
 import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
+import { AVAILABLE_WORLDS } from '../worlds';
 
 const LANGUAGES: readonly Language[] = ['en', 'es'];
-
-const AVAILABLE_WORLDS = [
-  { id: 'demo', label: 'Demo' },
-  { id: 'world-leaders', label: 'Líderes del Mundo' },
-  { id: 'paranormal-spain', label: 'Paranormal España' },
-  { id: 'events-canary-islands', label: 'Eventos de Canarias' },
-  { id: 'moon-map-photos', label: 'Fotos de la Luna' },
-] as const;
 
 export interface SettingsControlDeps {
   appManifest: AppManifest;
@@ -75,9 +68,8 @@ export function mountSettingsControl(
     : '';
 
   container.innerHTML = `
-    <button type="button" class="settings-control-trigger" aria-expanded="false" aria-label="${t('settings.trigger', strings)}">
+    <button type="button" class="settings-control-trigger" aria-expanded="false" aria-label="${t('settings.trigger', strings)}" title="${t('settings.trigger', strings)}">
       ${icons.settings}
-      <span class="settings-control-trigger__label">${t('settings.trigger', strings)}</span>
     </button>
     <section class="settings-control-popover" hidden>
       <label class="settings-control-row">

@@ -9,7 +9,6 @@ import {
   daysInCalendarMonth,
   monthsInCalendarYear,
 } from '../../engine/time/calendar-conversion';
-import { buildYearMonthCells } from '../../engine/time/calendar-grid';
 import { renderCalendarGrid } from './CalendarGrid';
 import { t } from '../strings';
 import { escapeHtml } from '../escape-html';
@@ -69,54 +68,18 @@ export function clampDateToRange(iso: string, min: string, max: string): string 
   return iso;
 }
 
+
+// Windows-Calendar-style drill-down: a month grid whose header shows
+// "September 2026" with prev/next arrows. Clicking the header zooms out to a
+// 12-month grid (header "2026"), clicking again zooms out to a decade of
+// years (header "2020-2029"). Picking a month zooms back in to that month;
+// picking a year zooms in to its months. Arrows step by whatever level is
+// showing. The calendar-system select lives in SettingsControl.ts, not here —
+// CalendarBar only reads store.calendarSystem.
+type CalendarLevel = 'days' | 'months' | 'years';
+
 const MONTH_KEYS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-const WEEKDAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-
-// One mini-month (title + weekday header + day cells), for the year
-// granularity's stacked list of 12 (13 for a Hebrew leap year) months.
-// Same cell markup/classes as CalendarGrid.ts's renderCalendarGrid, kept
-// separate rather than shared — CalendarView.ts's renderYearMonth makes the
-// identical call (see its comment): reusing a single-cell renderer across
-// files for ~10 lines of markup isn't worth the coupling.
-function renderYearMonth(
-  group: {
-    iso: string;
-    month: number;
-    cells: { iso: string; day: number; inCurrentPeriod: boolean; hasEvents: boolean }[];
-  },
-  system: CalendarSystem,
-  selectedIso: string,
-  min: string,
-  max: string,
-  strings: Record<string, string>,
-): string {
-  const monthName =
-    system === 'gregorian'
-      ? t(`calendar.month.${MONTH_KEYS[group.month - 1]}`, strings)
-      : toCalendarParts(group.iso, system).monthName;
-
-  const weekdayHeader = WEEKDAY_KEYS.map(
-    (key) => `<span class="calendar-grid__weekday">${escapeHtml(t(`calendar.weekday.${key}`, strings))}</span>`,
-  ).join('');
-
-  const cellsHtml = group.cells
-    .map((cell) => {
-      const outOfRange = cell.iso < min || cell.iso > max;
-      const muted = !cell.inCurrentPeriod || outOfRange;
-      const classes = ['calendar-grid__cell'];
-      if (muted) classes.push('calendar-grid__cell--muted');
-      if (cell.iso === selectedIso) classes.push('calendar-grid__cell--selected');
-      if (cell.hasEvents) classes.push('calendar-grid__cell--has-events');
-      const disabled = muted ? 'disabled' : '';
-      return `<button type="button" class="${classes.join(' ')}" data-iso="${escapeHtml(cell.iso)}" ${disabled}>${cell.day}</button>`;
-    })
-    .join('');
-
-  return `<div class="calendar-bar__year-month">
-    <p class="calendar-bar__year-month-title">${escapeHtml(monthName)}</p>
-    <div class="calendar-grid">${weekdayHeader}${cellsHtml}</div>
-  </div>`;
-}
+const YEARS_PER_PAGE = 12;
 
 export function mountCalendarBar(
   container: HTMLElement,
@@ -127,66 +90,36 @@ export function mountCalendarBar(
 ): void {
   const maxIso = config.max;
 
-  // Fixed month/year — day/week browsing lives in the left panel instead
-  // (SearchOverlay.ts's day agenda, always reflecting store.selectedDate),
-  // so this widget only needs to pick a month or jump by year.
-  const GRANULARITIES: ReadonlyArray<'month' | 'year'> = ['month', 'year'];
-  const granularityOptions = GRANULARITIES.map(
-    (g) => `<option value="${g}">${escapeHtml(t(`calendar.granularity.${g}`, strings))}</option>`,
-  ).join('');
-
-  // Lives inline inside the filters panel — always visible, no toggle of
-  // its own. No numeric year/month/day fields and no slider — the plain
-  // selected-date text already lives elsewhere (app-chrome.ts's
-  // #map-date-text, the map's own always-visible date indicator). This is
-  // a browsable day list instead: month lists that month's days, year
-  // lists every month. Picking a day here also drives the left panel's day
-  // agenda (SearchOverlay.ts), which just reads store.selectedDate. The
-  // calendar-system select lives in SettingsControl.ts, not here —
-  // CalendarBar only reads store.calendarSystem.
   container.innerHTML = `
     <p class="settings-control-group__title">${t('layerControl.time', strings)}</p>
     <div class="calendar-bar__controls">
-      <div class="calendar-bar__row calendar-bar__row--granularity">
-        <button type="button" class="calendar-bar__step-btn" data-action="step-prev" aria-label="Step back">‹</button>
-        <select data-role="granularity">${granularityOptions}</select>
-        <button type="button" class="calendar-bar__step-btn" data-action="step-next" aria-label="Step forward">›</button>
-      </div>
-      <div class="calendar-bar__row calendar-bar__row--jump" data-role="jump-row" hidden>
-        <select data-role="month-jump"></select>
-        <select data-role="year-jump"></select>
+      <div class="calendar-bar__header">
+        <button type="button" class="calendar-bar__nav-btn" data-action="prev" aria-label="${escapeHtml(t('calendar.prevLabel', strings))}">‹</button>
+        <button type="button" class="calendar-bar__title-btn" data-action="zoom-out" aria-live="polite"></button>
+        <button type="button" class="calendar-bar__nav-btn" data-action="next" aria-label="${escapeHtml(t('calendar.nextLabel', strings))}">›</button>
       </div>
       <div class="calendar-bar__grid" data-role="grid"></div>
     </div>
   `;
 
   const gridEl = container.querySelector<HTMLElement>('[data-role="grid"]')!;
-  const granularitySelect = container.querySelector<HTMLSelectElement>('[data-role="granularity"]')!;
-  const jumpRowEl = container.querySelector<HTMLElement>('[data-role="jump-row"]')!;
-  const monthJumpSelect = container.querySelector<HTMLSelectElement>('[data-role="month-jump"]')!;
-  const yearJumpSelect = container.querySelector<HTMLSelectElement>('[data-role="year-jump"]')!;
+  const titleBtn = container.querySelector<HTMLButtonElement>('[data-action="zoom-out"]')!;
 
-  // UI-only, doesn't need to survive a reload or be shared with other
-  // panels — kept in this closure the same way PanelRight.ts keeps its
-  // open-section state.
-  let granularity: 'month' | 'year' = 'month';
-  granularitySelect.value = granularity;
-  granularitySelect.addEventListener('change', () => {
-    granularity = granularitySelect.value as 'month' | 'year';
-    render();
-  });
+  // UI-only state, kept in this closure like PanelRight's open sections.
+  let level: CalendarLevel = 'days';
+  // The year/month the grid is *showing*, which can differ from the selected
+  // date's own month while the user browses (e.g. after stepping back).
+  let viewYear: number;
+  let viewMonth: number;
+  let viewDecadeStart: number;
 
-  function step(direction: 1 | -1): void {
+  function syncViewToSelection(): void {
     const state = store.get();
-    const next = clampDateToRange(
-      nextSelectedDate(state.selectedDate, granularity, direction, state.calendarSystem),
-      config.min,
-      maxIso,
-    );
-    store.set({ selectedDate: next });
+    const parts = toCalendarParts(state.selectedDate, state.calendarSystem);
+    viewYear = parts.year;
+    viewMonth = parts.month;
+    viewDecadeStart = Math.floor(parts.year / YEARS_PER_PAGE) * YEARS_PER_PAGE;
   }
-  container.querySelector('[data-action="step-prev"]')!.addEventListener('click', () => step(-1));
-  container.querySelector('[data-action="step-next"]')!.addEventListener('click', () => step(1));
 
   function selectDay(iso: string): void {
     store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
@@ -196,87 +129,137 @@ export function mountCalendarBar(
     openPanel(store, 'left');
   }
 
-  // Jumps straight to a given year/month (day kept where it was, clamped to
-  // that month's length) — lets events-canary-islands' full-year 2026 range
-  // be browsed by picking a month directly instead of stepping through
-  // every one of the 11 months in between.
+  // Jumps to a year/month (day kept where it was, clamped to that month's
+  // length) and zooms back in to the day grid.
   function jumpTo(year: number, month: number): void {
     const state = store.get();
     const system = state.calendarSystem;
     const day = Math.min(toCalendarParts(state.selectedDate, system).day, daysInCalendarMonth(year, month, system));
     const iso = calendarPartsToIso({ year, month, day }, system);
-    store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
-  }
-  monthJumpSelect.addEventListener('change', () => {
-    const year = Number(yearJumpSelect.value);
-    jumpTo(year, Number(monthJumpSelect.value));
-  });
-  yearJumpSelect.addEventListener('change', () => {
-    const year = Number(yearJumpSelect.value);
-    const month = Math.min(Number(monthJumpSelect.value), monthsInCalendarYear(year, store.get().calendarSystem));
-    jumpTo(year, month);
-  });
-
-  // Populates the month/year jump selects for the currently selected
-  // year — month names/count depend on the year (Hebrew leap years add a
-  // 13th month) and on the calendar system, so this re-derives them on
-  // every render rather than building them once.
-  function renderJumpRow(selectedIso: string, system: CalendarSystem): void {
-    const { year: selectedYear, month: selectedMonth } = toCalendarParts(selectedIso, system);
-    const minYear = toCalendarParts(config.min, system).year;
-    const maxYear = toCalendarParts(maxIso, system).year;
-
-    const yearOptions: string[] = [];
-    for (let year = minYear; year <= maxYear; year++) {
-      yearOptions.push(`<option value="${year}">${year}</option>`);
-    }
-    yearJumpSelect.innerHTML = yearOptions.join('');
-    yearJumpSelect.value = String(selectedYear);
-
-    const monthOptions: string[] = [];
-    const monthCount = monthsInCalendarYear(selectedYear, system);
-    for (let month = 1; month <= monthCount; month++) {
-      const monthIso = calendarPartsToIso({ year: selectedYear, month, day: 1 }, system);
-      const monthName = toCalendarParts(monthIso, system).monthName;
-      monthOptions.push(`<option value="${month}">${escapeHtml(monthName)}</option>`);
-    }
-    monthJumpSelect.innerHTML = monthOptions.join('');
-    monthJumpSelect.value = String(selectedMonth);
+    const clamped = clampDateToRange(iso, config.min, maxIso);
+    store.set({ selectedDate: clamped });
+    // Re-derive the viewed month from the *clamped* date, so picking a month
+    // outside the world's range doesn't leave the grid showing a month the
+    // selection isn't actually in.
+    const parts = toCalendarParts(clamped, system);
+    viewYear = parts.year;
+    viewMonth = parts.month;
+    level = 'days';
+    render();
   }
 
-  function render(): void {
-    const state = store.get();
-    const system = state.calendarSystem;
-    const visibleLayers = layers.filter((layer) => !state.hiddenLayerIds.has(layer.manifest.id));
-
-    jumpRowEl.hidden = granularity !== 'month';
-    if (granularity === 'month') renderJumpRow(state.selectedDate, system);
-
-    if (granularity === 'year') {
-      const groups = buildYearMonthCells(state.selectedDate, system, visibleLayers, state.activeFilters);
-      gridEl.className = 'calendar-bar__grid calendar-bar__year';
-      gridEl.innerHTML = groups
-        .map((g) => renderYearMonth(g, system, state.selectedDate, config.min, maxIso, strings))
-        .join('');
-      gridEl.querySelectorAll<HTMLButtonElement>('[data-iso]:not([disabled])').forEach((button) => {
-        button.addEventListener('click', () => selectDay(button.dataset.iso!));
-      });
-      return;
+  function step(direction: 1 | -1): void {
+    if (level === 'days') {
+      const system = store.get().calendarSystem;
+      const next = addCalendarUnit(
+        calendarPartsToIso({ year: viewYear, month: viewMonth, day: 1 }, system),
+        system,
+        'month',
+        direction,
+      );
+      const parts = toCalendarParts(next, system);
+      viewYear = parts.year;
+      viewMonth = parts.month;
+    } else if (level === 'months') {
+      viewYear += direction;
+    } else {
+      viewDecadeStart += direction * YEARS_PER_PAGE;
     }
+    render();
+  }
 
+  function zoomOut(): void {
+    if (level === 'days') level = 'months';
+    else if (level === 'months') {
+      level = 'years';
+      viewDecadeStart = Math.floor(viewYear / YEARS_PER_PAGE) * YEARS_PER_PAGE;
+    }
+    render();
+  }
+
+  function monthName(year: number, month: number, system: CalendarSystem): string {
+    if (system === 'gregorian') return t(`calendar.month.${MONTH_KEYS[month - 1]}`, strings);
+    return toCalendarParts(calendarPartsToIso({ year, month, day: 1 }, system), system).monthName;
+  }
+
+  function renderDays(system: CalendarSystem): void {
+    const visibleLayers = layers.filter((layer) => !store.get().hiddenLayerIds.has(layer.manifest.id));
+    const monthIso = calendarPartsToIso({ year: viewYear, month: viewMonth, day: 1 }, system);
+    titleBtn.textContent = `${monthName(viewYear, viewMonth, system)} ${viewYear}`;
     renderCalendarGrid(gridEl, {
       granularity: 'month',
-      selectedIso: state.selectedDate,
+      selectedIso: store.get().selectedDate,
       system,
       layers: visibleLayers,
-      activeFilters: state.activeFilters,
+      activeFilters: store.get().activeFilters,
       strings,
       min: config.min,
       max: maxIso,
       onSelectDay: selectDay,
+      // The grid renders the *viewed* month, not necessarily the selected
+      // date's month — pass the viewed month's ISO as the anchor.
+      anchorIso: monthIso,
     });
   }
 
+  function renderMonths(system: CalendarSystem): void {
+    titleBtn.textContent = String(viewYear);
+    const monthCount = monthsInCalendarYear(viewYear, system);
+    const selectedParts = toCalendarParts(store.get().selectedDate, system);
+    const cells: string[] = [];
+    for (let month = 1; month <= monthCount; month++) {
+      const isSelected = selectedParts.year === viewYear && selectedParts.month === month;
+      cells.push(
+        `<button type="button" class="calendar-bar__pick${isSelected ? ' is-selected' : ''}" data-month="${month}">${escapeHtml(monthName(viewYear, month, system))}</button>`,
+      );
+    }
+    gridEl.className = 'calendar-bar__grid calendar-bar__picks';
+    gridEl.innerHTML = cells.join('');
+    gridEl.querySelectorAll<HTMLButtonElement>('[data-month]').forEach((button) => {
+      button.addEventListener('click', () => jumpTo(viewYear, Number(button.dataset.month)));
+    });
+  }
+
+  function renderYears(): void {
+    titleBtn.textContent = `${viewDecadeStart}–${viewDecadeStart + YEARS_PER_PAGE - 1}`;
+    const selectedYear = toCalendarParts(store.get().selectedDate, store.get().calendarSystem).year;
+    const cells: string[] = [];
+    for (let i = 0; i < YEARS_PER_PAGE; i++) {
+      const year = viewDecadeStart + i;
+      const isSelected = year === selectedYear;
+      cells.push(
+        `<button type="button" class="calendar-bar__pick${isSelected ? ' is-selected' : ''}" data-year="${year}">${year}</button>`,
+      );
+    }
+    gridEl.className = 'calendar-bar__grid calendar-bar__picks';
+    gridEl.innerHTML = cells.join('');
+    gridEl.querySelectorAll<HTMLButtonElement>('[data-year]').forEach((button) => {
+      button.addEventListener('click', () => {
+        viewYear = Number(button.dataset.year);
+        level = 'months';
+        render();
+      });
+    });
+  }
+
+  function render(): void {
+    const system = store.get().calendarSystem;
+    if (level === 'days') renderDays(system);
+    else if (level === 'months') renderMonths(system);
+    else renderYears();
+  }
+
+  container.querySelector('[data-action="prev"]')!.addEventListener('click', () => step(-1));
+  container.querySelector('[data-action="next"]')!.addEventListener('click', () => step(1));
+  titleBtn.addEventListener('click', zoomOut);
+
+  syncViewToSelection();
   render();
-  store.subscribe(render);
+  store.subscribe(() => {
+    // Re-anchor the viewed month/year when the selection changes from
+    // elsewhere (e.g. the left panel's day agenda), but don't fight the
+    // user's own browsing while they're on a zoomed-out level.
+    if (level === 'days') syncViewToSelection();
+    render();
+  });
 }

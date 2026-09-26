@@ -84,5 +84,11 @@
   "welcome.legal.rights": "© {year} {title}. All rights reserved.",
   "welcome.legal.privacy": "Privacy",
   "welcome.legal.cookies": "Cookies",
-  "welcome.legal.terms": "Terms"
+  "welcome.legal.terms": "Terms",
+  "panel.title": "Filters & Calendar",
+  "calendar.prevLabel": "Previous",
+  "calendar.nextLabel": "Next",
+  "home.tagline": "Maps where time is a first-class dimension.",
+  "home.intro": "Universal Calendar Map is a static, browser-only map engine that treats a calendar as an equal first-class dimension alongside geography. Each world below is a self-contained data package — its own map, layers, dates and content. Pick one to explore it.",
+  "home.worldsLabel": "Worlds"
 }

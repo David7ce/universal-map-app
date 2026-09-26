@@ -24,10 +24,17 @@
     }
   ],
   "regionRole": null,
-  "style": { "cluster": true, "icon": "marker" },
+  "style": {
+    "cluster": true,
+    "icon": "marker",
+    "dedupeMarkers": true,
+    "imageField": "properties.moonPhaseIcon",
+    "imageVariant": "phase"
+  },
   "panel": {
     "showInSearch": true,
     "showInInfo": true,
+    "searchFields": ["title", "tags"],
     "infoFields": [
       { "field": "properties.thumb", "label": "Foto", "type": "image" },
       { "field": "properties.moonPhaseLabel", "label": "Fase Lunar" },

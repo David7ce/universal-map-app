@@ -26,22 +26,22 @@ describe('loadStrings', () => {
   it('fetches the given path as-is when lang is "en" (the default)', async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200, statusText: 'OK', json: async () => ({}) });
     vi.stubGlobal('fetch', fetchMock);
-    await loadStrings('worlds/demo/strings.en.json', 'en');
-    expect(fetchMock).toHaveBeenCalledWith('worlds/demo/strings.en.json');
+    await loadStrings('worlds/world-leaders/strings.en.json', 'en');
+    expect(fetchMock).toHaveBeenCalledWith('worlds/world-leaders/strings.en.json');
   });
 
   it('swaps the ".en.json" suffix for the requested language', async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200, statusText: 'OK', json: async () => ({}) });
     vi.stubGlobal('fetch', fetchMock);
-    await loadStrings('worlds/demo/strings.en.json', 'es');
-    expect(fetchMock).toHaveBeenCalledWith('worlds/demo/strings.es.json');
+    await loadStrings('worlds/world-leaders/strings.en.json', 'es');
+    expect(fetchMock).toHaveBeenCalledWith('worlds/world-leaders/strings.es.json');
   });
 
   it('fetches a path with no ".en.json" suffix as-is, even for a non-English language', async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200, statusText: 'OK', json: async () => ({}) });
     vi.stubGlobal('fetch', fetchMock);
-    await loadStrings('worlds/demo/strings.json', 'es');
-    expect(fetchMock).toHaveBeenCalledWith('worlds/demo/strings.json');
+    await loadStrings('worlds/world-leaders/strings.json', 'es');
+    expect(fetchMock).toHaveBeenCalledWith('worlds/world-leaders/strings.json');
   });
 });
 

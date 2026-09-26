@@ -6,13 +6,14 @@ import type { GeoFeature } from '../../engine/time/temporal-types';
 import type { LayerManifest } from '../../engine/manifests/layer-manifest';
 import { getFeaturesOnDate } from '../../engine/time/day-agenda';
 import { formatCalendarDate } from '../../engine/time/calendar-conversion';
-import { searchFeatures } from './search';
+import { isActiveOn } from '../../engine/time/is-active-on';
+import { searchFeatures, dedupeSearchResults } from './search';
 import { describeTemporalStatus } from './temporal-status';
 import { findContainingRegions } from '../../engine/region/spatial-join';
 import { t } from '../strings';
 import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
-import { formatCoordinates, formatInfoFieldHtml } from './info-field-format';
+import { formatCoordinates, formatInfoFieldHtml, isAllowedUrl } from './info-field-format';
 import type { LightboxApi } from './Lightbox';
 
 export function featureLabel(feature: GeoFeature, strings: Record<string, string>): string {
@@ -69,11 +70,12 @@ export function mountSearchOverlay(
   // a boundary or heatmap layer that exists to render, not to be searched).
   const searchableEntries = featureEntries.filter((entry) => entry.manifest.panel?.showInSearch !== false);
 
-  function searchableFeatures(): GeoFeature[] {
-    const activeFilters = store.get().activeFilters;
-    return searchableEntries
-      .filter((entry) => featureMatchesFilters(entry.feature, entry.manifest, activeFilters))
-      .map((entry) => entry.feature);
+  // Which feature properties a query matches against. Defaults to the usual
+  // display fields; a layer can override via `panel.searchFields` (e.g. a
+  // photo layer searching only by place name, not by camera/date metadata).
+  const DEFAULT_SEARCH_FIELDS = ['name', 'title'];
+  function searchFieldsFor(manifest: LayerManifest): string[] {
+    return manifest.panel?.searchFields ?? DEFAULT_SEARCH_FIELDS;
   }
 
   let matches: GeoFeature[] = [];
@@ -98,7 +100,14 @@ export function mountSearchOverlay(
       return;
     }
 
-    matches = searchFeatures(searchableFeatures(), query, ['name', 'title']);
+    // Search each layer with its own field list, then collapse results that
+    // read as the same entry (e.g. many photos from one place) so the list
+    // shows one row per place.
+    const activeFilters = store.get().activeFilters;
+    const perLayerMatches = searchableEntries
+      .filter((entry) => featureMatchesFilters(entry.feature, entry.manifest, activeFilters))
+      .flatMap((entry) => searchFeatures([entry.feature], query, searchFieldsFor(entry.manifest)));
+    matches = dedupeSearchResults(perLayerMatches, DEFAULT_SEARCH_FIELDS);
     resultsEl.hidden = false;
     const countLine = matches.length
       ? `<p class="search-results__count">${escapeHtml(t('search.resultCount', strings, { count: String(matches.length) }))}</p>`
@@ -144,14 +153,24 @@ export function mountSearchOverlay(
       coordinatesLine = `<p>${t('info.coordinates', strings, formatCoordinates(coords))}</p>`;
     }
 
+    // Several features can share one coordinate on one day (e.g. multiple
+    // moon photos taken from the same spot) — the map shows a single marker
+    // for them (style.dedupeMarkers), so the panel is where every photo
+    // becomes reachable. Collect the image field's values across all
+    // same-coordinate, same-day siblings and render them as one gallery.
+    const siblingGallery = buildSiblingGallery(entry, date);
+
     // Extra properties an app author chose to surface via the layer
     // manifest's `panel.infoFields` — field names always come from the
-    // manifest, never hardcoded here (same pattern as `taxonomy`).
+    // manifest, never hardcoded here (same pattern as `taxonomy`). When the
+    // sibling gallery above already shows this feature's image field, skip
+    // that field here so the same photo isn't rendered twice.
     const infoFieldLines = (manifest.panel?.infoFields ?? [])
+      .filter((def) => !(siblingGallery && def.type === 'image'))
       .map((def) => formatInfoFieldHtml(def, readField(feature, def.field)))
       .join('');
 
-    infoEl.innerHTML = `<p>${describeTemporalStatus(feature, date, strings, state.calendarSystem)}</p>${regionLine}${coordinatesLine}${infoFieldLines}`;
+    infoEl.innerHTML = `<p>${describeTemporalStatus(feature, date, strings, state.calendarSystem)}</p>${regionLine}${coordinatesLine}${siblingGallery}${infoFieldLines}`;
 
     // Gallery info fields (formatInfoFieldHtml, image type with >1 value)
     // render as plain buttons with the image list stashed in a data
@@ -163,6 +182,42 @@ export function mountSearchOverlay(
         button.addEventListener('click', () => lightbox.open(images, Number(button.dataset.galleryIndex)));
       });
     });
+  }
+
+  // Every feature in the same layer at the same coordinate that is active on
+  // the selected date, rendered as a thumbnail gallery (with the shared
+  // lightbox's prev/next arrows). Returns '' when there's only the one
+  // feature — the normal single-image info field already covers that case.
+  function buildSiblingGallery(entry: { feature: GeoFeature; manifest: LayerManifest }, date: Date): string {
+    const { feature, manifest } = entry;
+    if (feature.geometry.type !== 'Point') return '';
+    const imageField = manifest.panel?.infoFields?.find((def) => def.type === 'image');
+    if (!imageField) return '';
+
+    const coords = (feature.geometry.coordinates as [number, number]).join(',');
+    const siblings = layers
+      .filter((layer) => layer.manifest.id === manifest.id)
+      .flatMap((layer) => layer.features)
+      .filter(
+        (candidate) =>
+          candidate.geometry.type === 'Point' &&
+          (candidate.geometry.coordinates as [number, number]).join(',') === coords &&
+          isActiveOn(candidate, date),
+      );
+
+    const images = siblings
+      .flatMap((candidate) => readField(candidate, imageField.field))
+      .filter(isAllowedUrl)
+      .map((src) => ({ src, alt: imageField.label }));
+    if (images.length <= 1) return '';
+
+    const thumbs = images
+      .map(
+        (image, i) =>
+          `<button type="button" class="search-info__gallery-thumb" data-gallery-index="${i}"><img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt)} ${i + 1}"></button>`,
+      )
+      .join('');
+    return `<p><strong>${escapeHtml(imageField.label)} (${images.length})</strong></p><div class="search-info__gallery" data-gallery-images="${escapeHtml(JSON.stringify(images))}">${thumbs}</div>`;
   }
 
   // Idle state (no search query, nothing selected): lists the selected

@@ -2,7 +2,13 @@
   "$schema": "../../docs/schemas/world.schema.json",
   "id": "events-canary-islands",
   "title": "Eventos de Canarias",
-  "map": { "center": [28.35, -15.6], "zoom": 8 },
+  "map": {
+    "center": [
+      28.35,
+      -15.6
+    ],
+    "zoom": 8
+  },
   "baseLayers": [
     {
       "id": "osm",
@@ -21,29 +27,17 @@
       "labelsAttribution": "Tiles © Esri — Source: Esri, Garmin, HERE, and other contributors"
     }
   ],
-  "dataLayers": ["layers/events.layer.json"],
-  "calendar": { "default": "today", "min": "2026-01-01", "max": "2026-12-31" },
-  "strings": "strings.en.json",
-  "theme": { "primary": "#c2571f" },
-  "welcome": {
-    "title": "Eventos de Canarias",
-    "tagline": "Conciertos, festivales, mercados y mucho más en las islas.",
-    "ctaLabel": "Ver qué hay",
-    "heroImage": "assets/hero.svg",
-    "itemNoun": "eventos",
-    "links": [
-      { "label": "Demo de Mapa Universal", "world": "demo" },
-      { "label": "Líderes del Mundo", "world": "world-leaders" },
-      { "label": "Paranormal España", "world": "paranormal-spain" },
-      { "label": "Fotos de la Luna", "world": "moon-map-photos" }
-    ]
+  "dataLayers": [
+    "layers/events.layer.json"
+  ],
+  "calendar": {
+    "default": "today",
+    "min": "2026-01-01",
+    "max": "2026-12-31"
   },
-  "about": {
-    "title": "Sobre Eventos de Canarias",
-    "body": [
-      "Eventos de Canarias reúne en un solo mapa los conciertos, festivales, mercados y actividades familiares que suceden en las Islas Canarias, para que sea fácil encontrar algo que hacer cerca de ti en cualquier fecha.",
-      "Cada evento incluye lugar, hora, precio y un enlace con más información. Usa el mapa o la vista de calendario para explorar por fecha, y los filtros de categoría para encontrar justo el tipo de plan que buscas.",
-      "¿Conoces un evento que no está en el mapa? Puedes proponerlo con el botón \"Enviar un evento\" del panel de filtros."
-    ]
-  }
+  "strings": "strings.en.json",
+  "theme": {
+    "primary": "#c2571f"
+  },
+  "welcome": true
 }

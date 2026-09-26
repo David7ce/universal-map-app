@@ -82,5 +82,11 @@
   "welcome.legal.rights": "© {year} {title}. Todos los derechos reservados.",
   "welcome.legal.privacy": "Privacidad",
   "welcome.legal.cookies": "Cookies",
-  "welcome.legal.terms": "Términos"
+  "welcome.legal.terms": "Términos",
+  "panel.title": "Filtros y calendario",
+  "calendar.prevLabel": "Anterior",
+  "calendar.nextLabel": "Siguiente",
+  "home.tagline": "Mapas donde el tiempo es una dimensión de primer nivel.",
+  "home.intro": "Universal Calendar Map es un motor de mapas estático que funciona solo en el navegador y trata el calendario como una dimensión de primer nivel junto a la geografía. Cada mundo es un paquete de datos independiente: su propio mapa, capas, fechas y contenido. Elige uno para explorarlo.",
+  "home.worldsLabel": "Mundos"
 }

@@ -34,6 +34,11 @@ export interface LayerManifest {
     showInSearch?: boolean;
     showInInfo?: boolean;
     infoFields?: InfoFieldDef[];
+    // Which feature properties a search query matches against. Defaults to
+    // ['name', 'title'] when omitted — set this to narrow search to just the
+    // fields that make sense for a layer (e.g. a photo layer searching only
+    // by place, not by camera/date metadata).
+    searchFields?: string[];
     // `false` makes the layer opt-in: hidden until toggled on via the layer
     // control's "map details" group (same mechanism `heatmap` layers already
     // use). Defaults to `true` (always rendered, subject to the usual
@@ -127,6 +132,11 @@ export function validateLayerManifest(json: unknown): LayerManifest {
           );
         }
       });
+    }
+    if (panel.searchFields !== undefined) {
+      if (!Array.isArray(panel.searchFields) || panel.searchFields.some((f) => typeof f !== 'string' || f.length === 0)) {
+        throw new Error(`Layer manifest "${obj.id}" "panel.searchFields" must be an array of non-empty strings`);
+      }
     }
   }
 

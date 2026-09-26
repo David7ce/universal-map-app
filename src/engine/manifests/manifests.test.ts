@@ -65,8 +65,8 @@ describe('validateLayerManifest', () => {
 
 describe('validateAppManifest', () => {
   const valid = {
-    id: 'demo',
-    title: 'Demo',
+    id: 'example-world',
+    title: 'Example',
     map: { center: [0, 0], zoom: 10 },
     baseLayers: [{ id: 'osm', title: 'OSM', type: 'raster-tile', url: 'https://x/{z}/{x}/{y}.png', attribution: 'x' }],
     dataLayers: ['layers/poi.layer.json'],
@@ -209,167 +209,24 @@ describe('validateAppManifest', () => {
     expect(validateAppManifest(valid)).toEqual(valid);
   });
 
-  it('accepts a well-formed "welcome" with only the required fields', () => {
-    const withWelcome = { ...valid, welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go' } };
+  it('accepts "welcome: true"', () => {
+    const withWelcome = { ...valid, welcome: true };
     expect(validateAppManifest(withWelcome)).toEqual(withWelcome);
   });
 
-  it('accepts a well-formed "welcome" with the optional fields too', () => {
-    const withWelcome = {
-      ...valid,
-      welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go', heroImage: 'assets/hero.jpg', itemNoun: 'places' },
-    };
+  it('accepts "welcome: false"', () => {
+    const withWelcome = { ...valid, welcome: false };
     expect(validateAppManifest(withWelcome)).toEqual(withWelcome);
   });
 
-  it('rejects a "welcome" missing "title"', () => {
-    expect(() => validateAppManifest({ ...valid, welcome: { tagline: 'Tag', ctaLabel: 'Go' } })).toThrow(
-      /welcome\.title/,
-    );
-  });
-
-  it('rejects a "welcome" missing "tagline"', () => {
-    expect(() => validateAppManifest({ ...valid, welcome: { title: 'Hi', ctaLabel: 'Go' } })).toThrow(
-      /welcome\.tagline/,
-    );
-  });
-
-  it('rejects a "welcome" missing "ctaLabel"', () => {
-    expect(() => validateAppManifest({ ...valid, welcome: { title: 'Hi', tagline: 'Tag' } })).toThrow(
-      /welcome\.ctaLabel/,
-    );
-  });
-
-  it('rejects a "welcome" that is not a plain object', () => {
-    expect(() => validateAppManifest({ ...valid, welcome: [] })).toThrow(/welcome/);
-  });
-
-  it('accepts "welcome.links" with well-formed entries', () => {
-    const withLinks = {
-      ...valid,
-      welcome: {
-        title: 'Hi',
-        tagline: 'Tag',
-        ctaLabel: 'Go',
-        links: [{ label: 'Other World', world: 'other-world' }],
-      },
-    };
-    expect(validateAppManifest(withLinks)).toEqual(withLinks);
-  });
-
-  it('accepts a "welcome" with no "links" at all', () => {
-    const withWelcome = { ...valid, welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go' } };
-    expect(validateAppManifest(withWelcome)).toEqual(withWelcome);
-  });
-
-  it('rejects "welcome.links" that is not an array', () => {
-    expect(() =>
-      validateAppManifest({ ...valid, welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go', links: {} } }),
-    ).toThrow(/welcome\.links/);
-  });
-
-  it('rejects a "welcome.links" entry missing "label"', () => {
-    expect(() =>
-      validateAppManifest({
-        ...valid,
-        welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go', links: [{ world: 'x' }] },
-      }),
-    ).toThrow(/welcome\.links\[0\]\.label/);
-  });
-
-  it('rejects a "welcome.links" entry missing "world"', () => {
-    expect(() =>
-      validateAppManifest({
-        ...valid,
-        welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go', links: [{ label: 'x' }] },
-      }),
-    ).toThrow(/welcome\.links\[0\]\.world/);
-  });
-
-  it('accepts a "welcome.links" entry with a "domain"', () => {
-    const withDomain = {
-      ...valid,
-      welcome: {
-        title: 'Hi',
-        tagline: 'Tag',
-        ctaLabel: 'Go',
-        links: [{ label: 'Other World', world: 'other-world', domain: 'other-world.com' }],
-      },
-    };
-    expect(validateAppManifest(withDomain)).toEqual(withDomain);
-  });
-
-  it('rejects a "welcome.links" entry with a non-string "domain"', () => {
-    expect(() =>
-      validateAppManifest({
-        ...valid,
-        welcome: { title: 'Hi', tagline: 'Tag', ctaLabel: 'Go', links: [{ label: 'x', world: 'y', domain: 42 }] },
-      }),
-    ).toThrow(/welcome\.links\[0\]\.domain/);
-  });
-
-  it('accepts a manifest with no "about" field at all', () => {
-    expect(validateAppManifest(valid)).toEqual(valid);
-  });
-
-  it('accepts a well-formed "about"', () => {
-    const withAbout = { ...valid, about: { title: 'About Us', body: ['Paragraph one.', 'Paragraph two.'] } };
-    expect(validateAppManifest(withAbout)).toEqual(withAbout);
-  });
-
-  it('rejects an "about" missing "title"', () => {
-    expect(() => validateAppManifest({ ...valid, about: { body: ['Hi'] } })).toThrow(/about\.title/);
-  });
-
-  it('rejects an "about" missing "body"', () => {
-    expect(() => validateAppManifest({ ...valid, about: { title: 'About Us' } })).toThrow(/about\.body/);
-  });
-
-  it('rejects an "about.body" that is not an array', () => {
-    expect(() => validateAppManifest({ ...valid, about: { title: 'About Us', body: 'not an array' } })).toThrow(
-      /about\.body/,
-    );
-  });
-
-  it('rejects an "about.body" containing a non-string entry', () => {
-    expect(() => validateAppManifest({ ...valid, about: { title: 'About Us', body: ['ok', 42] } })).toThrow(
-      /about\.body/,
-    );
-  });
-
-  it('rejects an "about" that is not a plain object', () => {
-    expect(() => validateAppManifest({ ...valid, about: [] })).toThrow(/about/);
-  });
-
-  it('accepts "about.links" with well-formed entries', () => {
-    const withLinks = {
-      ...valid,
-      about: { title: 'About Us', body: ['Hi'], links: [{ label: 'Contact', url: 'https://example.org' }] },
-    };
-    expect(validateAppManifest(withLinks)).toEqual(withLinks);
-  });
-
-  it('rejects "about.links" that is not an array', () => {
-    expect(() =>
-      validateAppManifest({ ...valid, about: { title: 'About Us', body: ['Hi'], links: {} } }),
-    ).toThrow(/about\.links/);
-  });
-
-  it('rejects an "about.links" entry missing "label"', () => {
-    expect(() =>
-      validateAppManifest({ ...valid, about: { title: 'About Us', body: ['Hi'], links: [{ url: 'x' }] } }),
-    ).toThrow(/about\.links\[0\]\.label/);
-  });
-
-  it('rejects an "about.links" entry missing "url"', () => {
-    expect(() =>
-      validateAppManifest({ ...valid, about: { title: 'About Us', body: ['Hi'], links: [{ label: 'x' }] } }),
-    ).toThrow(/about\.links\[0\]\.url/);
+  it('rejects a non-boolean "welcome"', () => {
+    expect(() => validateAppManifest({ ...valid, welcome: { title: 'Hi' } })).toThrow(/welcome/);
+    expect(() => validateAppManifest({ ...valid, welcome: 'yes' })).toThrow(/welcome/);
   });
 });
 
 describe('Validate all worlds in repository', () => {
-  const worldIds = ['demo', 'events-canary-islands', 'moon-map-photos', 'paranormal-spain', 'world-leaders'];
+  const worldIds = ['events-canary-islands', 'moon-map-photos', 'paranormal-spain', 'world-leaders'];
 
   for (const worldId of worldIds) {
     it(`validates world "${worldId}" manifests and layers`, async () => {

@@ -26,19 +26,11 @@ export interface AppManifest {
   theme?: { primary: string };
   plugins?: Record<string, unknown>;
   systems?: { time?: boolean };
-  welcome?: {
-    title: string;
-    tagline: string;
-    ctaLabel: string;
-    heroImage?: string;
-    itemNoun?: string;
-    links?: { label: string; world: string; domain?: string }[];
-  };
-  about?: {
-    title: string;
-    body: string[];
-    links?: { label: string; url: string }[];
-  };
+  // Whether this world starts on the shared Home view (the world list)
+  // instead of straight on the map. The Home view itself is shared across
+  // every world (HomeView.ts) — a world no longer supplies its own splash
+  // copy, so this is just a boolean.
+  welcome?: boolean;
 }
 
 export function validateAppManifest(json: unknown): AppManifest {
@@ -106,80 +98,8 @@ export function validateAppManifest(json: unknown): AppManifest {
     }
   }
 
-  if (obj.welcome !== undefined) {
-    if (typeof obj.welcome !== 'object' || obj.welcome === null || Array.isArray(obj.welcome)) {
-      throw new Error(`App manifest "${obj.id}" "welcome" must be a plain object`);
-    }
-    const welcome = obj.welcome as Record<string, unknown>;
-    if (typeof welcome.title !== 'string' || welcome.title.length === 0) {
-      throw new Error(`App manifest "${obj.id}" "welcome.title" is required and must be a non-empty string`);
-    }
-    if (typeof welcome.tagline !== 'string' || welcome.tagline.length === 0) {
-      throw new Error(`App manifest "${obj.id}" "welcome.tagline" is required and must be a non-empty string`);
-    }
-    if (typeof welcome.ctaLabel !== 'string' || welcome.ctaLabel.length === 0) {
-      throw new Error(`App manifest "${obj.id}" "welcome.ctaLabel" is required and must be a non-empty string`);
-    }
-    if (welcome.heroImage !== undefined && typeof welcome.heroImage !== 'string') {
-      throw new Error(`App manifest "${obj.id}" "welcome.heroImage" must be a string path when present`);
-    }
-    if (welcome.itemNoun !== undefined && typeof welcome.itemNoun !== 'string') {
-      throw new Error(`App manifest "${obj.id}" "welcome.itemNoun" must be a string when present`);
-    }
-    if (welcome.links !== undefined) {
-      if (!Array.isArray(welcome.links)) {
-        throw new Error(`App manifest "${obj.id}" "welcome.links" must be an array when present`);
-      }
-      welcome.links.forEach((link: unknown, index: number) => {
-        const entry = link as Record<string, unknown>;
-        if (typeof entry?.label !== 'string' || entry.label.length === 0) {
-          throw new Error(
-            `App manifest "${obj.id}" "welcome.links[${index}].label" is required and must be a non-empty string`,
-          );
-        }
-        if (typeof entry?.world !== 'string' || entry.world.length === 0) {
-          throw new Error(
-            `App manifest "${obj.id}" "welcome.links[${index}].world" is required and must be a non-empty string`,
-          );
-        }
-        if (entry.domain !== undefined && (typeof entry.domain !== 'string' || entry.domain.length === 0)) {
-          throw new Error(
-            `App manifest "${obj.id}" "welcome.links[${index}].domain" must be a non-empty string when present`,
-          );
-        }
-      });
-    }
-  }
-
-  if (obj.about !== undefined) {
-    if (typeof obj.about !== 'object' || obj.about === null || Array.isArray(obj.about)) {
-      throw new Error(`App manifest "${obj.id}" "about" must be a plain object`);
-    }
-    const about = obj.about as Record<string, unknown>;
-    if (typeof about.title !== 'string' || about.title.length === 0) {
-      throw new Error(`App manifest "${obj.id}" "about.title" is required and must be a non-empty string`);
-    }
-    if (!Array.isArray(about.body) || about.body.some((p) => typeof p !== 'string' || p.length === 0)) {
-      throw new Error(`App manifest "${obj.id}" "about.body" is required and must be an array of non-empty strings`);
-    }
-    if (about.links !== undefined) {
-      if (!Array.isArray(about.links)) {
-        throw new Error(`App manifest "${obj.id}" "about.links" must be an array when present`);
-      }
-      about.links.forEach((link: unknown, index: number) => {
-        const entry = link as Record<string, unknown>;
-        if (typeof entry?.label !== 'string' || entry.label.length === 0) {
-          throw new Error(
-            `App manifest "${obj.id}" "about.links[${index}].label" is required and must be a non-empty string`,
-          );
-        }
-        if (typeof entry?.url !== 'string' || entry.url.length === 0) {
-          throw new Error(
-            `App manifest "${obj.id}" "about.links[${index}].url" is required and must be a non-empty string`,
-          );
-        }
-      });
-    }
+  if (obj.welcome !== undefined && typeof obj.welcome !== 'boolean') {
+    throw new Error(`App manifest "${obj.id}" "welcome" must be a boolean when present`);
   }
 
   return json as AppManifest;

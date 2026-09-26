@@ -115,67 +115,8 @@
       }
     },
     "welcome": {
-      "type": "object",
-      "required": ["title", "tagline", "ctaLabel"],
-      "additionalProperties": false,
-      "description": "If present, a one-way thematic splash is the initial view instead of the map — its CTA button switches to the map, nothing switches back.",
-      "properties": {
-        "title": { "type": "string", "minLength": 1 },
-        "tagline": { "type": "string", "minLength": 1 },
-        "ctaLabel": { "type": "string", "minLength": 1 },
-        "heroImage": {
-          "type": "string",
-          "description": "Relative path (inside the world's folder) to a hero image. No hero section when omitted."
-        },
-        "itemNoun": {
-          "type": "string",
-          "description": "Pairs with a live feature count (e.g. \"8 haunted places\"). No count line shown when omitted."
-        },
-        "links": {
-          "type": "array",
-          "description": "Plain links to other worlds (e.g. from a hub/demo world to real ones), rendered as <a href>. A real navigation/reload, not a client-side switch.",
-          "items": {
-            "type": "object",
-            "required": ["label", "world"],
-            "additionalProperties": false,
-            "properties": {
-              "label": { "type": "string", "minLength": 1 },
-              "world": {
-                "type": "string",
-                "minLength": 1,
-                "description": "Target world id, used as ?world=<world> when \"domain\" is absent."
-              },
-              "domain": {
-                "type": "string",
-                "minLength": 1,
-                "description": "Target world's own standalone domain (e.g. \"paranormal-spain.com\"), if it's deployed on one. When present, the link goes to https://<domain> instead of ?world=<world>."
-              }
-            }
-          }
-        }
-      }
-    },
-    "about": {
-      "type": "object",
-      "required": ["title", "body"],
-      "additionalProperties": false,
-      "description": "If present, adds an \"About\" link to the persistent header nav, opening a full-screen About view.",
-      "properties": {
-        "title": { "type": "string", "minLength": 1 },
-        "body": { "type": "array", "items": { "type": "string", "minLength": 1 }, "description": "One or more paragraphs." },
-        "links": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["label", "url"],
-            "additionalProperties": false,
-            "properties": {
-              "label": { "type": "string", "minLength": 1 },
-              "url": { "type": "string", "minLength": 1 }
-            }
-          }
-        }
-      }
+      "type": "boolean",
+      "description": "Set to true to start on the shared Home view (a list of every world in this build) instead of straight on the map. The Home view itself is shared across all worlds — a world no longer supplies its own splash copy."
     }
   },
   "definitions": {

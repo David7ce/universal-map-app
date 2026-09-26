@@ -7,9 +7,10 @@ import { getPanelSlots, type PluginContext } from '../engine/plugins/registry';
 import { formatCalendarDate } from '../engine/time/calendar-conversion';
 import { icons } from './icons';
 import { t } from './strings';
+import { SITE_TITLE } from './worlds';
 
-// Right panel (filters) show/hide: a circular toggle button, a dimmed
-// backdrop, and the sliding drawer itself all react to `panels.right`.
+// Right panel (calendar + settings) show/hide: a circular toggle button, a
+// dimmed backdrop, and the sliding drawer itself all react to `panels.right`.
 // Also wires the Escape key to close it.
 function mountRightPanel(store: Store<AppState>, strings: Record<string, string>): void {
   const appEl = document.querySelector<HTMLElement>('#app')!;
@@ -19,8 +20,8 @@ function mountRightPanel(store: Store<AppState>, strings: Record<string, string>
   const filtersTitle = document.querySelector<HTMLElement>('[data-role="filters-title"]')!;
   const panelRightClose = document.querySelector<HTMLButtonElement>('#panel-right-close')!;
 
-  filtersTitle.textContent = t('filters.title', strings);
-  panelRightToggle.innerHTML = icons.filter;
+  filtersTitle.textContent = t('panel.title', strings);
+  panelRightToggle.innerHTML = icons.calendar;
   panelRightClose.innerHTML = icons.close;
 
   function setRightPanelOpen(open: boolean): void {
@@ -55,53 +56,22 @@ function mountRightPanel(store: Store<AppState>, strings: Record<string, string>
   });
 }
 
-// Persistent header: world title/branding plus Home / Map / Calendar / About
-// nav links. Home only renders when the manifest declares `welcome` (that's
-// the only view it can route back to); About only when it declares `about`.
-// `#map` isn't torn down when hidden (same as the filters panel not being
-// destroyed on close) — switching back doesn't re-fetch tiles or re-render
-// layers, it just needs mapAdapter.invalidateSize() once Leaflet's container
-// is visible again.
-function mountHeader(
-  store: Store<AppState>,
-  strings: Record<string, string>,
-  appManifest: AppManifest,
-  mapAdapter: MapAdapter,
-): void {
+// Bottom-centered world title — the only always-visible branding now that
+// the top header is gone. Also owns the `view-home` state class, keeps the
+// document title in sync with the view (the project name on Home, the world
+// name on the map), and calls mapAdapter.invalidateSize() when returning to
+// the map (Leaflet caches its container size while `#map` was hidden by the
+// Home view).
+function mountWorldTitle(store: Store<AppState>, appManifest: AppManifest, mapAdapter: MapAdapter): void {
+  const titleEl = document.querySelector<HTMLElement>('#world-title')!;
   const appEl = document.querySelector<HTMLElement>('#app')!;
-  const brandEl = document.querySelector<HTMLElement>('#app-header-brand')!;
-  const navEl = document.querySelector<HTMLElement>('#app-header-nav')!;
-
-  brandEl.textContent = appManifest.title;
-
-  const navButtons: { view: AppState['view']; icon: string; label: string }[] = [
-    ...(appManifest.welcome ? [{ view: 'welcome' as const, icon: icons.home, label: t('nav.home', strings) }] : []),
-    { view: 'map', icon: icons.pushpin, label: t('views.map', strings) },
-    { view: 'calendar', icon: icons.calendar, label: t('views.calendar', strings) },
-    ...(appManifest.about ? [{ view: 'about' as const, icon: icons.info, label: t('nav.about', strings) }] : []),
-  ];
-  navEl.innerHTML = navButtons
-    .map(
-      (btn) =>
-        `<button type="button" class="app-header__nav-btn" data-view="${btn.view}">${btn.icon}<span>${btn.label}</span></button>`,
-    )
-    .join('');
-  const buttons = navEl.querySelectorAll<HTMLButtonElement>('[data-view]');
-  buttons.forEach((button) => {
-    button.addEventListener('click', () => store.set({ view: button.dataset.view as AppState['view'] }));
-  });
+  titleEl.textContent = appManifest.title;
 
   let previousView = store.get().view;
   function render(): void {
     const state = store.get();
-    buttons.forEach((button) => {
-      const isActive = button.dataset.view === state.view;
-      button.classList.toggle('is-active', isActive);
-      button.setAttribute('aria-pressed', String(isActive));
-    });
-    appEl.classList.toggle('view-calendar', state.view === 'calendar');
-    appEl.classList.toggle('view-welcome', state.view === 'welcome');
-    appEl.classList.toggle('view-about', state.view === 'about');
+    appEl.classList.toggle('view-home', state.view === 'home');
+    document.title = state.view === 'home' ? SITE_TITLE : appManifest.title;
     if (previousView !== state.view && state.view === 'map') mapAdapter.invalidateSize();
     previousView = state.view;
   }
@@ -188,8 +158,8 @@ function mountPluginSlots(store: Store<AppState>, loadedLayers: LoadedLayer[]): 
 }
 
 // Wires up all the "chrome" around the map and the mounted panels: the
-// filters drawer toggle/backdrop/Escape-key handling, the persistent header
-// nav, footer attribution, the scale indicator, and plugin panel slots.
+// right panel toggle/backdrop/Escape-key handling, the bottom world title,
+// footer attribution, the scale indicator, and plugin panel slots.
 export function mountAppChrome(
   store: Store<AppState>,
   strings: Record<string, string>,
@@ -198,7 +168,7 @@ export function mountAppChrome(
   loadedLayers: LoadedLayer[],
 ): void {
   mountRightPanel(store, strings);
-  mountHeader(store, strings, appManifest, mapAdapter);
+  mountWorldTitle(store, appManifest, mapAdapter);
   mountDateText(store);
   mountAttribution(store, appManifest);
   mountScaleIndicator(mapAdapter);

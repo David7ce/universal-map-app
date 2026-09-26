@@ -89,11 +89,19 @@ For a `[lng, lat]` point, returns every feature from any layer with `regionRole:
 
 Both throw a descriptive `Error` on a structurally invalid manifest, otherwise return the parsed object typed as the manifest interface. Validation is intentionally shallow today — required top-level fields are checked, most optional fields' inner shapes aren't deep-validated. See `docs/json-reference.md` for the full field tables these validate against.
 
-### `resolveWorldId(searchParams: URLSearchParams, mode: string): string`
+### `resolveWorldId(searchParams: URLSearchParams, mode: string, pathname?: string, basePath?: string): string`
 
 `src/engine/manifests/resolve-world-id.ts`
 
-Which `worlds/<id>/` instance to load. `?world=<id>` wins when present and matches `/^[a-zA-Z0-9_-]+$/`; otherwise falls back to `mode` itself in an isolated per-world build (`isIsolatedWorldMode(mode)` is true), or `'demo'` in the generic `development`/`production` modes.
+Which `worlds/<id>/` instance to load. `?world=<id>` wins when present and matches `/^[a-zA-Z0-9_-]+$/`; otherwise the first path segment (`/world-leaders/` → `world-leaders`, after stripping `basePath`); otherwise `mode` itself in an isolated per-world build (`isIsolatedWorldMode(mode)` is true), or `DEFAULT_WORLD_ID` in the generic `development`/`production` modes.
+
+### `worldIdFromPath(pathname: string, basePath?: string): string | null`
+
+Same file. The world id encoded in a URL path, or `null` when the path names no world (the site root, or a path that isn't a single safe segment).
+
+### `DEFAULT_WORLD_ID`
+
+Same file. The world loaded when the URL names none — kept in sync with the first entry of `AVAILABLE_WORLDS` (`src/ui/worlds.ts`).
 
 ### `isIsolatedWorldMode(mode: string): boolean`
 

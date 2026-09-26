@@ -113,6 +113,11 @@
         "showByDefault": {
           "type": "boolean",
           "description": "false makes the layer opt-in, hidden until toggled on via the layer control's \"Map details\" group. Defaults to true."
+        },
+        "searchFields": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Which feature properties a search query matches against. Defaults to [\"name\", \"title\"] when omitted."
         }
       }
     }
