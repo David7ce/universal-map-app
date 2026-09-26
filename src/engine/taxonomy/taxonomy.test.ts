@@ -35,16 +35,41 @@ function layer(): LoadedLayer {
 describe('computeTaxonomyDimensions', () => {
   it('counts values per dimension for features active on the given date', () => {
     const dims = computeTaxonomyDimensions([layer()], new Date('2026-01-01T00:00:00Z'));
-    expect(dims).toEqual([
-      { id: 'category', label: 'Category', values: [{ value: 'shop', count: 2 }], showCounts: true },
-    ]);
+    expect(dims).toEqual([{ id: 'category', label: 'Category', values: [{ value: 'shop', count: 2 }] }]);
   });
 
-  it('turns off counts for a boundary-region layer (one polygon per value, count always 1)', () => {
+  it('excludes a boundary-region layer entirely (its values are just boundary names)', () => {
     const boundaryLayer = layer();
     boundaryLayer.manifest = { ...boundaryLayer.manifest, regionRole: 'boundary' };
     const dims = computeTaxonomyDimensions([boundaryLayer], new Date('2026-01-01T00:00:00Z'));
-    expect(dims[0].showCounts).toBe(false);
+    expect(dims).toEqual([]);
+  });
+
+  it('does not add boundary values to dimensions from regular layers', () => {
+    const placesLayer = layer();
+    const boundaryLayer = layer();
+    boundaryLayer.manifest = { ...boundaryLayer.manifest, regionRole: 'boundary' };
+    boundaryLayer.features = [
+      {
+        type: 'Feature',
+        id: 'region-1',
+        properties: { category: 'North' },
+        geometry: { type: 'Point', coordinates: [0, 0] },
+      },
+    ];
+
+    const dims = computeTaxonomyDimensions([placesLayer, boundaryLayer], null);
+
+    expect(dims).toEqual([
+      {
+        id: 'category',
+        label: 'Category',
+        values: [
+          { value: 'shop', count: 2 },
+          { value: 'market', count: 1 },
+        ],
+      },
+    ]);
   });
 
   it('includes instant-matched features on their exact date', () => {

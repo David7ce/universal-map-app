@@ -23,6 +23,8 @@ import { ensureCalendarSystemLoaded } from './engine/time/calendar-conversion';
 import type { GeoFeature } from './engine/time/temporal-types';
 import type { LoadedLayer } from './engine/taxonomy/compute-dimensions';
 import { activatePlugins } from './engine/plugins/activate';
+import { subscribePluginHooks } from './engine/plugins/registry';
+import { createPluginContext } from './engine/plugins/context';
 
 async function fetchJson(url: string): Promise<unknown> {
   const response = await fetch(url);
@@ -140,6 +142,7 @@ async function bootstrap(): Promise<void> {
 
   mountAppChrome(store, strings, appManifest, mapAdapter, loadedLayers);
   mountFilterPills(document.querySelector('#filter-pills')!, store, loadedLayers, strings);
+  subscribePluginHooks(store, createPluginContext(store, loadedLayers));
 
   if (appManifest.welcome) {
     mountHomeView(document.querySelector('#home-view')!, store, appId, strings);

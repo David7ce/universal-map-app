@@ -2,8 +2,6 @@
 
 Future work, none of this is implemented. See `CHANGELOG.md` for what's shipped and `README.md` for known v1 deviations.
 
-Open items below; everything else previously listed here has shipped (see `CHANGELOG.md`).
-
 - [World Definition Package System — open items](feature-request-world-def.md): rule system, and a live API data-source loader. Both deferred as YAGNI, most of the original request already shipped (see `CHANGELOG.md`).
 
 - World leaders portraits layer: **Shipped** (see `CHANGELOG.md` and `worlds/world-leaders/`). Image-based portrait markers on the map, country flags, leadership taxonomies, and rich info cards.

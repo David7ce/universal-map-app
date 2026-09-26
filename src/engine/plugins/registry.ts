@@ -1,4 +1,5 @@
 import type { GeoFeature } from '../time/temporal-types';
+import type { AppState, Store } from '../state/store';
 
 export interface PluginContext {
   getSelectedDate(): string;
@@ -42,6 +43,24 @@ export function dispatchFilterChange(activeFeatures: GeoFeature[], ctx: PluginCo
 
 export function dispatchFeatureSelect(feature: GeoFeature | null, ctx: PluginContext): void {
   for (const hooks of plugins.values()) hooks.onFeatureSelect?.(feature, ctx);
+}
+
+/** Subscribe registered plugin hooks to meaningful application state changes. */
+export function subscribePluginHooks(store: Store<AppState>, ctx: PluginContext): () => void {
+  let previous = store.get();
+
+  return store.subscribe((state) => {
+    const dateChanged = state.selectedDate !== previous.selectedDate;
+    const filtersChanged = state.activeFilters !== previous.activeFilters;
+    const layersChanged = state.hiddenLayerIds !== previous.hiddenLayerIds;
+    const selectionChanged = state.selectedFeatureId !== previous.selectedFeatureId;
+
+    previous = state;
+
+    if (dateChanged) dispatchDateChange(state.selectedDate, ctx);
+    if (filtersChanged || layersChanged) dispatchFilterChange(ctx.getActiveFeatures(), ctx);
+    if (selectionChanged) dispatchFeatureSelect(ctx.getSelectedFeature(), ctx);
+  });
 }
 
 export function _resetPluginsForTest(): void {

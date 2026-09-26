@@ -3,7 +3,8 @@ import type { AppManifest } from '../engine/manifests/app-manifest';
 import type { AppState, Store } from '../engine/state/store';
 import { openPanel } from '../engine/state/store';
 import type { LoadedLayer } from '../engine/taxonomy/compute-dimensions';
-import { getPanelSlots, type PluginContext } from '../engine/plugins/registry';
+import { getPanelSlots } from '../engine/plugins/registry';
+import { createPluginContext } from '../engine/plugins/context';
 import { formatCalendarDate } from '../engine/time/calendar-conversion';
 import { icons } from './icons';
 import { t } from './strings';
@@ -142,12 +143,7 @@ function mountScaleIndicator(mapAdapter: MapAdapter): void {
 // container's entire innerHTML on every store update, which would wipe out
 // any plugin-owned DOM appended directly inside it.
 function mountPluginSlots(store: Store<AppState>, loadedLayers: LoadedLayer[]): void {
-  const pluginCtx: PluginContext = {
-    getSelectedDate: () => store.get().selectedDate,
-    getActiveFeatures: () => loadedLayers.flatMap((l) => l.features),
-    getSelectedFeature: () =>
-      loadedLayers.flatMap((l) => l.features).find((f) => String(f.id ?? '') === store.get().selectedFeatureId) ?? null,
-  };
+  const pluginCtx = createPluginContext(store, loadedLayers);
   const actionsContainer = document.querySelector<HTMLDivElement>('#panel-right-actions')!;
   for (const slot of getPanelSlots()) {
     const slotContainer = document.createElement('div');

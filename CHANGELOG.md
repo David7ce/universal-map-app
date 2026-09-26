@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Plugin lifecycle hooks wired to live app state
+
+Registered plugins now receive `onDateChange`, `onFilterChange`, and `onFeatureSelect` callbacks when the corresponding app state changes. The shared plugin context is live and returns active features after date/filter checks and hidden-layer handling, rather than every loaded feature regardless of visibility.
+
 ## Home is about the project, not the loaded world
 
 The Home page previously used the loaded world's `title` as its heading, which read as if the world were the site. It now uses a project-level `SITE_TITLE` (`'Universal Calendar Map'`, `src/ui/worlds.ts`) for the heading and the legal footer, with a "Worlds" section heading above the cards. A world's own title appears only as its card label — clicking a card is what enters that world. The document title follows the view too: `SITE_TITLE` on Home, the world's title on the map (`mountWorldTitle`, `app-chrome.ts`). The legal pages' brand and `index.html`'s default title were renamed to match.
@@ -142,7 +146,7 @@ New row above the year/month/day fields in `CalendarBar.ts`: a day/week/month/ye
 
 ## Taxonomy value counts in filter checkboxes
 
-`PanelRight.ts` now renders each taxonomy value's match count (`computeTaxonomyDimensions` already computed it, per `{ value, count }`) next to its checkbox label, right-aligned via `.filter-options__count`. Suppressed for boundary-region layers (`regionRole: 'boundary'`, e.g. `regions.layer.json`) via a new `TaxonomyDimension.showCounts` flag — one polygon per region name means the count is always 1, not useful information.
+`PanelRight.ts` now renders each taxonomy value's match count (`computeTaxonomyDimensions` already computed it, per `{ value, count }`) next to its checkbox label, right-aligned via `.filter-options__count`. Boundary-region layers (`regionRole: 'boundary'`, e.g. `regions.layer.json`) are excluded from filter dimensions entirely: their taxonomy values are boundary names used for spatial joins, not useful filters, and filtering by them would only affect the boundary polygons themselves.
 
 ## Wider gap between the bottom-left Layers button and the docked search/info panel
 

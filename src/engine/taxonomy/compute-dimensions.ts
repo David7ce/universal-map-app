@@ -8,9 +8,6 @@ export interface TaxonomyDimension {
   values: { value: string; count: number }[];
   icons?: Record<string, string>;
   defaultIcon?: string;
-  // Boundary-region layers (`regionRole: 'boundary'`) give each value a
-  // trivial count of 1 (one polygon per region name) — not worth showing.
-  showCounts: boolean;
 }
 
 export interface LoadedLayer {
@@ -74,6 +71,12 @@ export function computeTaxonomyDimensions(layers: LoadedLayer[], date: Date | nu
   const dimensions = new Map<string, TaxonomyDimension>();
 
   for (const layer of layers) {
+    // Boundary-region layers (`regionRole: 'boundary'`) exist for the spatial
+    // join (which region contains this point), not for filtering — their
+    // "values" are just the boundary polygons' own names, so a filter on them
+    // would only show/hide the boundaries themselves. Excluded entirely.
+    if (layer.manifest.regionRole === 'boundary') continue;
+
     for (const dim of layer.manifest.taxonomy ?? []) {
       const bucket = dimensions.get(dim.id) ?? {
         id: dim.id,
@@ -81,7 +84,6 @@ export function computeTaxonomyDimensions(layers: LoadedLayer[], date: Date | nu
         values: [],
         icons: dim.icons,
         defaultIcon: dim.defaultIcon,
-        showCounts: layer.manifest.regionRole !== 'boundary',
       };
       const counts = new Map(bucket.values.map((v) => [v.value, v.count]));
 

@@ -199,7 +199,7 @@ interface PluginHooks {
 - `getPanelSlots(): PanelSlot[]` — every registered plugin's `panelSlot`, if it declared one. `main.ts` mounts each into `#panel-right-actions`.
 - `PluginContext` is deliberately read-only — a plugin can _read_ the current date/features/selection, but the only thing in this codebase allowed to mutate `AppState` is `store.set()` itself; plugins never get a `set()`.
 
-**Known gap:** `dispatchDateChange`/`dispatchFilterChange`/`dispatchFeatureSelect` are implemented and unit-tested at the registry level, but `main.ts` never calls them — only `panelSlot` is actually wired into the live bootstrap today. A plugin implementing `onDateChange`/`onFilterChange`/`onFeatureSelect` would register successfully but those hooks would never fire in the running app.
+`main.ts` subscribes the hooks to app state changes: `onDateChange` fires when the selected date changes, `onFilterChange` fires when taxonomy filters or visible-layer state changes, and `onFeatureSelect` fires when the selected feature changes. The context is live: `getActiveFeatures()` returns features on the selected date that match current filters and are not in hidden layers; `getSelectedFeature()` returns the currently selected feature or `null`.
 
 ---
 
