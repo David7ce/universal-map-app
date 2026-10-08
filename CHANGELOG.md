@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Shared site strings, language toggle, translated Home
+
+Project-level text now lives once in `public/strings/site.{en,es}.json` (served at `strings/site.<lang>.json`, shipped in every build including isolated world builds) and is merged under each world's strings (`{ ...site, ...world }`, `src/ui/site-strings.ts`); 88 keys that were copied into all 8 world files moved there. World cards and the Settings world list read `worlds.<id>.label|description`, and the map's world title follows the language. The Home has an EN | ES toggle (top-right; stores the language and reloads), `<html lang>` follows the active language, and the legal pages exist in Spanish (`*.es.html`, a translation for owner review) with language-aware footer links. The Home no longer clips its top on short screens. World data content (bios, names, event text) is not translated.
+
 ## Tighter corners, smaller scale, one h1 per screen
 
 The four corner controls sit 8px from the edges (was 15px), the footer strip is thinner (1.1rem) with a smaller scale (bar max 60px, 0.65rem text). `index.html` now has a static `<h1>` inside `#home-view` (replaced when the Home mounts) and `#world-title` is an `<h1>`, so each screen has exactly one visible h1.
