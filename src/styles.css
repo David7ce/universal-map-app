@@ -42,17 +42,17 @@
   --z-modal: 1400;
   --z-tooltip: 1500;
 
-  --control-btn-offset: 15px;
+  --control-btn-offset: 8px;
   --control-btn-size: 48px;
   --controls-gap: 0.75rem;
   /* Mobile-first: full width by default, narrowed to a fixed-width drawer
      at min-width:48rem (see RESPONSIVE section at the bottom of this file). */
   --panel-right-width: 100vw;
   --panel-left-width: min(22rem, calc(50vw - var(--control-btn-offset)));
-  --footer-bar-height: 1.5rem; /* thin bottom strip: scale + attribution */
+  --footer-bar-height: 1.1rem; /* thin bottom strip: scale + attribution */
   /* Clearance above the footer strip for floating controls (Layers, zoom) —
      just enough to sit clear of the strip, not a full extra row. */
-  --bottom-clearance: calc(var(--footer-bar-height) + 0.4rem);
+  --bottom-clearance: calc(var(--footer-bar-height) + 0.3rem);
 }
 
 * {
@@ -1036,7 +1036,7 @@ select:disabled {
   background: linear-gradient(145deg, #fff9c4 0%, #ffb74d 50%, #e53935 100%);
 }
 .layer-control-card__label {
-  font-size: var(--font-size-xs);
+  font-size: 0.65rem;
   font-weight: var(--font-weight-medium);
   color: var(--color-text);
   text-align: center;
@@ -1867,6 +1867,7 @@ select:disabled {
    branding now that the top header is gone.
    ======================================== */
 .world-title {
+  margin: 0;
   position: absolute;
   bottom: 0.5rem;
   left: 50%;
@@ -2094,7 +2095,7 @@ button.calendar-grid__cell--future {
   gap: 0.35rem;
 }
 .map-scale__line {
-  height: 6px;
+  height: 4px;
   border-left: 1px solid var(--color-text);
   border-right: 1px solid var(--color-text);
   border-bottom: 1px solid var(--color-text);

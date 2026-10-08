@@ -110,7 +110,7 @@ function niceScaleDistance(maxMeters: number): number {
 function mountScaleIndicator(mapAdapter: MapAdapter): void {
   const lineEl = document.querySelector<HTMLElement>('[data-role="scale-line"]')!;
   const textEl = document.querySelector<HTMLElement>('[data-role="scale-text"]')!;
-  const MAX_WIDTH_PX = 90;
+  const MAX_WIDTH_PX = 60;
 
   function render(): void {
     const metersPerPx = mapAdapter.getMetersPerPixel();
