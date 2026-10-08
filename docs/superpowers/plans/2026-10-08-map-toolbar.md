@@ -48,10 +48,12 @@
 ### Task 1: Pure helpers (pills + date stepping)
 
 **Files:**
+
 - Create: `src/ui/panels/toolbar-pills.ts`, `src/ui/panels/toolbar-pills.test.ts`
 - Create: `src/ui/panels/toolbar-date.ts`, `src/ui/panels/toolbar-date.test.ts`
 
 **Interfaces:**
+
 - Produces:
   - `interface ToolbarPill { dimensionId: string; dimensionLabel: string; value: string; count: number; icons?: Record<string, string>; defaultIcon?: string }`
   - `buildToolbarPills(layers: LoadedLayer[], date: Date | null, hiddenLayerIds: Set<string>): ToolbarPill[]`
@@ -185,7 +187,11 @@ export interface ToolbarPill {
 // carry it on `date`. `computeTaxonomyDimensions(layers, null)` lists all
 // values; the dated call tells us which are active. A dimension with nothing
 // active on the date is dropped entirely (e.g. a seasonal world off-season).
-export function buildToolbarPills(layers: LoadedLayer[], date: Date | null, hiddenLayerIds: Set<string>): ToolbarPill[] {
+export function buildToolbarPills(
+  layers: LoadedLayer[],
+  date: Date | null,
+  hiddenLayerIds: Set<string>,
+): ToolbarPill[] {
   const shown = layers.filter((layer) => !hiddenLayerIds.has(layer.manifest.id));
   const activeCounts = new Map<string, Map<string, number>>();
   for (const dimension of computeTaxonomyDimensions(shown, date)) {
@@ -339,9 +345,11 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
 ### Task 2: Strings
 
 **Files:**
+
 - Modify: `worlds/events-canary-islands/strings.{en,es}.json`, `worlds/moon-map-photos/strings.{en,es}.json`, `worlds/paranormal-spain/strings.{en,es}.json`, `worlds/world-leaders/strings.{en,es}.json`
 
 **Interfaces:**
+
 - Produces string keys used by Task 3: `toolbar.calendarLabel`, `toolbar.chooseDate`, `toolbar.prevMonth`, `toolbar.nextMonth`, `toolbar.more`, `toolbar.moreLabel`. `panel.title` becomes "Filters" / "Filtros" (the calendar leaves the drawer).
 
 - [ ] **Step 1: Insert the keys after `filters.clearAll` in every file**
@@ -364,6 +372,7 @@ done
 ```bash
 node -e "const fs=require('fs');for(const f of fs.globSync('worlds/*/strings.*.json')){const j=JSON.parse(fs.readFileSync(f,'utf8'));for(const k of ['toolbar.calendarLabel','toolbar.chooseDate','toolbar.prevMonth','toolbar.nextMonth','toolbar.more','toolbar.moreLabel','panel.title']){if(!j[k])throw new Error(f+' missing '+k)}}console.log('ok')"
 ```
+
 Expected: `ok`. If `fs.globSync` is unavailable (Node < 22), loop over `worlds/*/strings.*.json` with `ls` instead.
 
 - [ ] **Step 3: Commit**
@@ -380,12 +389,14 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
 ### Task 3: MapToolbar component and wiring
 
 **Files:**
+
 - Create: `src/ui/panels/MapToolbar.ts`
 - Modify: `src/ui/panels/CalendarBar.ts` (add `onDayPicked`)
 - Modify: `index.html`, `src/main.ts`, `src/styles.css`
 - Delete: `src/ui/panels/FilterPills.ts`
 
 **Interfaces:**
+
 - Consumes: everything produced by Tasks 1–2; `mountCalendarBar`, `CalendarConfig` from `CalendarBar.ts`; `resolveTaxonomyIcon` from `src/engine/space/style.ts`; `formatCalendarDate`.
 - Produces: `mountMapToolbar(container: HTMLElement, store: Store<AppState>, layers: LoadedLayer[], strings: Record<string, string>, options: { calendar: CalendarConfig; showDate: boolean }): void`.
 
@@ -406,12 +417,12 @@ export function mountCalendarBar(
 ```
 
 ```ts
-  function selectDay(iso: string): void {
-    store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
-    // (existing comment unchanged)
-    openPanel(store, 'left');
-    onDayPicked?.();
-  }
+function selectDay(iso: string): void {
+  store.set({ selectedDate: clampDateToRange(iso, config.min, maxIso) });
+  // (existing comment unchanged)
+  openPanel(store, 'left');
+  onDayPicked?.();
+}
 ```
 
 - [ ] **Step 2: Create `src/ui/panels/MapToolbar.ts`**
@@ -492,13 +503,17 @@ export function mountMapToolbar(
   function renderDate(): void {
     const state = store.get();
     chip.textContent = formatCalendarDate(state.selectedDate, state.calendarSystem);
-    prevBtn.disabled = stepMonth(state.selectedDate, state.calendarSystem, -1, calendar.min, calendar.max) === state.selectedDate;
-    nextBtn.disabled = stepMonth(state.selectedDate, state.calendarSystem, 1, calendar.min, calendar.max) === state.selectedDate;
+    prevBtn.disabled =
+      stepMonth(state.selectedDate, state.calendarSystem, -1, calendar.min, calendar.max) === state.selectedDate;
+    nextBtn.disabled =
+      stepMonth(state.selectedDate, state.calendarSystem, 1, calendar.min, calendar.max) === state.selectedDate;
   }
 
   function step(direction: 1 | -1): void {
     const state = store.get();
-    store.set({ selectedDate: stepMonth(state.selectedDate, state.calendarSystem, direction, calendar.min, calendar.max) });
+    store.set({
+      selectedDate: stepMonth(state.selectedDate, state.calendarSystem, direction, calendar.min, calendar.max),
+    });
   }
 
   if (options.showDate) {
@@ -640,11 +655,11 @@ export function mountMapToolbar(
 Replace `<div id="filter-pills" class="filter-pills"></div>` with `<div id="map-toolbar" class="map-toolbar"></div>`. In the right panel, delete the calendar block and the separator that follows it, leaving filters, one separator, then actions:
 
 ```html
-        <div class="panel__content">
-          <div id="panel-right-filters"></div>
-          <div class="panel__section-separator"></div>
-          <div id="panel-right-actions"></div>
-        </div>
+<div class="panel__content">
+  <div id="panel-right-filters"></div>
+  <div class="panel__section-separator"></div>
+  <div id="panel-right-actions"></div>
+</div>
 ```
 
 - [ ] **Step 4: Update `src/main.ts`**
@@ -652,10 +667,10 @@ Replace `<div id="filter-pills" class="filter-pills"></div>` with `<div id="map-
 Replace the imports of `mountCalendarBar` and `mountFilterPills` with `import { mountMapToolbar } from './ui/panels/MapToolbar';`. Delete the `mountCalendarBar(...)` call and its comment line ("The calendar and map-settings both live inline…" — reword to "Map settings live inline inside the right panel."). Replace the `mountFilterPills(...)` call with:
 
 ```ts
-  mountMapToolbar(document.querySelector('#map-toolbar')!, store, loadedLayers, strings, {
-    calendar: appManifest.calendar,
-    showDate: appManifest.systems?.time !== false,
-  });
+mountMapToolbar(document.querySelector('#map-toolbar')!, store, loadedLayers, strings, {
+  calendar: appManifest.calendar,
+  showDate: appManifest.systems?.time !== false,
+});
 ```
 
 Keep it after `mountAppChrome(...)`.
@@ -872,6 +887,7 @@ Expected: all pass. Fix any unused-import errors (e.g. `openPanel` is still used
 - [ ] **Step 8: Manual browser verification**
 
 Run `pnpm dev` and open each of: `/` (world-leaders), `/paranormal-spain/`, `/events-canary-islands/`, `/moon-map-photos/`, at desktop width and at ~375px. Check, and fix CSS if any fail:
+
 1. Toolbar visible in every world that has filter dimensions; date group absent in a no-time world.
 2. world-leaders shows 6 pills (4 on mobile) plus "More"; More menu opens, toggles filters, shows a badge when a hidden pill is active; "Clear all filters" appears and clears.
 3. Prev/next change the chip text and the map; buttons disable at the world's min/max.
@@ -897,6 +913,7 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
 ### Task 4: Cleanup and docs
 
 **Files:**
+
 - Modify: `src/ui/app-chrome.ts`, `index.html`, `src/styles.css`, `CHANGELOG.md`, `docs/api-reference.md`
 
 - [ ] **Step 1: Remove the footer date text**

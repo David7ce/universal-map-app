@@ -43,8 +43,9 @@ Layout: `[‹] [Oct 8, 2026 ▾] [›] | pill pill pill [More ▾] [Clear]`
 ### Date chip
 
 - Prev/next step the date by one month (the unit `CalendarBar` shows at its
-  default level), using `nextSelectedDate` with the active calendar system and
-  clamped with `clampDateToRange`.
+  default level), using `stepMonth` (calendar-system aware; the day of month is clamped to the
+  target month's length, so Jan 31 + 1 month is Feb 28) and clamped to the
+  world's range with `clampDateToRange`.
 - Clicking the chip toggles a popover that hosts the existing `CalendarBar`
   grid. Closes on outside click, Escape, or after picking a day. Focus returns
   to the chip on close.
@@ -66,9 +67,8 @@ Layout: `[‹] [Oct 8, 2026 ▾] [›] | pill pill pill [More ▾] [Clear]`
   `activeFilters`). The button shows a count of active filters hidden inside it.
 - Pills for values with zero features active on the selected date are dimmed
   (`.is-empty`, still clickable) rather than hidden. Helper
-  `countByValue(layers, date, hiddenLayerIds)` returns
-  `Record<dimensionId, Record<value, number>>`, built on the existing temporal
-  `isActiveOn` logic. Today dimensions with no active values disappear
+  `buildToolbarPills(layers, date, hiddenLayerIds)` returns a flat pill list
+  with a per-value count for the date, built on `computeTaxonomyDimensions`. Today dimensions with no active values disappear
   entirely; they keep doing so.
 - "Clear" shows only when some filter is active, as today.
 
@@ -95,7 +95,7 @@ control, and plugin slots. Only the calendar moves out.
 
 ## Testing
 
-- Vitest unit tests: `splitVisiblePills`, `countByValue`, prev/next date
+- Vitest unit tests: `splitVisiblePills`, `buildToolbarPills`, prev/next date
   stepping across calendar systems and range clamping.
 - Extend `CalendarBar.test.ts` only if its mount contract changes.
 - Manual check in the browser on all four worlds at desktop and mobile widths:
