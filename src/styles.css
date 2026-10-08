@@ -1666,6 +1666,11 @@ select:disabled {
     align-items: flex-start;
     gap: 0.75rem;
   }
+  /* The drawer is a fixed-width column here and the toggle button slides left
+     with it, so keep the bar clear of both. */
+  .map-app.panel-right-open .map-toolbar {
+    right: calc(var(--panel-right-width) + var(--control-btn-offset) + var(--control-btn-size) + var(--controls-gap));
+  }
 }
 
 /* ========================================
@@ -1842,16 +1847,6 @@ select:disabled {
 }
 /* `systems.time: false` in world.json (e.g. a world with no temporal data)
    hides the Time UI entirely. */
-.map-app.no-time #panel-right-time,
-.map-app.no-time .map-footer-legend .map-date-text {
-  display: none;
-}
-/* #panel-right-time is sandwiched between two .panel__section-separator
-   elements (settings row below) — hide the one immediately after it too, or
-   a double-separator gap remains. */
-.map-app.no-time .panel__section-separator:has(+ #panel-right-map-settings) {
-  display: none;
-}
 
 /* ========================================
    CALENDAR GRID (month day list inside the right panel's Time section)
@@ -2053,16 +2048,6 @@ button.calendar-grid__cell--future {
   /* Animate alongside the panel-open shift */
   transition: right var(--transition-base);
 }
-/* Current selected date, plain text */
-.map-date-text {
-  flex-shrink: 0;
-  color: var(--color-text);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.map-date-text:not(:empty)::after {
-  content: none;
-}
 /* Scale: a ruler-style bar (side + bottom borders, no top border) sized to
    a "nice" ground distance, plus its label e.g. "3 km" */
 .map-scale {
@@ -2114,9 +2099,6 @@ button.calendar-grid__cell--future {
   }
   .data-attribution {
     display: block;
-  }
-  .map-date-text:not(:empty)::after {
-    content: ' ·';
   }
 }
 
