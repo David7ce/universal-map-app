@@ -1569,6 +1569,12 @@ select:disabled {
   align-items: center;
   gap: 0.6rem;
   overflow-x: auto;
+
+  /* Still scrolls by touch drag or Shift+wheel — just no visible bar. */
+  scrollbar-width: none;
+}
+.map-toolbar__scroll::-webkit-scrollbar {
+  display: none;
 }
 .map-toolbar__group {
   display: flex;
