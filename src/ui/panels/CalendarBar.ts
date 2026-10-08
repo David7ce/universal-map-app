@@ -87,6 +87,8 @@ export function mountCalendarBar(
   config: CalendarConfig,
   strings: Record<string, string>,
   layers: LoadedLayer[],
+  // Called after a day is picked, so a host (the toolbar popover) can close.
+  onDayPicked?: () => void,
 ): void {
   const maxIso = config.max;
 
@@ -127,6 +129,7 @@ export function mountCalendarBar(
     // update a panel the user may not have open — SearchOverlay.ts's day
     // agenda is the only place a day's events render.
     openPanel(store, 'left');
+    onDayPicked?.();
   }
 
   // Jumps to a year/month (day kept where it was, clamped to that month's

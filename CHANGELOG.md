@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Map toolbar: date and filters together
+
+A single top-of-map bar (`MapToolbar.ts`) replaces the footer date text and the old `FilterPills.ts`: a date chip with prev/next (one month, day clamped to the month's length, stopped at the world's `calendar.min`/`max`) that opens the calendar as a popover, beside the filter pills. Pills now show in every world instead of only when there were ≤2 dimensions and ≤8 values: the first 6 (4 on mobile) are inline and the rest sit in a "More" menu with a badge counting hidden active filters. A value with no features on the selected date is dimmed rather than hidden; a dimension with nothing active that day is still omitted. The calendar moved out of the right drawer (which keeps the full filter list, settings and plugin slots); worlds with `systems.time: false` get no date chip. Pure logic lives in `toolbar-pills.ts` and `toolbar-date.ts` (unit-tested).
+
 ## Plugin lifecycle hooks wired to live app state
 
 Registered plugins now receive `onDateChange`, `onFilterChange`, and `onFeatureSelect` callbacks when the corresponding app state changes. The shared plugin context is live and returns active features after date/filter checks and hidden-layer handling, rather than every loaded feature regardless of visibility.

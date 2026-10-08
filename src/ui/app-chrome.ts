@@ -5,12 +5,11 @@ import { openPanel } from '../engine/state/store';
 import type { LoadedLayer } from '../engine/taxonomy/compute-dimensions';
 import { getPanelSlots } from '../engine/plugins/registry';
 import { createPluginContext } from '../engine/plugins/context';
-import { formatCalendarDate } from '../engine/time/calendar-conversion';
 import { icons } from './icons';
 import { t } from './strings';
 import { SITE_TITLE } from './worlds';
 
-// Right panel (calendar + settings) show/hide: a circular toggle button, a
+// Right panel (filters + settings) show/hide: a circular toggle button, a
 // dimmed backdrop, and the sliding drawer itself all react to `panels.right`.
 // Also wires the Escape key to close it.
 function mountRightPanel(store: Store<AppState>, strings: Record<string, string>): void {
@@ -75,18 +74,6 @@ function mountWorldTitle(store: Store<AppState>, appManifest: AppManifest, mapAd
     document.title = state.view === 'home' ? SITE_TITLE : appManifest.title;
     if (previousView !== state.view && state.view === 'map') mapAdapter.invalidateSize();
     previousView = state.view;
-  }
-  render();
-  store.subscribe(render);
-}
-
-// Current selected date, plain text — the full editor lives inline in the
-// filters panel now, so this is the only always-visible date indicator.
-function mountDateText(store: Store<AppState>): void {
-  const dateTextEl = document.querySelector<HTMLElement>('#map-date-text')!;
-  function render(): void {
-    const state = store.get();
-    dateTextEl.textContent = formatCalendarDate(state.selectedDate, state.calendarSystem);
   }
   render();
   store.subscribe(render);
@@ -165,7 +152,6 @@ export function mountAppChrome(
 ): void {
   mountRightPanel(store, strings);
   mountWorldTitle(store, appManifest, mapAdapter);
-  mountDateText(store);
   mountAttribution(store, appManifest);
   mountScaleIndicator(mapAdapter);
   mountPluginSlots(store, loadedLayers);

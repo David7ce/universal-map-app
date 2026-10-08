@@ -14,9 +14,8 @@ import { mountSearchOverlay } from './ui/panels/SearchOverlay';
 import { mountLightbox } from './ui/panels/Lightbox';
 import { mountPanelRight } from './ui/panels/PanelRight';
 import { mountLayerControl } from './ui/panels/LayerControl';
-import { mountCalendarBar } from './ui/panels/CalendarBar';
 import { mountHomeView } from './ui/panels/HomeView';
-import { mountFilterPills } from './ui/panels/FilterPills';
+import { mountMapToolbar } from './ui/panels/MapToolbar';
 import { mountSettingsControl } from './ui/panels/SettingsControl';
 import { mountAppChrome } from './ui/app-chrome';
 import { ensureCalendarSystemLoaded } from './engine/time/calendar-conversion';
@@ -133,15 +132,17 @@ async function bootstrap(): Promise<void> {
     baseLayerConfigs: appManifest.baseLayers,
     detailLayers: detailLayers.map((l) => ({ id: l.manifest.id, title: l.manifest.title })),
   });
-  // The calendar and map-settings both live inline inside the right panel.
-  mountCalendarBar(document.querySelector('#panel-right-time')!, store, appManifest.calendar, strings, loadedLayers);
+  // Map settings live inline inside the right panel.
   mountSettingsControl(document.querySelector('#panel-right-settings')!, store, strings, {
     appManifest,
     mapAdapter,
   });
 
   mountAppChrome(store, strings, appManifest, mapAdapter, loadedLayers);
-  mountFilterPills(document.querySelector('#filter-pills')!, store, loadedLayers, strings);
+  mountMapToolbar(document.querySelector('#map-toolbar')!, store, loadedLayers, strings, {
+    calendar: appManifest.calendar,
+    showDate: appManifest.systems?.time !== false,
+  });
   subscribePluginHooks(store, createPluginContext(store, loadedLayers));
 
   if (appManifest.welcome) {
