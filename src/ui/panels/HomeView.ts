@@ -55,7 +55,7 @@ export function mountHomeView(
         <a class="home-view__docs-link" href="${DOCS_URL}" target="_blank" rel="noopener noreferrer">${escapeHtml(strings['home.addWorld.docsLabel'] ?? 'Full field reference')}</a>
       </section>
     </main>
-    <footer class="home-view__footer">${renderLegalFooter(SITE_TITLE, strings)}</footer>
+    <footer class="home-view__footer">${renderLegalFooter(SITE_TITLE, strings, language)}</footer>
   `;
 
   // Clicking a card opens that world. The *current* world's card is already
