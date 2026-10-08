@@ -149,7 +149,7 @@ async function bootstrap(): Promise<void> {
   subscribePluginHooks(store, createPluginContext(store, loadedLayers));
 
   if (appManifest.welcome) {
-    mountHomeView(document.querySelector('#home-view')!, store, appId, strings);
+    mountHomeView(document.querySelector('#home-view')!, store, appId, strings, language);
   }
 
   document.getElementById('loading-overlay')?.remove();

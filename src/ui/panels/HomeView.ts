@@ -1,6 +1,8 @@
 import type { Store, AppState } from '../../engine/state/store';
 import { escapeHtml } from '../escape-html';
 import { renderInlineCode } from '../inline-code';
+import { LANGUAGES, setStoredLanguage, type Language } from '../language';
+import { renderLanguageToggle } from '../language-toggle';
 import { t } from '../strings';
 import { renderLegalFooter } from './legal-footer';
 import { AVAILABLE_WORLDS, SITE_TITLE, worldHref } from '../worlds';
@@ -18,6 +20,7 @@ export function mountHomeView(
   store: Store<AppState>,
   currentWorldId: string,
   strings: Record<string, string>,
+  language: Language,
 ): void {
   const cards = AVAILABLE_WORLDS.map((world) => {
     const isCurrent = world.id === currentWorldId;
@@ -37,6 +40,7 @@ export function mountHomeView(
     .join('');
 
   container.innerHTML = `
+    ${renderLanguageToggle(LANGUAGES, language, t('home.languageLabel', strings))}
     <header class="home-view__header">
       <h1 class="home-view__title">${escapeHtml(SITE_TITLE)}</h1>
       <p class="home-view__tagline">${escapeHtml(strings['home.tagline'] ?? '')}</p>
@@ -63,6 +67,17 @@ export function mountHomeView(
         event.preventDefault();
         store.set({ view: 'map' });
       }
+    });
+  });
+
+  // Switching language stores it and reloads: strings are read once at
+  // bootstrap (same behavior as SettingsControl's language select).
+  container.querySelectorAll<HTMLButtonElement>('[data-lang]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const next = button.dataset.lang as Language;
+      if (next === language) return;
+      setStoredLanguage(next);
+      location.reload();
     });
   });
 }
