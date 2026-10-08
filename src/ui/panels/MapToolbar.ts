@@ -162,7 +162,26 @@ export function mountMapToolbar(
       ? `<button type="button" class="filter-pill map-toolbar__clear" data-action="clear-all">${escapeHtml(t('filters.clearAll', strings))}</button>`
       : '';
 
+    // The area is rebuilt wholesale, which would drop keyboard focus from the
+    // pill/button the user just activated — remember it and put it back.
+    const focused = filtersEl.contains(document.activeElement) ? (document.activeElement as HTMLElement) : null;
+    const focusedKey = focused
+      ? { action: focused.dataset.action, dimension: focused.dataset.dimension, value: focused.dataset.value }
+      : null;
+
     filtersEl.innerHTML = `<div class="map-toolbar__scroll">${renderGroups(visible, activeFilters)}</div>${more}${clearAll}`;
+
+    if (focusedKey) {
+      const buttons = Array.from(filtersEl.querySelectorAll<HTMLElement>('button'));
+      buttons
+        .find(
+          (el) =>
+            el.dataset.action === focusedKey.action &&
+            el.dataset.dimension === focusedKey.dimension &&
+            el.dataset.value === focusedKey.value,
+        )
+        ?.focus();
+    }
   }
 
   // One delegated listener — the filters area is rebuilt on every render.
