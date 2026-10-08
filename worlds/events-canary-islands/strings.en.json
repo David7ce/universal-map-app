@@ -96,5 +96,11 @@
   "calendar.nextLabel": "Next",
   "home.tagline": "Maps where time is a first-class dimension.",
   "home.intro": "Universal Calendar Map is a static, browser-only map engine that treats a calendar as an equal first-class dimension alongside geography. Each world below is a self-contained data package — its own map, layers, dates and content. Pick one to explore it.",
-  "home.worldsLabel": "Worlds"
+  "home.worldsLabel": "Worlds",
+  "home.addWorld.title": "Add your own world",
+  "home.addWorld.step1": "Create a folder `worlds/<id>/` with a `world.json`: the map centre, base layers and calendar range.",
+  "home.addWorld.step2": "Add a layer file `layers/<name>.layer.json` (how to draw and filter) and its `data/<name>.geojson` (the places; add `temporal` for dates).",
+  "home.addWorld.step3": "Register it with one entry in `AVAILABLE_WORLDS` in `src/ui/worlds.ts`.",
+  "home.addWorld.step4": "Run `pnpm dev` and open `/<id>/`. For its own domain: `vite build --mode <id>`.",
+  "home.addWorld.docsLabel": "Full field reference"
 }

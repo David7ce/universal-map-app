@@ -1799,6 +1799,37 @@ select:disabled {
   font-size: var(--font-size-sm);
   color: var(--color-text-light);
 }
+.home-view__howto {
+  width: 100%;
+  max-width: 40rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.home-view__steps {
+  margin: 0;
+  padding-left: 1.5rem;
+  text-align: left;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+.home-view__steps li + li {
+  margin-top: 0.4rem;
+}
+.home-view__steps code {
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  font-size: 0.9em;
+  overflow-wrap: anywhere;
+}
+.home-view__docs-link {
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+}
 .home-view__cta {
   padding: 0.7rem 1.6rem;
   border: none;

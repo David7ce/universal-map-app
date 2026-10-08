@@ -1,7 +1,10 @@
 import type { Store, AppState } from '../../engine/state/store';
 import { escapeHtml } from '../escape-html';
+import { renderInlineCode } from '../inline-code';
 import { renderLegalFooter } from './legal-footer';
 import { AVAILABLE_WORLDS, SITE_TITLE, worldHref } from '../worlds';
+
+const DOCS_URL = 'https://github.com/David7ce/universal-map-app/blob/master/docs/json-reference.md';
 
 // The single shared Home view for every world — the project's landing page.
 // It explains what the app is, then lists every world this build ships as a
@@ -26,6 +29,12 @@ export function mountHomeView(
     </a>`;
   }).join('');
 
+  const steps = [1, 2, 3, 4]
+    .map((n) => strings[`home.addWorld.step${n}`])
+    .filter((text): text is string => Boolean(text))
+    .map((text) => `<li>${renderInlineCode(text)}</li>`)
+    .join('');
+
   container.innerHTML = `
     <header class="home-view__header">
       <h1 class="home-view__title">${escapeHtml(SITE_TITLE)}</h1>
@@ -35,6 +44,11 @@ export function mountHomeView(
       <p class="home-view__intro">${escapeHtml(strings['home.intro'] ?? '')}</p>
       <h2 class="home-view__worlds-title">${escapeHtml(strings['home.worldsLabel'] ?? 'Worlds')}</h2>
       <nav class="home-view__grid" aria-label="${escapeHtml(strings['home.worldsLabel'] ?? 'Worlds')}">${cards}</nav>
+      <section class="home-view__howto" aria-labelledby="home-howto-title">
+        <h2 class="home-view__worlds-title" id="home-howto-title">${escapeHtml(strings['home.addWorld.title'] ?? 'Add your own world')}</h2>
+        <ol class="home-view__steps">${steps}</ol>
+        <a class="home-view__docs-link" href="${DOCS_URL}" target="_blank" rel="noopener noreferrer">${escapeHtml(strings['home.addWorld.docsLabel'] ?? 'Full field reference')}</a>
+      </section>
     </main>
     <footer class="home-view__footer">${renderLegalFooter(SITE_TITLE, strings)}</footer>
   `;

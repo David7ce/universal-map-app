@@ -94,5 +94,11 @@
   "calendar.nextLabel": "Siguiente",
   "home.tagline": "Mapas donde el tiempo es una dimensión de primer nivel.",
   "home.intro": "Universal Calendar Map es un motor de mapas estático que funciona solo en el navegador y trata el calendario como una dimensión de primer nivel junto a la geografía. Cada mundo es un paquete de datos independiente: su propio mapa, capas, fechas y contenido. Elige uno para explorarlo.",
-  "home.worldsLabel": "Mundos"
+  "home.worldsLabel": "Mundos",
+  "home.addWorld.title": "Añade tu propio mundo",
+  "home.addWorld.step1": "Crea una carpeta `worlds/<id>/` con un `world.json`: centro del mapa, capas base y rango del calendario.",
+  "home.addWorld.step2": "Añade un archivo de capa `layers/<nombre>.layer.json` (cómo dibujar y filtrar) y su `data/<nombre>.geojson` (los lugares; añade `temporal` para las fechas).",
+  "home.addWorld.step3": "Regístralo con una entrada en `AVAILABLE_WORLDS` de `src/ui/worlds.ts`.",
+  "home.addWorld.step4": "Ejecuta `pnpm dev` y abre `/<id>/`. Para su propio dominio: `vite build --mode <id>`.",
+  "home.addWorld.docsLabel": "Referencia completa de campos"
 }
