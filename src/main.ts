@@ -8,7 +8,8 @@ import { createStore } from './engine/state/store';
 import type { AppState } from './engine/state/store';
 import { createLeafletMapAdapter } from './engine/space/leaflet/leaflet-map-adapter';
 import { loadStrings } from './ui/strings';
-import { detectDefaultLanguage, getStoredLanguage } from './ui/language';
+import { loadSiteStrings, mergeStrings } from './ui/site-strings';
+import { getStoredLanguage, resolveLanguage } from './ui/language';
 import { applyBranding } from './ui/branding';
 import { mountSearchOverlay } from './ui/panels/SearchOverlay';
 import { mountLightbox } from './ui/panels/Lightbox';
@@ -49,11 +50,13 @@ async function bootstrap(): Promise<void> {
   // fetches below, and await it right before the first consumer needs it.
   const calendarSystemLoaded = ensureCalendarSystemLoaded(appManifest.calendar.system ?? 'gregorian');
 
-  const language = getStoredLanguage() ?? detectDefaultLanguage(navigator.language);
-  const strings = await loadStrings(
-    appManifest.strings ? `worlds/${appId}/${appManifest.strings}` : undefined,
-    language,
-  );
+  const language = resolveLanguage(getStoredLanguage(), navigator.language);
+  document.documentElement.lang = language;
+  const [siteStrings, worldStrings] = await Promise.all([
+    loadSiteStrings(language),
+    loadStrings(appManifest.strings ? `worlds/${appId}/${appManifest.strings}` : undefined, language),
+  ]);
+  const strings = mergeStrings(siteStrings, worldStrings);
 
   await activatePlugins(appManifest.plugins, strings);
 
@@ -146,7 +149,7 @@ async function bootstrap(): Promise<void> {
   subscribePluginHooks(store, createPluginContext(store, loadedLayers));
 
   if (appManifest.welcome) {
-    mountHomeView(document.querySelector('#home-view')!, store, appId, strings);
+    mountHomeView(document.querySelector('#home-view')!, store, appId, strings, language);
   }
 
   document.getElementById('loading-overlay')?.remove();

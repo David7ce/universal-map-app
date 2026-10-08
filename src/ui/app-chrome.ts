@@ -7,6 +7,7 @@ import { getPanelSlots } from '../engine/plugins/registry';
 import { createPluginContext } from '../engine/plugins/context';
 import { icons } from './icons';
 import { t } from './strings';
+import { worldLabel } from './site-strings';
 import { SITE_TITLE } from './worlds';
 
 // Right panel (filters + settings) show/hide: a circular toggle button, a
@@ -62,16 +63,22 @@ function mountRightPanel(store: Store<AppState>, strings: Record<string, string>
 // name on the map), and calls mapAdapter.invalidateSize() when returning to
 // the map (Leaflet caches its container size while `#map` was hidden by the
 // Home view).
-function mountWorldTitle(store: Store<AppState>, appManifest: AppManifest, mapAdapter: MapAdapter): void {
+function mountWorldTitle(
+  store: Store<AppState>,
+  appManifest: AppManifest,
+  mapAdapter: MapAdapter,
+  strings: Record<string, string>,
+): void {
   const titleEl = document.querySelector<HTMLElement>('#world-title')!;
   const appEl = document.querySelector<HTMLElement>('#app')!;
-  titleEl.textContent = appManifest.title;
+  const worldTitle = worldLabel(appManifest.id, strings, appManifest.title);
+  titleEl.textContent = worldTitle;
 
   let previousView = store.get().view;
   function render(): void {
     const state = store.get();
     appEl.classList.toggle('view-home', state.view === 'home');
-    document.title = state.view === 'home' ? SITE_TITLE : appManifest.title;
+    document.title = state.view === 'home' ? SITE_TITLE : worldTitle;
     if (previousView !== state.view && state.view === 'map') mapAdapter.invalidateSize();
     previousView = state.view;
   }
@@ -151,7 +158,7 @@ export function mountAppChrome(
   loadedLayers: LoadedLayer[],
 ): void {
   mountRightPanel(store, strings);
-  mountWorldTitle(store, appManifest, mapAdapter);
+  mountWorldTitle(store, appManifest, mapAdapter, strings);
   mountAttribution(store, appManifest);
   mountScaleIndicator(mapAdapter);
   mountPluginSlots(store, loadedLayers);

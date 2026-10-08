@@ -1,5 +1,7 @@
 export type Language = 'en' | 'es';
 
+export const LANGUAGES: readonly Language[] = ['en', 'es'];
+
 const STORAGE_KEY = 'universal-map-app:lang';
 
 // Only English/Spanish strings exist today (see worlds/*/strings.{en,es}.json)
@@ -20,4 +22,8 @@ export function getStoredLanguage(): Language | undefined {
 
 export function setStoredLanguage(lang: Language): void {
   localStorage.setItem(STORAGE_KEY, lang);
+}
+
+export function resolveLanguage(stored: Language | undefined, navigatorLanguage: string): Language {
+  return stored ?? detectDefaultLanguage(navigatorLanguage);
 }

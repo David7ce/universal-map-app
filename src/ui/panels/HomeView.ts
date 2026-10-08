@@ -1,6 +1,9 @@
 import type { Store, AppState } from '../../engine/state/store';
 import { escapeHtml } from '../escape-html';
 import { renderInlineCode } from '../inline-code';
+import { LANGUAGES, setStoredLanguage, type Language } from '../language';
+import { renderLanguageToggle } from '../language-toggle';
+import { t } from '../strings';
 import { renderLegalFooter } from './legal-footer';
 import { AVAILABLE_WORLDS, SITE_TITLE, worldHref } from '../worlds';
 
@@ -17,14 +20,15 @@ export function mountHomeView(
   store: Store<AppState>,
   currentWorldId: string,
   strings: Record<string, string>,
+  language: Language,
 ): void {
   const cards = AVAILABLE_WORLDS.map((world) => {
     const isCurrent = world.id === currentWorldId;
     return `<a class="home-view__card${isCurrent ? ' is-current' : ''}" href="${worldHref(world.id)}" data-world="${escapeHtml(world.id)}">
       <span class="home-view__card-icon" aria-hidden="true">${world.icon}</span>
       <span class="home-view__card-body">
-        <span class="home-view__card-title">${escapeHtml(world.label)}</span>
-        <span class="home-view__card-desc">${escapeHtml(world.description)}</span>
+        <span class="home-view__card-title">${escapeHtml(t(`worlds.${world.id}.label`, strings))}</span>
+        <span class="home-view__card-desc">${escapeHtml(t(`worlds.${world.id}.description`, strings))}</span>
       </span>
     </a>`;
   }).join('');
@@ -36,6 +40,7 @@ export function mountHomeView(
     .join('');
 
   container.innerHTML = `
+    ${renderLanguageToggle(LANGUAGES, language, t('home.languageLabel', strings))}
     <header class="home-view__header">
       <h1 class="home-view__title">${escapeHtml(SITE_TITLE)}</h1>
       <p class="home-view__tagline">${escapeHtml(strings['home.tagline'] ?? '')}</p>
@@ -50,7 +55,7 @@ export function mountHomeView(
         <a class="home-view__docs-link" href="${DOCS_URL}" target="_blank" rel="noopener noreferrer">${escapeHtml(strings['home.addWorld.docsLabel'] ?? 'Full field reference')}</a>
       </section>
     </main>
-    <footer class="home-view__footer">${renderLegalFooter(SITE_TITLE, strings)}</footer>
+    <footer class="home-view__footer">${renderLegalFooter(SITE_TITLE, strings, language)}</footer>
   `;
 
   // Clicking a card opens that world. The *current* world's card is already
@@ -62,6 +67,17 @@ export function mountHomeView(
         event.preventDefault();
         store.set({ view: 'map' });
       }
+    });
+  });
+
+  // Switching language stores it and reloads: strings are read once at
+  // bootstrap (same behavior as SettingsControl's language select).
+  container.querySelectorAll<HTMLButtonElement>('[data-lang]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const next = button.dataset.lang as Language;
+      if (next === language) return;
+      setStoredLanguage(next);
+      location.reload();
     });
   });
 }

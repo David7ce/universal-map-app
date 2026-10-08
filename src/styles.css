@@ -1689,11 +1689,15 @@ select:disabled {
   inset: 0;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* Not `center`: when the content is taller than the viewport (mobile, with
+     the how-to section) centering overflows upward and the top becomes
+     unreachable. The header/footer auto margins below center it otherwise. */
+  justify-content: flex-start;
   overflow-y: auto;
   text-align: center;
   background: var(--color-bg);
-  padding: 2rem 1.5rem;
+  /* Top room for the language toggle in the corner. */
+  padding: 3.5rem 1.5rem 2rem;
 }
 .map-app.view-home #home-view {
   display: flex;
@@ -1709,6 +1713,7 @@ select:disabled {
   display: none;
 }
 .home-view__header {
+  margin-top: auto;
   max-width: 36rem;
   display: flex;
   flex-direction: column;
@@ -1830,6 +1835,31 @@ select:disabled {
   color: var(--color-primary);
   font-size: var(--font-size-sm);
 }
+.home-view__lang {
+  position: absolute;
+  top: var(--control-btn-offset);
+  right: var(--control-btn-offset);
+  display: flex;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-white);
+  box-shadow: var(--shadow-md);
+}
+.home-view__lang-btn {
+  border: 0;
+  background: transparent;
+  padding: 0.35rem 0.75rem;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  cursor: pointer;
+}
+.home-view__lang-btn.is-active {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
 .home-view__cta {
   padding: 0.7rem 1.6rem;
   border: none;
@@ -1844,6 +1874,7 @@ select:disabled {
   background: var(--color-primary-dark, var(--color-primary));
 }
 .home-view__footer {
+  margin-bottom: auto;
   margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);

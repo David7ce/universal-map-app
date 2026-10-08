@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { detectDefaultLanguage } from './language';
+import { detectDefaultLanguage, resolveLanguage } from './language';
 
 describe('detectDefaultLanguage', () => {
   it('detects Spanish from a plain "es" tag', () => {
@@ -18,5 +18,16 @@ describe('detectDefaultLanguage', () => {
     expect(detectDefaultLanguage('en-US')).toBe('en');
     expect(detectDefaultLanguage('fr')).toBe('en');
     expect(detectDefaultLanguage('de-DE')).toBe('en');
+  });
+});
+
+describe('resolveLanguage', () => {
+  it('prefers the stored language', () => {
+    expect(resolveLanguage('en', 'es-ES')).toBe('en');
+  });
+
+  it('falls back to the detected browser language', () => {
+    expect(resolveLanguage(undefined, 'es-ES')).toBe('es');
+    expect(resolveLanguage(undefined, 'fr-FR')).toBe('en');
   });
 });

@@ -38,7 +38,9 @@ export function mountSettingsControl(
   strings: Record<string, string>,
   deps: SettingsControlDeps,
 ): void {
-  const worldOptions = AVAILABLE_WORLDS.map((w) => `<option value="${w.id}">${escapeHtml(w.label)}</option>`).join('');
+  const worldOptions = AVAILABLE_WORLDS.map(
+    (w) => `<option value="${w.id}">${escapeHtml(t(`worlds.${w.id}.label`, strings))}</option>`,
+  ).join('');
 
   const systemOptions = CALENDAR_SYSTEMS.map(
     (system) => `<option value="${system}">${escapeHtml(t(`calendar.system.${system}`, strings))}</option>`,

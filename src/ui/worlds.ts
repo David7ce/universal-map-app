@@ -5,41 +5,22 @@ export const SITE_TITLE = 'Universal Calendar Map';
 
 // The set of worlds this build knows about, for the shared Home view and the
 // Settings world switcher. A single source of truth so the two can't drift.
-// Adding a world means adding one entry here (plus its `worlds/<id>/` folder).
+// Adding a world means adding one entry here, its `worlds/<id>/` folder, and its
+// label/description in `public/strings/site.*.json`.
 // The first entry is the default world (see `DEFAULT_WORLD_ID`).
 export interface WorldEntry {
   id: string;
-  label: string;
-  description: string;
   // Emoji shown on the Home card — no icon font or asset files needed.
+  // The card's label and description are `worlds.<id>.label|description` in
+  // `public/strings/site.<lang>.json`.
   icon: string;
 }
 
 export const AVAILABLE_WORLDS: readonly WorldEntry[] = [
-  {
-    id: 'world-leaders',
-    label: 'Líderes del Mundo',
-    description: 'Retratos e información de los jefes de estado y gobierno de las principales naciones.',
-    icon: '🏛️',
-  },
-  {
-    id: 'paranormal-spain',
-    label: 'Paranormal España',
-    description: 'Lugares misteriosos y leyendas de la geografía española.',
-    icon: '👻',
-  },
-  {
-    id: 'events-canary-islands',
-    label: 'Eventos de Canarias',
-    description: 'Festivales, romerías y citas culturales del archipiélago canario.',
-    icon: '🎉',
-  },
-  {
-    id: 'moon-map-photos',
-    label: 'Fotos de la Luna',
-    description: 'Un mapa lunar con fotografías y datos de cada región.',
-    icon: '🌕',
-  },
+  { id: 'world-leaders', icon: '🏛️' },
+  { id: 'paranormal-spain', icon: '👻' },
+  { id: 'events-canary-islands', icon: '🎉' },
+  { id: 'moon-map-photos', icon: '🌕' },
 ] as const;
 
 // URL for a world: a real path (`/world-leaders/`), which `vite.config.ts`'s

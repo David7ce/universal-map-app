@@ -19,7 +19,8 @@ Open the printed local URL. No backend, no paid services — `pnpm build` produc
 2. Add a `world.json` (see `worlds/world-leaders/world.json` for the shape).
 3. Add one `*.layer.json` per data layer under `worlds/<your-world-id>/layers/`, and the matching GeoJSON under `worlds/<your-world-id>/data/`.
 4. Optionally add `strings.json` for your own UI text, a `plugins` block to activate `participate`, a `welcome` splash, and/or an `about` block (adds an "About Us" link to the persistent header) — see `docs/json-reference.md`.
-5. Load it at `/my-world/` (e.g. `http://localhost:5173/my-world/`), or open `/` to get the default world (`world-leaders`). `?world=<id>` still works as an override. A world switcher UI is still intentionally out of scope for v1 (see the design spec's non-goals) — this is just a static id lookup, resolved once at page load. Per-domain deployment of a single world is in scope (see below), just not a UI for switching between worlds at runtime.
+5. Register it for the Home and Settings: add one entry (`id` + emoji `icon`) to `AVAILABLE_WORLDS` in `src/ui/worlds.ts`, and its `worlds.<id>.label` and `worlds.<id>.description` to `public/strings/site.en.json` and `site.es.json`. Shared UI text lives in those two files; a world's own `strings.*.json` only needs keys that are world-specific or differ from the shared value (a world key overrides a shared one).
+6. Load it at `/my-world/` (e.g. `http://localhost:5173/my-world/`), or open `/` to get the default world (`world-leaders`). `?world=<id>` still works as an override. A world switcher UI is still intentionally out of scope for v1 (see the design spec's non-goals) — this is just a static id lookup, resolved once at page load. Per-domain deployment of a single world is in scope (see below), just not a UI for switching between worlds at runtime.
 
 No engine code under `src/engine/` needs to change to add a new world instance.
 
