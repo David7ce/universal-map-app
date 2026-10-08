@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Tighter corners, smaller scale, one h1 per screen
+
+The four corner controls sit 8px from the edges (was 15px), the footer strip is thinner (1.1rem) with a smaller scale (bar max 60px, 0.65rem text). `index.html` now has a static `<h1>` inside `#home-view` (replaced when the Home mounts) and `#world-title` is an `<h1>`, so each screen has exactly one visible h1.
+
 ## world-leaders: gender-neutral role groups
 
 The role filter is now three generic, gender-neutral groups — **Presidencia** (Presidente/Presidenta), **Jefatura de Gobierno** (Presidente del Gobierno, Primer Ministro/Primera Ministra, Canciller) and **Monarquía** (Monarca, Emperador) — via a new `roleGroup` property on every leader. The exact title stays in `properties.role` and still shows in the info card.
