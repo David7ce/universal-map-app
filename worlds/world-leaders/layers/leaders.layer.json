@@ -8,16 +8,11 @@
     {
       "id": "role",
       "label": "Cargo",
-      "field": "properties.role",
+      "field": "properties.roleGroup",
       "icons": {
-        "Presidente": "🏛️",
-        "Presidenta": "🏛️",
-        "Presidente del Gobierno": "🏛️",
-        "Primer Ministro": "👔",
-        "Primera Ministra": "👔",
-        "Canciller": "🏛️",
-        "Monarca": "👑",
-        "Emperador": "👑"
+        "Presidencia": "🏛️",
+        "Jefatura de Gobierno": "👔",
+        "Monarquía": "👑"
       },
       "defaultIcon": "👤"
     },
