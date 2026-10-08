@@ -1,6 +1,7 @@
 import type { Store, AppState } from '../../engine/state/store';
 import { escapeHtml } from '../escape-html';
 import { renderInlineCode } from '../inline-code';
+import { t } from '../strings';
 import { renderLegalFooter } from './legal-footer';
 import { AVAILABLE_WORLDS, SITE_TITLE, worldHref } from '../worlds';
 
@@ -23,8 +24,8 @@ export function mountHomeView(
     return `<a class="home-view__card${isCurrent ? ' is-current' : ''}" href="${worldHref(world.id)}" data-world="${escapeHtml(world.id)}">
       <span class="home-view__card-icon" aria-hidden="true">${world.icon}</span>
       <span class="home-view__card-body">
-        <span class="home-view__card-title">${escapeHtml(world.label)}</span>
-        <span class="home-view__card-desc">${escapeHtml(world.description)}</span>
+        <span class="home-view__card-title">${escapeHtml(t(`worlds.${world.id}.label`, strings))}</span>
+        <span class="home-view__card-desc">${escapeHtml(t(`worlds.${world.id}.description`, strings))}</span>
       </span>
     </a>`;
   }).join('');
