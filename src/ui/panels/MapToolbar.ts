@@ -8,7 +8,7 @@ import { stepMonth } from './toolbar-date';
 import { escapeHtml } from '../escape-html';
 import { t } from '../strings';
 
-const MAX_VISIBLE_DESKTOP = 6;
+const MAX_VISIBLE_DESKTOP = 8;
 const MAX_VISIBLE_MOBILE = 4;
 
 export interface MapToolbarOptions {

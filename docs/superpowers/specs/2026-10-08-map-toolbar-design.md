@@ -62,7 +62,7 @@ Layout: `[‹] [Oct 8, 2026 ▾] [›] | pill pill pill [More ▾] [Clear]`
 - Pill order: dimensions in manifest order, values in current
   `computeTaxonomyDimensions` order. A pure helper
   `splitVisiblePills(dimensions, maxVisible)` returns `{ visible, overflow }`;
-  `maxVisible` is 6 on desktop and 4 on mobile.
+  `maxVisible` is 8 on desktop and 4 on mobile.
 - Overflow values appear in a "More" menu (same pill markup, toggling the same
   `activeFilters`). The button shows a count of active filters hidden inside it.
 - Pills for values with zero features active on the selected date are dimmed
