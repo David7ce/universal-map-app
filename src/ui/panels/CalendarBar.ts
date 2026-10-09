@@ -68,7 +68,6 @@ export function clampDateToRange(iso: string, min: string, max: string): string 
   return iso;
 }
 
-
 // Windows-Calendar-style drill-down: a month grid whose header shows
 // "September 2026" with prev/next arrows. Clicking the header zooms out to a
 // 12-month grid (header "2026"), clicking again zooms out to a decade of

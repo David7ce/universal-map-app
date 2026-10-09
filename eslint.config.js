@@ -19,7 +19,13 @@ export default tseslint.config(
     // `globals` package for four names.
     files: ['scripts/**/*.mjs'],
     languageOptions: {
-      globals: { process: 'readonly', console: 'readonly', fetch: 'readonly', setTimeout: 'readonly', Buffer: 'readonly' },
+      globals: {
+        process: 'readonly',
+        console: 'readonly',
+        fetch: 'readonly',
+        setTimeout: 'readonly',
+        Buffer: 'readonly',
+      },
     },
   },
   eslintConfigPrettier,

@@ -50,7 +50,9 @@ export function renderDataLayer(
       ? active.filter((feature, index) => {
           if (feature.geometry.type !== 'Point') return true;
           const key = feature.geometry.coordinates.join(',');
-          return active.findIndex((f) => f.geometry.type === 'Point' && f.geometry.coordinates.join(',') === key) === index;
+          return (
+            active.findIndex((f) => f.geometry.type === 'Point' && f.geometry.coordinates.join(',') === key) === index
+          );
         })
       : active;
 
