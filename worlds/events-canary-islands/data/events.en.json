@@ -1,0 +1,277 @@
+{
+  "evt-001": {
+    "name": "Canary Islands Jazz Nights",
+    "description": "A night of jazz under the stars at the iconic Auditorio.",
+    "category": "Music",
+    "price": "€18"
+  },
+  "evt-002": {
+    "name": "Romería of San Roque",
+    "description": "Traditional pilgrimage festival with ox carts, traditional costumes and local products.",
+    "category": "Festival",
+    "price": "Free",
+    "venue": "Historic Centre"
+  },
+  "evt-003": {
+    "name": "Antiques and Crafts Market",
+    "description": "Vintage items and handmade crafts next to the seafront square.",
+    "category": "Market",
+    "price": "Free"
+  },
+  "evt-004": {
+    "name": "Costa de Tenerife Trail Run",
+    "description": "Coastal trail race with 10K and 21K distances.",
+    "category": "Sports",
+    "price": "€25",
+    "venue": "Costa Adeje coastal trail"
+  },
+  "evt-005": {
+    "name": "Fiestas del Cristo",
+    "description": "Street festivities, live music and traditional processions.",
+    "category": "Festival",
+    "price": "Free"
+  },
+  "evt-006": {
+    "name": "Children's Day at Loro Parque",
+    "description": "Special activities and animal shows for children.",
+    "category": "Family",
+    "price": "€39"
+  },
+  "evt-007": {
+    "name": "Sunset Concert Series",
+    "description": "Live acoustic sessions as the sun sets over the Atlantic.",
+    "category": "Music",
+    "price": "Free",
+    "venue": "Playa de las Américas seafront promenade"
+  },
+  "evt-008": {
+    "name": "Garachico Crafts Market",
+    "description": "Local artisans sell ceramics, textiles and preserves.",
+    "category": "Market",
+    "price": "Free"
+  },
+  "evt-009": {
+    "name": "Festivities in Honour of the Virgin of Candelaria",
+    "description": "The island's great religious festival, with processions and fireworks.",
+    "category": "Festival",
+    "price": "Free"
+  },
+  "evt-010": {
+    "name": "Tenerife Open Surf Championship",
+    "description": "Local and international surfers compete on the south coast.",
+    "category": "Sports",
+    "price": "€10"
+  },
+  "evt-011": {
+    "name": "Cultural White Night",
+    "description": "Museums, galleries and historic buildings stay open late with free admission.",
+    "category": "Culture",
+    "price": "Free",
+    "venue": "Historic Centre"
+  },
+  "evt-012": {
+    "name": "Chamber Music Series",
+    "description": "Classical chamber ensembles perform in the concert hall.",
+    "category": "Music",
+    "price": "€22"
+  },
+  "evt-013": {
+    "name": "Autumn Children's Fair",
+    "description": "Games, workshops and puppet shows for the whole family.",
+    "category": "Family",
+    "price": "Free",
+    "venue": "Municipal Park"
+  },
+  "evt-014": {
+    "name": "Autumn Special Edition of the Market",
+    "description": "Expanded stalls with seasonal produce and local food.",
+    "category": "Market",
+    "price": "Free"
+  },
+  "evt-015": {
+    "name": "Fiestas del Valle",
+    "description": "Three days of concerts, food and fireworks in the historic centre.",
+    "category": "Festival",
+    "price": "Free",
+    "venue": "Historic Centre"
+  },
+  "evt-016": {
+    "name": "Tenerife Half Marathon",
+    "description": "Coastal half marathon finishing on the seafront promenade.",
+    "category": "Sports",
+    "price": "€30"
+  },
+  "evt-017": {
+    "name": "International Film Week",
+    "description": "A week of independent and international film screenings.",
+    "category": "Culture",
+    "price": "€8"
+  },
+  "evt-018": {
+    "name": "University Choir Winter Concert",
+    "description": "The University of La Laguna choir performs seasonal choral works.",
+    "category": "Music",
+    "price": "Free",
+    "venue": "Church of La Concepción"
+  },
+  "evt-019": {
+    "name": "Reggaeton Beach Festival Tenerife",
+    "description": "Tenerife premiere of Europe's biggest urban beach festival, with live reggaeton by the sea.",
+    "category": "Music",
+    "price": "From €35"
+  },
+  "evt-020": {
+    "name": "Tenerife Cook Music Fest",
+    "description": "Three themed nights (urban, Latin and tropical) with international artists such as Don Omar, Chayanne and Lola Índigo, in its 5th anniversary.",
+    "category": "Music",
+    "price": "From €45",
+    "venue": "Santa Cruz de Tenerife port esplanade"
+  },
+  "evt-021": {
+    "name": "Fiesta del Charco",
+    "description": "A festival of National Tourist Interest reviving traditional mullet fishing by stunning the coastal pool, preceded by the Bajada de la Rama and a large romería.",
+    "category": "Festival",
+    "price": "Free",
+    "venue": "La Aldea tidal pool (ravine mouth)"
+  },
+  "evt-022": {
+    "name": "WOMAD Las Palmas de Gran Canaria",
+    "description": "International festival of world music, arts and dance, with free open-air concerts by the port.",
+    "category": "Culture",
+    "price": "Free"
+  },
+  "evt-023": {
+    "name": "Canary Islands International Music Festival",
+    "description": "The festival's 42nd edition, with major orchestras and international soloists performing at the Auditorio over several weeks.",
+    "category": "Music",
+    "price": "Check prices"
+  },
+  "evt-024": {
+    "name": "Santa Cruz de Tenerife Carnival",
+    "description": "The Carnival's most intense days, themed 'Latin Rhythms', with the Coso Apoteosis on Carnival Tuesday filling the streets with music and colour.",
+    "category": "Festival",
+    "price": "Free",
+    "venue": "City centre"
+  },
+  "evt-025": {
+    "name": "Holy Week in La Laguna",
+    "description": "Traditional processions through the historic centre, regarded as among the finest in the Canary Islands.",
+    "category": "Festival",
+    "price": "Free",
+    "venue": "Historic Centre"
+  },
+  "evt-026": {
+    "name": "Santa Cruz de Tenerife Book Fair",
+    "description": "Five days of literary activity with more than twenty-five bookseller and publisher stands in the middle of the park.",
+    "category": "Culture",
+    "price": "Free"
+  },
+  "evt-027": {
+    "name": "MUECA Festival",
+    "description": "International Street Arts Festival: theatre, dance, circus and music taking over the historic centre's squares and streets for four days.",
+    "category": "Culture",
+    "price": "Free",
+    "venue": "Historic Centre"
+  },
+  "evt-028": {
+    "name": "Corpus Christi Festivities — Carpet Day",
+    "description": "Thousands of people visit La Orotava to see the flower and volcanic-sand carpets covering the historic centre's streets.",
+    "category": "Festival",
+    "price": "Free",
+    "venue": "Historic Centre"
+  },
+  "evt-029": {
+    "name": "Regional Romería of San Benito Abad",
+    "description": "Regional pilgrimage with decorated carts and folk groups from all over the island, preceded by the blessing of San Benito's bread.",
+    "category": "Festival",
+    "price": "Free",
+    "venue": "La Laguna Cathedral"
+  },
+  "evt-030": {
+    "name": "Pinolere Fair",
+    "description": "Nearly two hundred craftspeople gather on the slope of the La Orotava valley; this edition revolves around wood.",
+    "category": "Market",
+    "price": "Free"
+  },
+  "evt-031": {
+    "name": "Starmus VIII — In Search of the Truth",
+    "description": "Nobel laureates, astronauts and international artists such as Brian May and Andrea Bocelli gather around science, music and the future of the planet.",
+    "category": "Culture",
+    "price": "Check prices",
+    "venue": "Arona Pyramid"
+  },
+  "evt-032": {
+    "name": "Santa Cruz de Tenerife International Half Marathon",
+    "description": "12th edition of the race, with 8 and 21 kilometre distances along the capital's waterfront.",
+    "category": "Sports",
+    "price": "Check prices",
+    "venue": "Start and finish in the city centre"
+  },
+  "evt-033": {
+    "name": "Las Palmas de Gran Canaria Carnival",
+    "description": "One of the Canary Islands' most emblematic festivals: the Grand Drag Queen Gala, the election of the Queen and huge parades.",
+    "category": "Festival",
+    "price": "Free"
+  },
+  "evt-034": {
+    "name": "Festival of Our Lady of the Pine",
+    "description": "A great romería-offering for the patron saint of the Diocese of the Canary Islands, with carts from every municipality on the island and traditional costumes.",
+    "category": "Festival",
+    "price": "Free",
+    "venue": "Basilica of Our Lady of the Pine"
+  },
+  "evt-035": {
+    "name": "Canarias Jazz & More International Festival",
+    "description": "Concerts by world-class jazz, soul and funk artists outdoors by Las Canteras beach.",
+    "category": "Music",
+    "price": "From €15"
+  },
+  "evt-036": {
+    "name": "Festivities of Our Lady of Los Dolores",
+    "description": "Patron saint of Lanzarote: a pilgrimage of walkers in traditional dress and an island crafts fair.",
+    "category": "Festival",
+    "price": "Free",
+    "venue": "Hermitage of Los Dolores, Mancha Blanca"
+  },
+  "evt-037": {
+    "name": "Club La Santa Ironman Lanzarote",
+    "description": "One of the world's toughest and most legendary triathlons: 3.8 km swim, 180 km bike and a full marathon run.",
+    "category": "Sports",
+    "price": "Free for spectators"
+  },
+  "evt-038": {
+    "name": "Teguise Sunday Market",
+    "description": "The Canary Islands' most important popular market, with traditional crafts, volcanic products and live folklore.",
+    "category": "Market",
+    "price": "Free",
+    "venue": "Historic centre of Teguise"
+  },
+  "evt-039": {
+    "name": "Fuerteventura International Kite Festival",
+    "description": "Hundreds of giant and acrobatic kites fill the sky above the dunes in an internationally renowned visual spectacle.",
+    "category": "Festival",
+    "price": "Free",
+    "venue": "Playa del Burro, Corralejo Dunes Natural Park"
+  },
+  "evt-040": {
+    "name": "Romería of the Virgin of La Peña",
+    "description": "Night pilgrimage through Fuerteventura's ravines to the island's patron saint.",
+    "category": "Festival",
+    "price": "Free",
+    "venue": "Sanctuary of Our Lady of La Peña, Vega de Río Palmas"
+  },
+  "evt-041": {
+    "name": "Transvulcania Ultramarathon",
+    "description": "The great 73 km ultra trail running along the volcanic ridge and the Roque de los Muchachos down to the sea.",
+    "category": "Sports",
+    "price": "Free for spectators",
+    "venue": "Route of the Volcanoes, La Palma"
+  },
+  "evt-042": {
+    "name": "Hiking and Mountain Festival",
+    "description": "Guided routes through laurel forests, night-time stargazing and environmental talks.",
+    "category": "Culture",
+    "price": "€15",
+    "venue": "Plaza de España and island trails"
+  }
+}

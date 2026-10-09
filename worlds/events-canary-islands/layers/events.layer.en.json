@@ -1,0 +1,54 @@
+{
+  "title": "Events",
+  "taxonomy": [
+    {
+      "id": "category",
+      "label": "Category",
+      "icons": {
+        "Music": "🎵",
+        "Festival": "🎉",
+        "Market": "🛍️",
+        "Sports": "🏃",
+        "Family": "👨‍👩‍👧",
+        "Culture": "🎭"
+      }
+    }
+  ],
+  "style": {
+    "badgeMap": {
+      "Free": "🆓"
+    }
+  },
+  "panel": {
+    "infoFields": [
+      {
+        "field": "properties.description",
+        "label": "Description"
+      },
+      {
+        "field": "properties.category",
+        "label": "Category"
+      },
+      {
+        "field": "properties.municipality",
+        "label": "Municipality"
+      },
+      {
+        "field": "properties.venue",
+        "label": "Venue"
+      },
+      {
+        "field": "properties.time",
+        "label": "Time"
+      },
+      {
+        "field": "properties.price",
+        "label": "Price"
+      },
+      {
+        "field": "properties.link",
+        "label": "More information"
+      }
+    ]
+  }
+}

@@ -44,5 +44,6 @@
     "time": false
   },
   "welcome": true,
-  "contentLanguage": "es"
+  "contentLanguage": "es",
+  "translations": ["en"]
 }

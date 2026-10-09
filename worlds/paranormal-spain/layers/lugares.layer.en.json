@@ -1,0 +1,108 @@
+{
+  "title": "Paranormal Places",
+  "taxonomy": [
+    {
+      "id": "category",
+      "label": "Category",
+      "icons": {
+        "Apparitions": "👻",
+        "UFOs": "🛸",
+        "Curses": "🪦",
+        "Witchcraft": "🔮",
+        "Mythical Creatures": "🐉",
+        "Humanoid Monsters": "🧛",
+        "Natural Disasters": "🌊",
+        "Tragedies": "🔪",
+        "Portals": "🌀",
+        "Cursed Objects": "🗿",
+        "Places of Power": "⚡"
+      }
+    },
+    {
+      "id": "verification",
+      "label": "Verification level",
+      "icons": {
+        "Scientifically Studied": "🔬",
+        "Documented": "📰",
+        "Multiple Testimonies": "👁️",
+        "Popular Legend": "📚",
+        "Unverified": "❓"
+      }
+    }
+  ],
+  "style": {
+    "colorMap": {
+      "Low": "#4caf7d",
+      "Medium": "#e0a83e",
+      "High": "#d9534f"
+    }
+  },
+  "panel": {
+    "infoFields": [
+      {
+        "field": "properties.category",
+        "label": "Category"
+      },
+      {
+        "field": "properties.verificationLevel",
+        "label": "Verification level"
+      },
+      {
+        "field": "properties.era",
+        "label": "Era"
+      },
+      {
+        "field": "properties.municipality",
+        "label": "Municipality"
+      },
+      {
+        "field": "properties.phenomena",
+        "label": "Phenomena"
+      },
+      {
+        "field": "properties.activityHours",
+        "label": "Activity hours"
+      },
+      {
+        "field": "properties.dangerLevel",
+        "label": "Danger level"
+      },
+      {
+        "field": "properties.accessibility",
+        "label": "Accessibility"
+      },
+      {
+        "field": "properties.bestSeason",
+        "label": "Best season"
+      },
+      {
+        "field": "properties.investigators",
+        "label": "Investigators"
+      },
+      {
+        "field": "properties.howToGetThere",
+        "label": "How to get there"
+      },
+      {
+        "field": "properties.recommendations",
+        "label": "Recommendations"
+      },
+      {
+        "field": "properties.fullHistory",
+        "label": "Full history"
+      },
+      {
+        "field": "properties.video.title",
+        "label": "Video"
+      },
+      {
+        "field": "properties.video.url",
+        "label": "Watch video"
+      },
+      {
+        "field": "properties.sources",
+        "label": "Sources"
+      }
+    ]
+  }
+}
