@@ -30,6 +30,16 @@ export function resolveWorldId(searchParams: URLSearchParams, mode: string, path
   return isIsolatedWorldMode(mode) ? mode : DEFAULT_WORLD_ID;
 }
 
+// Whether the URL itself names the world — `?world=<id>`, a first path segment,
+// or a standalone per-world build — as opposed to the bare site root, which
+// loads the default world behind the shared Home. A world's own URL opens that
+// world directly (it is independent of the Home page).
+export function isWorldExplicit(searchParams: URLSearchParams, mode: string, pathname = '/', basePath = '/'): boolean {
+  const requested = searchParams.get('world');
+  if (requested && /^[a-zA-Z0-9_-]+$/.test(requested)) return true;
+  return worldIdFromPath(pathname, basePath) !== null || isIsolatedWorldMode(mode);
+}
+
 // The deployment subpath of the app, from the page's base URI
 // (`document.baseURI`) — e.g. '/universal-map-app/' on a GitHub Pages project
 // site, '/' at a domain root. `import.meta.env.BASE_URL` can't be used for

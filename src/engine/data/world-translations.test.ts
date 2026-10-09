@@ -27,11 +27,15 @@ describe('world-leaders English translation', () => {
     for (const id of Object.keys(data)) expect(ids.has(id), `unknown id ${id}`).toBe(true);
   });
 
-  it('has an icon for every English role group and continent', () => {
+  it('filters only by position (no continent filter), in both languages', () => {
+    expect(base.taxonomy.map((t: { id: string }) => t.id)).toEqual(['role']);
+    expect(merged.taxonomy?.map((t) => t.id)).toEqual(['role']);
+  });
+
+  it('has an icon for every English role group', () => {
     const taxonomy = (id: string) => merged.taxonomy?.find((t) => t.id === id);
     for (const entry of Object.values(data)) {
       expect(taxonomy('role')?.icons?.[entry.roleGroup], `role icon ${entry.roleGroup}`).toBeTruthy();
-      expect(taxonomy('continent')?.icons?.[entry.continent], `continent icon ${entry.continent}`).toBeTruthy();
     }
   });
 

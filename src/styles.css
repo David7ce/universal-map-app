@@ -479,7 +479,8 @@ select:disabled {
    gets below. Enhanced at min-width:48rem, where the panel is a fixed-width
    drawer instead: they track its left edge so it never covers them. */
 .map-app.panel-right-open .leaflet-control-zoom.leaflet-bar.leaflet-control,
-.map-app.panel-right-open .map-footer-legend {
+.map-app.panel-right-open .map-footer-legend,
+.map-app.panel-right-open .map-toolbar__date {
   display: none;
 }
 @media (min-width: 48rem) {
@@ -489,6 +490,9 @@ select:disabled {
   .map-app.panel-right-open .leaflet-control-zoom.leaflet-bar.leaflet-control {
     display: revert;
     margin-right: calc(var(--panel-right-width) + var(--control-btn-offset)) !important;
+  }
+  .map-app.panel-right-open .map-toolbar__date {
+    display: flex;
   }
   .map-app.panel-right-open .map-footer-legend {
     display: revert;
@@ -1481,10 +1485,9 @@ select:disabled {
    ======================================== */
 .map-toolbar {
   position: absolute;
-  /* Same top offset and height as the search / panel-toggle circular
-     buttons, inset past them on both sides, so the bar sits in the same band
-     as those two icons. */
-  top: var(--control-btn-offset);
+  /* Inset past the search / panel-toggle circular buttons on both sides, and
+     below the world title that sits at the top centre. */
+  top: calc(var(--control-btn-offset) + 2.25rem);
   left: calc(var(--control-btn-offset) + var(--control-btn-size) + var(--controls-gap));
   right: calc(var(--control-btn-offset) + var(--control-btn-size) + var(--controls-gap));
   z-index: var(--z-fixed);
@@ -1492,7 +1495,6 @@ select:disabled {
   flex-direction: column;
   align-items: center;
   gap: 0.4rem;
-  min-height: var(--control-btn-size);
   pointer-events: none;
 }
 .map-toolbar[hidden] {
@@ -1510,7 +1512,17 @@ select:disabled {
   display: none;
 }
 .map-toolbar__date {
-  position: relative;
+  /* Bottom centre of the map (the world title moved to the top). */
+  position: fixed;
+  /* Centred with auto margins, not a transform: a transformed ancestor would
+     become the containing block of the (fixed, on mobile) popover inside. */
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: fit-content;
+  bottom: var(--bottom-clearance);
+  z-index: var(--z-fixed);
+  transition: right var(--transition-base);
 }
 .map-toolbar__date[hidden] {
   display: none;
@@ -1546,7 +1558,8 @@ select:disabled {
 }
 .map-toolbar__popover {
   position: absolute;
-  top: calc(100% + 0.4rem);
+  /* Opens upward: the date group is at the bottom of the screen. */
+  bottom: calc(100% + 0.4rem);
   left: 50%;
   transform: translateX(-50%);
   width: 20rem;
@@ -1648,6 +1661,18 @@ select:disabled {
   flex-shrink: 0;
 }
 @media (max-width: 47.99rem) {
+  /* Compact so it fits between the Layers button and the zoom control. */
+  .map-toolbar__date {
+    gap: 0.2rem;
+  }
+  .map-toolbar__step {
+    width: 1.65rem;
+    height: 1.65rem;
+  }
+  .map-toolbar__chip {
+    padding: 0.25rem 0.6rem;
+    font-size: var(--font-size-xs);
+  }
   .map-toolbar__label {
     display: none;
   }
@@ -1657,7 +1682,7 @@ select:disabled {
   }
   .map-toolbar__popover {
     position: fixed;
-    top: calc(var(--control-btn-offset) + var(--control-btn-size) + 2.75rem);
+    bottom: calc(var(--bottom-clearance) + 3.25rem);
     left: var(--control-btn-offset);
     right: var(--control-btn-offset);
     width: auto;
@@ -1676,6 +1701,13 @@ select:disabled {
      with it, so keep the bar clear of both. */
   .map-app.panel-right-open .map-toolbar {
     right: calc(var(--panel-right-width) + var(--control-btn-offset) + var(--control-btn-size) + var(--controls-gap));
+  }
+  /* Centre the title and the date group in the map area left of the drawer. */
+  .map-app.panel-right-open .world-title {
+    left: calc((100% - var(--panel-right-width)) / 2);
+  }
+  .map-app.panel-right-open .map-toolbar__date {
+    right: var(--panel-right-width);
   }
 }
 
@@ -1900,9 +1932,14 @@ select:disabled {
 .world-title {
   margin: 0;
   position: absolute;
-  bottom: 0.5rem;
+  /* Top centre, on the same band as the search / panel-toggle buttons and
+     above the filter pills; kept clear of both buttons. */
+  top: var(--control-btn-offset);
   left: 50%;
   transform: translateX(-50%);
+  max-width: calc(100% - 2 * (var(--control-btn-offset) + var(--control-btn-size) + var(--controls-gap)));
+  overflow: hidden;
+  text-overflow: ellipsis;
   z-index: var(--z-fixed);
   padding: 0.3rem 0.9rem;
   border-radius: var(--radius-full);

@@ -116,7 +116,7 @@
     },
     "welcome": {
       "type": "boolean",
-      "description": "Set to true to start on the shared Home view (a list of every world in this build) instead of straight on the map. The Home view itself is shared across all worlds — a world no longer supplies its own splash copy."
+      "description": "Set to true so the bare site root (no world in the URL) starts on the shared Home view (a list of every world in this build). A world's own URL (/<id>/, ?world=<id>, or a standalone per-world build) always opens that world's map directly. The Home view itself is shared across all worlds — a world no longer supplies its own splash copy."
     },
     "contentLanguage": {
       "enum": ["en", "es"],
