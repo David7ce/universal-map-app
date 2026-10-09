@@ -83,6 +83,12 @@ describe('validateAppManifest', () => {
     expect(() => validateAppManifest({ ...valid, contentLanguage: 'fr' })).toThrow(/contentLanguage/);
   });
 
+  it('accepts translations as a list of languages and rejects anything else', () => {
+    expect(validateAppManifest({ ...valid, translations: ['en'] }).translations).toEqual(['en']);
+    expect(() => validateAppManifest({ ...valid, translations: ['fr'] })).toThrow(/translations/);
+    expect(() => validateAppManifest({ ...valid, translations: 'en' })).toThrow(/translations/);
+  });
+
   it('rejects an empty baseLayers array', () => {
     expect(() => validateAppManifest({ ...valid, baseLayers: [] })).toThrow(/baseLayers/);
   });

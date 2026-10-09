@@ -1,0 +1,660 @@
+{
+  "leader-es": {
+    "role": "President of the Government",
+    "roleGroup": "Head of Government",
+    "country": "Spain",
+    "continent": "Europe",
+    "bio": "Spanish economist and politician, President of the Government of Spain since June 2018 and Secretary-General of the PSOE."
+  },
+  "leader-fr": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "France",
+    "continent": "Europe",
+    "bio": "French politician, President of the French Republic and Co-Prince of Andorra since May 2017."
+  },
+  "leader-de": {
+    "role": "Chancellor",
+    "roleGroup": "Head of Government",
+    "country": "Germany",
+    "continent": "Europe",
+    "bio": "German politician, Federal Chancellor of Germany since December 2021."
+  },
+  "leader-uk": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "United Kingdom",
+    "continent": "Europe",
+    "bio": "British lawyer and politician, Prime Minister of the United Kingdom since July 2024 after the Labour victory.",
+    "party": "Labour Party"
+  },
+  "leader-us": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "United States",
+    "continent": "Americas",
+    "bio": "46th President of the United States. Previously served as the 47th Vice President from 2009 to 2017.",
+    "party": "Democratic Party",
+    "wikiUrl": "https://en.wikipedia.org/wiki/Joe_Biden"
+  },
+  "leader-ca": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Canada",
+    "continent": "Americas",
+    "bio": "Canadian politician, 23rd Prime Minister of Canada since November 2015.",
+    "party": "Liberal Party of Canada"
+  },
+  "leader-it": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Italy",
+    "continent": "Europe",
+    "bio": "Italian politician and journalist, President of the Council of Ministers of Italy since October 2022.",
+    "party": "Brothers of Italy"
+  },
+  "leader-jp": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Japan",
+    "continent": "Asia",
+    "bio": "Japanese politician, Prime Minister of Japan since October 2024 and president of the LDP.",
+    "party": "Liberal Democratic Party"
+  },
+  "leader-in": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "India",
+    "continent": "Asia",
+    "bio": "Indian politician, Prime Minister of India since May 2014."
+  },
+  "leader-br": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Brazil",
+    "continent": "Americas",
+    "bio": "Brazilian trade unionist and politician, 39th President of the Federative Republic of Brazil since January 2023."
+  },
+  "leader-mx": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Mexico",
+    "continent": "Americas",
+    "bio": "Mexican scientist and politician, the first woman President of the United Mexican States, since October 2024."
+  },
+  "leader-au": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Australia",
+    "continent": "Oceania",
+    "bio": "Australian politician, 31st Prime Minister of Australia and leader of the Labor Party since 2019.",
+    "party": "Australian Labor Party"
+  },
+  "leader-za": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "South Africa",
+    "continent": "Africa",
+    "bio": "South African businessman and politician, President of the Republic of South Africa since February 2018.",
+    "party": "African National Congress"
+  },
+  "leader-ar": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Argentina",
+    "continent": "Americas",
+    "bio": "Argentine economist and politician, President of the Argentine Nation since December 2023.",
+    "party": "Freedom Advances"
+  },
+  "leader-pt": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Portugal",
+    "continent": "Europe",
+    "bio": "Portuguese lawyer and politician, Prime Minister of Portugal since April 2024.",
+    "party": "Social Democratic Party"
+  },
+  "leader-cl": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Chile",
+    "continent": "Americas",
+    "bio": "Chilean politician, President of the Republic of Chile since March 2022.",
+    "party": "Broad Front"
+  },
+  "leader-pl": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Poland",
+    "continent": "Europe",
+    "bio": "Polish historian and politician, Prime Minister of Poland since December 2023. Former President of the European Council.",
+    "party": "Civic Platform"
+  },
+  "leader-kr": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "South Korea",
+    "continent": "Asia",
+    "bio": "South Korean jurist and politician, 13th President of the Republic of Korea since May 2022.",
+    "party": "People Power Party"
+  },
+  "leader-se": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Sweden",
+    "continent": "Europe",
+    "bio": "Swedish economist and politician, Prime Minister of the Kingdom of Sweden since October 2022.",
+    "party": "Moderate Party"
+  },
+  "leader-no": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Norway",
+    "continent": "Europe",
+    "bio": "Norwegian politician, Prime Minister of the Kingdom of Norway since October 2021.",
+    "party": "Norwegian Labour Party"
+  },
+  "leader-ru": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Russia",
+    "continent": "Europe",
+    "bio": "Russian politician and former intelligence officer, President of the Russian Federation since 2012 (and previously from 2000 to 2008).",
+    "party": "United Russia",
+    "name": "Vladimir Putin",
+    "leader": "Vladimir Putin"
+  },
+  "leader-sv": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "El Salvador",
+    "continent": "Americas",
+    "bio": "Salvadoran businessman and politician, President of the Republic of El Salvador since June 2019.",
+    "party": "New Ideas"
+  },
+  "leader-ma": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Morocco",
+    "continent": "Africa",
+    "bio": "Moroccan businessman and politician, Head of Government of the Kingdom of Morocco since October 2021.",
+    "party": "National Rally of Independents"
+  },
+  "leader-il": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Israel",
+    "continent": "Asia",
+    "bio": "Israeli politician, Prime Minister of the State of Israel since December 2022, a post he also held in 1996-1999 and 2009-2021."
+  },
+  "leader-sa": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Saudi Arabia",
+    "continent": "Asia",
+    "bio": "Crown Prince and Prime Minister of the Kingdom of Saudi Arabia since September 2022, driving the Vision 2030 reform plan.",
+    "party": "House of Saud"
+  },
+  "leader-ch": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Switzerland",
+    "continent": "Europe",
+    "bio": "Swiss politician and member of the Federal Council, President of the Swiss Confederation for 2026 (an annual, rotating office).",
+    "party": "Swiss People's Party"
+  },
+  "leader-gr": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Greece",
+    "continent": "Europe",
+    "bio": "Greek politician, Prime Minister of the Hellenic Republic since July 2019.",
+    "party": "New Democracy"
+  },
+  "leader-ua": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Ukraine",
+    "continent": "Europe",
+    "bio": "Ukrainian actor, screenwriter and politician, President of Ukraine since May 2019.",
+    "party": "Servant of the People",
+    "name": "Volodymyr Zelenskyy",
+    "leader": "Volodymyr Zelenskyy"
+  },
+  "leader-co": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Colombia",
+    "continent": "Americas",
+    "bio": "Colombian economist and politician, President of the Republic of Colombia since August 2022.",
+    "party": "Historic Pact"
+  },
+  "leader-nz": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "New Zealand",
+    "continent": "Oceania",
+    "bio": "New Zealand businessman and politician, Prime Minister of New Zealand since November 2023.",
+    "party": "National Party"
+  },
+  "leader-cn": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "China",
+    "continent": "Asia",
+    "bio": "Chinese politician, President of the People's Republic of China and General Secretary of the Chinese Communist Party since 2012-2013.",
+    "party": "Chinese Communist Party"
+  },
+  "leader-gb": {
+    "role": "Monarch",
+    "roleGroup": "Monarchy",
+    "country": "United Kingdom",
+    "continent": "Europe",
+    "bio": "King of the United Kingdom and of fourteen other Commonwealth realms since September 2022.",
+    "party": "Monarchy",
+    "name": "Charles III",
+    "leader": "Charles III"
+  },
+  "leader-jp-emperor": {
+    "role": "Emperor",
+    "roleGroup": "Monarchy",
+    "country": "Japan",
+    "continent": "Asia",
+    "bio": "126th Emperor of Japan since May 2019, following the abdication of his father Akihito.",
+    "party": "Monarchy",
+    "wikiUrl": "https://en.wikipedia.org/wiki/Naruhito"
+  },
+  "leader-es-king": {
+    "role": "Monarch",
+    "roleGroup": "Monarchy",
+    "country": "Spain",
+    "continent": "Europe",
+    "bio": "King of Spain since June 2014, following the abdication of his father Juan Carlos I.",
+    "party": "Monarchy"
+  },
+  "leader-se-king": {
+    "role": "Monarch",
+    "roleGroup": "Monarchy",
+    "country": "Sweden",
+    "continent": "Europe",
+    "bio": "King of Sweden since September 1973, the longest-reigning monarch in Swedish history.",
+    "party": "Monarchy",
+    "name": "Carl XVI Gustaf",
+    "leader": "Carl XVI Gustaf"
+  },
+  "leader-no-king": {
+    "role": "Monarch",
+    "roleGroup": "Monarchy",
+    "country": "Norway",
+    "continent": "Europe",
+    "bio": "King of Norway since January 1991.",
+    "party": "Monarchy"
+  },
+  "leader-ma-king": {
+    "role": "Monarch",
+    "roleGroup": "Monarchy",
+    "country": "Morocco",
+    "continent": "Africa",
+    "bio": "King of Morocco since July 1999, following the death of his father Hassan II.",
+    "party": "Monarchy",
+    "name": "Mohammed VI",
+    "leader": "Mohammed VI"
+  },
+  "leader-sa-king": {
+    "role": "Monarch",
+    "roleGroup": "Monarchy",
+    "country": "Saudi Arabia",
+    "continent": "Asia",
+    "bio": "King of Saudi Arabia and Custodian of the Two Holy Mosques since January 2015.",
+    "party": "Monarchy"
+  },
+  "leader-nl": {
+    "role": "Monarch",
+    "roleGroup": "Monarchy",
+    "country": "Netherlands",
+    "continent": "Europe",
+    "bio": "King of the Netherlands since April 2013, following the abdication of his mother Beatrix.",
+    "party": "Monarchy",
+    "name": "Willem-Alexander",
+    "leader": "Willem-Alexander"
+  },
+  "leader-be": {
+    "role": "Monarch",
+    "roleGroup": "Monarchy",
+    "country": "Belgium",
+    "continent": "Europe",
+    "bio": "King of the Belgians since July 2013, following the abdication of his father Albert II.",
+    "party": "Monarchy",
+    "name": "Philippe of Belgium",
+    "leader": "Philippe of Belgium"
+  },
+  "leader-dk": {
+    "role": "Monarch",
+    "roleGroup": "Monarchy",
+    "country": "Denmark",
+    "continent": "Europe",
+    "bio": "King of Denmark since January 2024, following the abdication of his mother Margrethe II.",
+    "party": "Monarchy",
+    "name": "Frederik X",
+    "leader": "Frederik X"
+  },
+  "leader-th": {
+    "role": "Monarch",
+    "roleGroup": "Monarchy",
+    "country": "Thailand",
+    "continent": "Asia",
+    "bio": "King of Thailand (Rama X) since October 2016, following the death of his father Bhumibol Adulyadej.",
+    "party": "Monarchy"
+  },
+  "leader-jo": {
+    "role": "Monarch",
+    "roleGroup": "Monarchy",
+    "country": "Jordan",
+    "continent": "Asia",
+    "bio": "King of Jordan since February 1999, following the death of his father Hussein I.",
+    "party": "Monarchy"
+  },
+  "leader-id": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Indonesia",
+    "continent": "Asia",
+    "bio": "Indonesian military officer and politician, President of the Republic of Indonesia since October 2024."
+  },
+  "leader-pk": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Pakistan",
+    "continent": "Asia",
+    "bio": "Pakistani politician, Prime Minister of the Islamic Republic of Pakistan since March 2024.",
+    "party": "Pakistan Muslim League (N)"
+  },
+  "leader-tr": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Turkey",
+    "continent": "Asia",
+    "bio": "Turkish politician, President of the Republic of Türkiye since August 2014, after serving as Prime Minister from 2003 to 2014.",
+    "party": "Justice and Development Party"
+  },
+  "leader-ir": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Iran",
+    "continent": "Asia",
+    "bio": "Iranian physician and politician, President of the Islamic Republic of Iran since July 2024.",
+    "party": "Independent (reformist)"
+  },
+  "leader-vn": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Vietnam",
+    "continent": "Asia",
+    "bio": "Vietnamese politician and former Minister of Public Security, General Secretary of the Communist Party of Vietnam since August 2024.",
+    "party": "Communist Party of Vietnam"
+  },
+  "leader-ph": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Philippines",
+    "continent": "Asia",
+    "bio": "Filipino politician, 17th President of the Republic of the Philippines since June 2022.",
+    "party": "Federal Party of the Philippines"
+  },
+  "leader-my": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Malaysia",
+    "continent": "Asia",
+    "bio": "Malaysian politician, Prime Minister of Malaysia since November 2022.",
+    "party": "People's Justice Party"
+  },
+  "leader-sg": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Singapore",
+    "continent": "Asia",
+    "bio": "Singaporean economist and politician, Prime Minister of Singapore since May 2024.",
+    "party": "People's Action Party"
+  },
+  "leader-qa": {
+    "role": "Monarch",
+    "roleGroup": "Monarchy",
+    "country": "Qatar",
+    "continent": "Asia",
+    "bio": "Emir of Qatar since June 2013, following the abdication of his father Hamad bin Khalifa.",
+    "party": "Monarchy"
+  },
+  "leader-ae": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "United Arab Emirates",
+    "continent": "Asia",
+    "bio": "President of the United Arab Emirates and Emir of Abu Dhabi since May 2022.",
+    "party": "Monarchy"
+  },
+  "leader-kp": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "North Korea",
+    "continent": "Asia",
+    "bio": "Supreme Leader of the Democratic People's Republic of Korea since December 2011, General Secretary of the Workers' Party of Korea.",
+    "party": "Workers' Party of Korea"
+  },
+  "leader-ie": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Ireland",
+    "continent": "Europe",
+    "bio": "Irish poet, sociologist and politician, President of Ireland since November 2011.",
+    "party": "Independent"
+  },
+  "leader-at": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Austria",
+    "continent": "Europe",
+    "bio": "Austrian economist and politician, Federal President of Austria since January 2017.",
+    "party": "The Greens"
+  },
+  "leader-fi": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Finland",
+    "continent": "Europe",
+    "bio": "Finnish politician, President of the Republic of Finland since March 2024.",
+    "party": "National Coalition Party"
+  },
+  "leader-cz": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Czech Republic",
+    "continent": "Europe",
+    "bio": "Retired military officer and Czech politician, President of the Czech Republic since March 2023.",
+    "party": "Independent"
+  },
+  "leader-hu": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Hungary",
+    "continent": "Europe",
+    "bio": "Hungarian politician, Prime Minister of Hungary since May 2010, a post he also held from 1998 to 2002."
+  },
+  "leader-rs": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Serbia",
+    "continent": "Europe",
+    "bio": "Serbian politician, President of Serbia since May 2017, after serving as Prime Minister from 2014 to 2017.",
+    "party": "Serbian Progressive Party"
+  },
+  "leader-ro": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Romania",
+    "continent": "Europe",
+    "bio": "Romanian mathematician and politician, President of Romania since May 2025.",
+    "party": "Independent"
+  },
+  "leader-bg": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Bulgaria",
+    "continent": "Europe",
+    "bio": "Bulgarian general and politician, President of Bulgaria since January 2017.",
+    "party": "Independent"
+  },
+  "leader-hr": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Croatia",
+    "continent": "Europe",
+    "bio": "Croatian politician, President of Croatia since February 2020.",
+    "party": "Social Democratic Party"
+  },
+  "leader-is": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Iceland",
+    "continent": "Europe",
+    "bio": "Icelandic businesswoman and politician, President of Iceland since August 2024.",
+    "party": "Independent"
+  },
+  "leader-by": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Belarus",
+    "continent": "Europe",
+    "bio": "Belarusian politician, President of Belarus since July 1994.",
+    "party": "Independent"
+  },
+  "leader-pe": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Peru",
+    "continent": "Americas",
+    "bio": "Peruvian lawyer and politician, President of the Republic of Peru since December 2022.",
+    "party": "Independent"
+  },
+  "leader-ve": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Venezuela",
+    "continent": "Americas",
+    "bio": "Venezuelan politician, President of the Bolivarian Republic of Venezuela since April 2013.",
+    "party": "United Socialist Party of Venezuela"
+  },
+  "leader-ec": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Ecuador",
+    "continent": "Americas",
+    "bio": "Ecuadorian businessman and politician, President of the Republic of Ecuador since November 2023.",
+    "party": "National Democratic Action"
+  },
+  "leader-bo": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Bolivia",
+    "continent": "Americas",
+    "bio": "Bolivian economist and politician, President of the Plurinational State of Bolivia since November 2020.",
+    "party": "Movement for Socialism",
+    "wikiUrl": "https://en.wikipedia.org/wiki/Luis_Arce"
+  },
+  "leader-py": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Paraguay",
+    "continent": "Americas",
+    "bio": "Paraguayan economist and politician, President of the Republic of Paraguay since August 2023.",
+    "party": "Colorado Party"
+  },
+  "leader-uy": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Uruguay",
+    "continent": "Americas",
+    "bio": "Uruguayan teacher and politician, President of the Oriental Republic of Uruguay since March 2025.",
+    "party": "Broad Front"
+  },
+  "leader-cu": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Cuba",
+    "continent": "Americas",
+    "bio": "Cuban engineer and politician, President of the Republic of Cuba since October 2019 and First Secretary of the Communist Party since 2021.",
+    "party": "Communist Party of Cuba"
+  },
+  "leader-gt": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Guatemala",
+    "continent": "Americas",
+    "bio": "Guatemalan diplomat, sociologist and politician, President of Guatemala since January 2024.",
+    "party": "Seed Movement"
+  },
+  "leader-ng": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Nigeria",
+    "continent": "Africa",
+    "bio": "Nigerian politician, President of the Federal Republic of Nigeria since May 2023.",
+    "party": "All Progressives Congress"
+  },
+  "leader-eg": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Egypt",
+    "continent": "Africa",
+    "bio": "Egyptian military officer and politician, President of the Arab Republic of Egypt since June 2014.",
+    "party": "Independent",
+    "name": "Abdel Fattah el-Sisi",
+    "leader": "Abdel Fattah el-Sisi"
+  },
+  "leader-ke": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Kenya",
+    "continent": "Africa",
+    "bio": "Kenyan politician, President of the Republic of Kenya since September 2022.",
+    "party": "United Democratic Alliance"
+  },
+  "leader-et": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Ethiopia",
+    "continent": "Africa",
+    "bio": "Ethiopian politician, Prime Minister of the Federal Democratic Republic of Ethiopia since April 2018 and 2019 Nobel Peace Prize laureate.",
+    "party": "Prosperity Party"
+  },
+  "leader-dz": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Algeria",
+    "continent": "Africa",
+    "bio": "Algerian politician, President of the People's Democratic Republic of Algeria since December 2019.",
+    "party": "National Liberation Front"
+  },
+  "leader-sn": {
+    "role": "President",
+    "roleGroup": "Presidency",
+    "country": "Senegal",
+    "continent": "Africa",
+    "bio": "Senegalese tax inspector and politician, President of the Republic of Senegal since April 2024."
+  },
+  "leader-fj": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Fiji",
+    "continent": "Oceania",
+    "bio": "Retired military officer and Fijian politician, Prime Minister of the Republic of Fiji since December 2022.",
+    "party": "People's Alliance"
+  },
+  "leader-pg": {
+    "role": "Prime Minister",
+    "roleGroup": "Head of Government",
+    "country": "Papua New Guinea",
+    "continent": "Oceania",
+    "bio": "Papua New Guinean politician, Prime Minister of the Independent State of Papua New Guinea since May 2019."
+  }
+}

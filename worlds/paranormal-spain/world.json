@@ -43,5 +43,6 @@
   "systems": {
     "time": false
   },
-  "welcome": true
+  "welcome": true,
+  "contentLanguage": "es"
 }

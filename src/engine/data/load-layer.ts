@@ -26,18 +26,20 @@ async function tryFetchObject(deps: LoadLayerDeps, url: string): Promise<Record<
 
 // Loads a layer in the visitor's language: the base manifest and features,
 // overlaid with `<name>.layer.<lang>.json` / `<file>.<lang>.json` when the
-// language differs from the world's `contentLanguage`. Only the base files
-// are required.
+// language differs from the world's `contentLanguage` and is listed in the
+// world's `translations`. Only the base files are required.
 export async function loadLayer(
   deps: LoadLayerDeps,
   appId: string,
   layerPath: string,
   language: string,
   contentLanguage: string,
+  translations: readonly string[],
 ): Promise<LoadedLayer> {
   const base = validateLayerManifest(await deps.fetchJson(`worlds/${appId}/${layerPath}`));
   const baseFeatures = await deps.fetchFeatures(base.source);
-  if (language === contentLanguage) return { manifest: base, features: baseFeatures };
+  if (language === contentLanguage || !translations.includes(language))
+    return { manifest: base, features: baseFeatures };
 
   const paths = overridePaths(layerPath, base.source, language);
   const [layerOverride, dataOverride] = await Promise.all([

@@ -1,0 +1,46 @@
+{
+  "title": "World Leaders",
+  "taxonomy": [
+    {
+      "id": "role",
+      "label": "Position",
+      "icons": {
+        "Presidency": "🏛️",
+        "Head of Government": "👔",
+        "Monarchy": "👑"
+      }
+    },
+    {
+      "id": "continent",
+      "label": "Continent",
+      "icons": {
+        "Europe": "🌍",
+        "Americas": "🌎",
+        "Asia": "🌏",
+        "Africa": "🌍",
+        "Oceania": "🌏"
+      }
+    }
+  ],
+  "style": {
+    "colorMap": {
+      "Europe": "#2563eb",
+      "Americas": "#059669",
+      "Asia": "#d97706",
+      "Africa": "#dc2626",
+      "Oceania": "#7c3aed"
+    }
+  },
+  "panel": {
+    "infoFields": [
+      { "field": "properties.portrait", "label": "Portrait" },
+      { "field": "properties.leader", "label": "Leader" },
+      { "field": "properties.country", "label": "Country" },
+      { "field": "properties.role", "label": "Title" },
+      { "field": "properties.party", "label": "Party" },
+      { "field": "properties.inOfficeSince", "label": "In office since" },
+      { "field": "properties.bio", "label": "Biography" },
+      { "field": "properties.wikiUrl", "label": "Wikipedia" }
+    ]
+  }
+}

@@ -35,6 +35,10 @@ export interface AppManifest {
   // Per-language override files are only looked for when the visitor's
   // language differs. Defaults to 'en'.
   contentLanguage?: 'en' | 'es';
+  // Languages that ship override files (`<layer>.layer.<lang>.json`,
+  // `<data>.<lang>.json`). Overrides are only requested for these, so a world
+  // with none makes no requests that would 404.
+  translations?: ('en' | 'es')[];
 }
 
 export function validateAppManifest(json: unknown): AppManifest {
@@ -108,6 +112,12 @@ export function validateAppManifest(json: unknown): AppManifest {
 
   if (obj.contentLanguage !== undefined && obj.contentLanguage !== 'en' && obj.contentLanguage !== 'es') {
     throw new Error(`App manifest "${obj.id}" "contentLanguage" must be "en" or "es" when present`);
+  }
+
+  if (obj.translations !== undefined) {
+    if (!Array.isArray(obj.translations) || obj.translations.some((lang) => lang !== 'en' && lang !== 'es')) {
+      throw new Error(`App manifest "${obj.id}" "translations" must be an array of "en" / "es" when present`);
+    }
   }
 
   return json as AppManifest;

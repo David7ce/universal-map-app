@@ -62,7 +62,14 @@ async function bootstrap(): Promise<void> {
 
   const loadedLayers: LoadedLayer[] = await Promise.all(
     appManifest.dataLayers.map((layerPath): Promise<LoadedLayer> =>
-      loadLayer({ fetchJson, fetchFeatures }, appId, layerPath, language, appManifest.contentLanguage ?? 'en'),
+      loadLayer(
+        { fetchJson, fetchFeatures },
+        appId,
+        layerPath,
+        language,
+        appManifest.contentLanguage ?? 'en',
+        appManifest.translations ?? [],
+      ),
     ),
   );
 

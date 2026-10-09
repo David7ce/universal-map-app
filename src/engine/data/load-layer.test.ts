@@ -39,14 +39,14 @@ describe('loadLayer', () => {
 
   it('does not look for overrides when the language equals the content language', async () => {
     const d = deps(files);
-    const layer = await loadLayer(d, 'w', 'layers/leaders.layer.json', 'es', 'es');
+    const layer = await loadLayer(d, 'w', 'layers/leaders.layer.json', 'es', 'es', ['en']);
     expect(layer.manifest.title).toBe('Líderes');
     expect(layer.features[0].properties.role).toBe('Presidente');
     expect(d.fetched).toEqual(['worlds/w/layers/leaders.layer.json']);
   });
 
   it('applies the layer and data overrides for another language', async () => {
-    const layer = await loadLayer(deps(files), 'w', 'layers/leaders.layer.json', 'en', 'es');
+    const layer = await loadLayer(deps(files), 'w', 'layers/leaders.layer.json', 'en', 'es', ['en']);
     expect(layer.manifest.title).toBe('Leaders');
     expect(layer.manifest.taxonomy?.[0].label).toBe('Position');
     expect(layer.manifest.taxonomy?.[0].field).toBe('properties.role');
@@ -55,9 +55,16 @@ describe('loadLayer', () => {
 
   it('falls back to the base content when no override files exist', async () => {
     const d = deps({ 'worlds/w/layers/leaders.layer.json': baseManifest });
-    const layer = await loadLayer(d, 'w', 'layers/leaders.layer.json', 'en', 'es');
+    const layer = await loadLayer(d, 'w', 'layers/leaders.layer.json', 'en', 'es', ['en']);
     expect(layer.manifest.title).toBe('Líderes');
     expect(layer.features[0].properties.role).toBe('Presidente');
+  });
+
+  it('does not look for overrides when the language is not listed in translations', async () => {
+    const d = deps(files);
+    const layer = await loadLayer(d, 'w', 'layers/leaders.layer.json', 'en', 'es', []);
+    expect(layer.manifest.title).toBe('Líderes');
+    expect(d.fetched).toEqual(['worlds/w/layers/leaders.layer.json']);
   });
 
   it('applies a data override alone', async () => {
@@ -65,7 +72,7 @@ describe('loadLayer', () => {
       'worlds/w/layers/leaders.layer.json': baseManifest,
       'worlds/w/data/leaders.en.json': { a: { role: 'President' } },
     });
-    const layer = await loadLayer(d, 'w', 'layers/leaders.layer.json', 'en', 'es');
+    const layer = await loadLayer(d, 'w', 'layers/leaders.layer.json', 'en', 'es', ['en']);
     expect(layer.manifest.title).toBe('Líderes');
     expect(layer.features[0].properties.role).toBe('President');
   });
@@ -76,7 +83,7 @@ describe('loadLayer', () => {
       'worlds/w/layers/leaders.layer.json': baseManifest,
       'worlds/w/layers/leaders.layer.en.json': { kind: 'sparkle' },
     });
-    const layer = await loadLayer(d, 'w', 'layers/leaders.layer.json', 'en', 'es');
+    const layer = await loadLayer(d, 'w', 'layers/leaders.layer.json', 'en', 'es', ['en']);
     expect(layer.manifest.kind).toBe('point');
     expect(warn).toHaveBeenCalled();
   });
@@ -86,11 +93,11 @@ describe('loadLayer', () => {
       'worlds/w/layers/leaders.layer.json': baseManifest,
       'worlds/w/data/leaders.en.json': '<html>fallback page</html>',
     });
-    const layer = await loadLayer(d, 'w', 'layers/leaders.layer.json', 'en', 'es');
+    const layer = await loadLayer(d, 'w', 'layers/leaders.layer.json', 'en', 'es', ['en']);
     expect(layer.features[0].properties.role).toBe('Presidente');
   });
 
   it('still throws when the base manifest cannot be loaded', async () => {
-    await expect(loadLayer(deps({}), 'w', 'layers/leaders.layer.json', 'en', 'es')).rejects.toThrow(/404/);
+    await expect(loadLayer(deps({}), 'w', 'layers/leaders.layer.json', 'en', 'es', ['en'])).rejects.toThrow(/404/);
   });
 });
