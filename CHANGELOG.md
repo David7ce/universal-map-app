@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Translated world data (world-leaders in English), toolbar polish
+
+World content can now be shown in the visitor's language without duplicating data: `world.json` gains `contentLanguage` (language of the world's own files, default `en`) and `translations` (languages that ship overrides). For a listed language, `layers/<name>.layer.<lang>.json` is merged over the layer manifest and `data/<file>.<lang>.json` over the features' properties (`src/engine/data/layer-override.ts`, `load-layer.ts`); a missing or invalid override falls back to the original language. `world-leaders` ships a complete English translation — all 81 leaders (title, role group, country, continent, bio; Spanish exonyms of people such as Carlos III → Charles III) plus layer labels, icons and colours — so the English UI no longer shows Spanish in filters, pills or info cards. Toolbar: the pill row keeps its scroll position and skips redundant rebuilds, the calendar popover moves focus into itself on open, and dimmed pills have more contrast.
+
 ## Shared site strings, language toggle, translated Home
 
 Project-level text now lives once in `public/strings/site.{en,es}.json` (served at `strings/site.<lang>.json`, shipped in every build including isolated world builds) and is merged under each world's strings (`{ ...site, ...world }`, `src/ui/site-strings.ts`); 88 keys that were copied into all 8 world files moved there. World cards and the Settings world list read `worlds.<id>.label|description`, and the map's world title follows the language. The Home has an EN | ES toggle (top-right; stores the language and reloads), `<html lang>` follows the active language, and the legal pages exist in Spanish (`*.es.html`, a translation for owner review) with language-aware footer links. The Home no longer clips its top on short screens. World data content (bios, names, event text) is not translated.

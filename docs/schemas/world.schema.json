@@ -117,6 +117,15 @@
     "welcome": {
       "type": "boolean",
       "description": "Set to true to start on the shared Home view (a list of every world in this build) instead of straight on the map. The Home view itself is shared across all worlds — a world no longer supplies its own splash copy."
+    },
+    "contentLanguage": {
+      "enum": ["en", "es"],
+      "description": "Language the world's own files (layers, data) are written in. Per-language override files are only used when the visitor's language differs. Defaults to \"en\"."
+    },
+    "translations": {
+      "type": "array",
+      "items": { "enum": ["en", "es"] },
+      "description": "Languages that ship override files (<layer>.layer.<lang>.json and <data>.<lang>.json). Overrides are only requested for languages listed here."
     }
   },
   "definitions": {

@@ -1642,7 +1642,7 @@ select:disabled {
 }
 /* No features with this value on the selected date — still clickable. */
 .filter-pill.is-empty:not(.is-active) {
-  opacity: 0.5;
+  opacity: 0.65;
 }
 .map-toolbar__clear {
   flex-shrink: 0;

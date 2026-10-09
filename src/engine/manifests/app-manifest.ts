@@ -31,6 +31,14 @@ export interface AppManifest {
   // every world (HomeView.ts) — a world no longer supplies its own splash
   // copy, so this is just a boolean.
   welcome?: boolean;
+  // Language the world's own files (layers, data, strings) are written in.
+  // Per-language override files are only looked for when the visitor's
+  // language differs. Defaults to 'en'.
+  contentLanguage?: 'en' | 'es';
+  // Languages that ship override files (`<layer>.layer.<lang>.json`,
+  // `<data>.<lang>.json`). Overrides are only requested for these, so a world
+  // with none makes no requests that would 404.
+  translations?: ('en' | 'es')[];
 }
 
 export function validateAppManifest(json: unknown): AppManifest {
@@ -100,6 +108,16 @@ export function validateAppManifest(json: unknown): AppManifest {
 
   if (obj.welcome !== undefined && typeof obj.welcome !== 'boolean') {
     throw new Error(`App manifest "${obj.id}" "welcome" must be a boolean when present`);
+  }
+
+  if (obj.contentLanguage !== undefined && obj.contentLanguage !== 'en' && obj.contentLanguage !== 'es') {
+    throw new Error(`App manifest "${obj.id}" "contentLanguage" must be "en" or "es" when present`);
+  }
+
+  if (obj.translations !== undefined) {
+    if (!Array.isArray(obj.translations) || obj.translations.some((lang) => lang !== 'en' && lang !== 'es')) {
+      throw new Error(`App manifest "${obj.id}" "translations" must be an array of "en" / "es" when present`);
+    }
   }
 
   return json as AppManifest;

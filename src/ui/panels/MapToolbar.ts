@@ -56,6 +56,9 @@ export function mountMapToolbar(
   let calendarOpen = false;
   let moreOpen = false;
   let hasPills = false;
+  // Last rendered filters markup: store updates that don't change it (e.g.
+  // opening a panel) skip the rebuild.
+  let lastFiltersHtml = '';
 
   function updateVisibility(): void {
     container.hidden = !options.showDate && !hasPills;
@@ -68,6 +71,13 @@ export function mountMapToolbar(
     popover.hidden = !open;
     chip.setAttribute('aria-expanded', String(open));
     if (!open && restoreFocus) chip.focus();
+    // A dialog: keyboard users land inside it (the selected day, else the first enabled control).
+    if (open) {
+      const target =
+        popover.querySelector<HTMLElement>('.calendar-grid__cell--selected:not([disabled])') ??
+        popover.querySelector<HTMLElement>('button:not([disabled])');
+      target?.focus();
+    }
   }
 
   function renderDate(): void {
@@ -140,6 +150,7 @@ export function mountMapToolbar(
     updateVisibility();
     if (!hasPills) {
       filtersEl.innerHTML = '';
+      lastFiltersHtml = '';
       return;
     }
 
@@ -162,14 +173,22 @@ export function mountMapToolbar(
       ? `<button type="button" class="filter-pill map-toolbar__clear" data-action="clear-all">${escapeHtml(t('filters.clearAll', strings))}</button>`
       : '';
 
+    const html = `<div class="map-toolbar__scroll">${renderGroups(visible, activeFilters)}</div>${more}${clearAll}`;
+    if (html === lastFiltersHtml) return;
+    lastFiltersHtml = html;
+
     // The area is rebuilt wholesale, which would drop keyboard focus from the
-    // pill/button the user just activated — remember it and put it back.
+    // pill/button the user just activated and reset the pill row's scroll —
+    // remember both and put them back.
+    const scrollLeft = filtersEl.querySelector('.map-toolbar__scroll')?.scrollLeft ?? 0;
     const focused = filtersEl.contains(document.activeElement) ? (document.activeElement as HTMLElement) : null;
     const focusedKey = focused
       ? { action: focused.dataset.action, dimension: focused.dataset.dimension, value: focused.dataset.value }
       : null;
 
-    filtersEl.innerHTML = `<div class="map-toolbar__scroll">${renderGroups(visible, activeFilters)}</div>${more}${clearAll}`;
+    filtersEl.innerHTML = html;
+    const scrollEl = filtersEl.querySelector('.map-toolbar__scroll');
+    if (scrollEl) scrollEl.scrollLeft = scrollLeft;
 
     if (focusedKey) {
       const buttons = Array.from(filtersEl.querySelectorAll<HTMLElement>('button'));

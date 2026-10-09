@@ -77,6 +77,18 @@ describe('validateAppManifest', () => {
     expect(validateAppManifest(valid)).toEqual(valid);
   });
 
+  it('accepts contentLanguage "en" or "es" and rejects anything else', () => {
+    expect(validateAppManifest({ ...valid, contentLanguage: 'es' }).contentLanguage).toBe('es');
+    expect(validateAppManifest({ ...valid, contentLanguage: 'en' }).contentLanguage).toBe('en');
+    expect(() => validateAppManifest({ ...valid, contentLanguage: 'fr' })).toThrow(/contentLanguage/);
+  });
+
+  it('accepts translations as a list of languages and rejects anything else', () => {
+    expect(validateAppManifest({ ...valid, translations: ['en'] }).translations).toEqual(['en']);
+    expect(() => validateAppManifest({ ...valid, translations: ['fr'] })).toThrow(/translations/);
+    expect(() => validateAppManifest({ ...valid, translations: 'en' })).toThrow(/translations/);
+  });
+
   it('rejects an empty baseLayers array', () => {
     expect(() => validateAppManifest({ ...valid, baseLayers: [] })).toThrow(/baseLayers/);
   });

@@ -30,6 +30,8 @@ One object per world instance, loaded from `worlds/<id>/world.json` (the id come
 | `plugins.participate`           | `ParticipateConfig \| undefined`                   | no                                                                | See table below. If omitted, the "Participate" button doesn't appear.                                                                                                                                                                                                                                       |
 | `systems.time`                  | `boolean`                                          | no                                                                | `false` hides all time/calendar UI (the right panel's Time section, Settings' calendar-system row) — for a world with no temporal data. Defaults to `true` (shown) when omitted.                                                                                                                            |
 | `welcome`                       | `boolean`                                          | no                                                                | `true` starts on the shared Home view (a list of every world in this build, `HomeView.ts`) instead of straight on the map. The Home view is shared across all worlds — a world no longer supplies its own splash copy. Defaults to `false` (start on the map) when omitted.                              |
+| `contentLanguage`               | `"en" \| "es"`                                     | no                                                                | Language the world's own files (layers, data) are written in. Overrides are only looked for when the visitor's language differs. Defaults to `"en"`. See "Translated content" below. |
+| `translations`                  | `("en" \| "es")[]`                                 | no                                                                | Languages that ship override files. Overrides are only requested for languages listed here, so a world with none makes no extra requests. |
 
 ### `BaseLayerConfig` (element of `baseLayers`)
 
@@ -61,6 +63,15 @@ GeoJSON data is always WGS84 lon/lat regardless of `map.crs` — Leaflet reproje
 | `channel`         | `"email" \| "whatsapp" \| "telegram"` | Determines the generated link's scheme (`mailto:`, `https://wa.me/`, `https://t.me/`).                                                |
 | `target`          | `string`                              | Email, WhatsApp number (no `+`), or Telegram user/bot, depending on `channel`.                                                        |
 | `messageTemplate` | `string`                              | Message text. The `{{date}}` placeholder is replaced with the selected date (`YYYY-MM-DD`). Only the first occurrence is substituted. |
+
+### Translated content (`contentLanguage`, `translations`)
+
+A world's layer and data files are written in its `contentLanguage`. To show them in another language without duplicating geometry, add override files next to the originals and list the language in `translations`:
+
+- `layers/<name>.layer.<lang>.json` — a *partial* layer manifest merged over `<name>.layer.json`. Objects merge recursively; `taxonomy` entries merge by `id` and `panel.infoFields` entries by `field`; `icons`, `style.colorMap` and `style.badgeMap` are replaced wholesale (their keys are the translated values). `id` and `source` always come from the base.
+- `data/<file>.<lang>.json` — an object mapping feature `id` to the properties to replace, e.g. `{ "leader-es": { "role": "President of the Government", "bio": "…" } }`. Geometry, ids and `properties.temporal` are never changed. Applies to `geojson` sources only.
+
+A missing or invalid override is skipped and the original-language content is shown. See `worlds/world-leaders/` for a complete example.
 
 ### `WelcomeConfig` (`welcome`)
 
