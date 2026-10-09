@@ -71,6 +71,13 @@ export function mountMapToolbar(
     popover.hidden = !open;
     chip.setAttribute('aria-expanded', String(open));
     if (!open && restoreFocus) chip.focus();
+    // A dialog: keyboard users land inside it (the selected day, else the first enabled control).
+    if (open) {
+      const target =
+        popover.querySelector<HTMLElement>('.calendar-grid__cell--selected:not([disabled])') ??
+        popover.querySelector<HTMLElement>('button:not([disabled])');
+      target?.focus();
+    }
   }
 
   function renderDate(): void {
