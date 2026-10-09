@@ -9,17 +9,6 @@
         "Head of Government": "👔",
         "Monarchy": "👑"
       }
-    },
-    {
-      "id": "continent",
-      "label": "Continent",
-      "icons": {
-        "Europe": "🌍",
-        "Americas": "🌎",
-        "Asia": "🌏",
-        "Africa": "🌍",
-        "Oceania": "🌏"
-      }
     }
   ],
   "style": {

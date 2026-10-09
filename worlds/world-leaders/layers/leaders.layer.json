@@ -15,19 +15,6 @@
         "Monarquía": "👑"
       },
       "defaultIcon": "👤"
-    },
-    {
-      "id": "continent",
-      "label": "Continente",
-      "field": "properties.continent",
-      "icons": {
-        "Europa": "🌍",
-        "América": "🌎",
-        "Asia": "🌏",
-        "África": "🌍",
-        "Oceanía": "🌏"
-      },
-      "defaultIcon": "🌐"
     }
   ],
   "regionRole": null,

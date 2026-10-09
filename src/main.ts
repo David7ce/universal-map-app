@@ -1,7 +1,7 @@
 import './styles.css';
 
 import { validateAppManifest } from './engine/manifests/app-manifest';
-import { appBasePath, resolveWorldId } from './engine/manifests/resolve-world-id';
+import { appBasePath, isWorldExplicit, resolveWorldId } from './engine/manifests/resolve-world-id';
 import { fetchFeatures } from './engine/data/loader-registry';
 import { loadLayer } from './engine/data/load-layer';
 import { createStore } from './engine/state/store';
@@ -35,12 +35,11 @@ async function fetchJson(url: string): Promise<unknown> {
 }
 
 async function bootstrap(): Promise<void> {
-  const appId = resolveWorldId(
-    new URLSearchParams(window.location.search),
-    import.meta.env.MODE,
-    window.location.pathname,
-    appBasePath(document.baseURI),
-  );
+  const searchParams = new URLSearchParams(window.location.search);
+  const basePath = appBasePath(document.baseURI);
+  const appId = resolveWorldId(searchParams, import.meta.env.MODE, window.location.pathname, basePath);
+  // A world's own URL opens it directly; only the bare site root shows the shared Home.
+  const explicitWorld = isWorldExplicit(searchParams, import.meta.env.MODE, window.location.pathname, basePath);
   const appManifest = validateAppManifest(await fetchJson(`worlds/${appId}/world.json`));
   applyBranding(appManifest, appId);
   document.querySelector('#app')!.classList.toggle('no-time', appManifest.systems?.time === false);
@@ -88,7 +87,7 @@ async function bootstrap(): Promise<void> {
     hiddenLayerIds: new Set(detailLayers.map((l) => l.manifest.id)),
     calendarSystem: appManifest.calendar.system ?? 'gregorian',
     showGrid: false,
-    view: appManifest.welcome ? 'home' : 'map',
+    view: appManifest.welcome && !explicitWorld ? 'home' : 'map',
   });
 
   const mapContainer = document.querySelector<HTMLDivElement>('#map')!;
@@ -153,7 +152,7 @@ async function bootstrap(): Promise<void> {
   });
   subscribePluginHooks(store, createPluginContext(store, loadedLayers));
 
-  if (appManifest.welcome) {
+  if (appManifest.welcome && !explicitWorld) {
     mountHomeView(document.querySelector('#home-view')!, store, appId, strings, language);
   }
 

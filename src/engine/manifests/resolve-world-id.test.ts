@@ -3,6 +3,7 @@ import {
   appBasePath,
   DEFAULT_WORLD_ID,
   isIsolatedWorldMode,
+  isWorldExplicit,
   resolveWorldId,
   worldIdFromPath,
 } from './resolve-world-id';
@@ -127,5 +128,31 @@ describe('world resolution at a domain root', () => {
   it('still reads the first segment', () => {
     expect(resolveWorldId(new URLSearchParams(''), 'development', '/moon-map-photos/', base)).toBe('moon-map-photos');
     expect(resolveWorldId(new URLSearchParams(''), 'development', '/', base)).toBe(DEFAULT_WORLD_ID);
+  });
+});
+
+// A world's own URL (/world-leaders/, ?world=…, or a standalone per-world build)
+// opens that world directly; only the bare site root shows the shared Home.
+describe('isWorldExplicit', () => {
+  const none = new URLSearchParams('');
+
+  it('is false at the site root and at a project-site root', () => {
+    expect(isWorldExplicit(none, 'production', '/', '/')).toBe(false);
+    expect(isWorldExplicit(none, 'production', '/universal-map-app/', '/universal-map-app/')).toBe(false);
+    expect(isWorldExplicit(none, 'development', '/', '/')).toBe(false);
+  });
+
+  it('is true when the first path segment names a world, with or without a base path', () => {
+    expect(isWorldExplicit(none, 'production', '/world-leaders/', '/')).toBe(true);
+    expect(isWorldExplicit(none, 'production', '/universal-map-app/world-leaders/', '/universal-map-app/')).toBe(true);
+  });
+
+  it('is true for a valid ?world= and false for an invalid one', () => {
+    expect(isWorldExplicit(new URLSearchParams('world=moon-map-photos'), 'production', '/', '/')).toBe(true);
+    expect(isWorldExplicit(new URLSearchParams('world=../etc'), 'production', '/', '/')).toBe(false);
+  });
+
+  it('is true for an isolated per-world build, even at its root', () => {
+    expect(isWorldExplicit(none, 'world-leaders', '/', '/')).toBe(true);
   });
 });

@@ -2,6 +2,12 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Independent world URLs, new layout, no continent filter
+
+- **A world's URL opens that world.** `/universal-map-app/world-leaders/` (or `?world=<id>`, or a standalone per-world build) now starts on the map; only the bare site root shows the shared Home (`isWorldExplicit`, `resolve-world-id.ts`). `welcome: true` therefore only affects the root.
+- **Layout:** the world title moved to the top centre, above the filter pills; the date group (prev / date / next and its calendar popover, which now opens upward) moved to the bottom centre, centred in the visible map when the drawer is open and compact on mobile so it fits between the Layers button and the zoom control.
+- **world-leaders:** the continent filter is gone (continent still colours the markers).
+
 ## Fix: deployments under a subpath (GitHub Pages) and CI
 
 The site loaded `worlds/universal-map-app/world.json` (404) when served from `https://<user>.github.io/universal-map-app/`: `vite.config.ts` uses `base: './'`, so `import.meta.env.BASE_URL` is `'./'` in production and the deployment subpath was never stripped before reading the world id from the first path segment. `main.ts` now derives the base path from `document.baseURI` (`appBasePath`, `resolve-world-id.ts`), which the build keeps pointing at the app root (also on a world's nested page); `/universal-map-app` without a trailing slash is treated as the root too. CI/deploy workflows no longer pass `version:` to `pnpm/action-setup` (it conflicted with `packageManager: pnpm@12.6.0` and aborted the job), and nine files that failed `format:check` were formatted.
