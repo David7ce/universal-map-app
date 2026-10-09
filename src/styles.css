@@ -577,14 +577,17 @@ select:disabled {
 }
 
 .panel__header {
+  /* Horizontal padding as variables so the settings section can span the
+     header edge to edge whatever the (desktop) end padding is. */
+  --panel-header-pad-start: 1rem;
+  --panel-header-pad-end: 1rem;
   flex-shrink: 0;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem var(--panel-header-pad-end) 0.75rem var(--panel-header-pad-start);
   border-bottom: 1px solid var(--color-border);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
-  /* Anchors the settings popover (SettingsControl.ts) to the header. */
-  position: relative;
 }
 /* On mobile the toggle button is hidden when the panel is open (the close
    button inside the header takes over — see below), so no extra padding is
@@ -592,7 +595,7 @@ select:disabled {
    so the header needs room to clear it. */
 @media (min-width: 48rem) {
   .panel__header {
-    padding-right: calc(var(--control-btn-size) + var(--control-btn-offset) * 2);
+    --panel-header-pad-end: calc(var(--control-btn-size) + var(--control-btn-offset) * 2);
   }
 }
 .panel__title {
@@ -1401,10 +1404,12 @@ select:disabled {
    SETTINGS (map projection info + coordinate grid) — a single button living
    inline inside the filters panel, see #panel-right-map-settings in index.html
    ======================================== */
+/* `display: contents` makes the trigger and the settings section direct
+   children of the (wrapping) panel header, so the section can open as a
+   full-width row under the title instead of a floating popover that could
+   overflow the panel. */
 .settings-control {
-  position: relative;
-  display: flex;
-  justify-content: flex-end;
+  display: contents;
 }
 .settings-control-trigger {
   display: flex;
@@ -1420,6 +1425,10 @@ select:disabled {
   color: var(--color-text-light);
   transition: all var(--transition-fast);
 }
+.settings-control-trigger[aria-expanded='true'] {
+  background-color: var(--color-bg-alt);
+  color: var(--color-primary);
+}
 .settings-control-trigger:hover {
   background-color: var(--color-bg-alt);
 }
@@ -1432,19 +1441,18 @@ select:disabled {
   height: 16px;
   flex-shrink: 0;
 }
+/* Expands in the flow of the panel header, edge to edge, so it can never
+   spill outside the filters panel. */
 .settings-control-popover {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 0.5rem);
-  min-width: 15rem;
-  padding: 1rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background: var(--color-white);
-  box-shadow: var(--shadow-lg);
+  order: 10;
+  flex: 0 0 auto;
+  width: calc(100% + var(--panel-header-pad-start) + var(--panel-header-pad-end));
+  margin: 0.25rem calc(-1 * var(--panel-header-pad-end)) -0.75rem calc(-1 * var(--panel-header-pad-start));
+  padding: 0.75rem var(--panel-header-pad-start) 1rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-alt);
   display: grid;
   gap: 0.6rem;
-  z-index: var(--z-tooltip);
 }
 .settings-control-popover[hidden] {
   display: none;
@@ -1452,6 +1460,9 @@ select:disabled {
 .settings-control-group {
   display: grid;
   gap: 0.5rem;
+}
+.settings-control-popover .settings-control-group__title {
+  margin-top: 0.35rem;
 }
 .settings-control-group__title {
   margin: 0;

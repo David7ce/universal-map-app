@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Settings expand inside the filters panel
+
+The settings (world, language, calendar system, projection, grid) used to open as a floating popover anchored to the gear button, which sits left of the panel's right edge on desktop — the popover started 47px outside the panel and the panel's `overflow: hidden` clipped it. They now open as a full-width section in the flow of the panel header (`.settings-control { display: contents }`, header wraps), edge to edge and sized from header padding variables, so it can never spill out; it stays open until the gear is pressed again and the gear shows its open state.
+
 ## Independent world URLs, new layout, no continent filter
 
 - **A world's URL opens that world.** `/universal-map-app/world-leaders/` (or `?world=<id>`, or a standalone per-world build) now starts on the map; only the bare site root shows the shared Home (`isWorldExplicit`, `resolve-world-id.ts`). `welcome: true` therefore only affects the root.

@@ -151,12 +151,6 @@ export function mountSettingsControl(
     popover.hidden = !open;
     trigger.setAttribute('aria-expanded', String(open));
   });
-  document.addEventListener('click', (event) => {
-    if (!container.contains(event.target as Node)) {
-      popover.hidden = true;
-      trigger.setAttribute('aria-expanded', 'false');
-    }
-  });
 
   gridToggle.addEventListener('change', () => {
     store.set({ showGrid: gridToggle.checked });
