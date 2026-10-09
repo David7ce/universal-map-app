@@ -30,12 +30,25 @@ export function resolveWorldId(searchParams: URLSearchParams, mode: string, path
   return isIsolatedWorldMode(mode) ? mode : DEFAULT_WORLD_ID;
 }
 
+// The deployment subpath of the app, from the page's base URI
+// (`document.baseURI`) — e.g. '/universal-map-app/' on a GitHub Pages project
+// site, '/' at a domain root. `import.meta.env.BASE_URL` can't be used for
+// this: `vite.config.ts` sets `base: './'`, so in production it is './', which
+// never matches a pathname. The built `index.html` carries `<base href="./">`
+// (and `"../"` on a world's nested page), which always resolves to the app root.
+export function appBasePath(baseURI: string): string {
+  return new URL(baseURI).pathname;
+}
+
 // The world id encoded in a URL path, or null when the path names no world
 // (the site root, or a path that isn't a single safe segment).
 export function worldIdFromPath(pathname: string, basePath = '/'): string | null {
   let path = pathname;
-  if (basePath !== '/' && path.startsWith(basePath)) {
-    path = path.slice(basePath.length);
+  if (basePath !== '/') {
+    const prefix = basePath.endsWith('/') ? basePath : `${basePath}/`;
+    // '/universal-map-app' (no trailing slash) is the project root too.
+    if (path === prefix.slice(0, -1)) path = '';
+    else if (path.startsWith(prefix)) path = path.slice(prefix.length);
   }
   const segment = path.replace(/^\/+/, '').split('/')[0];
   if (!segment || !/^[a-zA-Z0-9_-]+$/.test(segment)) return null;

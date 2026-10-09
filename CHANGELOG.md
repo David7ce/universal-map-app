@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Fix: deployments under a subpath (GitHub Pages) and CI
+
+The site loaded `worlds/universal-map-app/world.json` (404) when served from `https://<user>.github.io/universal-map-app/`: `vite.config.ts` uses `base: './'`, so `import.meta.env.BASE_URL` is `'./'` in production and the deployment subpath was never stripped before reading the world id from the first path segment. `main.ts` now derives the base path from `document.baseURI` (`appBasePath`, `resolve-world-id.ts`), which the build keeps pointing at the app root (also on a world's nested page); `/universal-map-app` without a trailing slash is treated as the root too. CI/deploy workflows no longer pass `version:` to `pnpm/action-setup` (it conflicted with `packageManager: pnpm@12.6.0` and aborted the job), and nine files that failed `format:check` were formatted.
+
 ## Every world available in English
 
 `paranormal-spain` (30 places: category, verification level, era, hours, danger, access, season, phenomena, directions, recommendations, full history, video titles, region layer), `events-canary-islands` (42 events: name, description, category, price, venue) and `moon-map-photos` (moon phase names and layer labels) now ship English overrides through the same `contentLanguage` / `translations` mechanism, with completeness tests for each world (`src/engine/data/world-translations.test.ts`). Left in their original language on purpose: place and municipality names, people's names, source citations (titles of Spanish articles) and the unused `description`/`tags` fields of the paranormal places.

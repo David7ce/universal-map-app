@@ -1,7 +1,7 @@
 import './styles.css';
 
 import { validateAppManifest } from './engine/manifests/app-manifest';
-import { resolveWorldId } from './engine/manifests/resolve-world-id';
+import { appBasePath, resolveWorldId } from './engine/manifests/resolve-world-id';
 import { fetchFeatures } from './engine/data/loader-registry';
 import { loadLayer } from './engine/data/load-layer';
 import { createStore } from './engine/state/store';
@@ -39,7 +39,7 @@ async function bootstrap(): Promise<void> {
     new URLSearchParams(window.location.search),
     import.meta.env.MODE,
     window.location.pathname,
-    import.meta.env.BASE_URL,
+    appBasePath(document.baseURI),
   );
   const appManifest = validateAppManifest(await fetchJson(`worlds/${appId}/world.json`));
   applyBranding(appManifest, appId);

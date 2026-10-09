@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_WORLD_ID, isIsolatedWorldMode, resolveWorldId, worldIdFromPath } from './resolve-world-id';
+import {
+  appBasePath,
+  DEFAULT_WORLD_ID,
+  isIsolatedWorldMode,
+  resolveWorldId,
+  worldIdFromPath,
+} from './resolve-world-id';
 
 describe('resolveWorldId', () => {
   it('uses the "world" query param when present and valid', () => {
@@ -84,5 +90,42 @@ describe('isIsolatedWorldMode', () => {
 
   it('is true for an arbitrary world id used as a mode', () => {
     expect(isIsolatedWorldMode('paranormal-spain')).toBe(true);
+  });
+});
+
+// `vite.config.ts` uses `base: './'`, so `import.meta.env.BASE_URL` is './' in
+// production — useless for finding the deployment subpath. The page's own
+// `<base href>` (which the build keeps pointing at the app root, '../' on a
+// world's nested page) is what resolves correctly.
+describe('appBasePath', () => {
+  it('is the pathname of the document base URI', () => {
+    expect(appBasePath('https://david7ce.github.io/universal-map-app/')).toBe('/universal-map-app/');
+    expect(appBasePath('http://localhost:5173/')).toBe('/');
+  });
+
+  it('works for a site served from a domain root', () => {
+    expect(appBasePath('https://maps.example.com/')).toBe('/');
+  });
+});
+
+describe('world resolution on a GitHub Pages project site', () => {
+  const base = appBasePath('https://david7ce.github.io/universal-map-app/');
+  const resolve = (pathname: string) => resolveWorldId(new URLSearchParams(''), 'production', pathname, base);
+
+  it('loads the default world at the project root (not "universal-map-app")', () => {
+    expect(resolve('/universal-map-app/')).toBe(DEFAULT_WORLD_ID);
+    expect(resolve('/universal-map-app')).toBe(DEFAULT_WORLD_ID);
+  });
+
+  it('loads the world named by the first segment after the project root', () => {
+    expect(resolve('/universal-map-app/paranormal-spain/')).toBe('paranormal-spain');
+  });
+});
+
+describe('world resolution at a domain root', () => {
+  const base = appBasePath('http://localhost:5173/');
+  it('still reads the first segment', () => {
+    expect(resolveWorldId(new URLSearchParams(''), 'development', '/moon-map-photos/', base)).toBe('moon-map-photos');
+    expect(resolveWorldId(new URLSearchParams(''), 'development', '/', base)).toBe(DEFAULT_WORLD_ID);
   });
 });
