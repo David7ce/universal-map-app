@@ -31,6 +31,10 @@ export interface AppManifest {
   // every world (HomeView.ts) — a world no longer supplies its own splash
   // copy, so this is just a boolean.
   welcome?: boolean;
+  // Language the world's own files (layers, data, strings) are written in.
+  // Per-language override files are only looked for when the visitor's
+  // language differs. Defaults to 'en'.
+  contentLanguage?: 'en' | 'es';
 }
 
 export function validateAppManifest(json: unknown): AppManifest {
@@ -100,6 +104,10 @@ export function validateAppManifest(json: unknown): AppManifest {
 
   if (obj.welcome !== undefined && typeof obj.welcome !== 'boolean') {
     throw new Error(`App manifest "${obj.id}" "welcome" must be a boolean when present`);
+  }
+
+  if (obj.contentLanguage !== undefined && obj.contentLanguage !== 'en' && obj.contentLanguage !== 'es') {
+    throw new Error(`App manifest "${obj.id}" "contentLanguage" must be "en" or "es" when present`);
   }
 
   return json as AppManifest;

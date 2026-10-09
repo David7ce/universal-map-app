@@ -1,9 +1,9 @@
 import './styles.css';
 
 import { validateAppManifest } from './engine/manifests/app-manifest';
-import { validateLayerManifest, type LayerManifest } from './engine/manifests/layer-manifest';
 import { resolveWorldId } from './engine/manifests/resolve-world-id';
 import { fetchFeatures } from './engine/data/loader-registry';
+import { loadLayer } from './engine/data/load-layer';
 import { createStore } from './engine/state/store';
 import type { AppState } from './engine/state/store';
 import { createLeafletMapAdapter } from './engine/space/leaflet/leaflet-map-adapter';
@@ -61,11 +61,9 @@ async function bootstrap(): Promise<void> {
   await activatePlugins(appManifest.plugins, strings);
 
   const loadedLayers: LoadedLayer[] = await Promise.all(
-    appManifest.dataLayers.map(async (layerPath): Promise<LoadedLayer> => {
-      const manifest: LayerManifest = validateLayerManifest(await fetchJson(`worlds/${appId}/${layerPath}`));
-      const features: GeoFeature[] = await fetchFeatures(manifest.source);
-      return { manifest, features };
-    }),
+    appManifest.dataLayers.map((layerPath): Promise<LoadedLayer> =>
+      loadLayer({ fetchJson, fetchFeatures }, appId, layerPath, language, appManifest.contentLanguage ?? 'en'),
+    ),
   );
 
   // "Detail" layers (any layer with `panel.showByDefault: false` — e.g. a
