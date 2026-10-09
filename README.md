@@ -31,12 +31,12 @@ Every world can be opened on its own during development, and built + deployed as
 
 **Open one locally**, with the rest of the app unaffected — `pnpm dev`, then open the world's path:
 
-| World                   | URL (dev)                                            |
-| ----------------------- | ---------------------------------------------------- |
-| `world-leaders`         | `http://localhost:5173/` (default)                   |
-| `paranormal-spain`      | `http://localhost:5173/paranormal-spain/`            |
-| `events-canary-islands` | `http://localhost:5173/events-canary-islands/`       |
-| `moon-map-photos`       | `http://localhost:5173/moon-map-photos/`             |
+| World                   | URL (dev)                                      |
+| ----------------------- | ---------------------------------------------- |
+| `world-leaders`         | `http://localhost:5173/` (default)             |
+| `paranormal-spain`      | `http://localhost:5173/paranormal-spain/`      |
+| `events-canary-islands` | `http://localhost:5173/events-canary-islands/` |
+| `moon-map-photos`       | `http://localhost:5173/moon-map-photos/`       |
 
 (`?world=<id>` also still works, e.g. `http://localhost:5173/?world=paranormal-spain`.) A world switcher UI is intentionally out of scope for v1 — this is a static id lookup resolved once at page load, not a runtime menu.
 

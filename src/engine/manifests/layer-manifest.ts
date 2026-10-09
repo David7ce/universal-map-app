@@ -134,7 +134,10 @@ export function validateLayerManifest(json: unknown): LayerManifest {
       });
     }
     if (panel.searchFields !== undefined) {
-      if (!Array.isArray(panel.searchFields) || panel.searchFields.some((f) => typeof f !== 'string' || f.length === 0)) {
+      if (
+        !Array.isArray(panel.searchFields) ||
+        panel.searchFields.some((f) => typeof f !== 'string' || f.length === 0)
+      ) {
         throw new Error(`Layer manifest "${obj.id}" "panel.searchFields" must be an array of non-empty strings`);
       }
     }

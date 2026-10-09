@@ -116,15 +116,14 @@ export function mountSearchOverlay(
       countLine +
       (matches.length
         ? matches
-            .map(
-              (feature, index) => {
-                const portrait = typeof feature.properties?.portrait === 'string' ? feature.properties.portrait.trim() : '';
-                const thumb = portrait
-                  ? `<img class="search-result-item__thumb" src="${escapeHtml(portrait)}" alt="" loading="lazy" />`
-                  : '';
-                return `<button type="button" class="search-result-item" data-result-index="${index}">${thumb}<span class="search-result-item__name">${escapeHtml(featureLabel(feature, strings))}</span></button>`;
-              },
-            )
+            .map((feature, index) => {
+              const portrait =
+                typeof feature.properties?.portrait === 'string' ? feature.properties.portrait.trim() : '';
+              const thumb = portrait
+                ? `<img class="search-result-item__thumb" src="${escapeHtml(portrait)}" alt="" loading="lazy" />`
+                : '';
+              return `<button type="button" class="search-result-item" data-result-index="${index}">${thumb}<span class="search-result-item__name">${escapeHtml(featureLabel(feature, strings))}</span></button>`;
+            })
             .join('')
         : `<p class="search-results__empty">${t('search.noResults', strings)}</p>`);
 

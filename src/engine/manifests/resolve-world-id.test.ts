@@ -32,9 +32,14 @@ describe('resolveWorldId', () => {
   });
 
   it('strips the deployment base path before reading the segment', () => {
-    expect(resolveWorldId(new URLSearchParams(''), 'production', '/universal-map-app/moon-map-photos/', '/universal-map-app/')).toBe(
-      'moon-map-photos',
-    );
+    expect(
+      resolveWorldId(
+        new URLSearchParams(''),
+        'production',
+        '/universal-map-app/moon-map-photos/',
+        '/universal-map-app/',
+      ),
+    ).toBe('moon-map-photos');
   });
 
   it('falls back to the default world for the site root', () => {
