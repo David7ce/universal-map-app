@@ -1,0 +1,43 @@
+{
+  "title": "Moon Photos",
+  "taxonomy": [
+    {
+      "id": "moonPhase",
+      "label": "Moon phase",
+      "icons": {
+        "New Moon": "🌑",
+        "Waxing Crescent": "🌒",
+        "First Quarter": "🌓",
+        "Waxing Gibbous": "🌔",
+        "Full Moon": "🌕",
+        "Waning Gibbous": "🌖",
+        "Last Quarter": "🌗",
+        "Waning Crescent": "🌘"
+      }
+    }
+  ],
+  "panel": {
+    "infoFields": [
+      {
+        "field": "properties.thumb",
+        "label": "Photo"
+      },
+      {
+        "field": "properties.moonPhaseLabel",
+        "label": "Moon phase"
+      },
+      {
+        "field": "properties.date",
+        "label": "Date"
+      },
+      {
+        "field": "properties.camera",
+        "label": "Camera"
+      },
+      {
+        "field": "properties.tags",
+        "label": "Location"
+      }
+    ]
+  }
+}

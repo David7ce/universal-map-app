@@ -40,5 +40,6 @@
     "primary": "#c2571f"
   },
   "welcome": true,
-  "contentLanguage": "es"
+  "contentLanguage": "es",
+  "translations": ["en"]
 }

@@ -1,0 +1,4 @@
+{
+  "title": "Regions and Municipalities",
+  "taxonomy": [{ "id": "region", "label": "Region" }]
+}

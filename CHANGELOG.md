@@ -2,6 +2,10 @@
 
 Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
 
+## Every world available in English
+
+`paranormal-spain` (30 places: category, verification level, era, hours, danger, access, season, phenomena, directions, recommendations, full history, video titles, region layer), `events-canary-islands` (42 events: name, description, category, price, venue) and `moon-map-photos` (moon phase names and layer labels) now ship English overrides through the same `contentLanguage` / `translations` mechanism, with completeness tests for each world (`src/engine/data/world-translations.test.ts`). Left in their original language on purpose: place and municipality names, people's names, source citations (titles of Spanish articles) and the unused `description`/`tags` fields of the paranormal places.
+
 ## Translated world data (world-leaders in English), toolbar polish
 
 World content can now be shown in the visitor's language without duplicating data: `world.json` gains `contentLanguage` (language of the world's own files, default `en`) and `translations` (languages that ship overrides). For a listed language, `layers/<name>.layer.<lang>.json` is merged over the layer manifest and `data/<file>.<lang>.json` over the features' properties (`src/engine/data/layer-override.ts`, `load-layer.ts`); a missing or invalid override falls back to the original language. `world-leaders` ships a complete English translation — all 81 leaders (title, role group, country, continent, bio; Spanish exonyms of people such as Carlos III → Charles III) plus layer labels, icons and colours — so the English UI no longer shows Spanish in filters, pills or info cards. Toolbar: the pill row keeps its scroll position and skips redundant rebuilds, the calendar popover moves focus into itself on open, and dimmed pills have more contrast.
