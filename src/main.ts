@@ -25,6 +25,7 @@ import type { LoadedLayer } from './engine/taxonomy/compute-dimensions';
 import { activatePlugins } from './engine/plugins/activate';
 import { subscribePluginHooks } from './engine/plugins/registry';
 import { createPluginContext } from './engine/plugins/context';
+import { SITE_TITLE } from './ui/worlds';
 
 async function fetchJson(url: string): Promise<unknown> {
   const response = await fetch(url);
@@ -37,9 +38,23 @@ async function fetchJson(url: string): Promise<unknown> {
 async function bootstrap(): Promise<void> {
   const searchParams = new URLSearchParams(window.location.search);
   const basePath = appBasePath(document.baseURI);
-  const appId = resolveWorldId(searchParams, import.meta.env.MODE, window.location.pathname, basePath);
-  // A world's own URL opens it directly; only the bare site root shows the shared Home.
   const explicitWorld = isWorldExplicit(searchParams, import.meta.env.MODE, window.location.pathname, basePath);
+  const language = resolveLanguage(getStoredLanguage(), navigator.language);
+  document.documentElement.lang = language;
+  const siteStrings = await loadSiteStrings(language);
+
+  // `/` is the project landing page, not the default world's Home overlay.
+  // Avoid loading any world's manifest/data or constructing Leaflet until a
+  // visitor follows a world link (or opens a world URL directly).
+  if (!explicitWorld) {
+    document.title = SITE_TITLE;
+    document.querySelector<HTMLElement>('#app')!.classList.add('view-home');
+    mountHomeView(document.querySelector('#home-view')!, siteStrings, language);
+    document.getElementById('loading-overlay')?.remove();
+    return;
+  }
+
+  const appId = resolveWorldId(searchParams, import.meta.env.MODE, window.location.pathname, basePath);
   const appManifest = validateAppManifest(await fetchJson(`worlds/${appId}/world.json`));
   applyBranding(appManifest, appId);
   document.querySelector('#app')!.classList.toggle('no-time', appManifest.systems?.time === false);
@@ -49,12 +64,10 @@ async function bootstrap(): Promise<void> {
   // fetches below, and await it right before the first consumer needs it.
   const calendarSystemLoaded = ensureCalendarSystemLoaded(appManifest.calendar.system ?? 'gregorian');
 
-  const language = resolveLanguage(getStoredLanguage(), navigator.language);
-  document.documentElement.lang = language;
-  const [siteStrings, worldStrings] = await Promise.all([
-    loadSiteStrings(language),
-    loadStrings(appManifest.strings ? `worlds/${appId}/${appManifest.strings}` : undefined, language),
-  ]);
+  const worldStrings = await loadStrings(
+    appManifest.strings ? `worlds/${appId}/${appManifest.strings}` : undefined,
+    language,
+  );
   const strings = mergeStrings(siteStrings, worldStrings);
 
   await activatePlugins(appManifest.plugins, strings);
@@ -87,7 +100,7 @@ async function bootstrap(): Promise<void> {
     hiddenLayerIds: new Set(detailLayers.map((l) => l.manifest.id)),
     calendarSystem: appManifest.calendar.system ?? 'gregorian',
     showGrid: false,
-    view: appManifest.welcome && !explicitWorld ? 'home' : 'map',
+    view: 'map',
   });
 
   const mapContainer = document.querySelector<HTMLDivElement>('#map')!;
@@ -151,10 +164,6 @@ async function bootstrap(): Promise<void> {
     showDate: appManifest.systems?.time !== false,
   });
   subscribePluginHooks(store, createPluginContext(store, loadedLayers));
-
-  if (appManifest.welcome && !explicitWorld) {
-    mountHomeView(document.querySelector('#home-view')!, store, appId, strings, language);
-  }
 
   document.getElementById('loading-overlay')?.remove();
 }

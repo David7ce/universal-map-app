@@ -172,6 +172,16 @@ select:disabled {
   left: var(--control-btn-offset);
   z-index: var(--z-search);
 }
+.control-btn--home {
+  position: fixed;
+  top: calc(var(--control-btn-offset) + var(--control-btn-size) + 0.5rem);
+  left: var(--control-btn-offset);
+  z-index: var(--z-fixed);
+  text-decoration: none;
+}
+.control-btn--home[hidden] {
+  display: none;
+}
 /* The overlay's own header already has a clear/close control once it's
    open — keep this a plain closed icon rather than a redundant floating
    button sitting on top of the panel it opens. */
@@ -1747,6 +1757,7 @@ select:disabled {
 }
 .map-app.view-home #map,
 .map-app.view-home #search-overlay,
+.map-app.view-home #home-button,
 .map-app.view-home #panel-right-toggle,
 .map-app.view-home .bottom-left-controls,
 .map-app.view-home .map-footer-legend,

@@ -1,4 +1,3 @@
-import type { Store, AppState } from '../../engine/state/store';
 import { escapeHtml } from '../escape-html';
 import { renderInlineCode } from '../inline-code';
 import { LANGUAGES, setStoredLanguage, type Language } from '../language';
@@ -13,18 +12,11 @@ const DOCS_URL = 'https://github.com/David7ce/universal-map-app/blob/master/docs
 // It explains what the app is, then lists every world this build ships as a
 // clickable card (each opening that world directly). The page is about the
 // *project*, not the loaded world: the heading is `SITE_TITLE`, and a world's
-// own title appears only as its card label. Only mounted when the manifest
-// declares `welcome` (main.ts), which signals "start on Home".
-export function mountHomeView(
-  container: HTMLElement,
-  store: Store<AppState>,
-  currentWorldId: string,
-  strings: Record<string, string>,
-  language: Language,
-): void {
+// own title appears only as its card label. The root URL mounts this view;
+// every world's own URL loads that world directly instead.
+export function mountHomeView(container: HTMLElement, strings: Record<string, string>, language: Language): void {
   const cards = AVAILABLE_WORLDS.map((world) => {
-    const isCurrent = world.id === currentWorldId;
-    return `<a class="home-view__card${isCurrent ? ' is-current' : ''}" href="${worldHref(world.id)}" data-world="${escapeHtml(world.id)}">
+    return `<a class="home-view__card" href="${worldHref(world.id)}">
       <span class="home-view__card-icon" aria-hidden="true">${world.icon}</span>
       <span class="home-view__card-body">
         <span class="home-view__card-title">${escapeHtml(t(`worlds.${world.id}.label`, strings))}</span>
@@ -57,18 +49,6 @@ export function mountHomeView(
     </main>
     <footer class="home-view__footer">${renderLegalFooter(SITE_TITLE, strings, language)}</footer>
   `;
-
-  // Clicking a card opens that world. The *current* world's card is already
-  // loaded, so it just switches to the map in place (no reload); any other
-  // world is a real navigation, since it's a different manifest/data set.
-  container.querySelectorAll<HTMLAnchorElement>('[data-world]').forEach((card) => {
-    card.addEventListener('click', (event) => {
-      if (card.dataset.world === currentWorldId) {
-        event.preventDefault();
-        store.set({ view: 'map' });
-      }
-    });
-  });
 
   // Switching language stores it and reloads: strings are read once at
   // bootstrap (same behavior as SettingsControl's language select).

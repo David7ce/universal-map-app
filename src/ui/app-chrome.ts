@@ -9,6 +9,7 @@ import { icons } from './icons';
 import { t } from './strings';
 import { worldLabel } from './site-strings';
 import { SITE_TITLE } from './worlds';
+import { appBasePath, isIsolatedWorldMode } from '../engine/manifests/resolve-world-id';
 
 // Right panel (filters + settings) show/hide: a circular toggle button, a
 // dimmed backdrop, and the sliding drawer itself all react to `panels.right`.
@@ -55,6 +56,17 @@ function mountRightPanel(store: Store<AppState>, strings: Record<string, string>
       setRightPanelOpen(false);
     }
   });
+}
+
+// Visible shortcut back to the shared Home page. Isolated per-world builds
+// have no global world directory, so the button is hidden there.
+function mountHomeButton(strings: Record<string, string>): void {
+  const button = document.querySelector<HTMLAnchorElement>('#home-button')!;
+  button.innerHTML = icons.home;
+  button.href = appBasePath(document.baseURI);
+  button.setAttribute('aria-label', t('home.backLabel', strings));
+  button.title = t('home.backLabel', strings);
+  button.hidden = isIsolatedWorldMode(import.meta.env.MODE);
 }
 
 // Bottom-centered world title — the only always-visible branding now that
@@ -157,6 +169,7 @@ export function mountAppChrome(
   mapAdapter: MapAdapter,
   loadedLayers: LoadedLayer[],
 ): void {
+  mountHomeButton(strings);
   mountRightPanel(store, strings);
   mountWorldTitle(store, appManifest, mapAdapter, strings);
   mountAttribution(store, appManifest);

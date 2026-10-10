@@ -1,6 +1,7 @@
-// The world loaded when the URL names none (the site root, or a plain
-// `npm run dev` / `npm run build`). Kept in sync with `AVAILABLE_WORLDS`
-// (`src/ui/worlds.ts`) — the first entry there is the default.
+// Fallback world for callers that need an id when no URL or isolated build
+// mode names one. The app's bare site root shows the shared Home page and does
+// not load this world. Kept in sync with `AVAILABLE_WORLDS` — the first entry
+// there is the fallback.
 export const DEFAULT_WORLD_ID = 'world-leaders';
 
 // Which `worlds/<id>/` instance to load, in priority order:
@@ -32,7 +33,7 @@ export function resolveWorldId(searchParams: URLSearchParams, mode: string, path
 
 // Whether the URL itself names the world — `?world=<id>`, a first path segment,
 // or a standalone per-world build — as opposed to the bare site root, which
-// loads the default world behind the shared Home. A world's own URL opens that
+// shows the shared Home without loading a world. A world's own URL opens that
 // world directly (it is independent of the Home page).
 export function isWorldExplicit(searchParams: URLSearchParams, mode: string, pathname = '/', basePath = '/'): boolean {
   const requested = searchParams.get('world');
