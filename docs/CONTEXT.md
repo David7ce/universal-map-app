@@ -1,8 +1,8 @@
-# Universal Map App — AI Agent Context
+# Universal Calendar Map — AI Agent Context
 
 ## Project Identity
 
-Universal Map App is not just a web map application.
+Universal Calendar Map is not just a web map application.
 
 It should be treated as a **spatio-temporal engine with a web interface**.
 
@@ -61,8 +61,8 @@ engine/
     time/
 
 ui/
-    app-chrome.ts  (application shell: Map/Calendar switcher, layer control, settings, search)
-    panels/        (Calendar view, filter panel, search overlay, lightbox, ...)
+  app-chrome.ts  (map chrome: right panel, bottom world title, scale/attribution)
+  panels/        (shared Home, filters, drill-down calendar, search, lightbox, ...)
 
 plugins/
     <plugin-id>/   (e.g. participate/ — registered via engine/plugins, not hardcoded in main.ts)
@@ -170,7 +170,7 @@ New capabilities should ideally be introduced through:
 - data layers
 - extensions
 
-Concretely: `plugins/<plugin-id>/index.ts` exports `register(config, strings)`; `src/engine/plugins/activate.ts` looks it up by id from `world.json`'s `plugins` map via `import.meta.glob` — no `main.ts`/manifest-validator edits needed to add a second plugin. `participate/` (email/WhatsApp/Telegram report links) is the only one shipped so far.
+Concretely: `plugins/<plugin-id>/index.ts` exports `register(config, strings)`; `src/engine/plugins/activate.ts` looks it up by id from `world.json`'s `plugins` map via `import.meta.glob`. Registered plugins can define a panel slot and lifecycle hooks for date, filter, and feature-selection changes (`src/engine/plugins/registry.ts`). `participate/` (email/WhatsApp/Telegram report links) is the only plugin shipped so far.
 
 ---
 
@@ -194,7 +194,7 @@ Visualization
 
 Avoid coupling features directly to code when configuration is enough.
 
-Concretely, this is `worlds/<world-id>/`: a `world.json` manifest (validated by `validateAppManifest`, `src/engine/manifests/app-manifest.ts`) plus `layers/*.layer.json` (validated by `validateLayerManifest`) referencing `data/*.geojson`. A new world is data-only — no code changes — as long as it fits the existing taxonomy/temporal/panel field vocabulary; see `docs/json-reference.md` and `docs/schemas/*.schema.json`.
+Concretely, this is `worlds/<world-id>/`: a `world.json` manifest (validated by `validateAppManifest`, `src/engine/manifests/app-manifest.ts`) plus `layers/*.layer.json` (validated by `validateLayerManifest`) referencing `data/*.geojson`. A new world is data-only — no code changes — as long as it fits the existing taxonomy/temporal/panel field vocabulary; see `json-reference.md` and `schemas/*.schema.json`.
 
 ---
 

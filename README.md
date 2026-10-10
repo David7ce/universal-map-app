@@ -1,6 +1,6 @@
-# Universal Map-Time Engine
+# Universal Calendar Map
 
-A static, browser-only map (OpenStreetMap + Leaflet) with a Gregorian calendar as an equal first-class dimension. See `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the full design, `docs/json-reference.md` for a field-by-field reference of `world.json`, `layer.json`, `strings.json`, and the GeoJSON+`temporal` data format (`docs/schemas/*.schema.json` has the same shapes as JSON Schema, for editor autocomplete — add `"$schema": "../../docs/schemas/world.schema.json"` (adjust the relative path) to your own manifest files to pick it up), `docs/api-reference.md` for the internal function/module API, `CHANGELOG.md` for what's shipped beyond v1, and `ROADMAP.md` for what's next.
+A static, browser-only map app and reusable spatio-temporal engine. Geography and time are first-class dimensions, with Gregorian, Julian, Islamic, and Hebrew calendar display support. See [JSON format reference](docs/json-reference.md), [API reference](docs/api-reference.md), [changelog](docs/CHANGELOG.md), and [roadmap](docs/ROADMAP.md). JSON Schemas live under `docs/schemas/` for editor autocomplete; add the appropriate relative `$schema` path to a world or layer manifest.
 
 ## Run locally
 
@@ -18,10 +18,10 @@ Open the printed local URL. No backend, no paid services — `pnpm build` produc
 1. Create a new folder under `worlds/<your-world-id>/`.
 2. Add a `world.json` (see `worlds/world-leaders/world.json` for the shape).
 3. Add one `*.layer.json` per data layer under `worlds/<your-world-id>/layers/`, and the matching GeoJSON under `worlds/<your-world-id>/data/`.
-4. Optionally add `strings.json` for your own UI text, a `plugins` block to activate `participate`, a `welcome` splash, and/or an `about` block (adds an "About Us" link to the persistent header) — see `docs/json-reference.md`.
-5. Register it for the Home and Settings: add one entry (`id` + emoji `icon`) to `AVAILABLE_WORLDS` in `src/ui/worlds.ts`, and its `worlds.<id>.label` and `worlds.<id>.description` to `public/strings/site.en.json` and `site.es.json`. Shared UI text lives in those two files; a world's own `strings.*.json` only needs keys that are world-specific or differ from the shared value (a world key overrides a shared one).
-6. Optionally translate its content: set `contentLanguage` and `translations` in `world.json` and add `layers/<name>.layer.<lang>.json` / `data/<file>.<lang>.json` override files (see "Translated content" in `docs/json-reference.md` and `worlds/world-leaders/`).
-7. Load it at `/my-world/` (e.g. `http://localhost:5173/my-world/`), or open `/` to get the default world (`world-leaders`). `?world=<id>` still works as an override. A world switcher UI is still intentionally out of scope for v1 (see the design spec's non-goals) — this is just a static id lookup, resolved once at page load. Per-domain deployment of a single world is in scope (see below), just not a UI for switching between worlds at runtime.
+4. Add `strings.en.json` and optionally `strings.es.json` for world-specific UI text, plus a `plugins` block if the world needs plugins. Shared interface strings live in `public/strings/site.en.json` and `site.es.json`; world strings override shared values when keys overlap.
+5. Register the world for Home and Settings by adding its `id`, label, description, and icon to `AVAILABLE_WORLDS` in `src/ui/worlds.ts`, and add its `worlds.<id>.label` and `worlds.<id>.description` entries to both shared site-string files.
+6. To translate world content, set `contentLanguage` and `translations` in `world.json`, then add `layers/<name>.layer.<lang>.json` and/or `data/<file>.<lang>.json` overrides. See "Translated content" in `docs/json-reference.md` and `worlds/world-leaders/` for an example.
+7. Load it at `/my-world/` (e.g. `http://localhost:5173/my-world/`). The Home page and Settings world selector link to registered worlds; `?world=<id>` remains supported as an override. Set `"welcome": true` if the world should open on the shared Home page.
 
 No engine code under `src/engine/` needs to change to add a new world instance.
 
@@ -38,10 +38,11 @@ Every world can be opened on its own during development, and built + deployed as
 | `events-canary-islands` | `http://localhost:5173/events-canary-islands/` |
 | `moon-map-photos`       | `http://localhost:5173/moon-map-photos/`       |
 
-(`?world=<id>` also still works, e.g. `http://localhost:5173/?world=paranormal-spain`.) A world switcher UI is intentionally out of scope for v1 — this is a static id lookup resolved once at page load, not a runtime menu.
+(`?world=<id>` also still works, e.g. `http://localhost:5173/?world=paranormal-spain`.) You can also switch worlds from the Settings control.
 
-**Build one for its own domain** — `vite build --mode <world-id> --outDir builds/<world-id>` bundles _only_ that world's data (not every world under `worlds/`) and makes it load by default with no `?world=` query param needed, so a visitor at that domain never sees `worlds/demo/` or any other world's content at all. Each of the 3 real worlds already has a matching `package.json` script:
+**Build one for its own domain** — `vite build --mode <world-id> --outDir builds/<world-id>` bundles only that world's data and makes it load by default at `/`, so the site contains no other worlds' content. Each world has a matching `package.json` script:
 
+    pnpm run build:world-leaders          # -> builds/world-leaders/
     pnpm run build:paranormal-spain       # -> builds/paranormal-spain/
     pnpm run build:events-canary-islands  # -> builds/events-canary-islands/
     pnpm run build:moon-map-photos        # -> builds/moon-map-photos/
@@ -58,27 +59,10 @@ Adding a new world that should also deploy standalone means adding one matching 
 
 ## Isochrone (travel-time) layers
 
-There's no dedicated `kind` for isochrones — precompute the polygons with whatever routing tool fits your data (routing engines/APIs, GIS tools, etc.) and ship them as a normal `kind: "polygon"` layer, exactly like `worlds/demo/layers/regions.layer.json`. Each isochrone gets `properties.temporal` if it should only apply on certain dates, and any `taxonomy` field (e.g. travel time bucket) like any other layer. This needs no engine code — the same reasoning that makes administrative regions "just temporal geometry" applies here. A layer that computes isochrones live (e.g. on click) would need an external routing service, which is out of scope for this static, no-backend engine.
+There's no dedicated `kind` for isochrones — precompute polygons with a routing tool and ship them as a normal `kind: "polygon"` layer. Each isochrone can use `properties.temporal` and taxonomy fields like any other feature. Live isochrone calculation would need an external routing service, outside this static app's current scope.
 
-## Recently shipped beyond the original v1 scope
+## Current interface
 
-- Two top-level views — Map and a full-screen Calendar view (day/week/month/year, a 12-month year-at-a-glance layout, and a per-day event agenda).
-- Multi-calendar display support for Gregorian, Julian, Islamic, and Hebrew calendars via `calendar.system` in `world.json`.
-- Multi-projection map display support for `EPSG:3857`, `EPSG:4326`, and custom CRS definitions via `map.crs`.
-- Calendar bar refinements with day/week/month/year granularity and a range slider, plus richer selection-card info rendering for links, images, and coordinates.
-- Isolated per-domain world builds (`vite build --mode <world-id>`, see above) ship only that world's data, plus per-world `favicon`.
-- `systems.time: false` hides all time/calendar UI for a world with no temporal data.
-- The calendar no longer caps navigation at "today" — `calendar.min`/`max` govern the real bounds, so future-dated content (e.g. upcoming events) is reachable, not just past/current dates.
-- A thematic `welcome` splash (declarative `welcome` object in `world.json`) as a world's initial view, with a live feature-count teaser, before its CTA drops you into the map.
-- A multi-image `infoField` (`type: "image"` resolving to more than one value) renders a thumbnail grid that opens a full-screen lightbox with prev/next, arrow-key navigation, and Escape-to-close.
-- Point-layer marker styling driven by any feature property, independent of `taxonomy`: `style.colorField`/`colorMap` (a colored circle behind the icon) and `style.badgeField`/`badgeMap` (a sparse corner badge).
-- Satellite base layers can show place labels via an optional `labelsUrl` second tile source layered on top.
-- `scripts/fetch-osm-boundary.mjs` pulls a real administrative boundary from OpenStreetMap (Overpass API) to use as a `regionRole: "boundary"` layer's source geojson, instead of hand-authoring one.
+The shared Home page explains the project and links directly to each world. On a map, the right panel contains full filters, a month/month-year/year drill-down calendar, and settings. Small filter sets also appear as top-of-map pill shortcuts. Worlds can also be switched from Settings. Plugin lifecycle hooks notify registered plugins about date, filter, and selection changes.
 
-## Known v1 deviations from the design spec
-
-`CalendarBar.ts` now has a day/week/month/year granularity selector plus a range slider bounded by `calendar.min`/`calendar.max` (previously only a prev/next day stepper + native date picker), covering the design spec's Section 6 gap.
-
-`calendar.system` (`docs/json-reference.md`) renders dates in Julian/Islamic/Hebrew calendars throughout the UI (calendar bar stepping and label, temporal-status text), and `CalendarBar.ts`'s year/month/day fields edit directly in that system too, not just Gregorian.
-
-`map.crs` (`docs/json-reference.md`) supports Leaflet's built-in `EPSG:3857`/`EPSG:4326`/`Simple` (flat pixel-space, e.g. indoor floor plans or game/fictional maps) plus fully custom projections via `proj4leaflet`.
+The app supports Gregorian, Julian, Islamic, and Hebrew calendar display; EPSG:3857, EPSG:4326, Simple, and custom map projections; static GeoJSON and sharded GeoJSON layers; and optional isolated builds per world.

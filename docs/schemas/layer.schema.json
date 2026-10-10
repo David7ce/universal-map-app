@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://universal-map-app/schemas/layer.schema.json",
   "title": "Universal Map layer.json",
-  "description": "See docs/json-reference.md for the full field-by-field reference. Mirrors the runtime checks in src/engine/manifests/layer-manifest.ts (validateLayerManifest) - keep both in sync when either changes.",
+  "description": "See ../json-reference.md for the full field-by-field reference. Mirrors the runtime checks in src/engine/manifests/layer-manifest.ts (validateLayerManifest) - keep both in sync when either changes.",
   "type": "object",
   "required": ["id", "title", "kind", "source"],
   "additionalProperties": false,

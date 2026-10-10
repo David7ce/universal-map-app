@@ -1,6 +1,6 @@
 # Feature: World Definition Package System — open items
 
-Most of the original feature request has shipped (world package structure, `world.json`, data-driven layer definitions, generic plugin integration, an engine with no world-specific knowledge — see `CHANGELOG.md`). Two pieces remain, both deliberately deferred as YAGNI: no current world needs either yet.
+Most of the original feature request has shipped (world package structure, `world.json`, data-driven layer definitions, generic plugin integration, an engine with no world-specific knowledge — see `docs/CHANGELOG.md`). Two pieces remain, both deliberately deferred as YAGNI: no current world needs either yet.
 
 ---
 
@@ -33,4 +33,4 @@ interface WorldDataSource {
 }
 ```
 
-Ties into the "future massive refactor to own Map Server and PostgreSQL" item in `ROADMAP.md` — a live API loader only makes sense once there's a real backend to call. Revisit together.
+Ties into the "future massive refactor to own Map Server and PostgreSQL" item in `docs/ROADMAP.md` — a live API loader only makes sense once there's a real backend to call. Revisit together.

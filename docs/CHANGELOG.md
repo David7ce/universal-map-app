@@ -1,6 +1,6 @@
 # Changelog
 
-Record of what's been implemented beyond the original v1 (see `docs/superpowers/specs/2026-07-26-universal-map-time-engine-design.md` for the base design). Future work lives in `ROADMAP.md`, not here.
+Record of shipped changes. Open work lives in `ROADMAP.md`.
 
 ## Settings expand inside the filters panel
 
@@ -92,7 +92,7 @@ A deliberate reduction of the interface to its essentials:
 
 ## Persistent header nav (Home/Map/Calendar/About), About Us view, and category chip bar
 
-The floating Map/Calendar pill (`#view-switcher`) is now a full-width, always-visible header (`#app-header`, `mountHeader()` in `app-chrome.ts`) showing the world's title plus nav links — Home (only when `welcome` is declared; routes back to the splash, which is no longer strictly one-way), Map, Calendar, and a new About link (only when a new optional `about` manifest field is declared). `about: { title, body: string[], links?: {label,url}[] }` is validated the same way `welcome` is (`app-manifest.ts`, `docs/schemas/world.schema.json`, `docs/json-reference.md`) and rendered by a new `AboutView.ts`, mounted the same conditional way `WelcomeView.ts` is. A shared `renderLegalFooter()` (`src/ui/panels/legal-footer.ts`) factors out the privacy/cookies/terms row previously duplicated only in `WelcomeView.ts`, now reused by `AboutView.ts` too. `systems.time: false` now only hides the header's Calendar link specifically (`[data-view="calendar"]`), not the whole header — Home/Map/About stay reachable.
+The floating Map/Calendar pill (`#view-switcher`) is now a full-width, always-visible header (`#app-header`, `mountHeader()` in `app-chrome.ts`) showing the world's title plus nav links — Home (only when `welcome` is declared; routes back to the splash, which is no longer strictly one-way), Map, Calendar, and a new About link (only when a new optional `about` manifest field is declared). `about: { title, body: string[], links?: {label,url}[] }` is validated the same way `welcome` is (`app-manifest.ts`, `schemas/world.schema.json`, `json-reference.md`) and rendered by a new `AboutView.ts`, mounted the same conditional way `WelcomeView.ts` is. A shared `renderLegalFooter()` (`src/ui/panels/legal-footer.ts`) factors out the privacy/cookies/terms row previously duplicated only in `WelcomeView.ts`, now reused by `AboutView.ts` too. `systems.time: false` now only hides the header's Calendar link specifically (`[data-view="calendar"]`), not the whole header — Home/Map/About stay reachable.
 
 New always-visible category chip bar (`CategoryNav.ts`, shown under the header on Map view) surfaces each world's icon-bearing taxonomy dimension(s) (e.g. `events-canary-islands`' "category", `moon-map-photos`' "moonPhase") as clickable chips, toggling the exact same `activeFilters` state the filters drawer (`PanelRight.ts`) already owns — a faster path onto an existing dimension, not a new filtering concept. Boundary-region dimensions (`regionRole: "boundary"`) are excluded automatically since they're never given icons.
 
@@ -143,15 +143,15 @@ The app now has two top-level, switchable views — Map (unchanged) and a new fu
 
 ## `apps/` renamed to `worlds/`, `app-manifest.json` to `world.json`
 
-Pure rename, no behavior change — `worlds/<id>/` and `worlds/<id>/world.json` replace `apps/<id>/` and `apps/<id>/app-manifest.json`, and the URL switcher is now `?world=<id>` instead of `?app=<id>`. Matches the vocabulary `feature-request-world-def.md`'s "World Definition Package System" is specified in; this is sub-project 1 of that effort (see `docs/superpowers/specs/2026-08-04-worlds-rename-design.md`). Internal TypeScript naming (`AppManifest`, `validateAppManifest()`, `appManifest.ts`, `resolveAppId()`) deliberately stays as-is — external rename only, hard cutover, no alias for the old paths. `docs/schemas/app-manifest.schema.json` was also renamed to `docs/schemas/world.schema.json`; anyone referencing the old schema path via `$schema` in their own manifest will need to update it, since there's no alias for that either.
+Pure rename, no behavior change — `worlds/<id>/` and `worlds/<id>/world.json` replaced `apps/<id>/` and `apps/<id>/app-manifest.json`, and the world identifier became the public routing term. This was the first shipped part of the World Definition Package System described in `../feature-request-world-def.md`. Internal TypeScript naming (`AppManifest`, `validateAppManifest()`) deliberately stayed as-is — external paths and filenames only. The app-manifest schema became `schemas/world.schema.json`; old `$schema` paths must be updated.
 
 ## Generic, manifest-driven plugin activation
 
-Replaced the hardcoded `if (appManifest.plugins?.participate) registerParticipatePlugin(...)` in `src/main.ts` with a generic activation path (design: `docs/superpowers/specs/2026-08-04-plugin-registry-design.md`). `AppManifest.plugins` is now an open `Record<string, unknown>` — `validateAppManifest` only checks it's a plain object, it no longer knows what any plugin id means. Every `plugins/<id>/index.ts` exports a default `register(config: unknown, strings: Record<string, string>): void` responsible for validating its own config and calling `registerPlugin`; `plugins/participate/index.ts` now owns `ParticipateConfig` and its validation (moved out of `app-manifest.ts`, same error messages). New `src/engine/plugins/activate.ts` (`activatePlugins`) does id → module lookup via `import.meta.glob('/plugins/*/index.ts')`, throwing a named error for a manifest id with no matching plugin folder — a plugin folder that isn't shipped is a configuration bug, not a silently-degraded state. Adding a second plugin now requires zero edits to `main.ts` or the manifest validator.
+Replaced the hardcoded `if (appManifest.plugins?.participate) registerParticipatePlugin(...)` in `src/main.ts` with generic plugin activation. `AppManifest.plugins` is an open `Record<string, unknown>` — `validateAppManifest` checks only that it is a plain object, while each plugin validates its own config. Every `plugins/<id>/index.ts` exports a default `register(config, strings)` and calls `registerPlugin`; `src/engine/plugins/activate.ts` resolves IDs with `import.meta.glob('/plugins/*/index.ts')`. Adding a plugin requires no edits to `main.ts` or the manifest validator.
 
 ## Visual calendar grid in the Time editor
 
-`CalendarBar.ts` now renders a clickable calendar grid below the existing "Month / Day / Year" fields, when not in numeric-edit mode: a week row, a full month grid, or a year-of-months grid, depending on the granularity stepper's current setting (`'day'` still shows plain text — a single day has nothing to grid). New pure engine module `src/engine/time/calendar-grid.ts` (`buildWeekCells`/`buildMonthCells`/`buildYearCells`) computes cells adapted to `calendar.system` (real day-of-week from the underlying Gregorian date, system-aware month/day counts via last session's `daysInCalendarMonth`/`monthsInCalendarYear`), and marks cells with an active feature (respecting `activeFilters`, same as every other filtered view) via an event dot. Clicking a day cell selects it; clicking a month cell in year view selects day 1 of that month and drills into month view. Selecting a week/month/year cell still resolves to one `selectedDate` — no range-based map filtering (see `docs/superpowers/specs/2026-08-02-calendar-grid-view-design.md` Section 2 for why that's out of scope).
+`CalendarBar.ts` originally rendered week, month, and year grids beneath a granularity selector. The pure engine module `src/engine/time/calendar-grid.ts` computes calendar-aware cells and event indicators. The current UI has since replaced that interaction with a Windows-style month → months → years drill-down in the right panel; selecting a date still sets one `selectedDate` rather than a date range.
 
 ## Calendar-aware date editing (islamic/hebrew/julian, not just gregorian)
 
@@ -172,7 +172,7 @@ The Settings popover's read-only projection text is now a real `<select>` (`Sett
 
 ## JSON Schema files for app-manifest.json and layer.json
 
-`docs/schemas/app-manifest.schema.json` and `docs/schemas/layer.schema.json` (draft-07) mirror the field-by-field shapes in `docs/json-reference.md` and the runtime checks in `validateAppManifest`/`validateLayerManifest`. Add `"$schema": "../../docs/schemas/app-manifest.schema.json"` (adjust the relative path) to a manifest file to get editor autocomplete/inline validation — wired into `apps/demo/app-manifest.json` and all three `apps/demo/layers/*.layer.json` as a working example. Verified against the demo manifests with `ajv-cli` (not a project dependency, just used to sanity-check the schema files while writing them).
+`schemas/world.schema.json` and `schemas/layer.schema.json` mirror the field-by-field shapes in `json-reference.md` and the runtime checks in `validateAppManifest`/`validateLayerManifest`. Add the appropriate relative `$schema` path to a manifest to get editor autocomplete and inline validation.
 
 ## Deep validation for optional manifest fields
 
@@ -270,7 +270,7 @@ Typing in the search box filters by text among the currently filtered-in feature
 
 ## Expanded selected-place info
 
-`layer.json` accepts `panel.infoFields: [{ field, label }]` — each app decides which extra properties to show on the selection card, without hardcoding field names (reuses `readField()` from `compute-dimensions.ts`, now exported). See `docs/json-reference.md`.
+`layer.json` accepts `panel.infoFields: [{ field, label }]` — each app decides which extra properties to show on the selection card, without hardcoding field names (reuses `readField()` from `compute-dimensions.ts`, now exported). See `json-reference.md`.
 
 ## Base layer selector: street / satellite
 
@@ -314,7 +314,7 @@ Documented in `README.md` ("Isochrone (travel-time) layers"): precomputed isochr
 
 ## Demo content and docs in English
 
-`apps/demo/*` (place names, category values, region names, property keys like `name`/`category`/`website`/`photo`) and the project docs (`ROADMAP.md`, `CHANGELOG.md`, `docs/json-reference.md`) are now all in English.
+`apps/demo/*` (place names, category values, region names, property keys like `name`/`category`/`website`/`photo`) and the project docs (`ROADMAP.md`, `CHANGELOG.md`, `json-reference.md`) are now all in English.
 
 ## Compact date-editor calendar bar
 

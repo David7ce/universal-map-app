@@ -1,8 +1,8 @@
 # API reference
 
-Reference for the engine's internal functions, modules, and interfaces — what you'd import if you were extending the engine itself or writing a plugin. For the JSON manifest/data formats, see `docs/json-reference.md`.
+Reference for the engine's internal functions, modules, and interfaces — what you'd import if you were extending the engine itself or writing a plugin. For the JSON manifest/data formats, see `json-reference.md`.
 
-Everything under `src/engine/` is the reusable core: it never hardcodes field names, taxonomy labels, or region roles — those always come from a layer manifest (see `docs/json-reference.md`). `src/ui/` is the reference DOM layer built on top of it; an app author could replace it entirely and keep `src/engine/` unchanged.
+Everything under `src/engine/` is the reusable core: it never hardcodes field names, taxonomy labels, or region roles — those always come from a layer manifest (see `json-reference.md`). `src/ui/` is the reference DOM layer built on top of it; an app author could replace it entirely and keep `src/engine/` unchanged.
 
 ---
 
@@ -20,7 +20,7 @@ The one function everything else calls to answer "is this feature active on this
 
 `src/engine/time/rrule-subset.ts`
 
-The RRULE-subset parser and matcher `isActiveOn` delegates to for `recurrence.rule`. `parseRule` throws on a missing/unrecognized `FREQ`. `matchesRule` throws if `FREQ` is `MONTHLY`/`YEARLY` (parsed but not matchable in v1) or if `COUNT` is used with no `anchor`. `anchor` is `temporal.range.from` when present — see `docs/json-reference.md`'s "`recurrence.rule`" section for the supported key list.
+The RRULE-subset parser and matcher `isActiveOn` delegates to for `recurrence.rule`. `parseRule` throws on a missing/unrecognized `FREQ`. `matchesRule` throws if `FREQ` is `MONTHLY`/`YEARLY` (parsed but not matchable in v1) or if `COUNT` is used with no `anchor`. `anchor` is `temporal.range.from` when present — see `json-reference.md`'s "`recurrence.rule`" section for the supported key list.
 
 ### `startOfDayUtc(date: Date): Date` / `parseIsoDateUtc(iso: string): Date`
 
@@ -28,7 +28,7 @@ The RRULE-subset parser and matcher `isActiveOn` delegates to for `recurrence.ru
 
 Small date-normalization helpers, exported because `is-active-on.ts` needs the exact same UTC-midnight normalization `rrule-subset.ts` uses internally — this is the fix for a bug class (raw-millisecond `Date` comparison instead of day-boundary-normalized) that showed up twice during this project's build.
 
-### Calendar systems (see `docs/json-reference.md`'s "Calendar systems" section for the storage/display split — storage stays Gregorian ISO regardless of `calendar.system`)
+### Calendar systems (see `json-reference.md`'s "Calendar systems" section for the storage/display split — storage stays Gregorian ISO regardless of `calendar.system`)
 
 - `formatCalendarDate(isoDate, system, locale?): string` — `src/engine/time/calendar-conversion.ts`. Formats an ISO Gregorian date as a human string in the target `CalendarSystem`.
 - `addCalendarUnit(isoDate, system, unit, delta): string` — same file. Steps a date by a calendar-aware month/year (day/week stepping is calendar-agnostic and handled directly by `CalendarBar.ts`'s own `nextSelectedDate`/`stepDatePart`).
@@ -87,7 +87,7 @@ For a `[lng, lat]` point, returns every feature from any layer with `regionRole:
 
 `src/engine/manifests/layer-manifest.ts`
 
-Both throw a descriptive `Error` on a structurally invalid manifest, otherwise return the parsed object typed as the manifest interface. Validation is intentionally shallow today — required top-level fields are checked, most optional fields' inner shapes aren't deep-validated. See `docs/json-reference.md` for the full field tables these validate against.
+Both throw a descriptive `Error` on a structurally invalid manifest, otherwise return the parsed object typed as the manifest interface. Validation is intentionally shallow today — required top-level fields are checked, most optional fields' inner shapes aren't deep-validated. See `json-reference.md` for the full field tables these validate against.
 
 ### `resolveWorldId(searchParams: URLSearchParams, mode: string, pathname?: string, basePath?: string): string`
 
@@ -137,19 +137,19 @@ A minimal reactive store: `set()` shallow-merges the patch into state and synchr
 
 `src/engine/space/map.ts`
 
-Creates the Leaflet map, adds the first `baseLayers` entry, adds a real Leaflet zoom control (repositioned via CSS), and applies `map.crs` if set (see `docs/json-reference.md`). Returns the raw tile-layer instances keyed by base-layer `id` so a caller (`LayerControl.ts`) can add/remove them on user action — base-layer switching is not Leaflet's built-in layers control, it's driven externally.
+Creates the Leaflet map, adds the first `baseLayers` entry, adds a real Leaflet zoom control (repositioned via CSS), and applies `map.crs` if set (see `json-reference.md`). Returns the raw tile-layer instances keyed by base-layer `id` so a caller (`LayerControl.ts`) can add/remove them on user action — base-layer switching is not Leaflet's built-in layers control, it's driven externally.
 
 ### `renderDataLayer(map, manifest, features, date, activeFilters?): L.Layer`
 
 `src/engine/space/data-layer-renderer.ts`
 
-Filters `features` to those active on `date` and matching `activeFilters` (`isActiveOn` + `featureMatchesFilters`), then renders them per `manifest.kind` — see `docs/json-reference.md`'s "Layer kinds" table. Returns the created `L.Layer` so the caller can remove it before the next render (this function doesn't track or diff previous renders itself — `main.ts`'s `renderMap()` owns that bookkeeping via a `Map<layerId, Layer>`).
+Filters `features` to those active on `date` and matching `activeFilters` (`isActiveOn` + `featureMatchesFilters`), then renders them per `manifest.kind` — see `json-reference.md`'s "Layer kinds" table. Returns the created `L.Layer` so the caller can remove it before the next render (this function doesn't track or diff previous renders itself — `main.ts`'s `renderMap()` owns that bookkeeping via a `Map<layerId, Layer>`).
 
 ### `resolveMarkerStyle(manifest): MarkerStyle` / `resolvePolygonStyle(manifest): PolygonStyle`
 
 `src/engine/space/style.ts`
 
-Read `manifest.style` and fill in defaults per field — see `docs/json-reference.md`'s "Style fields" table for exactly which keys each reads and their defaults.
+Read `manifest.style` and fill in defaults per field — see `json-reference.md`'s "Style fields" table for exactly which keys each reads and their defaults.
 
 ### `isValidMapCrsConfig(value): value is MapCrsConfig`
 
@@ -165,7 +165,7 @@ Runtime shape guard for `map.crs` — accepts `"EPSG:3857"`, `"EPSG:4326"`, or a
 
 `src/engine/data/loader-registry.ts`
 
-Dispatches on `source.type` (`"geojson"` / `"geojson-sharded"`) to the matching loader. `bounds`/`dateRange` are accepted but currently ignored by both loaders — this is the documented seam for a future server-backed `"api"` source type (see `docs/json-reference.md`'s `LayerSource` table) so this signature won't need to change when that's implemented.
+Dispatches on `source.type` (`"geojson"` / `"geojson-sharded"`) to the matching loader. `bounds`/`dateRange` are accepted but currently ignored by both loaders — this is the documented seam for a future server-backed `"api"` source type (see `json-reference.md`'s `LayerSource` table) so this signature won't need to change when that's implemented.
 
 ---
 
@@ -208,7 +208,7 @@ interface PluginHooks {
 `src/ui/strings.ts`.
 
 - `loadStrings(path: string | undefined): Promise<Record<string, string>>` — fetches and parses a `strings.json`; returns `{}` if `path` is undefined.
-- `t(key: string, strings: Record<string, string>, params?: Record<string, string>): string` — looks up `key`, falling back to the raw key if missing. If `params` is given, replaces `{paramName}` placeholders in whatever string was resolved (looked-up or fallback). See `docs/json-reference.md`'s `strings.json` section.
+- `t(key: string, strings: Record<string, string>, params?: Record<string, string>): string` — looks up `key`, falling back to the raw key if missing. If `params` is given, replaces `{paramName}` placeholders in whatever string was resolved (looked-up or fallback). See `json-reference.md`'s `strings.json` section.
 
 This is the seam every piece of user-facing text in `src/ui/` and `plugins/` is required to go through — no hardcoded display strings, enforced by convention (caught in review, not by a lint rule) throughout this project's history.
 
@@ -220,7 +220,7 @@ These are the testable, DOM-free building blocks the actual panel components (`S
 
 - `searchFeatures(features, query, searchableFields): GeoFeature[]` — `src/ui/panels/search.ts`. Case-insensitive substring match across the given property names. Empty query returns `[]` — `SearchOverlay.ts` shows nothing until the user types.
 - `describeTemporalStatus(feature, date, strings, calendarSystem?): string` — `src/ui/panels/temporal-status.ts`. Human-readable status text ("Always active", "Active on {date}", "Not active on selected date (recurs: {rule})", etc.), fully routed through `t()`.
-- `formatInfoFieldHtml(def, values): string` / `formatCoordinates(coords): { lat, lng }` / `isAllowedUrl(value): boolean` — `src/ui/panels/info-field-format.ts`. Rendering for `panel.infoFields` entries (see `docs/json-reference.md`) and the automatic lat/lng line; `isAllowedUrl` is the safety check restricting `link`/`image` fields to `http(s):`/`mailto:`.
+- `formatInfoFieldHtml(def, values): string` / `formatCoordinates(coords): { lat, lng }` / `isAllowedUrl(value): boolean` — `src/ui/panels/info-field-format.ts`. Rendering for `panel.infoFields` entries (see `json-reference.md`) and the automatic lat/lng line; `isAllowedUrl` is the safety check restricting `link`/`image` fields to `http(s):`/`mailto:`.
 - `escapeHtml(value: string): string` — `src/ui/escape-html.ts`. The one HTML-escaping helper; every data-derived string interpolated into `innerHTML` anywhere in `src/ui/` goes through this (feature names, taxonomy values, region names — anything that ultimately comes from third-party GeoJSON, not from `t()`-resolved trusted UI copy).
 - `icons` — `src/ui/icons.ts`. A `Record<string, string>` of self-contained inline SVG markup strings (`search`, `close`, `filter`, `layers`, `chevron`, `pushpin`, `edit`). No external icon font, no CDN.
 

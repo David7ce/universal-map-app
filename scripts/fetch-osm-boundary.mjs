@@ -2,7 +2,7 @@
 // Fetches an administrative boundary relation from OpenStreetMap (via the
 // Overpass API) and writes it as a single-feature GeoJSON FeatureCollection
 // ready to use as a `regionRole: "boundary"` layer (see
-// worlds/demo/layers/regions.layer.json for the layer.json side).
+// worlds/paranormal-spain/layers/regions.layer.json for the layer.json side).
 //
 // Usage:
 //   node scripts/fetch-osm-boundary.mjs "<OSM name tag>" <admin_level> <output-path> [propertiesJson]

@@ -2,9 +2,9 @@
 
 Field-by-field reference for the three JSON shapes the engine uses: the world manifest, the layer manifest, and the GeoJSON data (with the `temporal` extension). All of these live under `worlds/<world-id>/` — see `worlds/world-leaders/` as a working reference instance.
 
-Validated at runtime by `validateAppManifest` (`src/engine/manifests/app-manifest.ts`) and `validateLayerManifest` (`src/engine/manifests/layer-manifest.ts`), which check both required top-level fields and the shape of most optional nested ones (`map.crs`, `plugins.participate`, `regionRole`, `temporal.defaultVisibility`, `taxonomy` entries, `panel`/`infoFields`). `docs/schemas/*.schema.json` has the same shapes as JSON Schema, for editor autocomplete while authoring.
+Validated at runtime by `validateAppManifest` (`src/engine/manifests/app-manifest.ts`) and `validateLayerManifest` (`src/engine/manifests/layer-manifest.ts`), which check both required top-level fields and the shape of most optional nested ones (`map.crs`, `plugins.participate`, `regionRole`, `temporal.defaultVisibility`, `taxonomy` entries, `panel`/`infoFields`). `schemas/*.schema.json` has the same shapes as JSON Schema, for editor autocomplete while authoring.
 
-See `docs/api-reference.md` for the internal function/module API (not the JSON formats).
+See `api-reference.md` for the internal function/module API (not the JSON formats).
 
 ---
 
@@ -213,7 +213,7 @@ Not supported: `BYSETPOS`, `BYMONTHDAY`, or the rest of RFC 5545.
 Flat dictionary `{ "dotted.key": "text" }`, loaded by `loadStrings()` (`src/ui/strings.ts`) from the path given in `world.json`'s `strings`. Consumed via `t(key, strings, params?)`:
 
 - If the key isn't in the dictionary, `t()` returns the key itself as-is (silent fallback — handy during development, but means a misspelled key gives no warning).
-- `params` (optional) interpolates `{paramName}` inside the resolved text (or inside the key, if it fell back) — see `worlds/demo/strings.json` for the full list of keys the engine currently uses (`search.*`, `filters.*`, `layerControl.*`, `calendar.*`, `participate.*`, `info.*`, `temporalStatus.*`, `selection.*`).
+- `params` (optional) interpolates `{paramName}` inside the resolved text (or inside the key, if it fell back) — see `worlds/world-leaders/strings.en.json` for the full list of keys the engine currently uses (`search.*`, `filters.*`, `layerControl.*`, `calendar.*`, `participate.*`, `info.*`, `temporalStatus.*`, `selection.*`).
 
 ---
 

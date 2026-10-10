@@ -10,7 +10,7 @@ import { isIsolatedWorldMode } from './src/engine/manifests/resolve-world-id';
  * see design spec Section 10) lives at the project root, sibling to `src/`,
  * not inside `publicDir` (this repo has no `public/` directory). Vite's dev
  * server happens to serve any file under the project root, so
- * `fetch('/worlds/demo/...')` works fine under `npm run dev` — but the
+ * `fetch('/worlds/<id>/...')` works fine under `npm run dev` — but the
  * production build only emits the bundled module graph plus a copy of
  * `publicDir`, so `worlds/` is otherwise absent from `dist/` and every one of
  * `main.ts`'s runtime `fetch()` calls 404s once deployed as a static site.
