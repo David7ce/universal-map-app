@@ -50,9 +50,8 @@ export interface AppState {
   calendarSystem: CalendarSystem;
   // Whether the lat/lng coordinate grid overlay is shown on the map.
   showGrid: boolean;
-  // Which top-level screen is showing: the shared Home view (only reachable
-  // as the initial state, only when the manifest declares `welcome` — one-way,
-  // nothing ever sets it back), or the full-screen map. The Calendar is no
-  // longer a separate view — it lives in the right panel.
-  view: 'home' | 'map';
+  // The map is always shown on a world page (the shared Home lives outside
+  // AppState — `/` doesn't load any world at all). The Calendar is not a
+  // separate view either; it lives in the toolbar popover.
+  view: 'map';
 }

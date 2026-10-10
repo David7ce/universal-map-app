@@ -55,6 +55,7 @@ async function bootstrap(): Promise<void> {
   }
 
   const appId = resolveWorldId(searchParams, import.meta.env.MODE, window.location.pathname, basePath);
+  if (!appId) throw new Error('No world resolved for this URL');
   const appManifest = validateAppManifest(await fetchJson(`worlds/${appId}/world.json`));
   applyBranding(appManifest, appId);
   document.querySelector('#app')!.classList.toggle('no-time', appManifest.systems?.time === false);

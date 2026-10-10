@@ -39,7 +39,6 @@
   "theme": {
     "primary": "#c2571f"
   },
-  "welcome": true,
   "contentLanguage": "es",
   "translations": ["en"]
 }

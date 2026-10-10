@@ -144,7 +144,6 @@ export function mountMapToolbar(
 
   function renderFilters(): void {
     const state = store.get();
-    if (state.view !== 'map') return;
     const pills = buildToolbarPills(layers, new Date(`${state.selectedDate}T00:00:00Z`), state.hiddenLayerIds);
     hasPills = pills.length > 0;
     updateVisibility();

@@ -21,7 +21,7 @@ Open the printed local URL. No backend, no paid services — `pnpm build` produc
 4. Add `strings.en.json` and optionally `strings.es.json` for world-specific UI text, plus a `plugins` block if the world needs plugins. Shared interface strings live in `public/strings/site.en.json` and `site.es.json`; world strings override shared values when keys overlap.
 5. Register the world for Home and Settings by adding its `id`, label, description, and icon to `AVAILABLE_WORLDS` in `src/ui/worlds.ts`, and add its `worlds.<id>.label` and `worlds.<id>.description` entries to both shared site-string files.
 6. To translate world content, set `contentLanguage` and `translations` in `world.json`, then add `layers/<name>.layer.<lang>.json` and/or `data/<file>.<lang>.json` overrides. See "Translated content" in `docs/json-reference.md` and `worlds/world-leaders/` for an example.
-7. Load it at `/my-world/` (e.g. `http://localhost:5173/my-world/`). The Home page and Settings world selector link to registered worlds; `?world=<id>` remains supported as an override. Set `"welcome": true` if the world should open on the shared Home page.
+7. Load it at `/my-world/` (e.g. `http://localhost:5173/my-world/`). The bare root (`/`) always shows the shared Home page listing registered worlds, and never loads a world; the Home page and Settings world selector link to registered worlds, and `?world=<id>` remains supported as an override.
 
 No engine code under `src/engine/` needs to change to add a new world instance.
 
@@ -33,10 +33,12 @@ Every world can be opened on its own during development, and built + deployed as
 
 | World                   | URL (dev)                                      |
 | ----------------------- | ---------------------------------------------- |
-| `world-leaders`         | `http://localhost:5173/` (default)             |
+| `world-leaders`         | `http://localhost:5173/world-leaders/`         |
 | `paranormal-spain`      | `http://localhost:5173/paranormal-spain/`      |
 | `events-canary-islands` | `http://localhost:5173/events-canary-islands/` |
 | `moon-map-photos`       | `http://localhost:5173/moon-map-photos/`       |
+
+The bare root (`http://localhost:5173/`) always shows the shared Home page — it loads no world.
 
 (`?world=<id>` also still works, e.g. `http://localhost:5173/?world=paranormal-spain`.) You can also switch worlds from the Settings control.
 

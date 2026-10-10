@@ -216,25 +216,6 @@ describe('validateAppManifest', () => {
   it('rejects a "systems" that is not a plain object', () => {
     expect(() => validateAppManifest({ ...valid, systems: [] })).toThrow(/systems/);
   });
-
-  it('accepts a manifest with no "welcome" field at all', () => {
-    expect(validateAppManifest(valid)).toEqual(valid);
-  });
-
-  it('accepts "welcome: true"', () => {
-    const withWelcome = { ...valid, welcome: true };
-    expect(validateAppManifest(withWelcome)).toEqual(withWelcome);
-  });
-
-  it('accepts "welcome: false"', () => {
-    const withWelcome = { ...valid, welcome: false };
-    expect(validateAppManifest(withWelcome)).toEqual(withWelcome);
-  });
-
-  it('rejects a non-boolean "welcome"', () => {
-    expect(() => validateAppManifest({ ...valid, welcome: { title: 'Hi' } })).toThrow(/welcome/);
-    expect(() => validateAppManifest({ ...valid, welcome: 'yes' })).toThrow(/welcome/);
-  });
 });
 
 describe('Validate all worlds in repository', () => {

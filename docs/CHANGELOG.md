@@ -2,6 +2,12 @@
 
 Record of shipped changes. Open work lives in `ROADMAP.md`.
 
+## Home at the root, `welcome` manifest field removed
+
+- **The bare root always shows Home.** `/` mounts the shared Home view (`HomeView.ts`) and loads no world manifest, layer data, or map; every world's own URL (`/<id>/`, `?world=<id>`, or a standalone per-world build) opens that world directly. The old `welcome` boolean in `world.json` no longer did anything (all four worlds set it `true`, and it was ignored once the root became Home-first), so it was removed from the manifests, the schema, the runtime type, and the docs.
+- **`resolveWorldId` has no default world.** It now returns `null` when the URL names no world (root, or the project-site root), instead of falling back to `world-leaders` — the Home page handles that case before any world is fetched.
+- **A home button on every map.** A circular button under the search trigger navigates back to the app root (hidden in isolated per-world builds, which ship no other world to return to; Settings' world switcher is also hidden there for the same reason). `AppState.view` is now just `'map'` — the `'home'` state and the `.home-view__card.is-current` style were unreachable.
+
 ## Settings expand inside the filters panel
 
 The settings (world, language, calendar system, projection, grid) used to open as a floating popover anchored to the gear button, which sits left of the panel's right edge on desktop — the popover started 47px outside the panel and the panel's `overflow: hidden` clipped it. They now open as a full-width section in the flow of the panel header (`.settings-control { display: contents }`, header wraps), edge to edge and sized from header padding variables, so it can never spill out; it stays open until the gear is pressed again and the gear shows its open state.

@@ -26,11 +26,6 @@ export interface AppManifest {
   theme?: { primary: string };
   plugins?: Record<string, unknown>;
   systems?: { time?: boolean };
-  // Whether this world starts on the shared Home view (the world list)
-  // instead of straight on the map. The Home view itself is shared across
-  // every world (HomeView.ts) — a world no longer supplies its own splash
-  // copy, so this is just a boolean.
-  welcome?: boolean;
   // Language the world's own files (layers, data, strings) are written in.
   // Per-language override files are only looked for when the visitor's
   // language differs. Defaults to 'en'.
@@ -104,10 +99,6 @@ export function validateAppManifest(json: unknown): AppManifest {
     if (systems.time !== undefined && typeof systems.time !== 'boolean') {
       throw new Error(`App manifest "${obj.id}" "systems.time" must be a boolean`);
     }
-  }
-
-  if (obj.welcome !== undefined && typeof obj.welcome !== 'boolean') {
-    throw new Error(`App manifest "${obj.id}" "welcome" must be a boolean when present`);
   }
 
   if (obj.contentLanguage !== undefined && obj.contentLanguage !== 'en' && obj.contentLanguage !== 'es') {

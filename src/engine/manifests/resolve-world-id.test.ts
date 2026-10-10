@@ -1,12 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  appBasePath,
-  DEFAULT_WORLD_ID,
-  isIsolatedWorldMode,
-  isWorldExplicit,
-  resolveWorldId,
-  worldIdFromPath,
-} from './resolve-world-id';
+import { appBasePath, isIsolatedWorldMode, isWorldExplicit, resolveWorldId, worldIdFromPath } from './resolve-world-id';
 
 describe('resolveWorldId', () => {
   it('uses the "world" query param when present and valid', () => {
@@ -14,15 +7,15 @@ describe('resolveWorldId', () => {
   });
 
   it('ignores a query param with invalid characters', () => {
-    expect(resolveWorldId(new URLSearchParams('world=../etc'), 'production')).toBe(DEFAULT_WORLD_ID);
+    expect(resolveWorldId(new URLSearchParams('world=../etc'), 'production')).toBeNull();
   });
 
-  it('falls back to the default world in development mode with no query param', () => {
-    expect(resolveWorldId(new URLSearchParams(''), 'development')).toBe(DEFAULT_WORLD_ID);
+  it('resolves no world in development mode with no query param', () => {
+    expect(resolveWorldId(new URLSearchParams(''), 'development')).toBeNull();
   });
 
-  it('falls back to the default world in production mode with no query param', () => {
-    expect(resolveWorldId(new URLSearchParams(''), 'production')).toBe(DEFAULT_WORLD_ID);
+  it('resolves no world in production mode with no query param', () => {
+    expect(resolveWorldId(new URLSearchParams(''), 'production')).toBeNull();
   });
 
   it('falls back to the mode name in an isolated per-world build mode', () => {
@@ -49,8 +42,8 @@ describe('resolveWorldId', () => {
     ).toBe('moon-map-photos');
   });
 
-  it('falls back to the default world for the site root', () => {
-    expect(resolveWorldId(new URLSearchParams(''), 'production', '/')).toBe(DEFAULT_WORLD_ID);
+  it('resolves no world for the site root', () => {
+    expect(resolveWorldId(new URLSearchParams(''), 'production', '/')).toBeNull();
   });
 
   it('query param overrides the path', () => {
@@ -113,9 +106,9 @@ describe('world resolution on a GitHub Pages project site', () => {
   const base = appBasePath('https://david7ce.github.io/universal-map-app/');
   const resolve = (pathname: string) => resolveWorldId(new URLSearchParams(''), 'production', pathname, base);
 
-  it('loads the default world at the project root (not "universal-map-app")', () => {
-    expect(resolve('/universal-map-app/')).toBe(DEFAULT_WORLD_ID);
-    expect(resolve('/universal-map-app')).toBe(DEFAULT_WORLD_ID);
+  it('resolves no world at the project root (not "universal-map-app")', () => {
+    expect(resolve('/universal-map-app/')).toBeNull();
+    expect(resolve('/universal-map-app')).toBeNull();
   });
 
   it('loads the world named by the first segment after the project root', () => {
@@ -127,7 +120,7 @@ describe('world resolution at a domain root', () => {
   const base = appBasePath('http://localhost:5173/');
   it('still reads the first segment', () => {
     expect(resolveWorldId(new URLSearchParams(''), 'development', '/moon-map-photos/', base)).toBe('moon-map-photos');
-    expect(resolveWorldId(new URLSearchParams(''), 'development', '/', base)).toBe(DEFAULT_WORLD_ID);
+    expect(resolveWorldId(new URLSearchParams(''), 'development', '/', base)).toBeNull();
   });
 });
 

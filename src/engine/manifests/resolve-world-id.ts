@@ -1,9 +1,3 @@
-// Fallback world for callers that need an id when no URL or isolated build
-// mode names one. The app's bare site root shows the shared Home page and does
-// not load this world. Kept in sync with `AVAILABLE_WORLDS` — the first entry
-// there is the fallback.
-export const DEFAULT_WORLD_ID = 'world-leaders';
-
 // Which `worlds/<id>/` instance to load, in priority order:
 //
 // 1. `?world=<id>` — always wins when present and safe (a plain path
@@ -14,12 +8,18 @@ export const DEFAULT_WORLD_ID = 'world-leaders';
 //    emits a nested `index.html` per world so a static host serves it.
 // 3. An isolated per-world build (`vite build --mode <world-id>`) makes
 //    that mode name double as the default world.
-// 4. Otherwise `DEFAULT_WORLD_ID`.
+// 4. Otherwise null — the bare site root shows the shared Home page and
+//    loads no world.
 //
 // `basePath` is the deployment subpath (e.g. `/universal-map-app/` on a
 // GitHub Pages project site) — stripped before reading the segment, so the
 // same build works at a domain root or any subpath.
-export function resolveWorldId(searchParams: URLSearchParams, mode: string, pathname = '/', basePath = '/'): string {
+export function resolveWorldId(
+  searchParams: URLSearchParams,
+  mode: string,
+  pathname = '/',
+  basePath = '/',
+): string | null {
   const requested = searchParams.get('world');
   if (requested && /^[a-zA-Z0-9_-]+$/.test(requested)) {
     return requested;
@@ -28,7 +28,7 @@ export function resolveWorldId(searchParams: URLSearchParams, mode: string, path
   const fromPath = worldIdFromPath(pathname, basePath);
   if (fromPath) return fromPath;
 
-  return isIsolatedWorldMode(mode) ? mode : DEFAULT_WORLD_ID;
+  return isIsolatedWorldMode(mode) ? mode : null;
 }
 
 // Whether the URL itself names the world — `?world=<id>`, a first path segment,

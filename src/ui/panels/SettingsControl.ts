@@ -9,6 +9,7 @@ import { t } from '../strings';
 import { escapeHtml } from '../escape-html';
 import { icons } from '../icons';
 import { AVAILABLE_WORLDS } from '../worlds';
+import { isIsolatedWorldMode } from '../../engine/manifests/resolve-world-id';
 
 const LANGUAGES: readonly Language[] = ['en', 'es'];
 
@@ -42,6 +43,10 @@ export function mountSettingsControl(
     (w) => `<option value="${w.id}">${escapeHtml(t(`worlds.${w.id}.label`, strings))}</option>`,
   ).join('');
 
+  // An isolated per-world build ships only this world's data (and emits no
+  // other world's route), so a world switcher would only produce 404s.
+  const showWorldSwitcher = !isIsolatedWorldMode(import.meta.env.MODE);
+
   const systemOptions = CALENDAR_SYSTEMS.map(
     (system) => `<option value="${system}">${escapeHtml(t(`calendar.system.${system}`, strings))}</option>`,
   ).join('');
@@ -69,15 +74,19 @@ export function mountSettingsControl(
       </label>`
     : '';
 
+  const worldSection = showWorldSwitcher
+    ? `<label class="settings-control-row">
+        <span>${t('settings.worldLabel', strings)}</span>
+        <select data-role="world">${worldOptions}</select>
+      </label>`
+    : '';
+
   container.innerHTML = `
     <button type="button" class="settings-control-trigger" aria-expanded="false" aria-label="${t('settings.trigger', strings)}" title="${t('settings.trigger', strings)}">
       ${icons.settings}
     </button>
     <section class="settings-control-popover" hidden>
-      <label class="settings-control-row">
-        <span>${t('settings.worldLabel', strings)}</span>
-        <select data-role="world">${worldOptions}</select>
-      </label>
+      ${worldSection}
       <label class="settings-control-row">
         <span>${t('settings.languageLabel', strings)}</span>
         <select data-role="language">${languageOptions}</select>
@@ -101,16 +110,18 @@ export function mountSettingsControl(
   const systemSelect = container.querySelector<HTMLSelectElement>('[data-role="calendar-system"]');
   const projectionSelect = container.querySelector<HTMLSelectElement>('[data-role="projection"]')!;
   const languageSelect = container.querySelector<HTMLSelectElement>('[data-role="language"]')!;
-  const worldSelect = container.querySelector<HTMLSelectElement>('[data-role="world"]')!;
+  const worldSelect = container.querySelector<HTMLSelectElement>('[data-role="world"]');
 
-  worldSelect.value = deps.appManifest.id;
-  worldSelect.addEventListener('change', () => {
-    if (worldSelect.value !== deps.appManifest.id) {
-      const url = new URL(window.location.href);
-      url.searchParams.set('world', worldSelect.value);
-      window.location.href = url.toString();
-    }
-  });
+  if (worldSelect) {
+    worldSelect.value = deps.appManifest.id;
+    worldSelect.addEventListener('change', () => {
+      if (worldSelect.value !== deps.appManifest.id) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('world', worldSelect.value);
+        window.location.href = url.toString();
+      }
+    });
+  }
 
   languageSelect.value = getStoredLanguage() ?? detectDefaultLanguage(navigator.language);
   languageSelect.addEventListener('change', () => {

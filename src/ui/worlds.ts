@@ -7,7 +7,6 @@ export const SITE_TITLE = 'Universal Calendar Map';
 // Settings world switcher. A single source of truth so the two can't drift.
 // Adding a world means adding one entry here, its `worlds/<id>/` folder, and its
 // label/description in `public/strings/site.*.json`.
-// The first entry is the default world (see `DEFAULT_WORLD_ID`).
 export interface WorldEntry {
   id: string;
   // Emoji shown on the Home card — no icon font or asset files needed.

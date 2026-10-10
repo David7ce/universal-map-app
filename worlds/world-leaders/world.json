@@ -42,7 +42,6 @@
   "systems": {
     "time": false
   },
-  "welcome": true,
   "contentLanguage": "es",
   "translations": ["en"]
 }

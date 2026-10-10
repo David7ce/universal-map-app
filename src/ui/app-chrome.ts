@@ -8,7 +8,6 @@ import { createPluginContext } from '../engine/plugins/context';
 import { icons } from './icons';
 import { t } from './strings';
 import { worldLabel } from './site-strings';
-import { SITE_TITLE } from './worlds';
 import { appBasePath, isIsolatedWorldMode } from '../engine/manifests/resolve-world-id';
 
 // Right panel (filters + settings) show/hide: a circular toggle button, a
@@ -70,32 +69,11 @@ function mountHomeButton(strings: Record<string, string>): void {
 }
 
 // Bottom-centered world title — the only always-visible branding now that
-// the top header is gone. Also owns the `view-home` state class, keeps the
-// document title in sync with the view (the project name on Home, the world
-// name on the map), and calls mapAdapter.invalidateSize() when returning to
-// the map (Leaflet caches its container size while `#map` was hidden by the
-// Home view).
-function mountWorldTitle(
-  store: Store<AppState>,
-  appManifest: AppManifest,
-  mapAdapter: MapAdapter,
-  strings: Record<string, string>,
-): void {
+// the top header is gone. The document title comes from `applyBranding` at
+// bootstrap; this just fills the on-map label.
+function mountWorldTitle(appManifest: AppManifest, strings: Record<string, string>): void {
   const titleEl = document.querySelector<HTMLElement>('#world-title')!;
-  const appEl = document.querySelector<HTMLElement>('#app')!;
-  const worldTitle = worldLabel(appManifest.id, strings, appManifest.title);
-  titleEl.textContent = worldTitle;
-
-  let previousView = store.get().view;
-  function render(): void {
-    const state = store.get();
-    appEl.classList.toggle('view-home', state.view === 'home');
-    document.title = state.view === 'home' ? SITE_TITLE : worldTitle;
-    if (previousView !== state.view && state.view === 'map') mapAdapter.invalidateSize();
-    previousView = state.view;
-  }
-  render();
-  store.subscribe(render);
+  titleEl.textContent = worldLabel(appManifest.id, strings, appManifest.title);
 }
 
 // Footer attribution reflects whichever base layer is currently active.
@@ -171,7 +149,7 @@ export function mountAppChrome(
 ): void {
   mountHomeButton(strings);
   mountRightPanel(store, strings);
-  mountWorldTitle(store, appManifest, mapAdapter, strings);
+  mountWorldTitle(appManifest, strings);
   mountAttribution(store, appManifest);
   mountScaleIndicator(mapAdapter);
   mountPluginSlots(store, loadedLayers);
